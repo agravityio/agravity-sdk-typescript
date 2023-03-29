@@ -1,0 +1,32 @@
+### install:
+npm install @openapitools/openapi-generator-cli -g
+
+### execute:
+# npx @openapitools/openapi-generator-cli generate -i http://localhost:7071/api/swagger -g typescript-angular -o v1/agravityAPI-private/ --additional-properties=apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity
+# npx @openapitools/openapi-generator-cli generate -i http://localhost:7071/api/openapi/v3.json -g typescript-angular -o v1/agravityAPI-private/ --additional-properties=apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity
+# npx @openapitools/openapi-generator-cli generate -i https://demoagravitypublic.azurewebsites.net/api/swagger -g typescript-angular -o v1/agravityAPI-public/ --additional-properties=apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity
+# npx @openapitools/openapi-generator-cli generate -i http://localhost:7072/api/openapi/v3.json -g typescript-angular -o v1/agravityAPI-public/ --additional-properties=apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity
+
+
+# v2
+
+sh ./generateApiV2.sh
+
+Add in line 207 of v2\agravityAPI-private\api\assetManagement.agravity.ts:
+
+        body: assetBulkUpdate
+
+// Add in line 272 of v3\agravityAPI-private\api\assetManagement.agravity.ts:
+Add in line 208 of v3\agravityAPI-private\api\assetManagement.agravity.ts:
+
+        body: assetBulkUpdate
+
+
+
+
+### appendix:
+## Config Options
+https://openapi-generator.tech/docs/generators/typescript-angular/
+
+## usage:
+https://openapi-generator.tech/docs/usage
