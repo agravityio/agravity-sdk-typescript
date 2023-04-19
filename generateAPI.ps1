@@ -1,0 +1,77 @@
+# check REST API endpoint /version if backend is running, catch it and if it is not running: exit
+$version = Invoke-RestMethod -Uri http://localhost:7072/api/version -Method Get -ContentType "application/json" -ErrorAction SilentlyContinue
+if ($null -eq $version) {
+    Write-Host "Please start backend before generating API"
+    exit
+}
+
+# echo apiVersion
+Write-Host "Generate API with apiVersion: $version"
+
+# delete folder .\src without error output
+Remove-Item -Path .\src -Recurse -Force -ErrorAction SilentlyContinue
+
+# generate API
+$params="apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=14.0.0"
+npx @openapitools/openapi-generator-cli generate -i http://localhost:7071/api/openapi/v3.json -g typescript-angular -o src/agravityAPI-private/ --additional-properties=$params
+$params="apiModulePrefix=AgravityPublic,configurationPrefix=AgravityPublic,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=14.0.0"
+npx @openapitools/openapi-generator-cli generate -i http://localhost:7072/api/openapi/v3.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
+
+#change directory to src
+Set-Location .\src
+# replace all "Dictionary>" with "Dictionary<string, object>>"
+Get-ChildItem -Recurse -File | ForEach-Object { (Get-Content $_.FullName) -replace "Dictionary>", "Dictionary<string, object>>" | Set-Content $_.FullName }
+
+# replace all "Dictionary<string, Object>" with "Dictionary<string, object>"
+Get-ChildItem -Recurse -File | ForEach-Object { (Get-Content $_.FullName) -replace "Dictionary<string, Object>", "Dictionary<string, object>" | Set-Content $_.FullName }
+
+#replace all "Dictionary&gt;" with "Dictionary&lt;string, object&gt;&gt;"
+Get-ChildItem -Recurse -File | ForEach-Object { (Get-Content $_.FullName) -replace "Dictionary&gt;", "Dictionary&lt;string, object&gt;&gt;" | Set-Content $_.FullName }
+
+# go one directory up
+Set-Location ..
+
+# git discard all neccessary files
+
+# git discard files
+git checkout -- .\.gitignore
+git checkout -- .\generateAPI.ps1
+git checkout -- .\Agravity.Public.sln
+git checkout -- .\extract_thirdparty_licenses.bat
+git checkout -- .\icon.png
+git checkout -- .\nuget.exe
+git checkout -- .\openapitools.json
+git checkout -- .\src\Agravity.Public\Agravity.Public.nuspec
+git checkout -- .\src\Agravity.Public\Agravity.Public.csproj
+git checkout -- .\src\Agravity.Public\THIRD-PARTY-NOTICES.TXT
+
+#replace old version with new version in csproj file
+$csproj = Get-Content .\src\Agravity.Public\Agravity.Public.csproj
+$csproj = $csproj -replace "<Version>.*</Version>", "<Version>$apiVersion</Version>"
+$csproj | Set-Content .\src\Agravity.Public\Agravity.Public.csproj
+
+# echo apiVersion
+Write-Host "Build and Publish with apiVersion: $apiVersion"
+
+# build project with release
+dotnet build .\src\Agravity.Public\Agravity.Public.csproj -c Release
+
+# execute extract third party licenses
+.\extract_thirdparty_licenses.bat
+
+# build nuget package with version
+#create command 
+nuget pack -Build -OutputDirectory .\out .\src\Agravity.Public\Agravity.Public.csproj -Version $apiVersion
+
+# Set API Key (once)
+# nuget setApiKey xyz
+
+# prompt to publish
+Write-Host "Publish package in version $apiVersion? (y/n)"
+$publish = Read-Host
+
+# check if publish
+if ($publish -eq "y") {
+    # publish nuget package
+    dotnet nuget push .\out\Agravity.Public."$apiVersion".nupkg -s https://api.nuget.org/v3/index.json
+}
