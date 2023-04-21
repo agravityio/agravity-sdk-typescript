@@ -194,7 +194,7 @@ export class SearchManagementService {
      * @param collectionid Limits the result on collection id (and siblings). Will be overwritten by collectiontypeid parameter.
      * @param mode Two modes supported: \&quot;any\&quot; or \&quot;all\&quot; search terms should be applied. (Only if Azure Search is enabled)
      * @param expose This will expose the thumbnail asset blob incl. URL with SAS Token.
-     * @param filter Colon separated key value filter for filterable strings and string collections. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled)
+     * @param filter Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled)
      * @param orderby Sortable fields can be used. For descendant sorting use leading \&quot;!\&quot;. (Only if Azure Search is enabled)
      * @param ids Comma separated values list with all ids which should be returned.
      * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
