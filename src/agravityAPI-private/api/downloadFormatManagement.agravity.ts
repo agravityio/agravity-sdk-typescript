@@ -209,13 +209,20 @@ export class DownloadFormatManagementService {
 
     /**
      * This endpoint lists all download formats in database.
+     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public httpDownloadFormatsGetAll(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<DownloadFormat>>;
-    public httpDownloadFormatsGetAll(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<DownloadFormat>>>;
-    public httpDownloadFormatsGetAll(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<DownloadFormat>>>;
-    public httpDownloadFormatsGetAll(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public httpDownloadFormatsGetAll(translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<DownloadFormat>>;
+    public httpDownloadFormatsGetAll(translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<DownloadFormat>>>;
+    public httpDownloadFormatsGetAll(translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<DownloadFormat>>>;
+    public httpDownloadFormatsGetAll(translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (translations !== undefined && translations !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>translations, 'translations');
+        }
 
         let headers = this.defaultHeaders;
 
@@ -246,6 +253,141 @@ export class DownloadFormatManagementService {
 
         return this.httpClient.get<Array<DownloadFormat>>(`${this.configuration.basePath}/downloadformats`,
             {
+                params: queryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * This endpoint get a single download format.
+     * @param id The ID of the download format.
+     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public httpDownloadFormatsGetById(id: string, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
+    public httpDownloadFormatsGetById(id: string, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
+    public httpDownloadFormatsGetById(id: string, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
+    public httpDownloadFormatsGetById(id: string, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling httpDownloadFormatsGetById.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (translations !== undefined && translations !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>translations, 'translations');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (msal_auth) required
+        credential = this.configuration.lookupCredential('msal_auth');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType_: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType_ = 'text';
+        }
+
+        return this.httpClient.get<any>(`${this.configuration.basePath}/downloadformats/${encodeURIComponent(String(id))}`,
+            {
+                params: queryParameters,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * This endpoint updates a download format entry in the database.
+     * @param id The ID of the download format.
+     * @param downloadFormat This endpoint updates a download format with ID and adds the information to the database.
+     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public httpDownloadFormatsUpdateWithId(id: string, downloadFormat: DownloadFormat, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<DownloadFormat>;
+    public httpDownloadFormatsUpdateWithId(id: string, downloadFormat: DownloadFormat, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<DownloadFormat>>;
+    public httpDownloadFormatsUpdateWithId(id: string, downloadFormat: DownloadFormat, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<DownloadFormat>>;
+    public httpDownloadFormatsUpdateWithId(id: string, downloadFormat: DownloadFormat, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling httpDownloadFormatsUpdateWithId.');
+        }
+        if (downloadFormat === null || downloadFormat === undefined) {
+            throw new Error('Required parameter downloadFormat was null or undefined when calling httpDownloadFormatsUpdateWithId.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (translations !== undefined && translations !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>translations, 'translations');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (msal_auth) required
+        credential = this.configuration.lookupCredential('msal_auth');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType_ = 'text';
+        }
+
+        return this.httpClient.post<DownloadFormat>(`${this.configuration.basePath}/downloadformats/${encodeURIComponent(String(id))}`,
+            downloadFormat,
+            {
+                params: queryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
