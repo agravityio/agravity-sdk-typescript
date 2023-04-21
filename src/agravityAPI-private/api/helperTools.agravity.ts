@@ -143,7 +143,7 @@ export class HelperToolsService {
 
     /**
      * This endpoint creates an excel export of the db
-     * @param filter Used to specify only certain collection types for exporting. When providing multiple collection types separate their ids with ,
+     * @param filter Used to specify what to be retured. Valid values are: asset, workspace, collection_type and/or only certain collection types (IDs) for exporting. When providing multiple values separate it with comma (\&#39;,\&#39;).
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
