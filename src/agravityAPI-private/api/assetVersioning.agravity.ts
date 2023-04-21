@@ -146,7 +146,7 @@ export class AssetVersioningService {
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
+            //headers = headers.set('Content-Type', httpContentTypeSelected);
         }
 
         let responseType_: 'text' | 'json' = 'json';
