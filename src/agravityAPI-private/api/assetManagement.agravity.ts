@@ -229,7 +229,7 @@ export class AssetManagementService {
                 headers: headers,
                 observe: observe,
                 reportProgress: reportProgress,
-                body: assetBulkUpdate,
+                body: assetBulkUpdate
             }
         );
     }

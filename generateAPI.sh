@@ -31,7 +31,7 @@ replace_in_files  "add_properties?: { [key: string]: object; };" "add_properties
 # replace_in_files "'image/xyz' | 'application/json'}): Observable<HttpResponse<string>>;" "'image/xyz'}): Observable<HttpResponse<Blob>>;"
 # replace_in_files "'image/xyz' | 'application/json'}): Observable<HttpEvent<string>>;" "'image/xyz'}): Observable<HttpEvent<Blob>>;"
 
-replace_in_file "headers = headers.set('Content-Type', httpContentTypeSelected);" "//headers = headers.set('Content-Type', httpContentTypeSelected);" "src/agravityAPI-private/api/assetVersioning.agravity.ts" "125,145"
+replace_in_file "headers = headers.set('Content-Type', httpContentTypeSelected);" "//headers = headers.set('Content-Type', httpContentTypeSelected);" "src/agravityAPI-private/api/assetVersioning.agravity.ts" "125,160"
 replace_in_file "headers = headers.set('Content-Type', httpContentTypeSelected);" "//headers = headers.set('Content-Type', httpContentTypeSelected);" "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts" "200,220"
 
 #linenr=$(awk '/\}\/imageedit/{ print NR; exit }' "v4\agravityAPI-private\api\assetOperations.agravity.ts")

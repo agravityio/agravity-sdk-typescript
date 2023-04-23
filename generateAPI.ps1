@@ -1,5 +1,5 @@
 # check REST API endpoint /version if backend is running, catch it and if it is not running: exit
-$version = Invoke-RestMethod -Uri http://localhost:7072/api/version -Method Get -ContentType "application/json" -ErrorAction SilentlyContinue
+$version = (Invoke-RestMethod -Uri http://localhost:7072/api/version -Method Get -ContentType "application/json" -ErrorAction SilentlyContinue).version
 if ($null -eq $version) {
     Write-Host "Please start backend before generating API"
     exit
@@ -7,6 +7,10 @@ if ($null -eq $version) {
 
 # echo apiVersion
 Write-Host "Generate API with apiVersion: $version"
+
+# wait for user input
+Write-Host "Press any key to continue ..."
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
 # delete folder .\src without error output
 Remove-Item -Path .\src -Recurse -Force -ErrorAction SilentlyContinue
@@ -17,61 +21,65 @@ npx @openapitools/openapi-generator-cli generate -i http://localhost:7071/api/op
 $params="apiModulePrefix=AgravityPublic,configurationPrefix=AgravityPublic,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=14.0.0"
 npx @openapitools/openapi-generator-cli generate -i http://localhost:7072/api/openapi/v3.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
 
-#change directory to src
-Set-Location .\src
-# replace all "Dictionary>" with "Dictionary<string, object>>"
-Get-ChildItem -Recurse -File | ForEach-Object { (Get-Content $_.FullName) -replace "Dictionary>", "Dictionary<string, object>>" | Set-Content $_.FullName }
+Write-Host "Generate complete"
 
-# replace all "Dictionary<string, Object>" with "Dictionary<string, object>"
-Get-ChildItem -Recurse -File | ForEach-Object { (Get-Content $_.FullName) -replace "Dictionary<string, Object>", "Dictionary<string, object>" | Set-Content $_.FullName }
+function Replace-StringInFiles {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true, Position=0)]
+        [string]$FolderPath,
+        [Parameter(Mandatory=$true, Position=1)]
+        [string]$SearchString,
+        [Parameter(Mandatory=$true, Position=2)]
+        [string]$ReplaceString
+    )
 
-#replace all "Dictionary&gt;" with "Dictionary&lt;string, object&gt;&gt;"
-Get-ChildItem -Recurse -File | ForEach-Object { (Get-Content $_.FullName) -replace "Dictionary&gt;", "Dictionary&lt;string, object&gt;&gt;" | Set-Content $_.FullName }
-
-# go one directory up
-Set-Location ..
-
-# git discard all neccessary files
-
-# git discard files
-git checkout -- .\.gitignore
-git checkout -- .\generateAPI.ps1
-git checkout -- .\Agravity.Public.sln
-git checkout -- .\extract_thirdparty_licenses.bat
-git checkout -- .\icon.png
-git checkout -- .\nuget.exe
-git checkout -- .\openapitools.json
-git checkout -- .\src\Agravity.Public\Agravity.Public.nuspec
-git checkout -- .\src\Agravity.Public\Agravity.Public.csproj
-git checkout -- .\src\Agravity.Public\THIRD-PARTY-NOTICES.TXT
-
-#replace old version with new version in csproj file
-$csproj = Get-Content .\src\Agravity.Public\Agravity.Public.csproj
-$csproj = $csproj -replace "<Version>.*</Version>", "<Version>$apiVersion</Version>"
-$csproj | Set-Content .\src\Agravity.Public\Agravity.Public.csproj
-
-# echo apiVersion
-Write-Host "Build and Publish with apiVersion: $apiVersion"
-
-# build project with release
-dotnet build .\src\Agravity.Public\Agravity.Public.csproj -c Release
-
-# execute extract third party licenses
-.\extract_thirdparty_licenses.bat
-
-# build nuget package with version
-#create command 
-nuget pack -Build -OutputDirectory .\out .\src\Agravity.Public\Agravity.Public.csproj -Version $apiVersion
-
-# Set API Key (once)
-# nuget setApiKey xyz
-
-# prompt to publish
-Write-Host "Publish package in version $apiVersion? (y/n)"
-$publish = Read-Host
-
-# check if publish
-if ($publish -eq "y") {
-    # publish nuget package
-    dotnet nuget push .\out\Agravity.Public."$apiVersion".nupkg -s https://api.nuget.org/v3/index.json
+    Get-ChildItem -Path $FolderPath -Recurse |
+    ForEach-Object {
+        if (-not $_.PSIsContainer) {
+            $content = Get-Content $_.FullName -Raw
+            if ($content -match $SearchString) {
+                $content = $content -replace $SearchString, $ReplaceString
+                Set-Content $_.FullName -Value $content -NoNewline
+            }
+        }
+    }
 }
+
+
+Replace-StringInFiles -FolderPath "src" -SearchString "add_properties\?: \{ \[key: string\]: object; \};" -ReplaceString "add_properties?: { [key: string]: any; };"
+Write-Host "Replace add_properties complete"
+Replace-StringInFiles -FolderPath "src" -SearchString "default_value\?: object;" -ReplaceString "default_value?: any;"
+Write-Host "Replace default_value complete"
+Replace-StringInFiles -FolderPath "src" -SearchString "custom\?: \{ \[key: string\]: object; \};" -ReplaceString "custom?: any;"
+Write-Host "Replace custom complete"
+Replace-StringInFiles -FolderPath "src" -SearchString "ai\?: object;" -ReplaceString "ai?: any;"
+Write-Host "Replace ai complete"
+
+
+# add line in file src\agravityAPI-private\api\assetManagement.agravity.ts after line 482
+$fileContent = Get-Content "src\agravityAPI-private\api\assetManagement.agravity.ts"
+$fileContent[230] = $fileContent[230] + ",`n" + "                body: assetBulkUpdate"
+# write file
+$fileContent | Set-Content "src\agravityAPI-private\api\assetManagement.agravity.ts"
+
+Write-Host "Add line in file src\agravityAPI-private\api\assetManagement.agravity.ts after line 482 complete"
+
+
+$fileContent = Get-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
+$fileContent[148] = "            // headers = headers.set('Content-Type', httpContentTypeSelected);"
+# write file
+$fileContent | Set-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
+
+Write-Host "Remove line in file src\agravityAPI-private\api\assetVersioning.agravity.ts after line 150 complete"
+
+
+$fileContent = Get-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
+$fileContent[207] = "            // headers = headers.set('Content-Type', httpContentTypeSelected);"
+# write file
+$fileContent | Set-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
+
+Write-Host "Remove line in file src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts after line 150 complete"
+
+
+Get-ChildItem -Path "src" -Recurse -File | ForEach-Object {(Get-Content $_.FullName -Raw) -replace "`r`n", "`n" | Set-Content $_.FullName -NoNewline }
