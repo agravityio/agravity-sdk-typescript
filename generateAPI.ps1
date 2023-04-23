@@ -86,7 +86,9 @@ $fileContent | Set-Content "src\agravityAPI-public\api\publicCollectionSecureUpl
 Write-Host "Remove line in file src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts after line 150 complete"
 
 
-Get-ChildItem -Path "src" -Recurse -File | ForEach-Object {(Get-Content $_.FullName -Raw) -replace "`r`n", "`n" | Set-Content $_.FullName -NoNewline }
+Replace-StringInFiles -FolderPath "src" -SearchString "`r`n" -ReplaceString "`n"
+
+# Get-ChildItem -Path "src" -Recurse -File | ForEach-Object {(Get-Content $_.FullName -Raw) -replace ,  | Set-Content $_.FullName -NoNewline }
 
 
 ######################### ASK FOR COPY SRC FILES TO AGRVITY-ANGULAR-APP #########################
