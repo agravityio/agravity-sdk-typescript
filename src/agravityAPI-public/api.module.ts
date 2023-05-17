@@ -18,11 +18,11 @@ import { PublicHelperToolsService } from './api/publicHelperTools.pub.agravity';
 import { PublicPublishingService } from './api/publicPublishing.pub.agravity';
 import { PublicSavedSearchService } from './api/publicSavedSearch.pub.agravity';
 import { PublicSearchManagementService } from './api/publicSearchManagement.pub.agravity';
+import { PublicSignalRConnectionManagementService } from './api/publicSignalRConnectionManagement.pub.agravity';
 import { PublicStaticDefinedListManagementService } from './api/publicStaticDefinedListManagement.pub.agravity';
 import { PublicTranslationManagementService } from './api/publicTranslationManagement.pub.agravity';
 import { PublicWebAppDataService } from './api/publicWebAppData.pub.agravity';
 import { PublicWorkspaceManagementService } from './api/publicWorkspaceManagement.pub.agravity';
-import { SignalRConnectionManagementService } from './api/signalRConnectionManagement.pub.agravity';
 
 @NgModule({
   imports:      [],

@@ -19,11 +19,11 @@ api/publicHelperTools.pub.agravity.ts
 api/publicPublishing.pub.agravity.ts
 api/publicSavedSearch.pub.agravity.ts
 api/publicSearchManagement.pub.agravity.ts
+api/publicSignalRConnectionManagement.pub.agravity.ts
 api/publicStaticDefinedListManagement.pub.agravity.ts
 api/publicTranslationManagement.pub.agravity.ts
 api/publicWebAppData.pub.agravity.ts
 api/publicWorkspaceManagement.pub.agravity.ts
-api/signalRConnectionManagement.pub.agravity.ts
 configuration.ts
 encoder.ts
 git_push.sh

@@ -27,7 +27,7 @@ import { AgravityPublicConfiguration }                                     from 
 @Injectable({
   providedIn: 'root'
 })
-export class SignalRConnectionManagementService {
+export class PublicSignalRConnectionManagementService {
 
     protected basePath = 'http://localhost:7072/api';
     public defaultHeaders = new HttpHeaders();
