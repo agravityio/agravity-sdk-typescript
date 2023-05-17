@@ -264,17 +264,16 @@ export class PublicAssetManagementService {
      * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
      * @param limit This number limits the page result of assets.
      * @param orderby How the return assets are sorted. Default is property: created_date (newest first).
-     * @param techdata This parameter will include the techdata property inside orig_blob.
      * @param filter This will limit the output on specific parameters which are separated by \&#39;:\&#39;, \&#39;!:\&#39;, \&#39;&gt;\&#39;, \&#39;&gt;&#x3D;\&#39;, \&#39;&lt;\&#39;, \&#39;&lt;&#x3D;\&#39;
      * @param items The items can be extended to fully filled items.
      * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public httpAssetsGet(collectionid?: string, fields?: string, expose?: boolean, continuationToken?: string, limit?: number, orderby?: string, techdata?: boolean, filter?: string, items?: boolean, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AssetPageResult>;
-    public httpAssetsGet(collectionid?: string, fields?: string, expose?: boolean, continuationToken?: string, limit?: number, orderby?: string, techdata?: boolean, filter?: string, items?: boolean, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AssetPageResult>>;
-    public httpAssetsGet(collectionid?: string, fields?: string, expose?: boolean, continuationToken?: string, limit?: number, orderby?: string, techdata?: boolean, filter?: string, items?: boolean, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AssetPageResult>>;
-    public httpAssetsGet(collectionid?: string, fields?: string, expose?: boolean, continuationToken?: string, limit?: number, orderby?: string, techdata?: boolean, filter?: string, items?: boolean, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public httpAssetsGet(collectionid?: string, fields?: string, expose?: boolean, continuationToken?: string, limit?: number, orderby?: string, filter?: string, items?: boolean, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AssetPageResult>;
+    public httpAssetsGet(collectionid?: string, fields?: string, expose?: boolean, continuationToken?: string, limit?: number, orderby?: string, filter?: string, items?: boolean, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AssetPageResult>>;
+    public httpAssetsGet(collectionid?: string, fields?: string, expose?: boolean, continuationToken?: string, limit?: number, orderby?: string, filter?: string, items?: boolean, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AssetPageResult>>;
+    public httpAssetsGet(collectionid?: string, fields?: string, expose?: boolean, continuationToken?: string, limit?: number, orderby?: string, filter?: string, items?: boolean, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
         if (collectionid !== undefined && collectionid !== null) {
@@ -300,10 +299,6 @@ export class PublicAssetManagementService {
         if (orderby !== undefined && orderby !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
             <any>orderby, 'orderby');
-        }
-        if (techdata !== undefined && techdata !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>techdata, 'techdata');
         }
         if (filter !== undefined && filter !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
@@ -362,14 +357,15 @@ export class PublicAssetManagementService {
      * @param id The ID of the asset.
      * @param fields Which fields are need to be filled out with comma separated. If one is set all non mandatory fields are left out. No validation if field exist.
      * @param expose This indicates if the given blobs should have URLs where these can be requested. It will expose placeholder blobs if no \&#39;thumbnail\&#39; is found.
+     * @param techdata This parameter will include the techdata property inside orig_blob.
      * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public httpAssetsGetById(id: string, fields?: string, expose?: boolean, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Asset>;
-    public httpAssetsGetById(id: string, fields?: string, expose?: boolean, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Asset>>;
-    public httpAssetsGetById(id: string, fields?: string, expose?: boolean, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Asset>>;
-    public httpAssetsGetById(id: string, fields?: string, expose?: boolean, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public httpAssetsGetById(id: string, fields?: string, expose?: boolean, techdata?: boolean, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Asset>;
+    public httpAssetsGetById(id: string, fields?: string, expose?: boolean, techdata?: boolean, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Asset>>;
+    public httpAssetsGetById(id: string, fields?: string, expose?: boolean, techdata?: boolean, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Asset>>;
+    public httpAssetsGetById(id: string, fields?: string, expose?: boolean, techdata?: boolean, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling httpAssetsGetById.');
         }
@@ -382,6 +378,10 @@ export class PublicAssetManagementService {
         if (expose !== undefined && expose !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
             <any>expose, 'expose');
+        }
+        if (techdata !== undefined && techdata !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>techdata, 'techdata');
         }
         if (translations !== undefined && translations !== null) {
           queryParameters = this.addToHttpParams(queryParameters,
