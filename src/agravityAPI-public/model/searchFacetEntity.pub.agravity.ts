@@ -13,7 +13,7 @@
 
 export interface SearchFacetEntity { 
     count?: number | null;
-    value?: string;
-    name?: string;
+    value?: string | null;
+    name?: string | null;
 }
 

@@ -13,17 +13,17 @@ import { SharedAsset } from './sharedAsset.agravity';
 
 
 export interface SharedCollectionFull { 
-    page?: Array<SharedAsset>;
-    page_size?: number;
+    page?: Array<SharedAsset> | null;
+    page_size?: number | null;
     size?: number | null;
-    continuation_token?: string;
-    id?: string;
-    collection_id?: string;
-    created_date?: string;
-    url?: string;
-    valid_until?: string;
-    valid_for?: string;
-    message?: string;
-    global?: boolean;
+    continuation_token?: string | null;
+    id?: string | null;
+    collection_id?: string | null;
+    created_date?: string | null;
+    url?: string | null;
+    valid_until?: string | null;
+    valid_for?: string | null;
+    message?: string | null;
+    global?: boolean | null;
 }
 

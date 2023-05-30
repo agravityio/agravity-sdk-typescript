@@ -15,9 +15,9 @@ import { AzSearchOptions } from './azSearchOptions.agravity';
 
 
 export interface SearchResult { 
-    data_result?: DataResult;
-    options?: AzSearchOptions;
-    facets?: Array<SearchFacet>;
+    data_result?: DataResult | null;
+    options?: AzSearchOptions | null;
+    facets?: Array<SearchFacet> | null;
     count?: number | null;
 }
 

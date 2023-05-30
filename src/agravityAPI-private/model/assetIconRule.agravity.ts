@@ -12,24 +12,24 @@
 
 
 export interface AssetIconRule { 
-    id?: string;
-    entity_type?: string;
-    type?: string;
-    path?: string;
-    color?: string;
-    value?: string;
-    icon?: string;
-    operator?: string;
-    translations?: { [key: string]: { [key: string]: object; }; };
-    name?: string;
-    description?: string;
-    add_properties?: { [key: string]: any; };
-    status?: string;
+    id?: string | null;
+    entity_type?: string | null;
+    type?: string | null;
+    path?: string | null;
+    color?: string | null;
+    value?: string | null;
+    icon?: string | null;
+    operator?: string | null;
+    translations?: { [key: string]: { [key: string]: object; }; } | null;
+    name?: string | null;
+    description?: string | null;
+    add_properties?: { [key: string]: object; } | null;
+    status?: string | null;
     created_date?: string | null;
-    created_by?: string;
+    created_by?: string | null;
     modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+    modified_by?: string | null;
+    pk?: string | null;
+    _etag?: string | null;
 }
 

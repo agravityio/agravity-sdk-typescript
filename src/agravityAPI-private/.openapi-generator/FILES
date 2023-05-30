@@ -23,6 +23,7 @@ api/listBlobs.agravity.ts
 api/listQueues.agravity.ts
 api/permissionsManagement.agravity.ts
 api/publishing.agravity.ts
+api/quickshareManagement.agravity.ts
 api/savedSearchManagement.agravity.ts
 api/searchManagement.agravity.ts
 api/secureUpload.agravity.ts
@@ -53,6 +54,7 @@ model/assetBlob.agravity.ts
 model/assetBulkUpdate.agravity.ts
 model/assetCollectionLink.agravity.ts
 model/assetIconRule.agravity.ts
+model/assetIdContainer.agravity.ts
 model/assetPageResult.agravity.ts
 model/assetsOperationBody.agravity.ts
 model/azSearchOptions.agravity.ts
@@ -84,6 +86,7 @@ model/permissionChange.agravity.ts
 model/permissionSetting.agravity.ts
 model/publishEntity.agravity.ts
 model/publishedAsset.agravity.ts
+model/quickShare.agravity.ts
 model/sasToken.agravity.ts
 model/savedSearch.agravity.ts
 model/searchAdminDataSourceStatus.agravity.ts

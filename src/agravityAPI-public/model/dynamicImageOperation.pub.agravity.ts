@@ -12,7 +12,7 @@
 
 
 export interface DynamicImageOperation { 
-    operation?: string;
-    params?: Array<object>;
+    operation?: string | null;
+    params?: Array<object> | null;
 }
 

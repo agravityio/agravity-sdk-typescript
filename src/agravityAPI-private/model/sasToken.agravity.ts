@@ -12,11 +12,11 @@
 
 
 export interface SasToken { 
-    token?: string;
-    container?: string;
-    blob?: string;
-    url?: string;
-    fulltoken?: string;
-    expires?: string;
+    token?: string | null;
+    container?: string | null;
+    blob?: string | null;
+    url?: string | null;
+    fulltoken?: string | null;
+    expires?: string | null;
 }
 

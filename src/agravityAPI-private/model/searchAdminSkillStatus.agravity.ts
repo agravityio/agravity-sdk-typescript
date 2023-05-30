@@ -12,7 +12,7 @@
 
 
 export interface SearchAdminSkillStatus { 
-    name?: string;
-    skills?: Array<string>;
+    name?: string | null;
+    skills?: Array<string> | null;
 }
 

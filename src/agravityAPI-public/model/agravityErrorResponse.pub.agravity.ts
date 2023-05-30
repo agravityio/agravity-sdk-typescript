@@ -12,8 +12,8 @@
 
 
 export interface AgravityErrorResponse { 
-    error_id?: string;
-    error_message?: string;
-    exception?: string;
+    error_id?: string | null;
+    error_message?: string | null;
+    exception?: string | null;
 }
 

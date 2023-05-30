@@ -12,7 +12,7 @@
 
 
 export interface SignalRConnectionInfo { 
-    url?: string;
-    accessToken?: string;
+    url?: string | null;
+    accessToken?: string | null;
 }
 

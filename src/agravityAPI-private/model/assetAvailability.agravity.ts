@@ -12,7 +12,7 @@
 
 
 export interface AssetAvailability { 
-    availability?: string;
+    availability?: string | null;
     available_from?: string | null;
     available_to?: string | null;
 }

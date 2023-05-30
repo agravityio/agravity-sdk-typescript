@@ -13,16 +13,16 @@ import { VersionedAsset } from './versionedAsset.pub.agravity';
 
 
 export interface VersionEntity { 
-    id?: string;
-    entity_type?: string;
-    versions?: Array<VersionedAsset>;
-    region_of_origin?: string;
-    status?: string;
+    id?: string | null;
+    entity_type?: string | null;
+    versions?: Array<VersionedAsset> | null;
+    region_of_origin?: string | null;
+    status?: string | null;
     created_date?: string | null;
-    created_by?: string;
+    created_by?: string | null;
     modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+    modified_by?: string | null;
+    pk?: string | null;
+    _etag?: string | null;
 }
 

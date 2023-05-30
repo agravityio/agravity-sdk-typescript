@@ -16,9 +16,9 @@ import { PublishedAsset } from './publishedAsset.pub.agravity';
 
 export interface AllWebAppData { 
     root_collection?: Collection;
-    subcollections?: Array<Collection>;
-    assets?: Array<Asset>;
-    pub_assets?: Array<PublishedAsset>;
-    created_date?: string;
+    subcollections?: Array<Collection> | null;
+    assets?: Array<Asset> | null;
+    pub_assets?: Array<PublishedAsset> | null;
+    created_date?: string | null;
 }
 

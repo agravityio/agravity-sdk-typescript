@@ -12,7 +12,7 @@
 
 
 export interface EntityTranslations { 
-    id?: string;
-    translations?: { [key: string]: { [key: string]: object; }; };
+    id?: string | null;
+    translations?: { [key: string]: { [key: string]: object; }; } | null;
 }
 

@@ -12,13 +12,13 @@
 
 
 export interface AgravityVersion { 
-    name?: string;
-    company?: string;
-    customer?: string;
-    updated?: string;
-    client_id?: string;
-    version?: string;
-    permission_enabled?: boolean;
-    region?: string;
+    name?: string | null;
+    company?: string | null;
+    customer?: string | null;
+    updated?: string | null;
+    client_id?: string | null;
+    version?: string | null;
+    permission_enabled?: boolean | null;
+    region?: string | null;
 }
 

@@ -12,9 +12,9 @@
 
 
 export interface ArtificialIntelligenceGroup { 
-    origin?: string;
-    url?: string;
+    origin?: string | null;
+    url?: string | null;
     min_confidence?: number | null;
-    values?: Array<{ [key: string]: object; }>;
+    values?: Array<{ [key: string]: object; }> | null;
 }
 

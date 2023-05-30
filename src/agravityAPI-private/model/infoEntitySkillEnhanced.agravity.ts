@@ -12,14 +12,14 @@
 
 
 export interface InfoEntitySkillEnhanced { 
-    collection_names?: Array<string>;
-    collection_descs?: Array<string>;
-    udl_coll_ids?: Array<string>;
-    translation_values?: Array<string>;
-    collectiontypeids?: Array<string>;
-    allcustom?: any;
-    custom_values?: Array<string>;
-    perm_groups?: Array<string>;
-    fulltext?: string;
+    collection_names?: Array<string> | null;
+    collection_descs?: Array<string> | null;
+    udl_coll_ids?: Array<string> | null;
+    translation_values?: Array<string> | null;
+    collectiontypeids?: Array<string> | null;
+    allcustom?: { [key: string]: object; } | null;
+    custom_values?: Array<string> | null;
+    perm_groups?: Array<string> | null;
+    fulltext?: string | null;
 }
 

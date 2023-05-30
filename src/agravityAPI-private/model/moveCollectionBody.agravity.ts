@@ -12,8 +12,8 @@
 
 
 export interface MoveCollectionBody { 
-    from_collection_id?: string;
-    to_collection_id?: string;
-    operation?: string;
+    from_collection_id?: string | null;
+    to_collection_id?: string | null;
+    operation?: string | null;
 }
 

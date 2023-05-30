@@ -12,15 +12,15 @@
 
 
 export interface SimpleAsset { 
-    id?: string;
-    name?: string;
-    original_name?: string;
-    format?: string;
-    size?: string;
-    asset_type?: string;
-    extension?: string;
-    status?: string;
-    _etag?: string;
-    failed_reason?: string;
+    id?: string | null;
+    name?: string | null;
+    original_name?: string | null;
+    format?: string | null;
+    size?: string | null;
+    asset_type?: string | null;
+    extension?: string | null;
+    status?: string | null;
+    _etag?: string | null;
+    failed_reason?: string | null;
 }
 
