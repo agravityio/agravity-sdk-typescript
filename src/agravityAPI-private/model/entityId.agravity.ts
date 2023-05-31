@@ -12,6 +12,6 @@
 
 
 export interface EntityId { 
-    id?: string | null;
+    id?: string;
 }
 

@@ -12,7 +12,7 @@
 
 
 export interface PermissionChange { 
-    ids?: Array<string> | null;
+    ids?: Array<string>;
     modify?: PermissionChange.ModifyEnum;
 }
 export namespace PermissionChange {

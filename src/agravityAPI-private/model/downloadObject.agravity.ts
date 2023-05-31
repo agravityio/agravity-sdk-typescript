@@ -14,19 +14,19 @@ import { SimpleAsset } from './simpleAsset.agravity';
 
 
 export interface DownloadObject { 
-    id?: string | null;
-    user_id?: string | null;
+    id?: string;
+    user_id?: string;
     email_from?: EmailAddress;
-    simple_assets?: Array<SimpleAsset> | null;
-    valid_for?: string | null;
-    watermarked?: boolean | null;
-    assets?: Array<string> | null;
-    format?: string | null;
-    valid_from?: string | null;
-    valid_until?: string | null;
-    email_to?: Array<EmailAddress> | null;
-    url?: string | null;
-    size?: string | null;
-    message?: string | null;
+    simple_assets?: Array<SimpleAsset>;
+    valid_for?: string;
+    watermarked?: boolean;
+    assets?: Array<string>;
+    format?: string;
+    valid_from?: string;
+    valid_until?: string;
+    email_to?: Array<EmailAddress>;
+    url?: string;
+    size?: string;
+    message?: string;
 }
 

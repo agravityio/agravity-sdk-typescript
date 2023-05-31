@@ -13,13 +13,13 @@ import { AssetBlob } from './assetBlob.pub.agravity';
 
 
 export interface SharedAsset { 
-    id?: string | null;
-    name?: string | null;
-    description?: string | null;
+    id?: string;
+    name?: string;
+    description?: string;
     created_date?: string | null;
     modified_date?: string | null;
-    asset_type?: string | null;
+    asset_type?: string;
     orig_blob?: AssetBlob;
-    blobs?: Array<AssetBlob> | null;
+    blobs?: Array<AssetBlob>;
 }
 

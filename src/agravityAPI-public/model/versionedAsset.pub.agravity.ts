@@ -12,9 +12,9 @@
 
 
 export interface VersionedAsset { 
-    version_nr?: number | null;
-    until_date?: string | null;
-    version_info?: string | null;
-    created_by?: string | null;
+    version_nr?: number;
+    until_date?: string;
+    version_info?: string;
+    created_by?: string;
 }
 

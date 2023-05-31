@@ -12,8 +12,8 @@
 
 
 export interface EntityIdName { 
-    name?: string | null;
-    translations?: { [key: string]: { [key: string]: object; }; } | null;
-    id?: string | null;
+    name?: string;
+    translations?: { [key: string]: { [key: string]: object; }; };
+    id?: string;
 }
 

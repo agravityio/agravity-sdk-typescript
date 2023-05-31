@@ -14,10 +14,10 @@ import { Asset } from './asset.agravity';
 
 
 export interface AssetPageResult { 
-    page?: Array<Asset> | null;
-    page_size?: number | null;
+    page?: Array<Asset>;
+    page_size?: number;
     size?: number | null;
-    continuation_token?: string | null;
-    filter?: Array<WhereParam> | null;
+    continuation_token?: string;
+    filter?: Array<WhereParam>;
 }
 

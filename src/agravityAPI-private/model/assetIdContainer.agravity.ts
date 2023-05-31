@@ -12,7 +12,7 @@
 
 
 export interface AssetIdContainer { 
-    id?: string | null;
-    container?: string | null;
+    id?: string;
+    container?: string;
 }
 

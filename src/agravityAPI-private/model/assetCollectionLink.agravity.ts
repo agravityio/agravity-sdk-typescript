@@ -12,7 +12,7 @@
 
 
 export interface AssetCollectionLink { 
-    asset_id?: string | null;
-    collection_id?: string | null;
+    asset_id?: string;
+    collection_id?: string;
 }
 

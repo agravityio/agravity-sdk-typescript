@@ -13,7 +13,7 @@ import { SearchFacetEntity } from './searchFacetEntity.agravity';
 
 
 export interface SearchFacet { 
-    name?: string | null;
-    entities?: Array<SearchFacetEntity> | null;
+    name?: string;
+    entities?: Array<SearchFacetEntity>;
 }
 

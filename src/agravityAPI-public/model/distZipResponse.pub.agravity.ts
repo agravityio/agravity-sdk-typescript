@@ -12,8 +12,8 @@
 
 
 export interface DistZipResponse { 
-    url?: string | null;
-    modified_date?: string | null;
-    size?: number | null;
+    url?: string;
+    modified_date?: string;
+    size?: number;
 }
 

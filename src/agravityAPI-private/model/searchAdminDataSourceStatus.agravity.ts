@@ -12,7 +12,7 @@
 
 
 export interface SearchAdminDataSourceStatus { 
-    name?: string | null;
-    status?: string | null;
+    name?: string;
+    status?: string;
 }
 

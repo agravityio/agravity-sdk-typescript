@@ -13,22 +13,22 @@ import { DynamicImageOperation } from './dynamicImageOperation.pub.agravity';
 
 
 export interface DownloadFormat { 
-    id?: string | null;
-    entity_type?: string | null;
-    operations?: Array<DynamicImageOperation> | null;
-    extension?: string | null;
-    asset_type?: string | null;
-    origin?: string | null;
-    translations?: { [key: string]: { [key: string]: object; }; } | null;
-    name?: string | null;
-    description?: string | null;
-    add_properties?: { [key: string]: object; } | null;
-    status?: string | null;
+    id?: string;
+    entity_type?: string;
+    operations?: Array<DynamicImageOperation>;
+    extension?: string;
+    asset_type?: string;
+    origin?: string;
+    translations?: { [key: string]: { [key: string]: object; }; };
+    name?: string;
+    description?: string;
+    add_properties?: { [key: string]: any; };
+    status?: string;
     created_date?: string | null;
-    created_by?: string | null;
+    created_by?: string;
     modified_date?: string | null;
-    modified_by?: string | null;
-    pk?: string | null;
-    _etag?: string | null;
+    modified_by?: string;
+    pk?: string;
+    _etag?: string;
 }
 

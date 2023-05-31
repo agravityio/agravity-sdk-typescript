@@ -12,14 +12,14 @@
 
 
 export interface PublishedAsset { 
-    id?: string | null;
-    name?: string | null;
-    description?: string | null;
-    usecases?: Array<string> | null;
-    created_date?: string | null;
-    url?: string | null;
-    cdn?: string | null;
-    format?: string | null;
-    properties?: { [key: string]: object; } | null;
+    id?: string;
+    name?: string;
+    description?: string;
+    usecases?: Array<string>;
+    created_date?: string;
+    url?: string;
+    cdn?: string;
+    format?: string;
+    properties?: { [key: string]: object; };
 }
 

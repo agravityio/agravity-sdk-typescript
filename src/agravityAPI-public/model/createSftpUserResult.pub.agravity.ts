@@ -12,7 +12,7 @@
 
 
 export interface CreateSftpUserResult { 
-    url?: string | null;
-    password?: string | null;
+    url?: string;
+    password?: string;
 }
 

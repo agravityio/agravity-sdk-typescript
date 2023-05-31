@@ -13,16 +13,16 @@ import { PublishedAsset } from './publishedAsset.agravity';
 
 
 export interface PublishEntity { 
-    id?: string | null;
-    entity_type?: string | null;
-    published?: Array<PublishedAsset> | null;
-    region_of_origin?: string | null;
-    status?: string | null;
+    id?: string;
+    entity_type?: string;
+    published?: Array<PublishedAsset>;
+    region_of_origin?: string;
+    status?: string;
     created_date?: string | null;
-    created_by?: string | null;
+    created_by?: string;
     modified_date?: string | null;
-    modified_by?: string | null;
-    pk?: string | null;
-    _etag?: string | null;
+    modified_by?: string;
+    pk?: string;
+    _etag?: string;
 }
 

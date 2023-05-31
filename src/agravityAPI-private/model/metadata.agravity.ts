@@ -12,8 +12,8 @@
 
 
 export interface Metadata { 
-    key?: string | null;
-    value?: string | null;
-    group?: string | null;
+    key?: string;
+    value?: string;
+    group?: string;
 }
 

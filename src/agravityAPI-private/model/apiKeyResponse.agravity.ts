@@ -12,7 +12,7 @@
 
 
 export interface ApiKeyResponse { 
-    id?: string | null;
-    api_key?: string | null;
+    id?: string;
+    api_key?: string;
 }
 

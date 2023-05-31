@@ -12,7 +12,7 @@
 
 
 export interface SearchAdminStatistics { 
-    documentcount?: number | null;
-    storagesizebytes?: number | null;
+    documentcount?: number;
+    storagesizebytes?: number;
 }
 

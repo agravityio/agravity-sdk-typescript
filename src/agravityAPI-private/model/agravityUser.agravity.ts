@@ -16,22 +16,22 @@ import { SharedCollection } from './sharedCollection.agravity';
 
 
 export interface AgravityUser { 
-    id?: string | null;
-    entity_type?: string | null;
-    downloads?: Array<DownloadObject> | null;
-    sharedcollections?: Array<SharedCollection> | null;
-    secureuploads?: Array<SecureUploadEntity> | null;
-    name?: string | null;
-    email?: string | null;
-    roles?: Array<string> | null;
-    groups?: Array<string> | null;
-    tutorials?: Array<UiTutorials> | null;
-    status?: string | null;
+    id?: string;
+    entity_type?: string;
+    downloads?: Array<DownloadObject>;
+    sharedcollections?: Array<SharedCollection>;
+    secureuploads?: Array<SecureUploadEntity>;
+    name?: string;
+    email?: string;
+    roles?: Array<string>;
+    groups?: Array<string>;
+    tutorials?: Array<UiTutorials>;
+    status?: string;
     created_date?: string | null;
-    created_by?: string | null;
+    created_by?: string;
     modified_date?: string | null;
-    modified_by?: string | null;
-    pk?: string | null;
-    _etag?: string | null;
+    modified_by?: string;
+    pk?: string;
+    _etag?: string;
 }
 

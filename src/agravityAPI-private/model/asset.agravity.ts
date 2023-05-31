@@ -15,33 +15,33 @@ import { ArtificialIntelligenceGroup } from './artificialIntelligenceGroup.agrav
 
 
 export interface Asset { 
-    id?: string | null;
-    entity_type?: string | null;
-    name?: string | null;
-    asset_type?: string | null;
-    duplicates?: Array<string> | null;
-    text_content?: string | null;
-    ai_groups?: Array<ArtificialIntelligenceGroup> | null;
-    keywords?: Array<string> | null;
+    id?: string;
+    entity_type?: string;
+    name?: string;
+    asset_type?: string;
+    duplicates?: Array<string>;
+    text_content?: string;
+    ai_groups?: Array<ArtificialIntelligenceGroup>;
+    keywords?: Array<string>;
     orig_blob?: AssetBlob;
-    blobs?: Array<AssetBlob> | null;
-    collections?: Array<string> | null;
-    failed_reason?: string | null;
-    region_of_origin?: string | null;
-    availability?: string | null;
+    blobs?: Array<AssetBlob>;
+    collections?: Array<string>;
+    failed_reason?: string;
+    region_of_origin?: string;
+    availability?: string;
     available_from?: string | null;
     available_to?: string | null;
-    custom?: { [key: string]: object; } | null;
-    items?: Array<CollTypeItem> | null;
-    translations?: { [key: string]: { [key: string]: object; }; } | null;
-    description?: string | null;
-    add_properties?: { [key: string]: object; } | null;
-    status?: string | null;
+    custom?: any;
+    items?: Array<CollTypeItem>;
+    translations?: { [key: string]: { [key: string]: object; }; };
+    description?: string;
+    add_properties?: { [key: string]: any; };
+    status?: string;
     created_date?: string | null;
-    created_by?: string | null;
+    created_by?: string;
     modified_date?: string | null;
-    modified_by?: string | null;
-    pk?: string | null;
-    _etag?: string | null;
+    modified_by?: string;
+    pk?: string;
+    _etag?: string;
 }
 

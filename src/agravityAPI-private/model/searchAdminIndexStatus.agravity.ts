@@ -13,8 +13,8 @@ import { SearchAdminStatistics } from './searchAdminStatistics.agravity';
 
 
 export interface SearchAdminIndexStatus { 
-    name?: string | null;
-    status?: string | null;
-    statistics?: SearchAdminStatistics | null;
+    name?: string;
+    status?: string;
+    statistics?: SearchAdminStatistics;
 }
 

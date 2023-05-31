@@ -13,13 +13,13 @@ import { EmailAddress } from './emailAddress.agravity';
 
 
 export interface DownloadZipRequest { 
-    assets?: Array<string> | null;
-    format?: string | null;
-    valid_from?: string | null;
-    valid_until?: string | null;
-    email_to?: Array<EmailAddress> | null;
-    url?: string | null;
-    size?: string | null;
-    message?: string | null;
+    assets?: Array<string>;
+    format?: string;
+    valid_from?: string;
+    valid_until?: string;
+    email_to?: Array<EmailAddress>;
+    url?: string;
+    size?: string;
+    message?: string;
 }
 

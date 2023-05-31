@@ -16,9 +16,9 @@ import { SearchAdminDataSourceStatus } from './searchAdminDataSourceStatus.agrav
 
 
 export interface SearchAdminStatus { 
-    index?: SearchAdminIndexStatus | null;
-    indexer?: SearchAdminIndexerStatus | null;
-    datasource?: SearchAdminDataSourceStatus | null;
-    skillsets?: Array<SearchAdminSkillStatus> | null;
+    index?: SearchAdminIndexStatus;
+    indexer?: SearchAdminIndexerStatus;
+    datasource?: SearchAdminDataSourceStatus;
+    skillsets?: Array<SearchAdminSkillStatus>;
 }
 

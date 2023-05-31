@@ -13,8 +13,8 @@ import { Asset } from './asset.agravity';
 
 
 export interface AssetBulkUpdate { 
-    collection_id?: string | null;
+    collection_id?: string;
     ref_asset?: Asset;
-    asset_ids?: Array<string> | null;
+    asset_ids?: Array<string>;
 }
 
