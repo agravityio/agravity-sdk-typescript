@@ -87,6 +87,7 @@ model/permissionSetting.agravity.ts
 model/publishEntity.agravity.ts
 model/publishedAsset.agravity.ts
 model/quickShare.agravity.ts
+model/quickShareFull.agravity.ts
 model/sasToken.agravity.ts
 model/savedSearch.agravity.ts
 model/searchAdminDataSourceStatus.agravity.ts

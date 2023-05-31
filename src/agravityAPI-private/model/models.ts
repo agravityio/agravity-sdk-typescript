@@ -44,6 +44,7 @@ export * from './permissionSetting.agravity';
 export * from './publishEntity.agravity';
 export * from './publishedAsset.agravity';
 export * from './quickShare.agravity';
+export * from './quickShareFull.agravity';
 export * from './sasToken.agravity';
 export * from './savedSearch.agravity';
 export * from './searchAdminDataSourceStatus.agravity';

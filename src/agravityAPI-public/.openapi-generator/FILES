@@ -10,7 +10,6 @@ api/publicAssetVersioning.pub.agravity.ts
 api/publicAuthenticationManagement.pub.agravity.ts
 api/publicCollectionManagement.pub.agravity.ts
 api/publicCollectionSecureUpload.pub.agravity.ts
-api/publicCollectionSharing.pub.agravity.ts
 api/publicCollectionTypeManagement.pub.agravity.ts
 api/publicConfigurationManagement.pub.agravity.ts
 api/publicDownloadFormatManagement.pub.agravity.ts
@@ -19,6 +18,7 @@ api/publicHelperTools.pub.agravity.ts
 api/publicPublishing.pub.agravity.ts
 api/publicSavedSearch.pub.agravity.ts
 api/publicSearchManagement.pub.agravity.ts
+api/publicSharingManagement.pub.agravity.ts
 api/publicSignalRConnectionManagement.pub.agravity.ts
 api/publicStaticDefinedListManagement.pub.agravity.ts
 api/publicTranslationManagement.pub.agravity.ts
@@ -34,6 +34,7 @@ model/allWebAppData.pub.agravity.ts
 model/artificialIntelligenceGroup.pub.agravity.ts
 model/asset.pub.agravity.ts
 model/assetBlob.pub.agravity.ts
+model/assetIdContainer.pub.agravity.ts
 model/assetPageResult.pub.agravity.ts
 model/azSearchOptions.pub.agravity.ts
 model/badRequestResult.pub.agravity.ts
@@ -55,6 +56,7 @@ model/models.ts
 model/okResult.pub.agravity.ts
 model/publishEntity.pub.agravity.ts
 model/publishedAsset.pub.agravity.ts
+model/quickShareFull.pub.agravity.ts
 model/sasToken.pub.agravity.ts
 model/savedSearch.pub.agravity.ts
 model/searchFacet.pub.agravity.ts
