@@ -33,6 +33,7 @@ model/agravityVersion.pub.agravity.ts
 model/allWebAppData.pub.agravity.ts
 model/artificialIntelligenceGroup.pub.agravity.ts
 model/asset.pub.agravity.ts
+model/assetAvailability.pub.agravity.ts
 model/assetBlob.pub.agravity.ts
 model/assetIdContainer.pub.agravity.ts
 model/assetPageResult.pub.agravity.ts

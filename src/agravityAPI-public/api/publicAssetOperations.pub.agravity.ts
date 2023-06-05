@@ -18,6 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
+import { AssetAvailability } from '../model/models';
 import { AssetBlob } from '../model/models';
 import { Collection } from '../model/models';
 import { DynamicImageOperation } from '../model/models';
@@ -555,6 +556,72 @@ export class PublicAssetOperationsService {
         return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/imageedit/${encodeURIComponent(String(downloadFormatId))}`,
             {
                 responseType: "blob",
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * This endpoint sets the availability of the asset. All properties are put on the asset and replace previous values.To make an asset unavailable set the &#x60;availability&#x60; property to \&#39;locked\&#39; or set the &#x60;available_from&#x60; property below the current date. To make it available set empty string to &#x60;availability&#x60; property or &#x60;available_to&#x60; property into past.
+     * @param id The ID of the asset.
+     * @param assetAvailability The values are validated and put directly on the asset.
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public httpPutAssetAvailability(id: string, assetAvailability: AssetAvailability, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AssetAvailability>;
+    public httpPutAssetAvailability(id: string, assetAvailability: AssetAvailability, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AssetAvailability>>;
+    public httpPutAssetAvailability(id: string, assetAvailability: AssetAvailability, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AssetAvailability>>;
+    public httpPutAssetAvailability(id: string, assetAvailability: AssetAvailability, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling httpPutAssetAvailability.');
+        }
+        if (assetAvailability === null || assetAvailability === undefined) {
+            throw new Error('Required parameter assetAvailability was null or undefined when calling httpPutAssetAvailability.');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (function_key) required
+        credential = this.configuration.lookupCredential('function_key');
+        if (credential) {
+            headers = headers.set('x-functions-key', credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType_ = 'text';
+        }
+
+        return this.httpClient.put<AssetAvailability>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/availability`,
+            assetAvailability,
+            {
+                responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,
                 observe: observe,

@@ -1241,7 +1241,7 @@ export class AssetOperationsService {
     }
 
     /**
-     * This endpoint sets the availability of the asset. All properties are put on the asset and replace previous values.
+     * This endpoint sets the availability of the asset. All properties are put on the asset and replace previous values.To make an asset unavailable set the &#x60;availability&#x60; property to \&#39;locked\&#39; or set the &#x60;available_from&#x60; property below the current date. To make it available set empty string to &#x60;availability&#x60; property or &#x60;available_to&#x60; property into past.
      * @param id The ID of the asset.
      * @param assetAvailability The values are validated and put directly on the asset.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

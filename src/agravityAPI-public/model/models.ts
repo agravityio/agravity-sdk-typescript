@@ -3,6 +3,7 @@ export * from './agravityVersion.pub.agravity';
 export * from './allWebAppData.pub.agravity';
 export * from './artificialIntelligenceGroup.pub.agravity';
 export * from './asset.pub.agravity';
+export * from './assetAvailability.pub.agravity';
 export * from './assetBlob.pub.agravity';
 export * from './assetIdContainer.pub.agravity';
 export * from './assetPageResult.pub.agravity';
