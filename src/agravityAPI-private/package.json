@@ -1,0 +1,29 @@
+{
+    "name": "@agravity/private",
+    "version": "5.2.0",
+    "description": "The Agravity GlobalDAM API which allowes authenticated user to access the Agravity GlobalDAM Backend",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 0"
+    },
+    "author": "Philipp Losbichler",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/agravityio/agravity-sdk-typescript"
+    },
+    "keywords": [
+        "agravity",
+        "dam",
+        "globaldam",
+        "apifirst",
+        "api",
+        "sdk",
+        "typescript",
+        "private"
+    ],
+    "publishConfig": {
+        "access": "public"
+    }
+}
