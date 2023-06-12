@@ -9,8 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { EntityId } from './entityId.agravity';
 import { CollTypeItem } from './collTypeItem.agravity';
+import { PermissionEntity } from './permissionEntity.agravity';
 
 
 export interface CollectionType { 
@@ -20,7 +20,7 @@ export interface CollectionType {
     items?: Array<CollTypeItem>;
     translations?: { [key: string]: { [key: string]: object; }; };
     order?: number | null;
-    permissions?: Array<EntityId>;
+    permissions?: Array<PermissionEntity>;
     permissionless?: boolean | null;
     description?: string;
     add_properties?: { [key: string]: any; };

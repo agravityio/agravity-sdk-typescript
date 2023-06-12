@@ -21,6 +21,7 @@ export interface Collection {
     custom?: any;
     items?: Array<CollTypeItem>;
     translations?: { [key: string]: { [key: string]: object; }; };
+    role?: Collection.RoleEnum | null;
     name?: string;
     description?: string;
     add_properties?: { [key: string]: any; };
@@ -32,4 +33,13 @@ export interface Collection {
     pk?: string;
     _etag?: string;
 }
+export namespace Collection {
+    export type RoleEnum = 'NONE' | 'VIEWER' | 'EDITOR';
+    export const RoleEnum = {
+        None: 'NONE' as RoleEnum,
+        Viewer: 'VIEWER' as RoleEnum,
+        Editor: 'EDITOR' as RoleEnum
+    };
+}
+
 
