@@ -18,6 +18,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
+import { AgravityInfoResponse } from '../model/models';
 import { PermissionChange } from '../model/models';
 import { Workspace } from '../model/models';
 
@@ -451,9 +452,9 @@ export class WorkspaceManagementService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public httpWorkspacesUpdatePermissionsById(id: string, permissionChange: PermissionChange, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Workspace>;
-    public httpWorkspacesUpdatePermissionsById(id: string, permissionChange: PermissionChange, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Workspace>>;
-    public httpWorkspacesUpdatePermissionsById(id: string, permissionChange: PermissionChange, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Workspace>>;
+    public httpWorkspacesUpdatePermissionsById(id: string, permissionChange: PermissionChange, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AgravityInfoResponse>;
+    public httpWorkspacesUpdatePermissionsById(id: string, permissionChange: PermissionChange, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AgravityInfoResponse>>;
+    public httpWorkspacesUpdatePermissionsById(id: string, permissionChange: PermissionChange, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AgravityInfoResponse>>;
     public httpWorkspacesUpdatePermissionsById(id: string, permissionChange: PermissionChange, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling httpWorkspacesUpdatePermissionsById.');
@@ -498,7 +499,7 @@ export class WorkspaceManagementService {
             responseType_ = 'text';
         }
 
-        return this.httpClient.post<Workspace>(`${this.configuration.basePath}/workspaces/${encodeURIComponent(String(id))}/permissions`,
+        return this.httpClient.post<AgravityInfoResponse>(`${this.configuration.basePath}/workspaces/${encodeURIComponent(String(id))}/permissions`,
             permissionChange,
             {
                 responseType: <any>responseType_,
