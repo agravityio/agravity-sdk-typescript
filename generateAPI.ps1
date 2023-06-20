@@ -18,6 +18,7 @@ Remove-Item -Path .\src -Recurse -Force -ErrorAction SilentlyContinue
 # generate API
 
 Write-Host "Calling private API"
+#$params="apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=14.0.0,npmName=agravityAPI-private,npmVersion=$version"
 $params="apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=14.0.0"
 npx @openapitools/openapi-generator-cli generate -i http://localhost:7071/api/openapi/v3.json -g typescript-angular -o src/agravityAPI-private/ --additional-properties=$params
 
@@ -98,14 +99,14 @@ Write-Host "Do you want to copy src files to unleashed portal? (y/n)"
 $answer = Read-Host
 if ($answer -eq "y") {
     # copy src files to agrvity-angular-app
-    $privateSrc = "..\..\portal_unleashed\src\app\commons\agravityAPI-private\" 
+    $privateSrc = "..\..\AgravityUnleashedPortal\src\app\commons\agravityAPI-private\" 
     Remove-Item -Path $privateSrc -Recurse -Force -ErrorAction SilentlyContinue
     Copy-Item -Path .\src\agravityAPI-private -Destination $privateSrc -Recurse -Force
 
-    $publicSrc = "..\..\portal_unleashed\src\app\commons\agravityAPI-public\"
+    $publicSrc = "..\..\AgravityUnleashedPortal\src\app\commons\agravityAPI-public\"
     Remove-Item -Path $publicSrc -Recurse -Force -ErrorAction SilentlyContinue 
     Copy-Item -Path .\src\agravityAPI-public -Destination $publicSrc -Recurse -Force
     Write-Host "Copy complete"
 }
 
-# Remove ../../portal_unleashed/src/app/commons/agravityAPI-private/ folder
+# Remove ../../AgravityUnleashedPortal/src/app/commons/agravityAPI-private/ folder
