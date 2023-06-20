@@ -34,7 +34,7 @@ export interface Asset {
     custom?: any;
     items?: Array<CollTypeItem>;
     translations?: { [key: string]: { [key: string]: object; }; };
-    role?: Asset.RoleEnum | null;
+    role?: Asset.RoleEnum;
     description?: string;
     add_properties?: { [key: string]: any; };
     status?: string;

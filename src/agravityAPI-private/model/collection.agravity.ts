@@ -21,7 +21,7 @@ export interface Collection {
     custom?: any;
     items?: Array<CollTypeItem>;
     translations?: { [key: string]: { [key: string]: object; }; };
-    role?: Collection.RoleEnum | null;
+    role?: Collection.RoleEnum;
     name?: string;
     description?: string;
     add_properties?: { [key: string]: any; };

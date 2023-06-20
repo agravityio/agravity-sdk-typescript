@@ -553,10 +553,10 @@ export class AuthenticationManagementService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public httpAuthPatchImpersonateUser(id: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AgravityInfoResponse>;
-    public httpAuthPatchImpersonateUser(id: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AgravityInfoResponse>>;
-    public httpAuthPatchImpersonateUser(id: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AgravityInfoResponse>>;
-    public httpAuthPatchImpersonateUser(id: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+    public httpAuthPatchImpersonateUser(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AgravityInfoResponse>;
+    public httpAuthPatchImpersonateUser(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AgravityInfoResponse>>;
+    public httpAuthPatchImpersonateUser(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AgravityInfoResponse>>;
+    public httpAuthPatchImpersonateUser(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling httpAuthPatchImpersonateUser.');
         }

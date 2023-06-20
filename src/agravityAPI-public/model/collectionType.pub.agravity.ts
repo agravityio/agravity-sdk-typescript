@@ -22,6 +22,7 @@ export interface CollectionType {
     order?: number | null;
     permissions?: Array<PermissionEntity>;
     permissionless?: boolean | null;
+    role?: CollectionType.RoleEnum;
     description?: string;
     add_properties?: { [key: string]: any; };
     status?: string;
@@ -32,4 +33,13 @@ export interface CollectionType {
     pk?: string;
     _etag?: string;
 }
+export namespace CollectionType {
+    export type RoleEnum = 'NONE' | 'VIEWER' | 'EDITOR';
+    export const RoleEnum = {
+        None: 'NONE' as RoleEnum,
+        Viewer: 'VIEWER' as RoleEnum,
+        Editor: 'EDITOR' as RoleEnum
+    };
+}
+
 
