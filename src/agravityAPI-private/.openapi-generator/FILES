@@ -54,7 +54,7 @@ model/assetBlob.agravity.ts
 model/assetBulkUpdate.agravity.ts
 model/assetCollectionLink.agravity.ts
 model/assetIconRule.agravity.ts
-model/assetIdContainer.agravity.ts
+model/assetIdFormat.agravity.ts
 model/assetPageResult.agravity.ts
 model/assetsOperationBody.agravity.ts
 model/azSearchOptions.agravity.ts

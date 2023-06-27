@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AssetIdFormat } from './assetIdFormat.agravity';
 import { EmailAddress } from './emailAddress.agravity';
 import { SimpleAsset } from './simpleAsset.agravity';
 
@@ -20,8 +21,7 @@ export interface DownloadObject {
     simple_assets?: Array<SimpleAsset>;
     valid_for?: string;
     watermarked?: boolean;
-    assets?: Array<string>;
-    format?: string;
+    assets?: Array<AssetIdFormat>;
     valid_from?: string;
     valid_until?: string;
     email_to?: Array<EmailAddress>;

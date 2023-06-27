@@ -9,8 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AssetIdContainer } from './assetIdContainer.pub.agravity';
 import { EntityId } from './entityId.pub.agravity';
+import { AssetIdFormat } from './assetIdFormat.pub.agravity';
 import { SharedAsset } from './sharedAsset.pub.agravity';
 
 
@@ -21,10 +21,11 @@ export interface QuickShareFull {
     continuation_token?: string;
     id?: string;
     entity_type?: string;
-    assets?: Array<AssetIdContainer>;
+    assets?: Array<AssetIdFormat>;
     users?: Array<EntityId>;
     expires?: string;
     url?: string;
+    zip_url?: string;
     status?: string;
     created_date?: string | null;
     created_by?: string;

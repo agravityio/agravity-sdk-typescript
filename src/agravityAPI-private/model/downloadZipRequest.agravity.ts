@@ -9,12 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AssetIdFormat } from './assetIdFormat.agravity';
 import { EmailAddress } from './emailAddress.agravity';
 
 
 export interface DownloadZipRequest { 
-    assets?: Array<string>;
-    format?: string;
+    assets?: Array<AssetIdFormat>;
     valid_from?: string;
     valid_until?: string;
     email_to?: Array<EmailAddress>;

@@ -9,17 +9,18 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AssetIdContainer } from './assetIdContainer.agravity';
 import { EntityId } from './entityId.agravity';
+import { AssetIdFormat } from './assetIdFormat.agravity';
 
 
 export interface QuickShare { 
     id?: string;
     entity_type?: string;
-    assets?: Array<AssetIdContainer>;
+    assets?: Array<AssetIdFormat>;
     users?: Array<EntityId>;
     expires?: string;
     url?: string;
+    zip_url?: string;
     status?: string;
     created_date?: string | null;
     created_by?: string;

@@ -12,7 +12,7 @@ export * from './assetBlob.agravity';
 export * from './assetBulkUpdate.agravity';
 export * from './assetCollectionLink.agravity';
 export * from './assetIconRule.agravity';
-export * from './assetIdContainer.agravity';
+export * from './assetIdFormat.agravity';
 export * from './assetPageResult.agravity';
 export * from './assetsOperationBody.agravity';
 export * from './azSearchOptions.agravity';

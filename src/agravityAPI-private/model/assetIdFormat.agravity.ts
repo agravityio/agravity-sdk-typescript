@@ -11,8 +11,8 @@
  */
 
 
-export interface AssetIdContainer { 
+export interface AssetIdFormat { 
     id?: string;
-    container?: string;
+    format?: string;
 }
 
