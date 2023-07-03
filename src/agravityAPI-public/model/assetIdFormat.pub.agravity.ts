@@ -13,6 +13,7 @@
 
 export interface AssetIdFormat { 
     id?: string;
+    name?: string;
     format?: string;
 }
 
