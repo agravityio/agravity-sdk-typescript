@@ -91,6 +91,10 @@ Replace-StringInFiles -FolderPath "src" -SearchString "`r`n" -ReplaceString "`n"
 # Get-ChildItem -Path "src" -Recurse -File | ForEach-Object {(Get-Content $_.FullName -Raw) -replace ,  | Set-Content $_.FullName -NoNewline }
 
 
+# git discard package.json files 
+git checkout -- src/agravityAPI-private/package.json
+git checkout -- src/agravityAPI-public/package.json
+
 ######################### ASK FOR COPY SRC FILES TO AGRVITY-ANGULAR-APP #########################
 
 # ask for copy src files to agrvity-angular-app
@@ -98,14 +102,14 @@ Write-Host "Do you want to copy src files to unleashed portal? (y/n)"
 $answer = Read-Host
 if ($answer -eq "y") {
     # copy src files to agrvity-angular-app
-    $privateSrc = "..\..\portal_unleashed\src\app\commons\agravityAPI-private\" 
+    $privateSrc = "..\..\AgravityUnleashedPortal\src\app\commons\agravityAPI-private\" 
     Remove-Item -Path $privateSrc -Recurse -Force -ErrorAction SilentlyContinue
     Copy-Item -Path .\src\agravityAPI-private -Destination $privateSrc -Recurse -Force
 
-    $publicSrc = "..\..\portal_unleashed\src\app\commons\agravityAPI-public\"
+    $publicSrc = "..\..\AgravityUnleashedPortal\src\app\commons\agravityAPI-public\"
     Remove-Item -Path $publicSrc -Recurse -Force -ErrorAction SilentlyContinue 
     Copy-Item -Path .\src\agravityAPI-public -Destination $publicSrc -Recurse -Force
     Write-Host "Copy complete"
 }
 
-# Remove ../../portal_unleashed/src/app/commons/agravityAPI-private/ folder
+# Remove ../../AgravityUnleashedPortal/src/app/commons/agravityAPI-private/ folder
