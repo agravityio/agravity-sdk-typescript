@@ -9,6 +9,62 @@ and this project does not adheres to [Semantic Versioning](https://semver.org/sp
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
 ---
+## AgravityAPI <a name="5.2.1"/> [5.2.1](https://www.nuget.org/packages/Agravity.Public/5.2.1) (2023-07-04)
+---
+
+- Add endpoint PATCH `/helper/clearconfigcache` - This method starts queues in all functions to clear the config cache.
+- Add `name` property to AssetIdFormat
+- Remove format from downloadObject (now each asset can have individual format)
+- Refactor AssetIdContainer to AssetIdFormat
+- Add `zip_url` to quickshare (and full)
+
+## AgravityAPI <a name="5.2.0"/> [5.2.0](https://www.nuget.org/packages/Agravity.Public/5.2.0) (2023-06-06)
+---
+
+- Add new API for QuickShares:
+- Add POST `/quickshares` to create a new QuickShare (for user)
+- Add GET `/quickshares` to get all QuickShares of user (can be specified by Admin when adding userid query param)
+- Add GET `/quickshares/{id}` to get a specific QuickShares of user
+- Add DELETE `/quickshares/{id}` to delete a specific QuickShares of user
+- Add DELETE `/quickshares` deletes all quick shares of a user (can be specified by Admin when adding userid query param)
+
+Enhance Auth Mangement API:
+- Add GET `/auth/users/{id}` to get user information (if not ADMIN or the requesting user - only name and email
+are returned)
+- new query parameter limit
+- Add GET `/auth/users` (only ADMIN) to get all user informations
+new query parameter limit
+
+Public API:
+- Add public PUT `/assets/{id}/availability` to set the availability of an asset
+
+## AgravityAPI <a name="5.1.6"/> [5.1.6](https://www.nuget.org/packages/Agravity.Public/5.1.6 (2023-05-23)
+---
+
+- Remove techdata from all assets get endpoint and moved to GetAssetById:
+  - add GET endpoint `/assets/{id}/techdata` to private
+  - add query parameter `techdata` to public and private GetAssetById endpoints
+- Refactor public SignalR management class to have the prefix "public"
+- Update description of get asset techdata endpoint
+
+## AgravityAPI <a name="5.1.5"/> [5.1.5](https://www.nuget.org/packages/Agravity.Public/5.1.5) (2023-05-04)
+---
+(no changes - just update according to backend version)
+
+## AgravityAPI <a name="5.1.4"/> [5.1.4](https://www.nuget.org/packages/Agravity.Public/5.1.4) (2023-04-27)
+---
+(no changes - just update according to backend version)
+
+## AgravityAPI <a name="5.1.3"/> [5.1.3](https://www.nuget.org/packages/Agravity.Public/5.1.3) (2023-04-23)
+---
+
+- Add new endpoints for download formats:
+- GET `/downloadformats/{id}` - This endpoint get a single download format.
+- POST `/downloadformats/{id}` - This endpoint updates one download format entry in the database. (Roles: Editor, Admin)
+- Include more translation options (show all)
+- Allow filtering of exported data (asset, workspace, collection_type and/or only certain collection types (IDs) for exporting. When providing multiple values separate it with comma)
+- Change separator of filter in searches (so comma (',') could be included in SDL values)
+
 ## AgravityAPI <a name="5.1.2"/> [5.1.2](https://www.nuget.org/packages/Agravity.Public/5.1.2) (2023-03-23)
 ---
 
