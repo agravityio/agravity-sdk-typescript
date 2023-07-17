@@ -36,6 +36,7 @@ export * from './entityIdName.agravity';
 export * from './entityTranslations.agravity';
 export * from './frontendAppConfig.agravity';
 export * from './groupAllAppData.agravity';
+export * from './historyEntry.agravity';
 export * from './infoEntitySkillEnhanced.agravity';
 export * from './metadata.agravity';
 export * from './moveCollectionBody.agravity';

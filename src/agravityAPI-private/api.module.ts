@@ -17,6 +17,7 @@ import { DownloadFormatManagementService } from './api/downloadFormatManagement.
 import { DownloadZipService } from './api/downloadZip.agravity';
 import { GeneralManagementService } from './api/generalManagement.agravity';
 import { HelperToolsService } from './api/helperTools.agravity';
+import { HistoryEntryManagementService } from './api/historyEntryManagement.agravity';
 import { IccProfileManagementService } from './api/iccProfileManagement.agravity';
 import { ListBlobsService } from './api/listBlobs.agravity';
 import { ListQueuesService } from './api/listQueues.agravity';

@@ -18,6 +18,7 @@ api/downloadFormatManagement.agravity.ts
 api/downloadZip.agravity.ts
 api/generalManagement.agravity.ts
 api/helperTools.agravity.ts
+api/historyEntryManagement.agravity.ts
 api/iccProfileManagement.agravity.ts
 api/listBlobs.agravity.ts
 api/listQueues.agravity.ts
@@ -78,6 +79,7 @@ model/entityIdName.agravity.ts
 model/entityTranslations.agravity.ts
 model/frontendAppConfig.agravity.ts
 model/groupAllAppData.agravity.ts
+model/historyEntry.agravity.ts
 model/infoEntitySkillEnhanced.agravity.ts
 model/metadata.agravity.ts
 model/models.ts
