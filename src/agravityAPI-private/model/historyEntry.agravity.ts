@@ -14,7 +14,8 @@
 export interface HistoryEntry { 
     id?: string;
     entity_type?: string;
-    delta?: object;
+    new_value?: object;
+    old_value?: object;
     type?: HistoryEntry.TypeEnum;
     status?: string;
     created_date?: string | null;
