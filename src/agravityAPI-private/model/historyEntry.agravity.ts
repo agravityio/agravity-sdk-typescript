@@ -16,7 +16,7 @@ export interface HistoryEntry {
     entity_type?: string;
     new_value?: object;
     old_value?: object;
-    type?: HistoryEntry.TypeEnum;
+    name?: HistoryEntry.NameEnum;
     status?: string;
     created_date?: string | null;
     created_by?: string;
@@ -26,17 +26,17 @@ export interface HistoryEntry {
     _etag?: string;
 }
 export namespace HistoryEntry {
-    export type TypeEnum = 'Created' | 'Updated' | 'Deleted' | 'Published' | 'Unpublished' | 'Locked' | 'Unlocked' | 'Renewed' | 'Versioned';
-    export const TypeEnum = {
-        Created: 'Created' as TypeEnum,
-        Updated: 'Updated' as TypeEnum,
-        Deleted: 'Deleted' as TypeEnum,
-        Published: 'Published' as TypeEnum,
-        Unpublished: 'Unpublished' as TypeEnum,
-        Locked: 'Locked' as TypeEnum,
-        Unlocked: 'Unlocked' as TypeEnum,
-        Renewed: 'Renewed' as TypeEnum,
-        Versioned: 'Versioned' as TypeEnum
+    export type NameEnum = 'Created' | 'Updated' | 'Deleted' | 'Published' | 'Unpublished' | 'Locked' | 'Unlocked' | 'Renewed' | 'Versioned';
+    export const NameEnum = {
+        Created: 'Created' as NameEnum,
+        Updated: 'Updated' as NameEnum,
+        Deleted: 'Deleted' as NameEnum,
+        Published: 'Published' as NameEnum,
+        Unpublished: 'Unpublished' as NameEnum,
+        Locked: 'Locked' as NameEnum,
+        Unlocked: 'Unlocked' as NameEnum,
+        Renewed: 'Renewed' as NameEnum,
+        Versioned: 'Versioned' as NameEnum
     };
 }
 
