@@ -10,7 +10,7 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
-## AgravityAPI <a name="5.3.0"/> [5.3.0](https://www.nuget.org/packages/Agravity.Public/5.3.0) (2023-07-21)
+## AgravityAPI <a name="5.3.0"/> [5.3.0](https://www.npmjs.com/package/@agravity/private/v/5.3.0) (2023-07-21)
 
 - Add new API for Asset History Management:
   - Add GET `/history/id` Returns a list with history entries for the given entity id.
@@ -21,13 +21,13 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
-## AgravityAPI <a name="5.2.2"/> [5.2.2](https://www.nuget.org/packages/Agravity.Public/5.2.2) (2023-07-06)
+## AgravityAPI 5.2.2 (2023-07-06)
 
 (no changes - just update according to backend version)
 
 ---
 
-## AgravityAPI <a name="5.2.1"/> [5.2.1](https://www.nuget.org/packages/Agravity.Public/5.2.1) (2023-07-04)
+## AgravityAPI 5.2.1 (2023-07-04)
 
 - Add endpoint PATCH `/helper/clearconfigcache` - This method starts queues in all functions to clear the config cache.
 - Add `name` property to AssetIdFormat
@@ -37,7 +37,7 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
-## AgravityAPI <a name="5.2.0"/> [5.2.0](https://www.nuget.org/packages/Agravity.Public/5.2.0) (2023-06-06)
+## AgravityAPI <a name="5.2.0"/> [5.2.0](https://www.npmjs.com/package/@agravity/private/v/5.2.0) (2023-06-06)
 
 - Add new API for QuickShares:
 - Add POST `/quickshares` to create a new QuickShare (for user)
@@ -58,7 +58,7 @@ Public API:
 
 ---
 
-## AgravityAPI <a name="5.1.6"/> [5.1.6](https://www.nuget.org/packages/Agravity.Public/5.1.6) (2023-05-23)
+## AgravityAPI 5.1.6 (2023-05-23)
 
 - Remove techdata from all assets get endpoint and moved to GetAssetById:
   - add GET endpoint `/assets/{id}/techdata` to private
@@ -68,17 +68,17 @@ Public API:
 
 ---
 
-## AgravityAPI <a name="5.1.5"/> [5.1.5](https://www.nuget.org/packages/Agravity.Public/5.1.5) (2023-05-04)
+## AgravityAPI 5.1.5 (2023-05-04)
 (no changes - just update according to backend version)
 
 ---
 
-## AgravityAPI <a name="5.1.4"/> [5.1.4](https://www.nuget.org/packages/Agravity.Public/5.1.4) (2023-04-27)
+## AgravityAPI 5.1.4 (2023-04-27)
 (no changes - just update according to backend version)
 
 ---
 
-## AgravityAPI <a name="5.1.3"/> [5.1.3](https://www.nuget.org/packages/Agravity.Public/5.1.3) (2023-04-23)
+## AgravityAPI 5.1.3 (2023-04-23)
 
 - Add new endpoints for download formats:
 - GET `/downloadformats/{id}` - This endpoint get a single download format.
@@ -89,7 +89,7 @@ Public API:
 
 ---
 
-## AgravityAPI <a name="5.1.2"/> [5.1.2](https://www.nuget.org/packages/Agravity.Public/5.1.2) (2023-03-23)
+## AgravityAPI 5.1.2 (2023-03-23)
 
 - Change all `AddProperties` from  `Dictionary<string, Object>` to `Dictionary<string, object>`
 - Add property `Profile` which could have the ICC-Profile name for the original blob
@@ -103,17 +103,17 @@ Public API:
 
 ---
 
-## AgravityAPI <a name="5.1.0"/> [5.1.0](https://www.nuget.org/packages/Agravity.Public/5.1.0) (2023-02-19)
+## AgravityAPI 5.1.0 (2023-02-19)
 (no changes - just update according to backend version)
 
 ---
 
-## AgravityAPI <a name="5.0.2"/> [5.0.2](https://www.nuget.org/packages/Agravity.Public/5.0.2) (2023-02-06)
+## AgravityAPI 5.0.2 (2023-02-06)
 (no changes - just update according to backend version)
 
 ---
 
-## AgravityAPI <a name="5.0.1"/> [5.0.1](https://www.nuget.org/packages/Agravity.Public/5.0.1) (2023-01-27)
+## AgravityAPI 5.0.1 (2023-01-27)
 - Add / modifiy multipart/formdata endpoint POST `/assets/{id}/versionsupload`: This endpoint allows to upload one asset which replaces the asset with given id and creates a version which is returned.
 - modified `/assets/{id}/versions` to now only take json as input (VersionedAsset)
 - add missing `filter` parameter to HttpAssetsGet and made collectionId not mandatory.
@@ -123,7 +123,7 @@ Public API:
 
 ---
 
-## AgravityAPI <a name="5.0.0"/> [5.0.0](https://www.nuget.org/packages/Agravity.Public/5.0.0) (2023-01-07)
+## AgravityAPI 5.0.0 (2023-01-07)
 
 - Add new permission endpoints:
   - CollectionType Management: POST `/collectiontypes/{id}/permissions`
@@ -164,7 +164,7 @@ Public API:
 
 ---
 
-## AgravityAPI <a name="4.9.3"/> [4.9.3](https://www.nuget.org/packages/Agravity.Public/4.9.3) (2022-12-15)
+## AgravityAPI 4.9.3 (2022-12-15)
 
 Add parameter:
 - Paging with param `skip` in GET `/api/search`
@@ -183,7 +183,7 @@ Repaired some annotations
 
 ---
 
-## AgravityAPI <a name="4.9.2"/> [4.9.2](https://www.nuget.org/packages/Agravity.Public/4.9.2) (2022-12-05)
+## AgravityAPI 4.9.2 (2022-12-05)
 
 - Add to Public the Download Format Management and Custom Image Manipulation (with DownloadID):
   - Add POST `assets/{id}/imageedit` to Public Asset Operation Management
@@ -193,7 +193,7 @@ Repaired some annotations
 
 ---
 
-## AgravityAPI <a name="4.9.1"/> [4.9.1](https://www.nuget.org/packages/Agravity.Public/4.9.1) (2022-12-01)
+## AgravityAPI 4.9.1 (2022-12-01)
 
 - Add `ids` param to search endpoint (private and public) to limit the results to given ids (comma separated);
 - introduce new `options` property to searchResult which reflect all filter params given
@@ -206,7 +206,7 @@ Repaired some annotations
 
 ---
 
-## AgravityAPI <a name="4.9.0"/> [4.9.0](https://www.nuget.org/packages/Agravity.Public/4.9.0) (2022-11-28)
+## AgravityAPI 4.9.0 (2022-11-28)
 
 Add `translations` param in nearly all endpoints which receives translateable objects
 Add missing `items` as param PublicAssetManagement
@@ -218,7 +218,7 @@ Add Saved Search Management:
 
 ---
 
-## AgravityAPI <a name="4.8.1"/> [4.8.1](https://www.nuget.org/packages/Agravity.Public/4.8.1) (2022-11-14)
+## AgravityAPI 4.8.1 (2022-11-14)
 - Change GET `/assetsenhancer/{id}` to GET `/helper/skillenhancer/{id}` - Show the result of the SkillEnhancer for assets and collections
 
 ---
@@ -232,7 +232,7 @@ Add Saved Search Management:
 
 ---
 
-## AgravityAPI <a name="4.7.3"/> [4.7.3](https://www.nuget.org/packages/Agravity.Public/4.7.3) (2022-10-31)
+## AgravityAPI 4.7.3 (2022-10-31)
 > Just version upgrade to match backend
 
 ---
