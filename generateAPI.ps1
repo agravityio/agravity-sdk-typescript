@@ -35,7 +35,7 @@ npx @openapitools/openapi-generator-cli generate -i http://localhost:7072/api/op
 
 Write-Host "Generate complete"
 Write-Host "Start replacements"
-function Replace-StringInFiles {
+function ReplaceStringInFiles {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true, Position = 0)]
@@ -59,13 +59,13 @@ function Replace-StringInFiles {
 }
 
 
-Replace-StringInFiles -FolderPath "src" -SearchString "add_properties\?: \{ \[key: string\]: object; \};" -ReplaceString "add_properties?: { [key: string]: any; };"
+ReplaceStringInFiles -FolderPath "src" -SearchString "add_properties\?: \{ \[key: string\]: object; \};" -ReplaceString "add_properties?: { [key: string]: any; };"
 Write-Host "Replace add_properties complete"
-Replace-StringInFiles -FolderPath "src" -SearchString "default_value\?: object;" -ReplaceString "default_value?: any;"
+ReplaceStringInFiles -FolderPath "src" -SearchString "default_value\?: object;" -ReplaceString "default_value?: any;"
 Write-Host "Replace default_value complete"
-Replace-StringInFiles -FolderPath "src" -SearchString "custom\?: \{ \[key: string\]: object; \};" -ReplaceString "custom?: any;"
+ReplaceStringInFiles -FolderPath "src" -SearchString "custom\?: \{ \[key: string\]: object; \};" -ReplaceString "custom?: any;"
 Write-Host "Replace custom complete"
-Replace-StringInFiles -FolderPath "src" -SearchString "ai\?: object;" -ReplaceString "ai?: any;"
+ReplaceStringInFiles -FolderPath "src" -SearchString "ai\?: object;" -ReplaceString "ai?: any;"
 Write-Host "Replace ai complete"
 
 
@@ -94,7 +94,7 @@ $fileContent | Set-Content "src\agravityAPI-public\api\publicCollectionSecureUpl
 Write-Host "Remove line in file src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts after line 150 complete"
 
 
-Replace-StringInFiles -FolderPath "src" -SearchString "`r`n" -ReplaceString "`n"
+ReplaceStringInFiles -FolderPath "src" -SearchString "`r`n" -ReplaceString "`n"
 
 # Get-ChildItem -Path "src" -Recurse -File | ForEach-Object {(Get-Content $_.FullName -Raw) -replace ,  | Set-Content $_.FullName -NoNewline }
 
