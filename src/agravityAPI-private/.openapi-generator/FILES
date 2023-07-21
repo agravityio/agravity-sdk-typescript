@@ -33,7 +33,6 @@ api/staticDefinedListManagement.agravity.ts
 api/stockImport.agravity.ts
 api/structureImport.agravity.ts
 api/translationManagement.agravity.ts
-api/upgradeManagement.agravity.ts
 api/webAppData.agravity.ts
 api/wordpressManagement.agravity.ts
 api/workspaceManagement.agravity.ts
@@ -111,7 +110,6 @@ model/signalRConnectionInfo.agravity.ts
 model/simpleAsset.agravity.ts
 model/staticDefinedList.agravity.ts
 model/uiTutorials.agravity.ts
-model/upgradeV2V3CollectionCustomItemTableEntity.agravity.ts
 model/versionEntity.agravity.ts
 model/versionedAsset.agravity.ts
 model/whereParam.agravity.ts

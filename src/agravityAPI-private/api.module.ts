@@ -32,7 +32,6 @@ import { StaticDefinedListManagementService } from './api/staticDefinedListManag
 import { StockImportService } from './api/stockImport.agravity';
 import { StructureImportService } from './api/structureImport.agravity';
 import { TranslationManagementService } from './api/translationManagement.agravity';
-import { UpgradeManagementService } from './api/upgradeManagement.agravity';
 import { WebAppDataService } from './api/webAppData.agravity';
 import { WordpressManagementService } from './api/wordpressManagement.agravity';
 import { WorkspaceManagementService } from './api/workspaceManagement.agravity';

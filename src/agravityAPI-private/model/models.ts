@@ -67,7 +67,6 @@ export * from './signalRConnectionInfo.agravity';
 export * from './simpleAsset.agravity';
 export * from './staticDefinedList.agravity';
 export * from './uiTutorials.agravity';
-export * from './upgradeV2V3CollectionCustomItemTableEntity.agravity';
 export * from './versionEntity.agravity';
 export * from './versionedAsset.agravity';
 export * from './whereParam.agravity';
