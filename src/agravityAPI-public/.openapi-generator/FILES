@@ -73,4 +73,7 @@ model/versionEntity.pub.agravity.ts
 model/versionedAsset.pub.agravity.ts
 model/whereParam.pub.agravity.ts
 model/workspace.pub.agravity.ts
+ng-package.json
+package.json
+tsconfig.json
 variables.ts

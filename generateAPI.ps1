@@ -26,11 +26,11 @@ Remove-Item -Path .\src -Recurse -Force -ErrorAction SilentlyContinue
 Write-Host "Calling private API"
 
 #$params="apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=14.0.0,npmName=agravityAPI-private,npmVersion=$version"
-$params = "apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=14.0.0"
+$params = "apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=16.1.2,npmName=@agravity/private,supportsES6=true,npmRepository=https://registry.npmjs.org/"
 npx @openapitools/openapi-generator-cli generate -i http://localhost:7071/api/openapi/v3.json -g typescript-angular -o src/agravityAPI-private/ --additional-properties=$params
 
 Write-Host "Calling public API"
-$params = "apiModulePrefix=AgravityPublic,configurationPrefix=AgravityPublic,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=14.0.0"
+$params = "apiModulePrefix=AgravityPublic,configurationPrefix=AgravityPublic,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=16.1.2,npmName=@agravity/public,supportsES6=true,npmRepository=https://registry.npmjs.org/"
 npx @openapitools/openapi-generator-cli generate -i http://localhost:7072/api/openapi/v3.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
 
 Write-Host "Generate complete"
@@ -98,10 +98,67 @@ ReplaceStringInFiles -FolderPath "src" -SearchString "`r`n" -ReplaceString "`n"
 
 # Get-ChildItem -Path "src" -Recurse -File | ForEach-Object {(Get-Content $_.FullName -Raw) -replace ,  | Set-Content $_.FullName -NoNewline }
 
+# set author to git user
+$author = (git config user.name)
+$licence = "MIT License"
+$description = "The Agravity GlobalDAM API which allowes authenticated user to access the Agravity GlobalDAM Backend"
+$repoUrl =   '"repository": { "type": "git","url": "git+https://github.com/agravityio/agravity-sdk-typescript"},'
+$access =   '"access": "public",'
 
-# git discard package.json files 
-git checkout -- src/agravityAPI-private/package.json
-git checkout -- src/agravityAPI-public/package.json
+#set array of keywords: agravity, dam, globaldam
+$keywords = @("agravity", "dam", "globaldam","apifirst","api","sdk","typescript")
+
+#create copy of keywords and add "private" to it
+$privateKeywords = $keywords
+$privateKeywords += "private"
+
+# parse package.json, change stuff and write it back
+$json = Get-Content -Path src/agravityAPI-private/package.json -Raw | ConvertFrom-Json
+
+$json.keywords = $privateKeywords
+$json.author = $author
+$json.license = $licence
+$json.description = $description
+
+$json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-private/package.json
+
+# add $repoUrl to package.json in line 20
+$fileContent = Get-Content "src\agravityAPI-private\package.json"
+$fileContent[15] = $fileContent[15] + "`n" + $repoUrl
+$fileContent[36] = $fileContent[36] + "`n" + $access
+# write file
+$fileContent | Set-Content "src\agravityAPI-private\package.json"
+
+# pretty print package.json using prettier
+npx prettier --write src/agravityAPI-private/package.json
+
+
+# parse package.json, change stuff and write it back
+#create copy of keywords and add "public" to it
+$publicKeywords = $keywords
+$publicKeywords += "public"
+
+$description = "The Agravity GlobalDAM API which allowes API key authenticated access the Agravity GlobalDAM Backend"
+
+$json = Get-Content -Path src/agravityAPI-public/package.json -Raw | ConvertFrom-Json
+
+$json.keywords = $publicKeywords
+$json.author = $author
+$json.license = $licence
+$json.description = $description
+
+$json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-public/package.json
+
+# add $repoUrl to package.json in line 12
+$fileContent = Get-Content "src\agravityAPI-public\package.json"
+$fileContent[15] = $fileContent[15] + "`n" + $repoUrl
+$fileContent[36] = $fileContent[36] + "`n" + $access
+# write file
+$fileContent | Set-Content "src\agravityAPI-public\package.json"
+
+
+# pretty print package.json using prettier
+npx prettier --write src/agravityAPI-public/package.json
 
 ######################### ASK FOR COPY SRC FILES TO AGRVITY-ANGULAR-APP #########################
 
@@ -118,4 +175,17 @@ if ($answer -eq "y") {
     Remove-Item -Path $publicSrc -Recurse -Force -ErrorAction SilentlyContinue 
     Copy-Item -Path .\src\agravityAPI-public -Destination $publicSrc -Recurse -Force
     Write-Host "Copy complete"
+}
+
+# publish private and public package to npm
+Write-Host "Do you want to publish private and public package to npm? (y/n)"
+$answer = Read-Host
+if ($answer -eq "y") {
+    # publish private package to npm
+    Set-Location src/agravityAPI-private
+    npm publish --access public
+    Set-Location ../agravityAPI-public
+    npm publish --access public
+    Set-Location ../..
+    Write-Host "Publish complete"
 }

@@ -114,4 +114,7 @@ model/versionEntity.agravity.ts
 model/versionedAsset.agravity.ts
 model/whereParam.agravity.ts
 model/workspace.agravity.ts
+ng-package.json
+package.json
+tsconfig.json
 variables.ts
