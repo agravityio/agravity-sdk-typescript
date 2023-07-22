@@ -13,20 +13,18 @@ import { AssetIdFormat } from './assetIdFormat.agravity';
 import { EmailAddress } from './emailAddress.agravity';
 import { SimpleAsset } from './simpleAsset.agravity';
 
-
-export interface DownloadObject { 
-    id?: string;
-    user_id?: string;
-    email_from?: EmailAddress;
-    simple_assets?: Array<SimpleAsset>;
-    valid_for?: string;
-    watermarked?: boolean;
-    assets?: Array<AssetIdFormat>;
-    valid_from?: string;
-    valid_until?: string;
-    email_to?: Array<EmailAddress>;
-    url?: string;
-    size?: string;
-    message?: string;
+export interface DownloadObject {
+	id?: string;
+	user_id?: string;
+	email_from?: EmailAddress;
+	simple_assets?: Array<SimpleAsset>;
+	valid_for?: string;
+	watermarked?: boolean;
+	assets?: Array<AssetIdFormat>;
+	valid_from?: string;
+	valid_until?: string;
+	email_to?: Array<EmailAddress>;
+	url?: string;
+	size?: string;
+	message?: string;
 }
-

@@ -11,335 +11,355 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec } from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
+import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
 import { AgravityInfoResponse } from '../model/models';
 import { SearchAdminStatus } from '../model/models';
 import { SearchResult } from '../model/models';
 
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { AgravityConfiguration }                                     from '../configuration';
-
-
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { AgravityConfiguration } from '../configuration';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class SearchManagementService {
+	protected basePath = 'http://localhost:7071/api';
+	public defaultHeaders = new HttpHeaders();
+	public configuration = new AgravityConfiguration();
+	public encoder: HttpParameterCodec;
 
-    protected basePath = 'http://localhost:7071/api';
-    public defaultHeaders = new HttpHeaders();
-    public configuration = new AgravityConfiguration();
-    public encoder: HttpParameterCodec;
+	constructor(
+		protected httpClient: HttpClient,
+		@Optional() @Inject(BASE_PATH) basePath: string,
+		@Optional() configuration: AgravityConfiguration
+	) {
+		if (configuration) {
+			this.configuration = configuration;
+		}
+		if (typeof this.configuration.basePath !== 'string') {
+			if (typeof basePath !== 'string') {
+				basePath = this.basePath;
+			}
+			this.configuration.basePath = basePath;
+		}
+		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+	}
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: AgravityConfiguration) {
-        if (configuration) {
-            this.configuration = configuration;
-        }
-        if (typeof this.configuration.basePath !== 'string') {
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
-            }
-            this.configuration.basePath = basePath;
-        }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-    }
+	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
+		if (typeof value === 'object' && value instanceof Date === false) {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value);
+		} else {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+		}
+		return httpParams;
+	}
 
+	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
+		if (value == null) {
+			return httpParams;
+		}
 
-    private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-        if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
-        } else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-        }
-        return httpParams;
-    }
+		if (typeof value === 'object') {
+			if (Array.isArray(value)) {
+				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
+			} else if (value instanceof Date) {
+				if (key != null) {
+					httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10));
+				} else {
+					throw Error('key may not be null if value is Date');
+				}
+			} else {
+				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
+			}
+		} else if (key != null) {
+			httpParams = httpParams.append(key, value);
+		} else {
+			throw Error('key may not be null if value is not object or array');
+		}
+		return httpParams;
+	}
 
-    private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-        if (value == null) {
-            return httpParams;
-        }
+	/**
+	 * This endpoint deletes the index, indexes and data source connection. Has to be recreated with recreate endpoint.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAzureDeleteSearchCompletely(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
+	public httpAzureDeleteSearchCompletely(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpAzureDeleteSearchCompletely(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpAzureDeleteSearchCompletely(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let headers = this.defaultHeaders;
 
-        if (typeof value === "object") {
-            if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
-            } else if (value instanceof Date) {
-                if (key != null) {
-                    httpParams = httpParams.append(key,
-                        (value as Date).toISOString().substr(0, 10));
-                } else {
-                   throw Error("key may not be null if value is Date");
-                }
-            } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
-                    httpParams, value[k], key != null ? `${key}.${k}` : k));
-            }
-        } else if (key != null) {
-            httpParams = httpParams.append(key, value);
-        } else {
-            throw Error("key may not be null if value is not object or array");
-        }
-        return httpParams;
-    }
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-    /**
-     * This endpoint deletes the index, indexes and data source connection. Has to be recreated with recreate endpoint.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpAzureDeleteSearchCompletely(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AgravityInfoResponse>;
-    public httpAzureDeleteSearchCompletely(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AgravityInfoResponse>>;
-    public httpAzureDeleteSearchCompletely(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AgravityInfoResponse>>;
-    public httpAzureDeleteSearchCompletely(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let headers = this.defaultHeaders;
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		return this.httpClient.patch<AgravityInfoResponse>(`${this.configuration.basePath}/searchadmin/delete`, null, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+	/**
+	 * This endpoint recreates the index and creates the indexes, skillset and data source connection if not existing
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAzureRecreateGlobalIndex(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
+	public httpAzureRecreateGlobalIndex(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpAzureRecreateGlobalIndex(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpAzureRecreateGlobalIndex(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let headers = this.defaultHeaders;
 
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        return this.httpClient.patch<AgravityInfoResponse>(`${this.configuration.basePath}/searchadmin/delete`,
-            null,
-            {
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-    /**
-     * This endpoint recreates the index and creates the indexes, skillset and data source connection if not existing
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpAzureRecreateGlobalIndex(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AgravityInfoResponse>;
-    public httpAzureRecreateGlobalIndex(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AgravityInfoResponse>>;
-    public httpAzureRecreateGlobalIndex(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AgravityInfoResponse>>;
-    public httpAzureRecreateGlobalIndex(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+		return this.httpClient.patch<AgravityInfoResponse>(`${this.configuration.basePath}/searchadmin/recreate`, null, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        let headers = this.defaultHeaders;
+	/**
+	 * This endpoint returns a configured max amount of results for search terms.
+	 * @param s The search string which should be found.
+	 * @param limit How many results should be returend. 0 is backend configuration limit.
+	 * @param skip (default: 0) - Used for paging - how many items should be skipped before next limit results will be fetched.
+	 * @param collectiontypeid Limits the result on all collections from the given collectiontypeid parameter.
+	 * @param collectionid Limits the result on collection id (and siblings). Will be overwritten by collectiontypeid parameter.
+	 * @param mode Two modes supported: \&quot;any\&quot; or \&quot;all\&quot; search terms should be applied. (Only if Azure Search is enabled)
+	 * @param expose This will expose the thumbnail asset blob incl. URL with SAS Token.
+	 * @param filter Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled)
+	 * @param orderby Sortable fields can be used. For descendant sorting use leading \&quot;!\&quot;. (Only if Azure Search is enabled)
+	 * @param ids Comma separated values list with all ids which should be returned.
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGlobalSearch(
+		s: string,
+		limit?: number,
+		skip?: number,
+		collectiontypeid?: string,
+		collectionid?: string,
+		mode?: string,
+		expose?: boolean,
+		filter?: string,
+		orderby?: string,
+		ids?: string,
+		translations?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SearchResult>;
+	public httpGlobalSearch(
+		s: string,
+		limit?: number,
+		skip?: number,
+		collectiontypeid?: string,
+		collectionid?: string,
+		mode?: string,
+		expose?: boolean,
+		filter?: string,
+		orderby?: string,
+		ids?: string,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SearchResult>>;
+	public httpGlobalSearch(
+		s: string,
+		limit?: number,
+		skip?: number,
+		collectiontypeid?: string,
+		collectionid?: string,
+		mode?: string,
+		expose?: boolean,
+		filter?: string,
+		orderby?: string,
+		ids?: string,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SearchResult>>;
+	public httpGlobalSearch(
+		s: string,
+		limit?: number,
+		skip?: number,
+		collectiontypeid?: string,
+		collectionid?: string,
+		mode?: string,
+		expose?: boolean,
+		filter?: string,
+		orderby?: string,
+		ids?: string,
+		translations?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (s === null || s === undefined) {
+			throw new Error('Required parameter s was null or undefined when calling httpGlobalSearch.');
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (s !== undefined && s !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>s, 's');
+		}
+		if (limit !== undefined && limit !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>limit, 'limit');
+		}
+		if (skip !== undefined && skip !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>skip, 'skip');
+		}
+		if (collectiontypeid !== undefined && collectiontypeid !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>collectiontypeid, 'collectiontypeid');
+		}
+		if (collectionid !== undefined && collectionid !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>collectionid, 'collectionid');
+		}
+		if (mode !== undefined && mode !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>mode, 'mode');
+		}
+		if (expose !== undefined && expose !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>expose, 'expose');
+		}
+		if (filter !== undefined && filter !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>filter, 'filter');
+		}
+		if (orderby !== undefined && orderby !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>orderby, 'orderby');
+		}
+		if (ids !== undefined && ids !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>ids, 'ids');
+		}
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+		let headers = this.defaultHeaders;
 
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        return this.httpClient.patch<AgravityInfoResponse>(`${this.configuration.basePath}/searchadmin/recreate`,
-            null,
-            {
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-    /**
-     * This endpoint returns a configured max amount of results for search terms.
-     * @param s The search string which should be found.
-     * @param limit How many results should be returend. 0 is backend configuration limit.
-     * @param skip (default: 0) - Used for paging - how many items should be skipped before next limit results will be fetched.
-     * @param collectiontypeid Limits the result on all collections from the given collectiontypeid parameter.
-     * @param collectionid Limits the result on collection id (and siblings). Will be overwritten by collectiontypeid parameter.
-     * @param mode Two modes supported: \&quot;any\&quot; or \&quot;all\&quot; search terms should be applied. (Only if Azure Search is enabled)
-     * @param expose This will expose the thumbnail asset blob incl. URL with SAS Token.
-     * @param filter Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled)
-     * @param orderby Sortable fields can be used. For descendant sorting use leading \&quot;!\&quot;. (Only if Azure Search is enabled)
-     * @param ids Comma separated values list with all ids which should be returned.
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpGlobalSearch(s: string, limit?: number, skip?: number, collectiontypeid?: string, collectionid?: string, mode?: string, expose?: boolean, filter?: string, orderby?: string, ids?: string, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<SearchResult>;
-    public httpGlobalSearch(s: string, limit?: number, skip?: number, collectiontypeid?: string, collectionid?: string, mode?: string, expose?: boolean, filter?: string, orderby?: string, ids?: string, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<SearchResult>>;
-    public httpGlobalSearch(s: string, limit?: number, skip?: number, collectiontypeid?: string, collectionid?: string, mode?: string, expose?: boolean, filter?: string, orderby?: string, ids?: string, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<SearchResult>>;
-    public httpGlobalSearch(s: string, limit?: number, skip?: number, collectiontypeid?: string, collectionid?: string, mode?: string, expose?: boolean, filter?: string, orderby?: string, ids?: string, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (s === null || s === undefined) {
-            throw new Error('Required parameter s was null or undefined when calling httpGlobalSearch.');
-        }
+		return this.httpClient.get<SearchResult>(`${this.configuration.basePath}/search`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (s !== undefined && s !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>s, 's');
-        }
-        if (limit !== undefined && limit !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>limit, 'limit');
-        }
-        if (skip !== undefined && skip !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>skip, 'skip');
-        }
-        if (collectiontypeid !== undefined && collectiontypeid !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>collectiontypeid, 'collectiontypeid');
-        }
-        if (collectionid !== undefined && collectionid !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>collectionid, 'collectionid');
-        }
-        if (mode !== undefined && mode !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>mode, 'mode');
-        }
-        if (expose !== undefined && expose !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>expose, 'expose');
-        }
-        if (filter !== undefined && filter !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>filter, 'filter');
-        }
-        if (orderby !== undefined && orderby !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>orderby, 'orderby');
-        }
-        if (ids !== undefined && ids !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>ids, 'ids');
-        }
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
+	/**
+	 * This endpoint gives the status about the index, indexes and data source connection.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpSearchAdminGetStatus(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SearchAdminStatus>;
+	public httpSearchAdminGetStatus(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<SearchAdminStatus>>;
+	public httpSearchAdminGetStatus(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<SearchAdminStatus>>;
+	public httpSearchAdminGetStatus(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let headers = this.defaultHeaders;
 
-        let headers = this.defaultHeaders;
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<SearchResult>(`${this.configuration.basePath}/search`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint gives the status about the index, indexes and data source connection.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpSearchAdminGetStatus(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<SearchAdminStatus>;
-    public httpSearchAdminGetStatus(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<SearchAdminStatus>>;
-    public httpSearchAdminGetStatus(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<SearchAdminStatus>>;
-    public httpSearchAdminGetStatus(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<SearchAdminStatus>(`${this.configuration.basePath}/searchadmin/status`,
-            {
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
+		return this.httpClient.get<SearchAdminStatus>(`${this.configuration.basePath}/searchadmin/status`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 }

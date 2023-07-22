@@ -64,4 +64,38 @@ export * from './wordpressManagement.agravity';
 import { WordpressManagementService } from './wordpressManagement.agravity';
 export * from './workspaceManagement.agravity';
 import { WorkspaceManagementService } from './workspaceManagement.agravity';
-export const APIS = [AssetIconRuleManagementService, AssetManagementService, AssetOperationsService, AssetPublishingService, AssetVersioningService, AuthenticationManagementService, CollectionManagementService, CollectionSharingService, CollectionTypeItemBlueprintManagementService, CollectionTypeManagementService, ConfigurationManagementService, DownloadFormatManagementService, DownloadZipService, GeneralManagementService, HelperToolsService, HistoryEntryManagementService, IccProfileManagementService, ListBlobsService, ListQueuesService, PermissionsManagementService, PublishingService, QuickshareManagementService, SavedSearchManagementService, SearchManagementService, SecureUploadService, SignalRConnectionManagementService, StaticDefinedListManagementService, StockImportService, StructureImportService, TranslationManagementService, WebAppDataService, WordpressManagementService, WorkspaceManagementService];
+export const APIS = [
+	AssetIconRuleManagementService,
+	AssetManagementService,
+	AssetOperationsService,
+	AssetPublishingService,
+	AssetVersioningService,
+	AuthenticationManagementService,
+	CollectionManagementService,
+	CollectionSharingService,
+	CollectionTypeItemBlueprintManagementService,
+	CollectionTypeManagementService,
+	ConfigurationManagementService,
+	DownloadFormatManagementService,
+	DownloadZipService,
+	GeneralManagementService,
+	HelperToolsService,
+	HistoryEntryManagementService,
+	IccProfileManagementService,
+	ListBlobsService,
+	ListQueuesService,
+	PermissionsManagementService,
+	PublishingService,
+	QuickshareManagementService,
+	SavedSearchManagementService,
+	SearchManagementService,
+	SecureUploadService,
+	SignalRConnectionManagementService,
+	StaticDefinedListManagementService,
+	StockImportService,
+	StructureImportService,
+	TranslationManagementService,
+	WebAppDataService,
+	WordpressManagementService,
+	WorkspaceManagementService
+];

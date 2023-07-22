@@ -10,22 +10,20 @@
  * Do not edit the class manually.
  */
 
-
-export interface SavedSearch { 
-    id?: string;
-    entity_type?: string;
-    searchstring?: string;
-    external?: boolean;
-    translations?: { [key: string]: { [key: string]: object; }; };
-    name?: string;
-    description?: string;
-    add_properties?: { [key: string]: any; };
-    status?: string;
-    created_date?: string | null;
-    created_by?: string;
-    modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+export interface SavedSearch {
+	id?: string;
+	entity_type?: string;
+	searchstring?: string;
+	external?: boolean;
+	translations?: { [key: string]: { [key: string]: object } };
+	name?: string;
+	description?: string;
+	add_properties?: { [key: string]: any };
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
-

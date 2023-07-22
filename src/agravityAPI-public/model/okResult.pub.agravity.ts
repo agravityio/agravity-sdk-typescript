@@ -10,8 +10,6 @@
  * Do not edit the class manually.
  */
 
-
-export interface OkResult { 
-    statusCode?: number;
+export interface OkResult {
+	statusCode?: number;
 }
-

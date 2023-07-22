@@ -11,205 +11,249 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec } from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
+import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
 import { QuickShareFull } from '../model/models';
 import { SharedCollectionFull } from '../model/models';
 
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { AgravityPublicConfiguration }                                     from '../configuration';
-
-
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { AgravityPublicConfiguration } from '../configuration';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class PublicSharingManagementService {
+	protected basePath = 'http://localhost:7072/api';
+	public defaultHeaders = new HttpHeaders();
+	public configuration = new AgravityPublicConfiguration();
+	public encoder: HttpParameterCodec;
 
-    protected basePath = 'http://localhost:7072/api';
-    public defaultHeaders = new HttpHeaders();
-    public configuration = new AgravityPublicConfiguration();
-    public encoder: HttpParameterCodec;
+	constructor(
+		protected httpClient: HttpClient,
+		@Optional() @Inject(BASE_PATH) basePath: string,
+		@Optional() configuration: AgravityPublicConfiguration
+	) {
+		if (configuration) {
+			this.configuration = configuration;
+		}
+		if (typeof this.configuration.basePath !== 'string') {
+			if (typeof basePath !== 'string') {
+				basePath = this.basePath;
+			}
+			this.configuration.basePath = basePath;
+		}
+		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+	}
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: AgravityPublicConfiguration) {
-        if (configuration) {
-            this.configuration = configuration;
-        }
-        if (typeof this.configuration.basePath !== 'string') {
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
-            }
-            this.configuration.basePath = basePath;
-        }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-    }
+	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
+		if (typeof value === 'object' && value instanceof Date === false) {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value);
+		} else {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+		}
+		return httpParams;
+	}
 
+	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
+		if (value == null) {
+			return httpParams;
+		}
 
-    private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-        if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
-        } else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-        }
-        return httpParams;
-    }
+		if (typeof value === 'object') {
+			if (Array.isArray(value)) {
+				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
+			} else if (value instanceof Date) {
+				if (key != null) {
+					httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10));
+				} else {
+					throw Error('key may not be null if value is Date');
+				}
+			} else {
+				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
+			}
+		} else if (key != null) {
+			httpParams = httpParams.append(key, value);
+		} else {
+			throw Error('key may not be null if value is not object or array');
+		}
+		return httpParams;
+	}
 
-    private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-        if (value == null) {
-            return httpParams;
-        }
+	/**
+	 * Returns one single quick share (from ID)
+	 * @param id The ID of the quick share.
+	 * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
+	 * @param limit This number limits the page result of assets.
+	 * @param orderby How the return assets are sorted. Default is property: created_date (newest first).
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpQuickShareGetById(
+		id: string,
+		continuationToken?: string,
+		limit?: number,
+		orderby?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<QuickShareFull>;
+	public httpQuickShareGetById(
+		id: string,
+		continuationToken?: string,
+		limit?: number,
+		orderby?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<QuickShareFull>>;
+	public httpQuickShareGetById(
+		id: string,
+		continuationToken?: string,
+		limit?: number,
+		orderby?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<QuickShareFull>>;
+	public httpQuickShareGetById(
+		id: string,
+		continuationToken?: string,
+		limit?: number,
+		orderby?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpQuickShareGetById.');
+		}
 
-        if (typeof value === "object") {
-            if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
-            } else if (value instanceof Date) {
-                if (key != null) {
-                    httpParams = httpParams.append(key,
-                        (value as Date).toISOString().substr(0, 10));
-                } else {
-                   throw Error("key may not be null if value is Date");
-                }
-            } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
-                    httpParams, value[k], key != null ? `${key}.${k}` : k));
-            }
-        } else if (key != null) {
-            httpParams = httpParams.append(key, value);
-        } else {
-            throw Error("key may not be null if value is not object or array");
-        }
-        return httpParams;
-    }
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (continuationToken !== undefined && continuationToken !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>continuationToken, 'continuation_token');
+		}
+		if (limit !== undefined && limit !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>limit, 'limit');
+		}
+		if (orderby !== undefined && orderby !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>orderby, 'orderby');
+		}
 
-    /**
-     * Returns one single quick share (from ID)
-     * @param id The ID of the quick share.
-     * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
-     * @param limit This number limits the page result of assets.
-     * @param orderby How the return assets are sorted. Default is property: created_date (newest first).
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpQuickShareGetById(id: string, continuationToken?: string, limit?: number, orderby?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<QuickShareFull>;
-    public httpQuickShareGetById(id: string, continuationToken?: string, limit?: number, orderby?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<QuickShareFull>>;
-    public httpQuickShareGetById(id: string, continuationToken?: string, limit?: number, orderby?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<QuickShareFull>>;
-    public httpQuickShareGetById(id: string, continuationToken?: string, limit?: number, orderby?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpQuickShareGetById.');
-        }
+		let headers = this.defaultHeaders;
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (continuationToken !== undefined && continuationToken !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>continuationToken, 'continuation_token');
-        }
-        if (limit !== undefined && limit !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>limit, 'limit');
-        }
-        if (orderby !== undefined && orderby !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>orderby, 'orderby');
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let headers = this.defaultHeaders;
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+		return this.httpClient.get<QuickShareFull>(`${this.configuration.basePath}/quickshares/${encodeURIComponent(String(id))}`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
+	/**
+	 * Returns one single shared collection (from ID)
+	 * @param id The ID of the shared collection.
+	 * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
+	 * @param limit This number limits the page result of assets.
+	 * @param orderby How the return assets are sorted. Default is property: created_date (newest first).
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpSharedCollectionsGetById(
+		id: string,
+		continuationToken?: string,
+		limit?: number,
+		orderby?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SharedCollectionFull>;
+	public httpSharedCollectionsGetById(
+		id: string,
+		continuationToken?: string,
+		limit?: number,
+		orderby?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SharedCollectionFull>>;
+	public httpSharedCollectionsGetById(
+		id: string,
+		continuationToken?: string,
+		limit?: number,
+		orderby?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SharedCollectionFull>>;
+	public httpSharedCollectionsGetById(
+		id: string,
+		continuationToken?: string,
+		limit?: number,
+		orderby?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpSharedCollectionsGetById.');
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (continuationToken !== undefined && continuationToken !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>continuationToken, 'continuation_token');
+		}
+		if (limit !== undefined && limit !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>limit, 'limit');
+		}
+		if (orderby !== undefined && orderby !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>orderby, 'orderby');
+		}
 
-        return this.httpClient.get<QuickShareFull>(`${this.configuration.basePath}/quickshares/${encodeURIComponent(String(id))}`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
+		let headers = this.defaultHeaders;
 
-    /**
-     * Returns one single shared collection (from ID)
-     * @param id The ID of the shared collection.
-     * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
-     * @param limit This number limits the page result of assets.
-     * @param orderby How the return assets are sorted. Default is property: created_date (newest first).
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpSharedCollectionsGetById(id: string, continuationToken?: string, limit?: number, orderby?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<SharedCollectionFull>;
-    public httpSharedCollectionsGetById(id: string, continuationToken?: string, limit?: number, orderby?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<SharedCollectionFull>>;
-    public httpSharedCollectionsGetById(id: string, continuationToken?: string, limit?: number, orderby?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<SharedCollectionFull>>;
-    public httpSharedCollectionsGetById(id: string, continuationToken?: string, limit?: number, orderby?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpSharedCollectionsGetById.');
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (continuationToken !== undefined && continuationToken !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>continuationToken, 'continuation_token');
-        }
-        if (limit !== undefined && limit !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>limit, 'limit');
-        }
-        if (orderby !== undefined && orderby !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>orderby, 'orderby');
-        }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        let headers = this.defaultHeaders;
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<SharedCollectionFull>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
+		return this.httpClient.get<SharedCollectionFull>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 }

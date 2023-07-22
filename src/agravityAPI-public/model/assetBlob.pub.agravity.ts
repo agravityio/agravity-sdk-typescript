@@ -11,72 +11,69 @@
  */
 import { Metadata } from './metadata.pub.agravity';
 
-
-export interface AssetBlob { 
-    blob_type?: AssetBlob.BlobTypeEnum;
-    name?: string;
-    container?: string;
-    size?: number;
-    extension?: string;
-    content_type?: string;
-    md5?: string;
-    techdata?: Array<Metadata>;
-    add_data?: Array<Metadata>;
-    width?: number | null;
-    height?: number | null;
-    maxwidthheight?: number | null;
-    quality?: number | null;
-    orientation?: AssetBlob.OrientationEnum | null;
-    colorspace?: string;
-    profile?: string;
-    transparency?: boolean | null;
-    mode?: string;
-    target?: string;
-    filter?: string;
-    dpi_x?: number | null;
-    dpi_y?: number | null;
-    perhash?: string;
-    dominantcolor?: string;
-    depth?: number | null;
-    animated?: boolean | null;
-    duration?: number | null;
-    videocodec?: string;
-    videobitrate?: number | null;
-    fps?: number | null;
-    colormode?: string;
-    audiocodec?: string;
-    audiosamplerate?: string;
-    audiochanneloutput?: string;
-    audiobitrate?: number | null;
-    author?: string;
-    language?: string;
-    wordcount?: number | null;
-    pages?: number | null;
-    title?: string;
-    encoding_name?: string;
-    encoding_code?: string;
-    url?: string;
-    size_readable?: string;
-    downloadable?: boolean | null;
-    expires?: string | null;
+export interface AssetBlob {
+	blob_type?: AssetBlob.BlobTypeEnum;
+	name?: string;
+	container?: string;
+	size?: number;
+	extension?: string;
+	content_type?: string;
+	md5?: string;
+	techdata?: Array<Metadata>;
+	add_data?: Array<Metadata>;
+	width?: number | null;
+	height?: number | null;
+	maxwidthheight?: number | null;
+	quality?: number | null;
+	orientation?: AssetBlob.OrientationEnum | null;
+	colorspace?: string;
+	profile?: string;
+	transparency?: boolean | null;
+	mode?: string;
+	target?: string;
+	filter?: string;
+	dpi_x?: number | null;
+	dpi_y?: number | null;
+	perhash?: string;
+	dominantcolor?: string;
+	depth?: number | null;
+	animated?: boolean | null;
+	duration?: number | null;
+	videocodec?: string;
+	videobitrate?: number | null;
+	fps?: number | null;
+	colormode?: string;
+	audiocodec?: string;
+	audiosamplerate?: string;
+	audiochanneloutput?: string;
+	audiobitrate?: number | null;
+	author?: string;
+	language?: string;
+	wordcount?: number | null;
+	pages?: number | null;
+	title?: string;
+	encoding_name?: string;
+	encoding_code?: string;
+	url?: string;
+	size_readable?: string;
+	downloadable?: boolean | null;
+	expires?: string | null;
 }
 export namespace AssetBlob {
-    export type BlobTypeEnum = 'UNKNOWN' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT' | 'TEXT' | 'OTHER';
-    export const BlobTypeEnum = {
-        Unknown: 'UNKNOWN' as BlobTypeEnum,
-        Image: 'IMAGE' as BlobTypeEnum,
-        Video: 'VIDEO' as BlobTypeEnum,
-        Audio: 'AUDIO' as BlobTypeEnum,
-        Document: 'DOCUMENT' as BlobTypeEnum,
-        Text: 'TEXT' as BlobTypeEnum,
-        Other: 'OTHER' as BlobTypeEnum
-    };
-    export type OrientationEnum = 'PORTRAIT' | 'LANDSCAPE' | 'SQUARE';
-    export const OrientationEnum = {
-        Portrait: 'PORTRAIT' as OrientationEnum,
-        Landscape: 'LANDSCAPE' as OrientationEnum,
-        Square: 'SQUARE' as OrientationEnum
-    };
+	export type BlobTypeEnum = 'UNKNOWN' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT' | 'TEXT' | 'OTHER';
+	export const BlobTypeEnum = {
+		Unknown: 'UNKNOWN' as BlobTypeEnum,
+		Image: 'IMAGE' as BlobTypeEnum,
+		Video: 'VIDEO' as BlobTypeEnum,
+		Audio: 'AUDIO' as BlobTypeEnum,
+		Document: 'DOCUMENT' as BlobTypeEnum,
+		Text: 'TEXT' as BlobTypeEnum,
+		Other: 'OTHER' as BlobTypeEnum
+	};
+	export type OrientationEnum = 'PORTRAIT' | 'LANDSCAPE' | 'SQUARE';
+	export const OrientationEnum = {
+		Portrait: 'PORTRAIT' as OrientationEnum,
+		Landscape: 'LANDSCAPE' as OrientationEnum,
+		Square: 'SQUARE' as OrientationEnum
+	};
 }
-
-

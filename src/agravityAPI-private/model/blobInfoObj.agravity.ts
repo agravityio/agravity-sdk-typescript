@@ -10,14 +10,12 @@
  * Do not edit the class manually.
  */
 
-
-export interface BlobInfoObj { 
-    index?: number;
-    containerName?: string;
-    blobName?: string;
-    contentType?: string;
-    lastModified?: string | null;
-    size?: number;
-    url?: string;
+export interface BlobInfoObj {
+	index?: number;
+	containerName?: string;
+	blobName?: string;
+	contentType?: string;
+	lastModified?: string | null;
+	size?: number;
+	url?: string;
 }
-

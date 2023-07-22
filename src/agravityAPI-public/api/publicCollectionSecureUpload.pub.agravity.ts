@@ -11,219 +11,233 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec } from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
+import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
 import { Asset } from '../model/models';
 import { SecureUploadEntity } from '../model/models';
 
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { AgravityPublicConfiguration }                                     from '../configuration';
-
-
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { AgravityPublicConfiguration } from '../configuration';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class PublicCollectionSecureUploadService {
+	protected basePath = 'http://localhost:7072/api';
+	public defaultHeaders = new HttpHeaders();
+	public configuration = new AgravityPublicConfiguration();
+	public encoder: HttpParameterCodec;
 
-    protected basePath = 'http://localhost:7072/api';
-    public defaultHeaders = new HttpHeaders();
-    public configuration = new AgravityPublicConfiguration();
-    public encoder: HttpParameterCodec;
+	constructor(
+		protected httpClient: HttpClient,
+		@Optional() @Inject(BASE_PATH) basePath: string,
+		@Optional() configuration: AgravityPublicConfiguration
+	) {
+		if (configuration) {
+			this.configuration = configuration;
+		}
+		if (typeof this.configuration.basePath !== 'string') {
+			if (typeof basePath !== 'string') {
+				basePath = this.basePath;
+			}
+			this.configuration.basePath = basePath;
+		}
+		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+	}
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: AgravityPublicConfiguration) {
-        if (configuration) {
-            this.configuration = configuration;
-        }
-        if (typeof this.configuration.basePath !== 'string') {
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
-            }
-            this.configuration.basePath = basePath;
-        }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-    }
+	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
+		if (typeof value === 'object' && value instanceof Date === false) {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value);
+		} else {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+		}
+		return httpParams;
+	}
 
+	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
+		if (value == null) {
+			return httpParams;
+		}
 
-    private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-        if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
-        } else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-        }
-        return httpParams;
-    }
+		if (typeof value === 'object') {
+			if (Array.isArray(value)) {
+				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
+			} else if (value instanceof Date) {
+				if (key != null) {
+					httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10));
+				} else {
+					throw Error('key may not be null if value is Date');
+				}
+			} else {
+				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
+			}
+		} else if (key != null) {
+			httpParams = httpParams.append(key, value);
+		} else {
+			throw Error('key may not be null if value is not object or array');
+		}
+		return httpParams;
+	}
 
-    private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-        if (value == null) {
-            return httpParams;
-        }
+	/**
+	 * Searchs for one single secure upload entity of an user and returns simple OK if found.
+	 * @param id The ID of the secure upload collection.
+	 * @param code The API key to access this endpoint. (Alternative using header x-function-keys with same value)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpSecureUploadEntityCheckById(id: string, code: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SecureUploadEntity>;
+	public httpSecureUploadEntityCheckById(
+		id: string,
+		code: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SecureUploadEntity>>;
+	public httpSecureUploadEntityCheckById(
+		id: string,
+		code: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SecureUploadEntity>>;
+	public httpSecureUploadEntityCheckById(id: string, code: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpSecureUploadEntityCheckById.');
+		}
+		if (code === null || code === undefined) {
+			throw new Error('Required parameter code was null or undefined when calling httpSecureUploadEntityCheckById.');
+		}
 
-        if (typeof value === "object") {
-            if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
-            } else if (value instanceof Date) {
-                if (key != null) {
-                    httpParams = httpParams.append(key,
-                        (value as Date).toISOString().substr(0, 10));
-                } else {
-                   throw Error("key may not be null if value is Date");
-                }
-            } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
-                    httpParams, value[k], key != null ? `${key}.${k}` : k));
-            }
-        } else if (key != null) {
-            httpParams = httpParams.append(key, value);
-        } else {
-            throw Error("key may not be null if value is not object or array");
-        }
-        return httpParams;
-    }
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (code !== undefined && code !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>code, 'code');
+		}
 
-    /**
-     * Searchs for one single secure upload entity of an user and returns simple OK if found.
-     * @param id The ID of the secure upload collection.
-     * @param code The API key to access this endpoint. (Alternative using header x-function-keys with same value)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpSecureUploadEntityCheckById(id: string, code: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<SecureUploadEntity>;
-    public httpSecureUploadEntityCheckById(id: string, code: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<SecureUploadEntity>>;
-    public httpSecureUploadEntityCheckById(id: string, code: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<SecureUploadEntity>>;
-    public httpSecureUploadEntityCheckById(id: string, code: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpSecureUploadEntityCheckById.');
-        }
-        if (code === null || code === undefined) {
-            throw new Error('Required parameter code was null or undefined when calling httpSecureUploadEntityCheckById.');
-        }
+		let headers = this.defaultHeaders;
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (code !== undefined && code !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>code, 'code');
-        }
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
 
-        let headers = this.defaultHeaders;
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let credential: string | undefined;
-        // authentication (function_key) required
-        credential = this.configuration.lookupCredential('function_key');
-        if (credential) {
-            headers = headers.set('x-functions-key', credential);
-        }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+		return this.httpClient.get<SecureUploadEntity>(`${this.configuration.basePath}/secureupload/${encodeURIComponent(String(id))}`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
+	/**
+	 * This endpoint allows to securly upload one asset which is put onto the storage (INBOX). Object has to be FormData (Add file).
+	 * @param id The ID of the secure upload collection.
+	 * @param code The API key to access this endpoint. (Alternative using header x-function-keys with same value)
+	 * @param body This endpoint allows to upload one asset which is put onto the storage (INBOX). Object has to be FormData (Add file).
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpSecureUploadFileById(id: string, code: string, body: object, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Asset>;
+	public httpSecureUploadFileById(
+		id: string,
+		code: string,
+		body: object,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Asset>>;
+	public httpSecureUploadFileById(
+		id: string,
+		code: string,
+		body: object,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Asset>>;
+	public httpSecureUploadFileById(
+		id: string,
+		code: string,
+		body: object,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpSecureUploadFileById.');
+		}
+		if (code === null || code === undefined) {
+			throw new Error('Required parameter code was null or undefined when calling httpSecureUploadFileById.');
+		}
+		if (body === null || body === undefined) {
+			throw new Error('Required parameter body was null or undefined when calling httpSecureUploadFileById.');
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (code !== undefined && code !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>code, 'code');
+		}
 
-        return this.httpClient.get<SecureUploadEntity>(`${this.configuration.basePath}/secureupload/${encodeURIComponent(String(id))}`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
+		let headers = this.defaultHeaders;
 
-    /**
-     * This endpoint allows to securly upload one asset which is put onto the storage (INBOX). Object has to be FormData (Add file).
-     * @param id The ID of the secure upload collection.
-     * @param code The API key to access this endpoint. (Alternative using header x-function-keys with same value)
-     * @param body This endpoint allows to upload one asset which is put onto the storage (INBOX). Object has to be FormData (Add file).
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpSecureUploadFileById(id: string, code: string, body: object, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Asset>;
-    public httpSecureUploadFileById(id: string, code: string, body: object, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Asset>>;
-    public httpSecureUploadFileById(id: string, code: string, body: object, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Asset>>;
-    public httpSecureUploadFileById(id: string, code: string, body: object, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpSecureUploadFileById.');
-        }
-        if (code === null || code === undefined) {
-            throw new Error('Required parameter code was null or undefined when calling httpSecureUploadFileById.');
-        }
-        if (body === null || body === undefined) {
-            throw new Error('Required parameter body was null or undefined when calling httpSecureUploadFileById.');
-        }
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (code !== undefined && code !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>code, 'code');
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let headers = this.defaultHeaders;
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			// headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
 
-        let credential: string | undefined;
-        // authentication (function_key) required
-        credential = this.configuration.lookupCredential('function_key');
-        if (credential) {
-            headers = headers.set('x-functions-key', credential);
-        }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            // headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.post<Asset>(`${this.configuration.basePath}/secureupload/${encodeURIComponent(String(id))}/upload`,
-            body,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
+		return this.httpClient.post<Asset>(`${this.configuration.basePath}/secureupload/${encodeURIComponent(String(id))}/upload`, body, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 }

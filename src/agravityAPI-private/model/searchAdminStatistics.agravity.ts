@@ -10,9 +10,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface SearchAdminStatistics { 
-    documentcount?: number;
-    storagesizebytes?: number;
+export interface SearchAdminStatistics {
+	documentcount?: number;
+	storagesizebytes?: number;
 }
-

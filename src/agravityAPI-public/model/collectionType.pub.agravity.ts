@@ -12,24 +12,22 @@
 import { EntityId } from './entityId.pub.agravity';
 import { CollTypeItem } from './collTypeItem.pub.agravity';
 
-
-export interface CollectionType { 
-    id?: string;
-    entity_type?: string;
-    name?: string;
-    items?: Array<CollTypeItem>;
-    translations?: { [key: string]: { [key: string]: object; }; };
-    order?: number | null;
-    permissions?: Array<EntityId>;
-    permissionless?: boolean | null;
-    description?: string;
-    add_properties?: { [key: string]: any; };
-    status?: string;
-    created_date?: string | null;
-    created_by?: string;
-    modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+export interface CollectionType {
+	id?: string;
+	entity_type?: string;
+	name?: string;
+	items?: Array<CollTypeItem>;
+	translations?: { [key: string]: { [key: string]: object } };
+	order?: number | null;
+	permissions?: Array<EntityId>;
+	permissionless?: boolean | null;
+	description?: string;
+	add_properties?: { [key: string]: any };
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
-

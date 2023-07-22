@@ -10,16 +10,14 @@
  * Do not edit the class manually.
  */
 
-
-export interface AppConfigTableEntity { 
-    key?: string;
-    value?: string;
-    default_value?: string;
-    api_version?: string;
-    description?: string;
-    content_type?: string;
-    partitionkey?: string;
-    is_frontend?: boolean;
-    timestamp?: string | null;
+export interface AppConfigTableEntity {
+	key?: string;
+	value?: string;
+	default_value?: string;
+	api_version?: string;
+	description?: string;
+	content_type?: string;
+	partitionkey?: string;
+	is_frontend?: boolean;
+	timestamp?: string | null;
 }
-

@@ -11,390 +11,424 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec } from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
+import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
 import { AssetIconRule } from '../model/models';
 
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { AgravityConfiguration }                                     from '../configuration';
-
-
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { AgravityConfiguration } from '../configuration';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class AssetIconRuleManagementService {
+	protected basePath = 'http://localhost:7071/api';
+	public defaultHeaders = new HttpHeaders();
+	public configuration = new AgravityConfiguration();
+	public encoder: HttpParameterCodec;
 
-    protected basePath = 'http://localhost:7071/api';
-    public defaultHeaders = new HttpHeaders();
-    public configuration = new AgravityConfiguration();
-    public encoder: HttpParameterCodec;
+	constructor(
+		protected httpClient: HttpClient,
+		@Optional() @Inject(BASE_PATH) basePath: string,
+		@Optional() configuration: AgravityConfiguration
+	) {
+		if (configuration) {
+			this.configuration = configuration;
+		}
+		if (typeof this.configuration.basePath !== 'string') {
+			if (typeof basePath !== 'string') {
+				basePath = this.basePath;
+			}
+			this.configuration.basePath = basePath;
+		}
+		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+	}
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: AgravityConfiguration) {
-        if (configuration) {
-            this.configuration = configuration;
-        }
-        if (typeof this.configuration.basePath !== 'string') {
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
-            }
-            this.configuration.basePath = basePath;
-        }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-    }
+	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
+		if (typeof value === 'object' && value instanceof Date === false) {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value);
+		} else {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+		}
+		return httpParams;
+	}
 
+	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
+		if (value == null) {
+			return httpParams;
+		}
 
-    private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-        if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
-        } else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-        }
-        return httpParams;
-    }
+		if (typeof value === 'object') {
+			if (Array.isArray(value)) {
+				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
+			} else if (value instanceof Date) {
+				if (key != null) {
+					httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10));
+				} else {
+					throw Error('key may not be null if value is Date');
+				}
+			} else {
+				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
+			}
+		} else if (key != null) {
+			httpParams = httpParams.append(key, value);
+		} else {
+			throw Error('key may not be null if value is not object or array');
+		}
+		return httpParams;
+	}
 
-    private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-        if (value == null) {
-            return httpParams;
-        }
+	/**
+	 * This endpoint creates one asset icon rule entry in the database.
+	 * @param assetIconRule This endpoint creates an asset icon rule ID and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetIconRuleCreate(
+		assetIconRule: AssetIconRule,
+		translations?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AssetIconRule>;
+	public httpAssetIconRuleCreate(
+		assetIconRule: AssetIconRule,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AssetIconRule>>;
+	public httpAssetIconRuleCreate(
+		assetIconRule: AssetIconRule,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AssetIconRule>>;
+	public httpAssetIconRuleCreate(
+		assetIconRule: AssetIconRule,
+		translations?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (assetIconRule === null || assetIconRule === undefined) {
+			throw new Error('Required parameter assetIconRule was null or undefined when calling httpAssetIconRuleCreate.');
+		}
 
-        if (typeof value === "object") {
-            if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
-            } else if (value instanceof Date) {
-                if (key != null) {
-                    httpParams = httpParams.append(key,
-                        (value as Date).toISOString().substr(0, 10));
-                } else {
-                   throw Error("key may not be null if value is Date");
-                }
-            } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
-                    httpParams, value[k], key != null ? `${key}.${k}` : k));
-            }
-        } else if (key != null) {
-            httpParams = httpParams.append(key, value);
-        } else {
-            throw Error("key may not be null if value is not object or array");
-        }
-        return httpParams;
-    }
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
 
-    /**
-     * This endpoint creates one asset icon rule entry in the database.
-     * @param assetIconRule This endpoint creates an asset icon rule ID and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpAssetIconRuleCreate(assetIconRule: AssetIconRule, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AssetIconRule>;
-    public httpAssetIconRuleCreate(assetIconRule: AssetIconRule, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AssetIconRule>>;
-    public httpAssetIconRuleCreate(assetIconRule: AssetIconRule, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AssetIconRule>>;
-    public httpAssetIconRuleCreate(assetIconRule: AssetIconRule, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (assetIconRule === null || assetIconRule === undefined) {
-            throw new Error('Required parameter assetIconRule was null or undefined when calling httpAssetIconRuleCreate.');
-        }
+		let headers = this.defaultHeaders;
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-        let headers = this.defaultHeaders;
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
+		return this.httpClient.post<AssetIconRule>(`${this.configuration.basePath}/asseticonrules`, assetIconRule, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
+	/**
+	 * This endpoint deletes a single asset icon rule.
+	 * @param id The ID of the asset icon rule.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetIconRuleDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
+	public httpAssetIconRuleDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
+	public httpAssetIconRuleDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
+	public httpAssetIconRuleDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpAssetIconRuleDeleteById.');
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let headers = this.defaultHeaders;
 
-        return this.httpClient.post<AssetIconRule>(`${this.configuration.basePath}/asseticonrules`,
-            assetIconRule,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-    /**
-     * This endpoint deletes a single asset icon rule.
-     * @param id The ID of the asset icon rule.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpAssetIconRuleDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
-    public httpAssetIconRuleDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
-    public httpAssetIconRuleDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
-    public httpAssetIconRuleDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpAssetIconRuleDeleteById.');
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let headers = this.defaultHeaders;
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		return this.httpClient.delete<any>(`${this.configuration.basePath}/asseticonrules/${encodeURIComponent(String(id))}`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+	/**
+	 * This endpoint updates a single asset icon rule. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
+	 * @param id The ID of the asset icon rule.
+	 * @param assetIconRule This endpoint updates an asset icon rule and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetIconRuleUpdateById(
+		id: string,
+		assetIconRule: AssetIconRule,
+		translations?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AssetIconRule>;
+	public httpAssetIconRuleUpdateById(
+		id: string,
+		assetIconRule: AssetIconRule,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AssetIconRule>>;
+	public httpAssetIconRuleUpdateById(
+		id: string,
+		assetIconRule: AssetIconRule,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AssetIconRule>>;
+	public httpAssetIconRuleUpdateById(
+		id: string,
+		assetIconRule: AssetIconRule,
+		translations?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpAssetIconRuleUpdateById.');
+		}
+		if (assetIconRule === null || assetIconRule === undefined) {
+			throw new Error('Required parameter assetIconRule was null or undefined when calling httpAssetIconRuleUpdateById.');
+		}
 
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let headers = this.defaultHeaders;
 
-        return this.httpClient.delete<any>(`${this.configuration.basePath}/asseticonrules/${encodeURIComponent(String(id))}`,
-            {
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-    /**
-     * This endpoint updates a single asset icon rule. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
-     * @param id The ID of the asset icon rule.
-     * @param assetIconRule This endpoint updates an asset icon rule and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpAssetIconRuleUpdateById(id: string, assetIconRule: AssetIconRule, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AssetIconRule>;
-    public httpAssetIconRuleUpdateById(id: string, assetIconRule: AssetIconRule, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AssetIconRule>>;
-    public httpAssetIconRuleUpdateById(id: string, assetIconRule: AssetIconRule, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AssetIconRule>>;
-    public httpAssetIconRuleUpdateById(id: string, assetIconRule: AssetIconRule, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpAssetIconRuleUpdateById.');
-        }
-        if (assetIconRule === null || assetIconRule === undefined) {
-            throw new Error('Required parameter assetIconRule was null or undefined when calling httpAssetIconRuleUpdateById.');
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
 
-        let headers = this.defaultHeaders;
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		return this.httpClient.post<AssetIconRule>(`${this.configuration.basePath}/asseticonrules/${encodeURIComponent(String(id))}`, assetIconRule, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+	/**
+	 * This endpoint lists all asset icon rules in database.
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetIconRulesGetAll(translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<AssetIconRule>>;
+	public httpAssetIconRulesGetAll(
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<AssetIconRule>>>;
+	public httpAssetIconRulesGetAll(
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<AssetIconRule>>>;
+	public httpAssetIconRulesGetAll(translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
 
+		let headers = this.defaultHeaders;
 
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        return this.httpClient.post<AssetIconRule>(`${this.configuration.basePath}/asseticonrules/${encodeURIComponent(String(id))}`,
-            assetIconRule,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-    /**
-     * This endpoint lists all asset icon rules in database.
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpAssetIconRulesGetAll(translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<AssetIconRule>>;
-    public httpAssetIconRulesGetAll(translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<AssetIconRule>>>;
-    public httpAssetIconRulesGetAll(translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<AssetIconRule>>>;
-    public httpAssetIconRulesGetAll(translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+		return this.httpClient.get<Array<AssetIconRule>>(`${this.configuration.basePath}/asseticonrules`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
+	/**
+	 * This endpoint gets a single asset icon rule from the database.
+	 * @param id The ID of the asset icon rule.
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetIconRulesGetById(id: string, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetIconRule>;
+	public httpAssetIconRulesGetById(
+		id: string,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AssetIconRule>>;
+	public httpAssetIconRulesGetById(
+		id: string,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AssetIconRule>>;
+	public httpAssetIconRulesGetById(id: string, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpAssetIconRulesGetById.');
+		}
 
-        let headers = this.defaultHeaders;
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		let headers = this.defaultHeaders;
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        return this.httpClient.get<Array<AssetIconRule>>(`${this.configuration.basePath}/asseticonrules`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint gets a single asset icon rule from the database.
-     * @param id The ID of the asset icon rule.
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpAssetIconRulesGetById(id: string, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AssetIconRule>;
-    public httpAssetIconRulesGetById(id: string, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AssetIconRule>>;
-    public httpAssetIconRulesGetById(id: string, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AssetIconRule>>;
-    public httpAssetIconRulesGetById(id: string, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpAssetIconRulesGetById.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<AssetIconRule>(`${this.configuration.basePath}/asseticonrules/${encodeURIComponent(String(id))}`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
+		return this.httpClient.get<AssetIconRule>(`${this.configuration.basePath}/asseticonrules/${encodeURIComponent(String(id))}`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 }

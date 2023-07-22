@@ -10,20 +10,17 @@
  * Do not edit the class manually.
  */
 
-
-export interface PermissionChange { 
-    ids?: Array<string>;
-    modify?: PermissionChange.ModifyEnum;
+export interface PermissionChange {
+	ids?: Array<string>;
+	modify?: PermissionChange.ModifyEnum;
 }
 export namespace PermissionChange {
-    export type ModifyEnum = 0 | 1 | 2 | 3 | 4;
-    export const ModifyEnum = {
-        NUMBER_0: 0 as ModifyEnum,
-        NUMBER_1: 1 as ModifyEnum,
-        NUMBER_2: 2 as ModifyEnum,
-        NUMBER_3: 3 as ModifyEnum,
-        NUMBER_4: 4 as ModifyEnum
-    };
+	export type ModifyEnum = 0 | 1 | 2 | 3 | 4;
+	export const ModifyEnum = {
+		NUMBER_0: 0 as ModifyEnum,
+		NUMBER_1: 1 as ModifyEnum,
+		NUMBER_2: 2 as ModifyEnum,
+		NUMBER_3: 3 as ModifyEnum,
+		NUMBER_4: 4 as ModifyEnum
+	};
 }
-
-

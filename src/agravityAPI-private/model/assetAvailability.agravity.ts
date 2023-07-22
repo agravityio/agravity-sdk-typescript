@@ -10,10 +10,8 @@
  * Do not edit the class manually.
  */
 
-
-export interface AssetAvailability { 
-    availability?: string;
-    available_from?: string | null;
-    available_to?: string | null;
+export interface AssetAvailability {
+	availability?: string;
+	available_from?: string | null;
+	available_to?: string | null;
 }
-

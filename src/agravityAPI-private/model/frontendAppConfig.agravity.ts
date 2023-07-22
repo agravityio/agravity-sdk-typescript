@@ -10,12 +10,10 @@
  * Do not edit the class manually.
  */
 
-
-export interface FrontendAppConfig { 
-    key?: string;
-    value?: string;
-    description?: string;
-    contentType?: string;
-    sinceApiVersion?: string;
+export interface FrontendAppConfig {
+	key?: string;
+	value?: string;
+	description?: string;
+	contentType?: string;
+	sinceApiVersion?: string;
 }
-

@@ -11,301 +11,306 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec } from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
+import { Observable } from 'rxjs';
 
 import { AppConfigTableEntity } from '../model/models';
 import { FrontendAppConfig } from '../model/models';
 
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { AgravityConfiguration }                                     from '../configuration';
-
-
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { AgravityConfiguration } from '../configuration';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class ConfigurationManagementService {
+	protected basePath = 'http://localhost:7071/api';
+	public defaultHeaders = new HttpHeaders();
+	public configuration = new AgravityConfiguration();
+	public encoder: HttpParameterCodec;
 
-    protected basePath = 'http://localhost:7071/api';
-    public defaultHeaders = new HttpHeaders();
-    public configuration = new AgravityConfiguration();
-    public encoder: HttpParameterCodec;
+	constructor(
+		protected httpClient: HttpClient,
+		@Optional() @Inject(BASE_PATH) basePath: string,
+		@Optional() configuration: AgravityConfiguration
+	) {
+		if (configuration) {
+			this.configuration = configuration;
+		}
+		if (typeof this.configuration.basePath !== 'string') {
+			if (typeof basePath !== 'string') {
+				basePath = this.basePath;
+			}
+			this.configuration.basePath = basePath;
+		}
+		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+	}
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: AgravityConfiguration) {
-        if (configuration) {
-            this.configuration = configuration;
-        }
-        if (typeof this.configuration.basePath !== 'string') {
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
-            }
-            this.configuration.basePath = basePath;
-        }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-    }
+	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
+		if (typeof value === 'object' && value instanceof Date === false) {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value);
+		} else {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+		}
+		return httpParams;
+	}
 
+	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
+		if (value == null) {
+			return httpParams;
+		}
 
-    private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-        if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
-        } else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-        }
-        return httpParams;
-    }
+		if (typeof value === 'object') {
+			if (Array.isArray(value)) {
+				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
+			} else if (value instanceof Date) {
+				if (key != null) {
+					httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10));
+				} else {
+					throw Error('key may not be null if value is Date');
+				}
+			} else {
+				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
+			}
+		} else if (key != null) {
+			httpParams = httpParams.append(key, value);
+		} else {
+			throw Error('key may not be null if value is not object or array');
+		}
+		return httpParams;
+	}
 
-    private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-        if (value == null) {
-            return httpParams;
-        }
+	/**
+	 * Lists all config values stored in config table
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpConfigGetAll(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<AppConfigTableEntity>>;
+	public httpConfigGetAll(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<AppConfigTableEntity>>>;
+	public httpConfigGetAll(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<AppConfigTableEntity>>>;
+	public httpConfigGetAll(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let headers = this.defaultHeaders;
 
-        if (typeof value === "object") {
-            if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
-            } else if (value instanceof Date) {
-                if (key != null) {
-                    httpParams = httpParams.append(key,
-                        (value as Date).toISOString().substr(0, 10));
-                } else {
-                   throw Error("key may not be null if value is Date");
-                }
-            } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
-                    httpParams, value[k], key != null ? `${key}.${k}` : k));
-            }
-        } else if (key != null) {
-            httpParams = httpParams.append(key, value);
-        } else {
-            throw Error("key may not be null if value is not object or array");
-        }
-        return httpParams;
-    }
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-    /**
-     * Lists all config values stored in config table
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpConfigGetAll(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<AppConfigTableEntity>>;
-    public httpConfigGetAll(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<AppConfigTableEntity>>>;
-    public httpConfigGetAll(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<AppConfigTableEntity>>>;
-    public httpConfigGetAll(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let headers = this.defaultHeaders;
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		return this.httpClient.get<Array<AppConfigTableEntity>>(`${this.configuration.basePath}/config`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+	/**
+	 * Lists config value only for frontend stored in config table
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpConfigGetFrontendAll(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<FrontendAppConfig>>;
+	public httpConfigGetFrontendAll(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<FrontendAppConfig>>>;
+	public httpConfigGetFrontendAll(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<FrontendAppConfig>>>;
+	public httpConfigGetFrontendAll(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let headers = this.defaultHeaders;
 
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        return this.httpClient.get<Array<AppConfigTableEntity>>(`${this.configuration.basePath}/config`,
-            {
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-    /**
-     * Lists config value only for frontend stored in config table
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpConfigGetFrontendAll(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<FrontendAppConfig>>;
-    public httpConfigGetFrontendAll(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<FrontendAppConfig>>>;
-    public httpConfigGetFrontendAll(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<FrontendAppConfig>>>;
-    public httpConfigGetFrontendAll(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+		return this.httpClient.get<Array<FrontendAppConfig>>(`${this.configuration.basePath}/config/frontend`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        let headers = this.defaultHeaders;
+	/**
+	 * This initializes all configurations and write them into appconfig table.
+	 * @param key The key of the configuration.
+	 * @param addconfigqueues Comma separated queue-names (have to start with \&#39;setup-\&#39;).
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpConfigUpdate(key: string, addconfigqueues?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AppConfigTableEntity>;
+	public httpConfigUpdate(
+		key: string,
+		addconfigqueues?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AppConfigTableEntity>>;
+	public httpConfigUpdate(
+		key: string,
+		addconfigqueues?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AppConfigTableEntity>>;
+	public httpConfigUpdate(key: string, addconfigqueues?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (key === null || key === undefined) {
+			throw new Error('Required parameter key was null or undefined when calling httpConfigUpdate.');
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (addconfigqueues !== undefined && addconfigqueues !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>addconfigqueues, 'addconfigqueues');
+		}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+		let headers = this.defaultHeaders;
 
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        return this.httpClient.get<Array<FrontendAppConfig>>(`${this.configuration.basePath}/config/frontend`,
-            {
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-    /**
-     * This initializes all configurations and write them into appconfig table.
-     * @param key The key of the configuration.
-     * @param addconfigqueues Comma separated queue-names (have to start with \&#39;setup-\&#39;).
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpConfigUpdate(key: string, addconfigqueues?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AppConfigTableEntity>;
-    public httpConfigUpdate(key: string, addconfigqueues?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AppConfigTableEntity>>;
-    public httpConfigUpdate(key: string, addconfigqueues?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AppConfigTableEntity>>;
-    public httpConfigUpdate(key: string, addconfigqueues?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (key === null || key === undefined) {
-            throw new Error('Required parameter key was null or undefined when calling httpConfigUpdate.');
-        }
+		return this.httpClient.post<AppConfigTableEntity>(`${this.configuration.basePath}/config`, null, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (addconfigqueues !== undefined && addconfigqueues !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>addconfigqueues, 'addconfigqueues');
-        }
+	/**
+	 * Update an existing config value with the given key. (Only value, content-type and description)
+	 * @param key The key of the configuration.
+	 * @param appConfigTableEntity The body has just to contain: value, content_type and/or description
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpConfigUpdateSingle(
+		key: string,
+		appConfigTableEntity: AppConfigTableEntity,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AppConfigTableEntity>;
+	public httpConfigUpdateSingle(
+		key: string,
+		appConfigTableEntity: AppConfigTableEntity,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AppConfigTableEntity>>;
+	public httpConfigUpdateSingle(
+		key: string,
+		appConfigTableEntity: AppConfigTableEntity,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AppConfigTableEntity>>;
+	public httpConfigUpdateSingle(
+		key: string,
+		appConfigTableEntity: AppConfigTableEntity,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (key === null || key === undefined) {
+			throw new Error('Required parameter key was null or undefined when calling httpConfigUpdateSingle.');
+		}
+		if (appConfigTableEntity === null || appConfigTableEntity === undefined) {
+			throw new Error('Required parameter appConfigTableEntity was null or undefined when calling httpConfigUpdateSingle.');
+		}
 
-        let headers = this.defaultHeaders;
+		let headers = this.defaultHeaders;
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        return this.httpClient.post<AppConfigTableEntity>(`${this.configuration.basePath}/config`,
-            null,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Update an existing config value with the given key. (Only value, content-type and description)
-     * @param key The key of the configuration.
-     * @param appConfigTableEntity The body has just to contain: value, content_type and/or description 
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpConfigUpdateSingle(key: string, appConfigTableEntity: AppConfigTableEntity, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AppConfigTableEntity>;
-    public httpConfigUpdateSingle(key: string, appConfigTableEntity: AppConfigTableEntity, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AppConfigTableEntity>>;
-    public httpConfigUpdateSingle(key: string, appConfigTableEntity: AppConfigTableEntity, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AppConfigTableEntity>>;
-    public httpConfigUpdateSingle(key: string, appConfigTableEntity: AppConfigTableEntity, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (key === null || key === undefined) {
-            throw new Error('Required parameter key was null or undefined when calling httpConfigUpdateSingle.');
-        }
-        if (appConfigTableEntity === null || appConfigTableEntity === undefined) {
-            throw new Error('Required parameter appConfigTableEntity was null or undefined when calling httpConfigUpdateSingle.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.post<AppConfigTableEntity>(`${this.configuration.basePath}/config/${encodeURIComponent(String(key))}`,
-            appConfigTableEntity,
-            {
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
+		return this.httpClient.post<AppConfigTableEntity>(`${this.configuration.basePath}/config/${encodeURIComponent(String(key))}`, appConfigTableEntity, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 }

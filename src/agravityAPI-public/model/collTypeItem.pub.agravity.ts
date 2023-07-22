@@ -10,29 +10,27 @@
  * Do not edit the class manually.
  */
 
-
-export interface CollTypeItem { 
-    id?: string;
-    entity_type?: string;
-    name?: string;
-    item_type?: string;
-    format?: string;
-    label?: string;
-    default_value?: any;
-    mandatory?: boolean | null;
-    searchable?: boolean | null;
-    onlyasset?: boolean | null;
-    multi?: boolean | null;
-    md5?: string;
-    group?: string;
-    order?: number | null;
-    translations?: { [key: string]: { [key: string]: object; }; };
-    status?: string;
-    created_date?: string | null;
-    created_by?: string;
-    modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+export interface CollTypeItem {
+	id?: string;
+	entity_type?: string;
+	name?: string;
+	item_type?: string;
+	format?: string;
+	label?: string;
+	default_value?: any;
+	mandatory?: boolean | null;
+	searchable?: boolean | null;
+	onlyasset?: boolean | null;
+	multi?: boolean | null;
+	md5?: string;
+	group?: string;
+	order?: number | null;
+	translations?: { [key: string]: { [key: string]: object } };
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
-

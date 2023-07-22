@@ -13,35 +13,33 @@ import { CollTypeItem } from './collTypeItem.agravity';
 import { AssetBlob } from './assetBlob.agravity';
 import { ArtificialIntelligenceGroup } from './artificialIntelligenceGroup.agravity';
 
-
-export interface Asset { 
-    id?: string;
-    entity_type?: string;
-    name?: string;
-    asset_type?: string;
-    duplicates?: Array<string>;
-    text_content?: string;
-    ai_groups?: Array<ArtificialIntelligenceGroup>;
-    keywords?: Array<string>;
-    orig_blob?: AssetBlob;
-    blobs?: Array<AssetBlob>;
-    collections?: Array<string>;
-    failed_reason?: string;
-    region_of_origin?: string;
-    availability?: string;
-    available_from?: string | null;
-    available_to?: string | null;
-    custom?: any;
-    items?: Array<CollTypeItem>;
-    translations?: { [key: string]: { [key: string]: object; }; };
-    description?: string;
-    add_properties?: { [key: string]: any; };
-    status?: string;
-    created_date?: string | null;
-    created_by?: string;
-    modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+export interface Asset {
+	id?: string;
+	entity_type?: string;
+	name?: string;
+	asset_type?: string;
+	duplicates?: Array<string>;
+	text_content?: string;
+	ai_groups?: Array<ArtificialIntelligenceGroup>;
+	keywords?: Array<string>;
+	orig_blob?: AssetBlob;
+	blobs?: Array<AssetBlob>;
+	collections?: Array<string>;
+	failed_reason?: string;
+	region_of_origin?: string;
+	availability?: string;
+	available_from?: string | null;
+	available_to?: string | null;
+	custom?: any;
+	items?: Array<CollTypeItem>;
+	translations?: { [key: string]: { [key: string]: object } };
+	description?: string;
+	add_properties?: { [key: string]: any };
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
-

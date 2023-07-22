@@ -12,11 +12,9 @@
 import { Asset } from './asset.agravity';
 import { Collection } from './collection.agravity';
 
-
-export interface DataResult { 
-    asset?: Array<Asset>;
-    sum_asset_results?: number;
-    collection?: Array<Collection>;
-    sum_collection_results?: number;
+export interface DataResult {
+	asset?: Array<Asset>;
+	sum_asset_results?: number;
+	collection?: Array<Collection>;
+	sum_collection_results?: number;
 }
-

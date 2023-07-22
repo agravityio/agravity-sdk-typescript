@@ -11,24 +11,22 @@
  */
 import { DynamicImageOperation } from './dynamicImageOperation.pub.agravity';
 
-
-export interface DownloadFormat { 
-    id?: string;
-    entity_type?: string;
-    operations?: Array<DynamicImageOperation>;
-    extension?: string;
-    asset_type?: string;
-    origin?: string;
-    translations?: { [key: string]: { [key: string]: object; }; };
-    name?: string;
-    description?: string;
-    add_properties?: { [key: string]: any; };
-    status?: string;
-    created_date?: string | null;
-    created_by?: string;
-    modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+export interface DownloadFormat {
+	id?: string;
+	entity_type?: string;
+	operations?: Array<DynamicImageOperation>;
+	extension?: string;
+	asset_type?: string;
+	origin?: string;
+	translations?: { [key: string]: { [key: string]: object } };
+	name?: string;
+	description?: string;
+	add_properties?: { [key: string]: any };
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
-

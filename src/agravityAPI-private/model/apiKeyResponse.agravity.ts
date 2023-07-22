@@ -10,9 +10,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface ApiKeyResponse { 
-    id?: string;
-    api_key?: string;
+export interface ApiKeyResponse {
+	id?: string;
+	api_key?: string;
 }
-

@@ -11,272 +11,316 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec } from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
+import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
 import { Asset } from '../model/models';
 
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { AgravityConfiguration }                                     from '../configuration';
-
-
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { AgravityConfiguration } from '../configuration';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class WordpressManagementService {
+	protected basePath = 'http://localhost:7071/api';
+	public defaultHeaders = new HttpHeaders();
+	public configuration = new AgravityConfiguration();
+	public encoder: HttpParameterCodec;
 
-    protected basePath = 'http://localhost:7071/api';
-    public defaultHeaders = new HttpHeaders();
-    public configuration = new AgravityConfiguration();
-    public encoder: HttpParameterCodec;
+	constructor(
+		protected httpClient: HttpClient,
+		@Optional() @Inject(BASE_PATH) basePath: string,
+		@Optional() configuration: AgravityConfiguration
+	) {
+		if (configuration) {
+			this.configuration = configuration;
+		}
+		if (typeof this.configuration.basePath !== 'string') {
+			if (typeof basePath !== 'string') {
+				basePath = this.basePath;
+			}
+			this.configuration.basePath = basePath;
+		}
+		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+	}
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: AgravityConfiguration) {
-        if (configuration) {
-            this.configuration = configuration;
-        }
-        if (typeof this.configuration.basePath !== 'string') {
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
-            }
-            this.configuration.basePath = basePath;
-        }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-    }
+	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
+		if (typeof value === 'object' && value instanceof Date === false) {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value);
+		} else {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+		}
+		return httpParams;
+	}
 
+	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
+		if (value == null) {
+			return httpParams;
+		}
 
-    private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-        if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
-        } else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-        }
-        return httpParams;
-    }
+		if (typeof value === 'object') {
+			if (Array.isArray(value)) {
+				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
+			} else if (value instanceof Date) {
+				if (key != null) {
+					httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10));
+				} else {
+					throw Error('key may not be null if value is Date');
+				}
+			} else {
+				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
+			}
+		} else if (key != null) {
+			httpParams = httpParams.append(key, value);
+		} else {
+			throw Error('key may not be null if value is not object or array');
+		}
+		return httpParams;
+	}
 
-    private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-        if (value == null) {
-            return httpParams;
-        }
+	/**
+	 * This endpoint creates a Wordpress Page
+	 * @param pageTitle The title of the wordpress post.
+	 * @param pageContentBefore The excerpt of the wordpress page as well as the first part of the page.
+	 * @param pageImage The URL where the image can be publically retrieved.
+	 * @param pageContentAfter The content of the wordpress page, which is shown below the image.
+	 * @param asset This endpoint creates a Wordpress Page
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpWordpressPage(
+		pageTitle: string,
+		pageContentBefore: string,
+		pageImage: string,
+		pageContentAfter: string,
+		asset: Asset,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<number>;
+	public httpWordpressPage(
+		pageTitle: string,
+		pageContentBefore: string,
+		pageImage: string,
+		pageContentAfter: string,
+		asset: Asset,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<number>>;
+	public httpWordpressPage(
+		pageTitle: string,
+		pageContentBefore: string,
+		pageImage: string,
+		pageContentAfter: string,
+		asset: Asset,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<number>>;
+	public httpWordpressPage(
+		pageTitle: string,
+		pageContentBefore: string,
+		pageImage: string,
+		pageContentAfter: string,
+		asset: Asset,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (pageTitle === null || pageTitle === undefined) {
+			throw new Error('Required parameter pageTitle was null or undefined when calling httpWordpressPage.');
+		}
+		if (pageContentBefore === null || pageContentBefore === undefined) {
+			throw new Error('Required parameter pageContentBefore was null or undefined when calling httpWordpressPage.');
+		}
+		if (pageImage === null || pageImage === undefined) {
+			throw new Error('Required parameter pageImage was null or undefined when calling httpWordpressPage.');
+		}
+		if (pageContentAfter === null || pageContentAfter === undefined) {
+			throw new Error('Required parameter pageContentAfter was null or undefined when calling httpWordpressPage.');
+		}
+		if (asset === null || asset === undefined) {
+			throw new Error('Required parameter asset was null or undefined when calling httpWordpressPage.');
+		}
 
-        if (typeof value === "object") {
-            if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
-            } else if (value instanceof Date) {
-                if (key != null) {
-                    httpParams = httpParams.append(key,
-                        (value as Date).toISOString().substr(0, 10));
-                } else {
-                   throw Error("key may not be null if value is Date");
-                }
-            } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
-                    httpParams, value[k], key != null ? `${key}.${k}` : k));
-            }
-        } else if (key != null) {
-            httpParams = httpParams.append(key, value);
-        } else {
-            throw Error("key may not be null if value is not object or array");
-        }
-        return httpParams;
-    }
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (pageTitle !== undefined && pageTitle !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>pageTitle, 'page_title');
+		}
+		if (pageContentBefore !== undefined && pageContentBefore !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>pageContentBefore, 'page_content_before');
+		}
+		if (pageImage !== undefined && pageImage !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>pageImage, 'page_image');
+		}
+		if (pageContentAfter !== undefined && pageContentAfter !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>pageContentAfter, 'page_content_after');
+		}
 
-    /**
-     * This endpoint creates a Wordpress Page
-     * @param pageTitle The title of the wordpress post.
-     * @param pageContentBefore The excerpt of the wordpress page as well as the first part of the page.
-     * @param pageImage The URL where the image can be publically retrieved.
-     * @param pageContentAfter The content of the wordpress page, which is shown below the image.
-     * @param asset This endpoint creates a Wordpress Page
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpWordpressPage(pageTitle: string, pageContentBefore: string, pageImage: string, pageContentAfter: string, asset: Asset, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<number>;
-    public httpWordpressPage(pageTitle: string, pageContentBefore: string, pageImage: string, pageContentAfter: string, asset: Asset, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<number>>;
-    public httpWordpressPage(pageTitle: string, pageContentBefore: string, pageImage: string, pageContentAfter: string, asset: Asset, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<number>>;
-    public httpWordpressPage(pageTitle: string, pageContentBefore: string, pageImage: string, pageContentAfter: string, asset: Asset, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (pageTitle === null || pageTitle === undefined) {
-            throw new Error('Required parameter pageTitle was null or undefined when calling httpWordpressPage.');
-        }
-        if (pageContentBefore === null || pageContentBefore === undefined) {
-            throw new Error('Required parameter pageContentBefore was null or undefined when calling httpWordpressPage.');
-        }
-        if (pageImage === null || pageImage === undefined) {
-            throw new Error('Required parameter pageImage was null or undefined when calling httpWordpressPage.');
-        }
-        if (pageContentAfter === null || pageContentAfter === undefined) {
-            throw new Error('Required parameter pageContentAfter was null or undefined when calling httpWordpressPage.');
-        }
-        if (asset === null || asset === undefined) {
-            throw new Error('Required parameter asset was null or undefined when calling httpWordpressPage.');
-        }
+		let headers = this.defaultHeaders;
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (pageTitle !== undefined && pageTitle !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pageTitle, 'page_title');
-        }
-        if (pageContentBefore !== undefined && pageContentBefore !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pageContentBefore, 'page_content_before');
-        }
-        if (pageImage !== undefined && pageImage !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pageImage, 'page_image');
-        }
-        if (pageContentAfter !== undefined && pageContentAfter !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pageContentAfter, 'page_content_after');
-        }
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-        let headers = this.defaultHeaders;
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
+		return this.httpClient.post<number>(`${this.configuration.basePath}/wordpresspage`, asset, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
+	/**
+	 * This endpoint creates a Wordpress Post
+	 * @param postTitle The title of the wordpress post.
+	 * @param postContentBefore The excerpt of the wordpress post as well as the first part of the post.
+	 * @param postImage The URL where the image can be publically retrieved.
+	 * @param postContentAfter The content of the wordpress post, which is shown below the image.
+	 * @param asset This endpoint creates a Wordpress Post
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpWordpressPost(
+		postTitle: string,
+		postContentBefore: string,
+		postImage: string,
+		postContentAfter: string,
+		asset: Asset,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<number>;
+	public httpWordpressPost(
+		postTitle: string,
+		postContentBefore: string,
+		postImage: string,
+		postContentAfter: string,
+		asset: Asset,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<number>>;
+	public httpWordpressPost(
+		postTitle: string,
+		postContentBefore: string,
+		postImage: string,
+		postContentAfter: string,
+		asset: Asset,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<number>>;
+	public httpWordpressPost(
+		postTitle: string,
+		postContentBefore: string,
+		postImage: string,
+		postContentAfter: string,
+		asset: Asset,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (postTitle === null || postTitle === undefined) {
+			throw new Error('Required parameter postTitle was null or undefined when calling httpWordpressPost.');
+		}
+		if (postContentBefore === null || postContentBefore === undefined) {
+			throw new Error('Required parameter postContentBefore was null or undefined when calling httpWordpressPost.');
+		}
+		if (postImage === null || postImage === undefined) {
+			throw new Error('Required parameter postImage was null or undefined when calling httpWordpressPost.');
+		}
+		if (postContentAfter === null || postContentAfter === undefined) {
+			throw new Error('Required parameter postContentAfter was null or undefined when calling httpWordpressPost.');
+		}
+		if (asset === null || asset === undefined) {
+			throw new Error('Required parameter asset was null or undefined when calling httpWordpressPost.');
+		}
 
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (postTitle !== undefined && postTitle !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>postTitle, 'post_title');
+		}
+		if (postContentBefore !== undefined && postContentBefore !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>postContentBefore, 'post_content_before');
+		}
+		if (postImage !== undefined && postImage !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>postImage, 'post_image');
+		}
+		if (postContentAfter !== undefined && postContentAfter !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>postContentAfter, 'post_content_after');
+		}
 
-        return this.httpClient.post<number>(`${this.configuration.basePath}/wordpresspage`,
-            asset,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
+		let headers = this.defaultHeaders;
 
-    /**
-     * This endpoint creates a Wordpress Post
-     * @param postTitle The title of the wordpress post.
-     * @param postContentBefore The excerpt of the wordpress post as well as the first part of the post.
-     * @param postImage The URL where the image can be publically retrieved.
-     * @param postContentAfter The content of the wordpress post, which is shown below the image.
-     * @param asset This endpoint creates a Wordpress Post
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpWordpressPost(postTitle: string, postContentBefore: string, postImage: string, postContentAfter: string, asset: Asset, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<number>;
-    public httpWordpressPost(postTitle: string, postContentBefore: string, postImage: string, postContentAfter: string, asset: Asset, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<number>>;
-    public httpWordpressPost(postTitle: string, postContentBefore: string, postImage: string, postContentAfter: string, asset: Asset, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<number>>;
-    public httpWordpressPost(postTitle: string, postContentBefore: string, postImage: string, postContentAfter: string, asset: Asset, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (postTitle === null || postTitle === undefined) {
-            throw new Error('Required parameter postTitle was null or undefined when calling httpWordpressPost.');
-        }
-        if (postContentBefore === null || postContentBefore === undefined) {
-            throw new Error('Required parameter postContentBefore was null or undefined when calling httpWordpressPost.');
-        }
-        if (postImage === null || postImage === undefined) {
-            throw new Error('Required parameter postImage was null or undefined when calling httpWordpressPost.');
-        }
-        if (postContentAfter === null || postContentAfter === undefined) {
-            throw new Error('Required parameter postContentAfter was null or undefined when calling httpWordpressPost.');
-        }
-        if (asset === null || asset === undefined) {
-            throw new Error('Required parameter asset was null or undefined when calling httpWordpressPost.');
-        }
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
 
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (postTitle !== undefined && postTitle !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>postTitle, 'post_title');
-        }
-        if (postContentBefore !== undefined && postContentBefore !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>postContentBefore, 'post_content_before');
-        }
-        if (postImage !== undefined && postImage !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>postImage, 'post_image');
-        }
-        if (postContentAfter !== undefined && postContentAfter !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>postContentAfter, 'post_content_after');
-        }
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
 
-        let headers = this.defaultHeaders;
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
 
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
 
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.post<number>(`${this.configuration.basePath}/wordpresspost`,
-            asset,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
+		return this.httpClient.post<number>(`${this.configuration.basePath}/wordpresspost`, asset, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 }

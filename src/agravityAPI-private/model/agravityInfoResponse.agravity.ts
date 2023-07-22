@@ -10,10 +10,8 @@
  * Do not edit the class manually.
  */
 
-
-export interface AgravityInfoResponse { 
-    info_id?: string;
-    info_message?: string;
-    info_object?: object;
+export interface AgravityInfoResponse {
+	info_id?: string;
+	info_message?: string;
+	info_object?: object;
 }
-

@@ -11,9 +11,7 @@
  */
 import { SearchFacetEntity } from './searchFacetEntity.agravity';
 
-
-export interface SearchFacet { 
-    name?: string;
-    entities?: Array<SearchFacetEntity>;
+export interface SearchFacet {
+	name?: string;
+	entities?: Array<SearchFacetEntity>;
 }
-

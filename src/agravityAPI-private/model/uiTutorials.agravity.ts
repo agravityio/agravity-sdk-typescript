@@ -10,17 +10,14 @@
  * Do not edit the class manually.
  */
 
-
-export interface UiTutorials { 
-    id?: string;
-    status?: UiTutorials.StatusEnum;
+export interface UiTutorials {
+	id?: string;
+	status?: UiTutorials.StatusEnum;
 }
 export namespace UiTutorials {
-    export type StatusEnum = 'P' | 'F';
-    export const StatusEnum = {
-        P: 'P' as StatusEnum,
-        F: 'F' as StatusEnum
-    };
+	export type StatusEnum = 'P' | 'F';
+	export const StatusEnum = {
+		P: 'P' as StatusEnum,
+		F: 'F' as StatusEnum
+	};
 }
-
-

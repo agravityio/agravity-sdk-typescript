@@ -40,4 +40,26 @@ export * from './publicWebAppData.pub.agravity';
 import { PublicWebAppDataService } from './publicWebAppData.pub.agravity';
 export * from './publicWorkspaceManagement.pub.agravity';
 import { PublicWorkspaceManagementService } from './publicWorkspaceManagement.pub.agravity';
-export const APIS = [PublicAssetManagementService, PublicAssetOperationsService, PublicAssetPublishingService, PublicAssetVersioningService, PublicAuthenticationManagementService, PublicCollectionManagementService, PublicCollectionSecureUploadService, PublicCollectionTypeManagementService, PublicConfigurationManagementService, PublicDownloadFormatManagementService, PublicGeneralManagementService, PublicHelperToolsService, PublicPublishingService, PublicSavedSearchService, PublicSearchManagementService, PublicSharingManagementService, PublicSignalRConnectionManagementService, PublicStaticDefinedListManagementService, PublicTranslationManagementService, PublicWebAppDataService, PublicWorkspaceManagementService];
+export const APIS = [
+	PublicAssetManagementService,
+	PublicAssetOperationsService,
+	PublicAssetPublishingService,
+	PublicAssetVersioningService,
+	PublicAuthenticationManagementService,
+	PublicCollectionManagementService,
+	PublicCollectionSecureUploadService,
+	PublicCollectionTypeManagementService,
+	PublicConfigurationManagementService,
+	PublicDownloadFormatManagementService,
+	PublicGeneralManagementService,
+	PublicHelperToolsService,
+	PublicPublishingService,
+	PublicSavedSearchService,
+	PublicSearchManagementService,
+	PublicSharingManagementService,
+	PublicSignalRConnectionManagementService,
+	PublicStaticDefinedListManagementService,
+	PublicTranslationManagementService,
+	PublicWebAppDataService,
+	PublicWorkspaceManagementService
+];

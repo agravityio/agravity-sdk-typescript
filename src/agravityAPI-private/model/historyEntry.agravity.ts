@@ -10,34 +10,31 @@
  * Do not edit the class manually.
  */
 
-
-export interface HistoryEntry { 
-    id?: string;
-    entity_type?: string;
-    new_value?: object;
-    old_value?: object;
-    name?: HistoryEntry.NameEnum;
-    status?: string;
-    created_date?: string | null;
-    created_by?: string;
-    modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+export interface HistoryEntry {
+	id?: string;
+	entity_type?: string;
+	new_value?: object;
+	old_value?: object;
+	name?: HistoryEntry.NameEnum;
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
 export namespace HistoryEntry {
-    export type NameEnum = 'Created' | 'Updated' | 'Deleted' | 'Published' | 'Unpublished' | 'Locked' | 'Unlocked' | 'Renewed' | 'Versioned';
-    export const NameEnum = {
-        Created: 'Created' as NameEnum,
-        Updated: 'Updated' as NameEnum,
-        Deleted: 'Deleted' as NameEnum,
-        Published: 'Published' as NameEnum,
-        Unpublished: 'Unpublished' as NameEnum,
-        Locked: 'Locked' as NameEnum,
-        Unlocked: 'Unlocked' as NameEnum,
-        Renewed: 'Renewed' as NameEnum,
-        Versioned: 'Versioned' as NameEnum
-    };
+	export type NameEnum = 'Created' | 'Updated' | 'Deleted' | 'Published' | 'Unpublished' | 'Locked' | 'Unlocked' | 'Renewed' | 'Versioned';
+	export const NameEnum = {
+		Created: 'Created' as NameEnum,
+		Updated: 'Updated' as NameEnum,
+		Deleted: 'Deleted' as NameEnum,
+		Published: 'Published' as NameEnum,
+		Unpublished: 'Unpublished' as NameEnum,
+		Locked: 'Locked' as NameEnum,
+		Unlocked: 'Unlocked' as NameEnum,
+		Renewed: 'Renewed' as NameEnum,
+		Versioned: 'Versioned' as NameEnum
+	};
 }
-
-

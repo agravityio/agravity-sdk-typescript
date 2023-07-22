@@ -13,11 +13,9 @@ import { DataResult } from './dataResult.pub.agravity';
 import { SearchFacet } from './searchFacet.pub.agravity';
 import { AzSearchOptions } from './azSearchOptions.pub.agravity';
 
-
-export interface SearchResult { 
-    data_result?: DataResult;
-    options?: AzSearchOptions;
-    facets?: Array<SearchFacet>;
-    count?: number | null;
+export interface SearchResult {
+	data_result?: DataResult;
+	options?: AzSearchOptions;
+	facets?: Array<SearchFacet>;
+	count?: number | null;
 }
-

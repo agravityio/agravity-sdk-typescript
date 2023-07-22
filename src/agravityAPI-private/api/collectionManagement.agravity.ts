@@ -11,608 +11,721 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec } from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
+import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
 import { Collection } from '../model/models';
 
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { AgravityConfiguration }                                     from '../configuration';
-
-
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { AgravityConfiguration } from '../configuration';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class CollectionManagementService {
-
-    protected basePath = 'http://localhost:7071/api';
-    public defaultHeaders = new HttpHeaders();
-    public configuration = new AgravityConfiguration();
-    public encoder: HttpParameterCodec;
-
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: AgravityConfiguration) {
-        if (configuration) {
-            this.configuration = configuration;
-        }
-        if (typeof this.configuration.basePath !== 'string') {
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
-            }
-            this.configuration.basePath = basePath;
-        }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-    }
-
-
-    private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-        if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
-        } else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-        }
-        return httpParams;
-    }
-
-    private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-        if (value == null) {
-            return httpParams;
-        }
-
-        if (typeof value === "object") {
-            if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
-            } else if (value instanceof Date) {
-                if (key != null) {
-                    httpParams = httpParams.append(key,
-                        (value as Date).toISOString().substr(0, 10));
-                } else {
-                   throw Error("key may not be null if value is Date");
-                }
-            } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
-                    httpParams, value[k], key != null ? `${key}.${k}` : k));
-            }
-        } else if (key != null) {
-            httpParams = httpParams.append(key, value);
-        } else {
-            throw Error("key may not be null if value is not object or array");
-        }
-        return httpParams;
-    }
-
-    /**
-     * This endpoint creates a unique collection ID and adds the information to the database.
-     * @param collectiontypeid The ID of the collection type where this collections should be assigned.
-     * @param collection This endpoint creates a unique collection ID and adds the information to the database.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpCollectionsCreate(collectiontypeid: string, collection: Collection, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Collection>;
-    public httpCollectionsCreate(collectiontypeid: string, collection: Collection, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Collection>>;
-    public httpCollectionsCreate(collectiontypeid: string, collection: Collection, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Collection>>;
-    public httpCollectionsCreate(collectiontypeid: string, collection: Collection, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (collectiontypeid === null || collectiontypeid === undefined) {
-            throw new Error('Required parameter collectiontypeid was null or undefined when calling httpCollectionsCreate.');
-        }
-        if (collection === null || collection === undefined) {
-            throw new Error('Required parameter collection was null or undefined when calling httpCollectionsCreate.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (collectiontypeid !== undefined && collectiontypeid !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>collectiontypeid, 'collectiontypeid');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.post<Collection>(`${this.configuration.basePath}/collections`,
-            collection,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint deletes the collection with the given ID (and their siblings).
-     * @param id The ID of the collection.
-     * @param deleteassets If this is true the assigned assets are set to delete as well.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpCollectionsDeleteById(id: string, deleteassets?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<any>;
-    public httpCollectionsDeleteById(id: string, deleteassets?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<any>>;
-    public httpCollectionsDeleteById(id: string, deleteassets?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<any>>;
-    public httpCollectionsDeleteById(id: string, deleteassets?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpCollectionsDeleteById.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (deleteassets !== undefined && deleteassets !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>deleteassets, 'deleteassets');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.delete<any>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint lists all the collections, which are stored in the database and not deleted (status \&quot;A\&quot;)
-     * @param collectiontypeid The ID of the collection type, where these collections should come from.
-     * @param level The hierarchy level of collections which should be returned.
-     * @param parentid The ID of the parent collection which should be queried. (No collectiontypeid is required)
-     * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
-     * @param items The items can be extended to fully filled items.
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpCollectionsGet(collectiontypeid?: string, level?: number, parentid?: string, fields?: string, items?: boolean, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<Collection>>;
-    public httpCollectionsGet(collectiontypeid?: string, level?: number, parentid?: string, fields?: string, items?: boolean, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<Collection>>>;
-    public httpCollectionsGet(collectiontypeid?: string, level?: number, parentid?: string, fields?: string, items?: boolean, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<Collection>>>;
-    public httpCollectionsGet(collectiontypeid?: string, level?: number, parentid?: string, fields?: string, items?: boolean, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (collectiontypeid !== undefined && collectiontypeid !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>collectiontypeid, 'collectiontypeid');
-        }
-        if (level !== undefined && level !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>level, 'level');
-        }
-        if (parentid !== undefined && parentid !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>parentid, 'parentid');
-        }
-        if (fields !== undefined && fields !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>fields, 'fields');
-        }
-        if (items !== undefined && items !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>items, 'items');
-        }
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<Array<Collection>>(`${this.configuration.basePath}/collections`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint returns one single collection (from ID). This will include all specific properties from collection type.
-     * @param id The ID of the collection.
-     * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
-     * @param items The items can be extended to fully filled items.
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpCollectionsGetById(id: string, fields?: string, items?: boolean, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Collection>;
-    public httpCollectionsGetById(id: string, fields?: string, items?: boolean, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Collection>>;
-    public httpCollectionsGetById(id: string, fields?: string, items?: boolean, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Collection>>;
-    public httpCollectionsGetById(id: string, fields?: string, items?: boolean, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpCollectionsGetById.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (fields !== undefined && fields !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>fields, 'fields');
-        }
-        if (items !== undefined && items !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>items, 'items');
-        }
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<Collection>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint returns the complete tree of descendants from a single collection.
-     * @param id The ID of the collection.
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpCollectionsGetDescendantsTreeOfId(id: string, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<Collection>>;
-    public httpCollectionsGetDescendantsTreeOfId(id: string, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<Collection>>>;
-    public httpCollectionsGetDescendantsTreeOfId(id: string, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<Collection>>>;
-    public httpCollectionsGetDescendantsTreeOfId(id: string, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpCollectionsGetDescendantsTreeOfId.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<Array<Collection>>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}/descendants`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint returns the complete tree of ancestors from a single collection.
-     * @param id The ID of the collection.
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpCollectionsGetTreeAncestorsOfId(id: string, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<Collection>>;
-    public httpCollectionsGetTreeAncestorsOfId(id: string, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<Collection>>>;
-    public httpCollectionsGetTreeAncestorsOfId(id: string, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<Collection>>>;
-    public httpCollectionsGetTreeAncestorsOfId(id: string, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpCollectionsGetTreeAncestorsOfId.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<Array<Collection>>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}/ancestors`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint updates the collection. Specific properties could be updated.
-     * @param id The ID of the collection.
-     * @param collection The body has to be a valid collection json.Not fitting properties are ignored.
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpCollectionsUpdateById(id: string, collection: Collection, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Collection>;
-    public httpCollectionsUpdateById(id: string, collection: Collection, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Collection>>;
-    public httpCollectionsUpdateById(id: string, collection: Collection, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Collection>>;
-    public httpCollectionsUpdateById(id: string, collection: Collection, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpCollectionsUpdateById.');
-        }
-        if (collection === null || collection === undefined) {
-            throw new Error('Required parameter collection was null or undefined when calling httpCollectionsUpdateById.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.post<Collection>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}`,
-            collection,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint returns a generated thumbnail as a preview of the containing assets.
-     * @param id The ID of the collection.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpGetCollectionPreviewsById(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/png'}): Observable<string>;
-    public httpGetCollectionPreviewsById(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/png'}): Observable<HttpResponse<string>>;
-    public httpGetCollectionPreviewsById(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/png'}): Observable<HttpEvent<string>>;
-    public httpGetCollectionPreviewsById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'image/png'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpGetCollectionPreviewsById.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (msal_auth) required
-        credential = this.configuration.lookupCredential('msal_auth');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'image/png'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<string>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}/previews`,
-            {
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
+	protected basePath = 'http://localhost:7071/api';
+	public defaultHeaders = new HttpHeaders();
+	public configuration = new AgravityConfiguration();
+	public encoder: HttpParameterCodec;
+
+	constructor(
+		protected httpClient: HttpClient,
+		@Optional() @Inject(BASE_PATH) basePath: string,
+		@Optional() configuration: AgravityConfiguration
+	) {
+		if (configuration) {
+			this.configuration = configuration;
+		}
+		if (typeof this.configuration.basePath !== 'string') {
+			if (typeof basePath !== 'string') {
+				basePath = this.basePath;
+			}
+			this.configuration.basePath = basePath;
+		}
+		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+	}
+
+	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
+		if (typeof value === 'object' && value instanceof Date === false) {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value);
+		} else {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+		}
+		return httpParams;
+	}
+
+	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
+		if (value == null) {
+			return httpParams;
+		}
+
+		if (typeof value === 'object') {
+			if (Array.isArray(value)) {
+				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
+			} else if (value instanceof Date) {
+				if (key != null) {
+					httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10));
+				} else {
+					throw Error('key may not be null if value is Date');
+				}
+			} else {
+				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
+			}
+		} else if (key != null) {
+			httpParams = httpParams.append(key, value);
+		} else {
+			throw Error('key may not be null if value is not object or array');
+		}
+		return httpParams;
+	}
+
+	/**
+	 * This endpoint creates a unique collection ID and adds the information to the database.
+	 * @param collectiontypeid The ID of the collection type where this collections should be assigned.
+	 * @param collection This endpoint creates a unique collection ID and adds the information to the database.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpCollectionsCreate(
+		collectiontypeid: string,
+		collection: Collection,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Collection>;
+	public httpCollectionsCreate(
+		collectiontypeid: string,
+		collection: Collection,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Collection>>;
+	public httpCollectionsCreate(
+		collectiontypeid: string,
+		collection: Collection,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Collection>>;
+	public httpCollectionsCreate(
+		collectiontypeid: string,
+		collection: Collection,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (collectiontypeid === null || collectiontypeid === undefined) {
+			throw new Error('Required parameter collectiontypeid was null or undefined when calling httpCollectionsCreate.');
+		}
+		if (collection === null || collection === undefined) {
+			throw new Error('Required parameter collection was null or undefined when calling httpCollectionsCreate.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (collectiontypeid !== undefined && collectiontypeid !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>collectiontypeid, 'collectiontypeid');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.post<Collection>(`${this.configuration.basePath}/collections`, collection, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint deletes the collection with the given ID (and their siblings).
+	 * @param id The ID of the collection.
+	 * @param deleteassets If this is true the assigned assets are set to delete as well.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpCollectionsDeleteById(id: string, deleteassets?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
+	public httpCollectionsDeleteById(
+		id: string,
+		deleteassets?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpCollectionsDeleteById(id: string, deleteassets?: boolean, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
+	public httpCollectionsDeleteById(id: string, deleteassets?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpCollectionsDeleteById.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (deleteassets !== undefined && deleteassets !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>deleteassets, 'deleteassets');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.delete<any>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint lists all the collections, which are stored in the database and not deleted (status \&quot;A\&quot;)
+	 * @param collectiontypeid The ID of the collection type, where these collections should come from.
+	 * @param level The hierarchy level of collections which should be returned.
+	 * @param parentid The ID of the parent collection which should be queried. (No collectiontypeid is required)
+	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
+	 * @param items The items can be extended to fully filled items.
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpCollectionsGet(
+		collectiontypeid?: string,
+		level?: number,
+		parentid?: string,
+		fields?: string,
+		items?: boolean,
+		translations?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<Collection>>;
+	public httpCollectionsGet(
+		collectiontypeid?: string,
+		level?: number,
+		parentid?: string,
+		fields?: string,
+		items?: boolean,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<Collection>>>;
+	public httpCollectionsGet(
+		collectiontypeid?: string,
+		level?: number,
+		parentid?: string,
+		fields?: string,
+		items?: boolean,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<Collection>>>;
+	public httpCollectionsGet(
+		collectiontypeid?: string,
+		level?: number,
+		parentid?: string,
+		fields?: string,
+		items?: boolean,
+		translations?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (collectiontypeid !== undefined && collectiontypeid !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>collectiontypeid, 'collectiontypeid');
+		}
+		if (level !== undefined && level !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>level, 'level');
+		}
+		if (parentid !== undefined && parentid !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>parentid, 'parentid');
+		}
+		if (fields !== undefined && fields !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>fields, 'fields');
+		}
+		if (items !== undefined && items !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>items, 'items');
+		}
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<Array<Collection>>(`${this.configuration.basePath}/collections`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns one single collection (from ID). This will include all specific properties from collection type.
+	 * @param id The ID of the collection.
+	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
+	 * @param items The items can be extended to fully filled items.
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpCollectionsGetById(
+		id: string,
+		fields?: string,
+		items?: boolean,
+		translations?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Collection>;
+	public httpCollectionsGetById(
+		id: string,
+		fields?: string,
+		items?: boolean,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Collection>>;
+	public httpCollectionsGetById(
+		id: string,
+		fields?: string,
+		items?: boolean,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Collection>>;
+	public httpCollectionsGetById(
+		id: string,
+		fields?: string,
+		items?: boolean,
+		translations?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpCollectionsGetById.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (fields !== undefined && fields !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>fields, 'fields');
+		}
+		if (items !== undefined && items !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>items, 'items');
+		}
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<Collection>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns the complete tree of descendants from a single collection.
+	 * @param id The ID of the collection.
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpCollectionsGetDescendantsTreeOfId(
+		id: string,
+		translations?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<Collection>>;
+	public httpCollectionsGetDescendantsTreeOfId(
+		id: string,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<Collection>>>;
+	public httpCollectionsGetDescendantsTreeOfId(
+		id: string,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<Collection>>>;
+	public httpCollectionsGetDescendantsTreeOfId(
+		id: string,
+		translations?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpCollectionsGetDescendantsTreeOfId.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<Array<Collection>>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}/descendants`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns the complete tree of ancestors from a single collection.
+	 * @param id The ID of the collection.
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpCollectionsGetTreeAncestorsOfId(
+		id: string,
+		translations?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<Collection>>;
+	public httpCollectionsGetTreeAncestorsOfId(
+		id: string,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<Collection>>>;
+	public httpCollectionsGetTreeAncestorsOfId(
+		id: string,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<Collection>>>;
+	public httpCollectionsGetTreeAncestorsOfId(
+		id: string,
+		translations?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpCollectionsGetTreeAncestorsOfId.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<Array<Collection>>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}/ancestors`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint updates the collection. Specific properties could be updated.
+	 * @param id The ID of the collection.
+	 * @param collection The body has to be a valid collection json.Not fitting properties are ignored.
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpCollectionsUpdateById(
+		id: string,
+		collection: Collection,
+		translations?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Collection>;
+	public httpCollectionsUpdateById(
+		id: string,
+		collection: Collection,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Collection>>;
+	public httpCollectionsUpdateById(
+		id: string,
+		collection: Collection,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Collection>>;
+	public httpCollectionsUpdateById(
+		id: string,
+		collection: Collection,
+		translations?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpCollectionsUpdateById.');
+		}
+		if (collection === null || collection === undefined) {
+			throw new Error('Required parameter collection was null or undefined when calling httpCollectionsUpdateById.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.post<Collection>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}`, collection, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns a generated thumbnail as a preview of the containing assets.
+	 * @param id The ID of the collection.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetCollectionPreviewsById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/png' }): Observable<string>;
+	public httpGetCollectionPreviewsById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/png' }): Observable<HttpResponse<string>>;
+	public httpGetCollectionPreviewsById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/png' }): Observable<HttpEvent<string>>;
+	public httpGetCollectionPreviewsById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'image/png' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetCollectionPreviewsById.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['image/png'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<string>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}/previews`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 }

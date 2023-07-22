@@ -11,10 +11,8 @@
  */
 import { Asset } from './asset.agravity';
 
-
-export interface AssetBulkUpdate { 
-    collection_id?: string;
-    ref_asset?: Asset;
-    asset_ids?: Array<string>;
+export interface AssetBulkUpdate {
+	collection_id?: string;
+	ref_asset?: Asset;
+	asset_ids?: Array<string>;
 }
-

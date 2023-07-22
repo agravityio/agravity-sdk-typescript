@@ -10,17 +10,15 @@
  * Do not edit the class manually.
  */
 
-
-export interface SearchableItem { 
-    name?: string;
-    is_key?: boolean | null;
-    filterable?: boolean | null;
-    hidden?: boolean | null;
-    searchable?: boolean | null;
-    facetable?: boolean | null;
-    sortable?: boolean | null;
-    is_collection?: boolean | null;
-    searchtype?: string;
-    fields?: Array<SearchableItem>;
+export interface SearchableItem {
+	name?: string;
+	is_key?: boolean | null;
+	filterable?: boolean | null;
+	hidden?: boolean | null;
+	searchable?: boolean | null;
+	facetable?: boolean | null;
+	sortable?: boolean | null;
+	is_collection?: boolean | null;
+	searchtype?: string;
+	fields?: Array<SearchableItem>;
 }
-

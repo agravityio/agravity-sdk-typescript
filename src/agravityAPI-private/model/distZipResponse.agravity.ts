@@ -10,10 +10,8 @@
  * Do not edit the class manually.
  */
 
-
-export interface DistZipResponse { 
-    url?: string;
-    modified_date?: string;
-    size?: number;
+export interface DistZipResponse {
+	url?: string;
+	modified_date?: string;
+	size?: number;
 }
-

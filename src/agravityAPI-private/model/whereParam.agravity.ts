@@ -10,34 +10,31 @@
  * Do not edit the class manually.
  */
 
-
-export interface WhereParam { 
-    operator?: WhereParam.OperatorEnum;
-    field?: string;
-    value?: object;
-    notPrefix?: boolean;
-    valueType?: WhereParam.ValueTypeEnum;
+export interface WhereParam {
+	operator?: WhereParam.OperatorEnum;
+	field?: string;
+	value?: object;
+	notPrefix?: boolean;
+	valueType?: WhereParam.ValueTypeEnum;
 }
 export namespace WhereParam {
-    export type OperatorEnum = 'Equals' | 'NotEquals' | 'GreaterThan' | 'LessThan' | 'GreaterThanOrEqual' | 'LessThanOrEqual' | 'Contains' | 'StartsWith' | 'ArrayContains' | 'ArrayContainsPartial';
-    export const OperatorEnum = {
-        Equals: 'Equals' as OperatorEnum,
-        NotEquals: 'NotEquals' as OperatorEnum,
-        GreaterThan: 'GreaterThan' as OperatorEnum,
-        LessThan: 'LessThan' as OperatorEnum,
-        GreaterThanOrEqual: 'GreaterThanOrEqual' as OperatorEnum,
-        LessThanOrEqual: 'LessThanOrEqual' as OperatorEnum,
-        Contains: 'Contains' as OperatorEnum,
-        StartsWith: 'StartsWith' as OperatorEnum,
-        ArrayContains: 'ArrayContains' as OperatorEnum,
-        ArrayContainsPartial: 'ArrayContainsPartial' as OperatorEnum
-    };
-    export type ValueTypeEnum = 'String' | 'Bool' | 'Number';
-    export const ValueTypeEnum = {
-        String: 'String' as ValueTypeEnum,
-        Bool: 'Bool' as ValueTypeEnum,
-        Number: 'Number' as ValueTypeEnum
-    };
+	export type OperatorEnum = 'Equals' | 'NotEquals' | 'GreaterThan' | 'LessThan' | 'GreaterThanOrEqual' | 'LessThanOrEqual' | 'Contains' | 'StartsWith' | 'ArrayContains' | 'ArrayContainsPartial';
+	export const OperatorEnum = {
+		Equals: 'Equals' as OperatorEnum,
+		NotEquals: 'NotEquals' as OperatorEnum,
+		GreaterThan: 'GreaterThan' as OperatorEnum,
+		LessThan: 'LessThan' as OperatorEnum,
+		GreaterThanOrEqual: 'GreaterThanOrEqual' as OperatorEnum,
+		LessThanOrEqual: 'LessThanOrEqual' as OperatorEnum,
+		Contains: 'Contains' as OperatorEnum,
+		StartsWith: 'StartsWith' as OperatorEnum,
+		ArrayContains: 'ArrayContains' as OperatorEnum,
+		ArrayContainsPartial: 'ArrayContainsPartial' as OperatorEnum
+	};
+	export type ValueTypeEnum = 'String' | 'Bool' | 'Number';
+	export const ValueTypeEnum = {
+		String: 'String' as ValueTypeEnum,
+		Bool: 'Bool' as ValueTypeEnum,
+		Number: 'Number' as ValueTypeEnum
+	};
 }
-
-

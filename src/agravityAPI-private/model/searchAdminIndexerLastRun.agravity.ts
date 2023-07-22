@@ -10,12 +10,10 @@
  * Do not edit the class manually.
  */
 
-
-export interface SearchAdminIndexerLastRun { 
-    status?: string;
-    starttime?: string | null;
-    endtime?: string | null;
-    itemcount?: number;
-    faileditemcount?: number;
+export interface SearchAdminIndexerLastRun {
+	status?: string;
+	starttime?: string | null;
+	endtime?: string | null;
+	itemcount?: number;
+	faileditemcount?: number;
 }
-

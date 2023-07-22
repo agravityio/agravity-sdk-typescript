@@ -10,9 +10,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface SearchAdminDataSourceStatus { 
-    name?: string;
-    status?: string;
+export interface SearchAdminDataSourceStatus {
+	name?: string;
+	status?: string;
 }
-

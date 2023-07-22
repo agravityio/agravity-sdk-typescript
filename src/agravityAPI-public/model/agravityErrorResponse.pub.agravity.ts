@@ -10,10 +10,8 @@
  * Do not edit the class manually.
  */
 
-
-export interface AgravityErrorResponse { 
-    error_id?: string;
-    error_message?: string;
-    exception?: string;
+export interface AgravityErrorResponse {
+	error_id?: string;
+	error_message?: string;
+	exception?: string;
 }
-

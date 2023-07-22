@@ -10,13 +10,11 @@
  * Do not edit the class manually.
  */
 
-
-export interface SasToken { 
-    token?: string;
-    container?: string;
-    blob?: string;
-    url?: string;
-    fulltoken?: string;
-    expires?: string;
+export interface SasToken {
+	token?: string;
+	container?: string;
+	blob?: string;
+	url?: string;
+	fulltoken?: string;
+	expires?: string;
 }
-

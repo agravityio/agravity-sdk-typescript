@@ -10,10 +10,8 @@
  * Do not edit the class manually.
  */
 
-
-export interface MoveCollectionBody { 
-    from_collection_id?: string;
-    to_collection_id?: string;
-    operation?: string;
+export interface MoveCollectionBody {
+	from_collection_id?: string;
+	to_collection_id?: string;
+	operation?: string;
 }
-

@@ -11,18 +11,16 @@
  */
 import { PublishedAsset } from './publishedAsset.pub.agravity';
 
-
-export interface PublishEntity { 
-    id?: string;
-    entity_type?: string;
-    published?: Array<PublishedAsset>;
-    region_of_origin?: string;
-    status?: string;
-    created_date?: string | null;
-    created_by?: string;
-    modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+export interface PublishEntity {
+	id?: string;
+	entity_type?: string;
+	published?: Array<PublishedAsset>;
+	region_of_origin?: string;
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
-

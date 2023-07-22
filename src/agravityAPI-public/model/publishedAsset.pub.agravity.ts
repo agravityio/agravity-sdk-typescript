@@ -10,16 +10,14 @@
  * Do not edit the class manually.
  */
 
-
-export interface PublishedAsset { 
-    id?: string;
-    name?: string;
-    description?: string;
-    usecases?: Array<string>;
-    created_date?: string;
-    url?: string;
-    cdn?: string;
-    format?: string;
-    properties?: { [key: string]: object; };
+export interface PublishedAsset {
+	id?: string;
+	name?: string;
+	description?: string;
+	usecases?: Array<string>;
+	created_date?: string;
+	url?: string;
+	cdn?: string;
+	format?: string;
+	properties?: { [key: string]: object };
 }
-

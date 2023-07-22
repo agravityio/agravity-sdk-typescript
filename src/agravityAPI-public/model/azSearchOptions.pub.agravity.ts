@@ -10,16 +10,14 @@
  * Do not edit the class manually.
  */
 
-
-export interface AzSearchOptions { 
-    searchString?: string;
-    limit?: number | null;
-    skip?: number;
-    collectiontypeid?: string;
-    collectionid?: string;
-    filter?: string;
-    orderby?: string;
-    mode?: string;
-    ids?: string;
+export interface AzSearchOptions {
+	searchString?: string;
+	limit?: number | null;
+	skip?: number;
+	collectiontypeid?: string;
+	collectionid?: string;
+	filter?: string;
+	orderby?: string;
+	mode?: string;
+	ids?: string;
 }
-

@@ -13,12 +13,10 @@ import { Asset } from './asset.agravity';
 import { Collection } from './collection.agravity';
 import { PublishedAsset } from './publishedAsset.agravity';
 
-
-export interface AllWebAppData { 
-    root_collection?: Collection;
-    subcollections?: Array<Collection>;
-    assets?: Array<Asset>;
-    pub_assets?: Array<PublishedAsset>;
-    created_date?: string;
+export interface AllWebAppData {
+	root_collection?: Collection;
+	subcollections?: Array<Collection>;
+	assets?: Array<Asset>;
+	pub_assets?: Array<PublishedAsset>;
+	created_date?: string;
 }
-

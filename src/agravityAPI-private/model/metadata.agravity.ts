@@ -10,10 +10,8 @@
  * Do not edit the class manually.
  */
 
-
-export interface Metadata { 
-    key?: string;
-    value?: string;
-    group?: string;
+export interface Metadata {
+	key?: string;
+	value?: string;
+	group?: string;
 }
-

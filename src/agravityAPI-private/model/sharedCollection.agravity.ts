@@ -10,15 +10,13 @@
  * Do not edit the class manually.
  */
 
-
-export interface SharedCollection { 
-    id?: string;
-    collection_id?: string;
-    created_date?: string;
-    url?: string;
-    valid_until?: string;
-    valid_for?: string;
-    message?: string;
-    global?: boolean;
+export interface SharedCollection {
+	id?: string;
+	collection_id?: string;
+	created_date?: string;
+	url?: string;
+	valid_until?: string;
+	valid_for?: string;
+	message?: string;
+	global?: boolean;
 }
-

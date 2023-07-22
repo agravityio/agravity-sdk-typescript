@@ -10,9 +10,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface AssetCollectionLink { 
-    asset_id?: string;
-    collection_id?: string;
+export interface AssetCollectionLink {
+	asset_id?: string;
+	collection_id?: string;
 }
-

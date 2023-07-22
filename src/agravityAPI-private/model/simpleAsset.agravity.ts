@@ -10,17 +10,15 @@
  * Do not edit the class manually.
  */
 
-
-export interface SimpleAsset { 
-    id?: string;
-    name?: string;
-    original_name?: string;
-    format?: string;
-    size?: string;
-    asset_type?: string;
-    extension?: string;
-    status?: string;
-    _etag?: string;
-    failed_reason?: string;
+export interface SimpleAsset {
+	id?: string;
+	name?: string;
+	original_name?: string;
+	format?: string;
+	size?: string;
+	asset_type?: string;
+	extension?: string;
+	status?: string;
+	_etag?: string;
+	failed_reason?: string;
 }
-

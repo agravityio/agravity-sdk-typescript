@@ -129,9 +129,6 @@ $fileContent[36] = $fileContent[36] + "`n" + $access
 # write file
 $fileContent | Set-Content "src\agravityAPI-private\package.json"
 
-# pretty print package.json using prettier
-npx prettier --write src/agravityAPI-private/package.json
-
 
 # parse package.json, change stuff and write it back
 #create copy of keywords and add "public" to it
@@ -156,9 +153,8 @@ $fileContent[36] = $fileContent[36] + "`n" + $access
 # write file
 $fileContent | Set-Content "src\agravityAPI-public\package.json"
 
-
-# pretty print package.json using prettier
-npx prettier --write src/agravityAPI-public/package.json
+# pretty print whole project using prettier
+npx prettier --write src/**
 
 ######################### ASK FOR COPY SRC FILES TO AGRVITY-ANGULAR-APP #########################
 

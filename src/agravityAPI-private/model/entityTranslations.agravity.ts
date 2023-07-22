@@ -10,9 +10,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface EntityTranslations { 
-    id?: string;
-    translations?: { [key: string]: { [key: string]: object; }; };
+export interface EntityTranslations {
+	id?: string;
+	translations?: { [key: string]: { [key: string]: object } };
 }
-

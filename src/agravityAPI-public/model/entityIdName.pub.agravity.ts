@@ -10,10 +10,8 @@
  * Do not edit the class manually.
  */
 
-
-export interface EntityIdName { 
-    name?: string;
-    translations?: { [key: string]: { [key: string]: object; }; };
-    id?: string;
+export interface EntityIdName {
+	name?: string;
+	translations?: { [key: string]: { [key: string]: object } };
+	id?: string;
 }
-

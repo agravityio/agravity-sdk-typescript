@@ -10,11 +10,9 @@
  * Do not edit the class manually.
  */
 
-
-export interface VersionedAsset { 
-    version_nr?: number;
-    until_date?: string;
-    version_info?: string;
-    created_by?: string;
+export interface VersionedAsset {
+	version_nr?: number;
+	until_date?: string;
+	version_info?: string;
+	created_by?: string;
 }
-

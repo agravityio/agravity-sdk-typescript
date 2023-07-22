@@ -14,13 +14,11 @@ import { Asset } from './asset.pub.agravity';
 import { Collection } from './collection.pub.agravity';
 import { DistZipResponse } from './distZipResponse.pub.agravity';
 
-
-export interface GroupAllAppData { 
-    collection_type?: CollectionType;
-    collections?: Array<Collection>;
-    assets?: Array<Asset>;
-    created_date?: string;
-    add_info?: Array<{ [key: string]: object; }>;
-    dist?: DistZipResponse;
+export interface GroupAllAppData {
+	collection_type?: CollectionType;
+	collections?: Array<Collection>;
+	assets?: Array<Asset>;
+	created_date?: string;
+	add_info?: Array<{ [key: string]: object }>;
+	dist?: DistZipResponse;
 }
-

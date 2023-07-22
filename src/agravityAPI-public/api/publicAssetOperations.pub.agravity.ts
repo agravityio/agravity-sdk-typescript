@@ -11,11 +11,10 @@
  */
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams,
-         HttpResponse, HttpEvent, HttpParameterCodec }       from '@angular/common/http';
-import { CustomHttpParameterCodec }                          from '../encoder';
-import { Observable }                                        from 'rxjs';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec } from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
+import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
 import { AssetAvailability } from '../model/models';
@@ -23,611 +22,719 @@ import { AssetBlob } from '../model/models';
 import { Collection } from '../model/models';
 import { DynamicImageOperation } from '../model/models';
 
-import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
-import { AgravityPublicConfiguration }                                     from '../configuration';
-
-
+import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
+import { AgravityPublicConfiguration } from '../configuration';
 
 @Injectable({
-  providedIn: 'root'
+	providedIn: 'root'
 })
 export class PublicAssetOperationsService {
-
-    protected basePath = 'http://localhost:7072/api';
-    public defaultHeaders = new HttpHeaders();
-    public configuration = new AgravityPublicConfiguration();
-    public encoder: HttpParameterCodec;
-
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: AgravityPublicConfiguration) {
-        if (configuration) {
-            this.configuration = configuration;
-        }
-        if (typeof this.configuration.basePath !== 'string') {
-            if (typeof basePath !== 'string') {
-                basePath = this.basePath;
-            }
-            this.configuration.basePath = basePath;
-        }
-        this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-    }
-
-
-    private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-        if (typeof value === "object" && value instanceof Date === false) {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value);
-        } else {
-            httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-        }
-        return httpParams;
-    }
-
-    private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-        if (value == null) {
-            return httpParams;
-        }
-
-        if (typeof value === "object") {
-            if (Array.isArray(value)) {
-                (value as any[]).forEach( elem => httpParams = this.addToHttpParamsRecursive(httpParams, elem, key));
-            } else if (value instanceof Date) {
-                if (key != null) {
-                    httpParams = httpParams.append(key,
-                        (value as Date).toISOString().substr(0, 10));
-                } else {
-                   throw Error("key may not be null if value is Date");
-                }
-            } else {
-                Object.keys(value).forEach( k => httpParams = this.addToHttpParamsRecursive(
-                    httpParams, value[k], key != null ? `${key}.${k}` : k));
-            }
-        } else if (key != null) {
-            httpParams = httpParams.append(key, value);
-        } else {
-            throw Error("key may not be null if value is not object or array");
-        }
-        return httpParams;
-    }
-
-    /**
-     * This endpoint lets you resize/modify the image asset according to the given parameter(s).
-     * @param id The ID of the asset.
-     * @param width The width of the final image.
-     * @param height The height of the final image.
-     * @param mode The supported modes: contain (default), cover, fill, crop, none
-     * @param target The file type which the image should be (i.e. webp, png, jpg, gif)
-     * @param bgcolor The color of the background color if background is visible (crop outside, png). RGB(A) in hex code (i.e. 00FFAA or with alpha channel: 44AABB77) and color names (i.e. lightgray) supported - default: transparent
-     * @param dpi The density (counts for X and Y) of the target image.
-     * @param depth The bit depth of the target image.
-     * @param quality The quality of the target image (1-100).
-     * @param colorspace The color space of the image (Default: sRGB).
-     * @param cropX If mode is crop: The x coordinate of the point (if image is extended (outside) it is negative)
-     * @param cropY If mode is crop: The y coordinate of the point (if image is extended (outside) it is negative)
-     * @param cropWidth If mode&#x3D;crop: The width of the cropping rectangle (from original pixel)
-     * @param cropHeight If mode&#x3D;crop: The height of the cropping rectangle (from original pixel)
-     * @param filter Which filter should be applied. To get all filters available use: /api/helper/imageeditfilters
-     * @param original If set to true the internal image is used instead of the default original
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpAssetImageEdit(id: string, width?: number, height?: number, mode?: string, target?: string, bgcolor?: string, dpi?: number, depth?: number, quality?: number, colorspace?: string, cropX?: number, cropY?: number, cropWidth?: number, cropHeight?: number, filter?: string, original?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<Blob>;
-    public httpAssetImageEdit(id: string, width?: number, height?: number, mode?: string, target?: string, bgcolor?: string, dpi?: number, depth?: number, quality?: number, colorspace?: string, cropX?: number, cropY?: number, cropWidth?: number, cropHeight?: number, filter?: string, original?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<HttpResponse<Blob>>;
-    public httpAssetImageEdit(id: string, width?: number, height?: number, mode?: string, target?: string, bgcolor?: string, dpi?: number, depth?: number, quality?: number, colorspace?: string, cropX?: number, cropY?: number, cropWidth?: number, cropHeight?: number, filter?: string, original?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<HttpEvent<Blob>>;
-    public httpAssetImageEdit(id: string, width?: number, height?: number, mode?: string, target?: string, bgcolor?: string, dpi?: number, depth?: number, quality?: number, colorspace?: string, cropX?: number, cropY?: number, cropWidth?: number, cropHeight?: number, filter?: string, original?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpAssetImageEdit.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (width !== undefined && width !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>width, 'width');
-        }
-        if (height !== undefined && height !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>height, 'height');
-        }
-        if (mode !== undefined && mode !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>mode, 'mode');
-        }
-        if (target !== undefined && target !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>target, 'target');
-        }
-        if (bgcolor !== undefined && bgcolor !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>bgcolor, 'bgcolor');
-        }
-        if (dpi !== undefined && dpi !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>dpi, 'dpi');
-        }
-        if (depth !== undefined && depth !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>depth, 'depth');
-        }
-        if (quality !== undefined && quality !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>quality, 'quality');
-        }
-        if (colorspace !== undefined && colorspace !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>colorspace, 'colorspace');
-        }
-        if (cropX !== undefined && cropX !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>cropX, 'crop_x');
-        }
-        if (cropY !== undefined && cropY !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>cropY, 'crop_y');
-        }
-        if (cropWidth !== undefined && cropWidth !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>cropWidth, 'crop_width');
-        }
-        if (cropHeight !== undefined && cropHeight !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>cropHeight, 'crop_height');
-        }
-        if (filter !== undefined && filter !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>filter, 'filter');
-        }
-        if (original !== undefined && original !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>original, 'original');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (function_key) required
-        credential = this.configuration.lookupCredential('function_key');
-        if (credential) {
-            headers = headers.set('x-functions-key', credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'image/xyz',
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/imageedit`,
-            {
-                params: queryParameters,
-                responseType: "blob",
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint lets you resize/modify the image asset according to the given parameter(s).
-     * @param id The ID of the asset.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpAssetResize(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<Blob>;
-    public httpAssetResize(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<HttpResponse<Blob>>;
-    public httpAssetResize(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<HttpEvent<Blob>>;
-    public httpAssetResize(id: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpAssetResize.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (function_key) required
-        credential = this.configuration.lookupCredential('function_key');
-        if (credential) {
-            headers = headers.set('x-functions-key', credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'image/xyz',
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/resize`,
-            {
-                responseType: "blob",
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint checks, if an asset exists and returns the url for the requested blob.
-     * @param id The ID of the asset.
-     * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpGetAssetBlob(id: string, c: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AssetBlob>;
-    public httpGetAssetBlob(id: string, c: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AssetBlob>>;
-    public httpGetAssetBlob(id: string, c: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AssetBlob>>;
-    public httpGetAssetBlob(id: string, c: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpGetAssetBlob.');
-        }
-        if (c === null || c === undefined) {
-            throw new Error('Required parameter c was null or undefined when calling httpGetAssetBlob.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (c !== undefined && c !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>c, 'c');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (function_key) required
-        credential = this.configuration.lookupCredential('function_key');
-        if (credential) {
-            headers = headers.set('x-functions-key', credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/blobs`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Returns all collections of a specific asset.
-     * @param id The ID of the asset.
-     * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
-     * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpGetAssetCollectionsById(id: string, fields?: string, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<Collection>>;
-    public httpGetAssetCollectionsById(id: string, fields?: string, translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<Collection>>>;
-    public httpGetAssetCollectionsById(id: string, fields?: string, translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<Collection>>>;
-    public httpGetAssetCollectionsById(id: string, fields?: string, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpGetAssetCollectionsById.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (fields !== undefined && fields !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>fields, 'fields');
-        }
-        if (translations !== undefined && translations !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>translations, 'translations');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (function_key) required
-        credential = this.configuration.lookupCredential('function_key');
-        if (credential) {
-            headers = headers.set('x-functions-key', credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<Array<Collection>>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/collections`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
-     * @param id The ID of the asset.
-     * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpGetAssetDownload(id: string, c?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AssetBlob>;
-    public httpGetAssetDownload(id: string, c?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AssetBlob>>;
-    public httpGetAssetDownload(id: string, c?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AssetBlob>>;
-    public httpGetAssetDownload(id: string, c?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpGetAssetDownload.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (c !== undefined && c !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>c, 'c');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (function_key) required
-        credential = this.configuration.lookupCredential('function_key');
-        if (credential) {
-            headers = headers.set('x-functions-key', credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/download`,
-            {
-                params: queryParameters,
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint lets you use the entire api of Imagemagick to edit the image.
-     * @param id The ID of the asset.
-     * @param dynamicImageOperation Operations to be performed on the image directly mapped to c# imagemagick sdk
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpImageDynamicEdit(id: string, dynamicImageOperation: Array<DynamicImageOperation>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<Blob>;
-    public httpImageDynamicEdit(id: string, dynamicImageOperation: Array<DynamicImageOperation>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<HttpResponse<Blob>>;
-    public httpImageDynamicEdit(id: string, dynamicImageOperation: Array<DynamicImageOperation>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<HttpEvent<Blob>>;
-    public httpImageDynamicEdit(id: string, dynamicImageOperation: Array<DynamicImageOperation>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpImageDynamicEdit.');
-        }
-        if (dynamicImageOperation === null || dynamicImageOperation === undefined) {
-            throw new Error('Required parameter dynamicImageOperation was null or undefined when calling httpImageDynamicEdit.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (function_key) required
-        credential = this.configuration.lookupCredential('function_key');
-        if (credential) {
-            headers = headers.set('x-functions-key', credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'image/xyz',
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        return this.httpClient.post(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/imageedit`,
-            dynamicImageOperation,
-            {
-                responseType: "blob",
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint returns an image with the requested download format applied.
-     * @param id The ID of the asset.
-     * @param downloadFormatId The ID of the download format.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpImageDynamicGetFromDownloadId(id: string, downloadFormatId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<Blob>;
-    public httpImageDynamicGetFromDownloadId(id: string, downloadFormatId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<HttpResponse<Blob>>;
-    public httpImageDynamicGetFromDownloadId(id: string, downloadFormatId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<HttpEvent<Blob>>;
-    public httpImageDynamicGetFromDownloadId(id: string, downloadFormatId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'image/xyz' | 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpImageDynamicGetFromDownloadId.');
-        }
-        if (downloadFormatId === null || downloadFormatId === undefined) {
-            throw new Error('Required parameter downloadFormatId was null or undefined when calling httpImageDynamicGetFromDownloadId.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (function_key) required
-        credential = this.configuration.lookupCredential('function_key');
-        if (credential) {
-            headers = headers.set('x-functions-key', credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'image/xyz',
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/imageedit/${encodeURIComponent(String(downloadFormatId))}`,
-            {
-                responseType: "blob",
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * This endpoint sets the availability of the asset. All properties are put on the asset and replace previous values.To make an asset unavailable set the &#x60;availability&#x60; property to \&#39;locked\&#39; or set the &#x60;available_from&#x60; property below the current date. To make it available set empty string to &#x60;availability&#x60; property or &#x60;available_to&#x60; property into past.
-     * @param id The ID of the asset.
-     * @param assetAvailability The values are validated and put directly on the asset.
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public httpPutAssetAvailability(id: string, assetAvailability: AssetAvailability, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<AssetAvailability>;
-    public httpPutAssetAvailability(id: string, assetAvailability: AssetAvailability, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<AssetAvailability>>;
-    public httpPutAssetAvailability(id: string, assetAvailability: AssetAvailability, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<AssetAvailability>>;
-    public httpPutAssetAvailability(id: string, assetAvailability: AssetAvailability, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
-        if (id === null || id === undefined) {
-            throw new Error('Required parameter id was null or undefined when calling httpPutAssetAvailability.');
-        }
-        if (assetAvailability === null || assetAvailability === undefined) {
-            throw new Error('Required parameter assetAvailability was null or undefined when calling httpPutAssetAvailability.');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (function_key) required
-        credential = this.configuration.lookupCredential('function_key');
-        if (credential) {
-            headers = headers.set('x-functions-key', credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        // to determine the Content-Type header
-        const consumes: string[] = [
-            'application/json'
-        ];
-        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-        if (httpContentTypeSelected !== undefined) {
-            headers = headers.set('Content-Type', httpContentTypeSelected);
-        }
-
-        let responseType_: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType_ = 'text';
-        }
-
-        return this.httpClient.put<AssetAvailability>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/availability`,
-            assetAvailability,
-            {
-                responseType: <any>responseType_,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
+	protected basePath = 'http://localhost:7072/api';
+	public defaultHeaders = new HttpHeaders();
+	public configuration = new AgravityPublicConfiguration();
+	public encoder: HttpParameterCodec;
+
+	constructor(
+		protected httpClient: HttpClient,
+		@Optional() @Inject(BASE_PATH) basePath: string,
+		@Optional() configuration: AgravityPublicConfiguration
+	) {
+		if (configuration) {
+			this.configuration = configuration;
+		}
+		if (typeof this.configuration.basePath !== 'string') {
+			if (typeof basePath !== 'string') {
+				basePath = this.basePath;
+			}
+			this.configuration.basePath = basePath;
+		}
+		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
+	}
+
+	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
+		if (typeof value === 'object' && value instanceof Date === false) {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value);
+		} else {
+			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
+		}
+		return httpParams;
+	}
+
+	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
+		if (value == null) {
+			return httpParams;
+		}
+
+		if (typeof value === 'object') {
+			if (Array.isArray(value)) {
+				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
+			} else if (value instanceof Date) {
+				if (key != null) {
+					httpParams = httpParams.append(key, (value as Date).toISOString().substr(0, 10));
+				} else {
+					throw Error('key may not be null if value is Date');
+				}
+			} else {
+				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
+			}
+		} else if (key != null) {
+			httpParams = httpParams.append(key, value);
+		} else {
+			throw Error('key may not be null if value is not object or array');
+		}
+		return httpParams;
+	}
+
+	/**
+	 * This endpoint lets you resize/modify the image asset according to the given parameter(s).
+	 * @param id The ID of the asset.
+	 * @param width The width of the final image.
+	 * @param height The height of the final image.
+	 * @param mode The supported modes: contain (default), cover, fill, crop, none
+	 * @param target The file type which the image should be (i.e. webp, png, jpg, gif)
+	 * @param bgcolor The color of the background color if background is visible (crop outside, png). RGB(A) in hex code (i.e. 00FFAA or with alpha channel: 44AABB77) and color names (i.e. lightgray) supported - default: transparent
+	 * @param dpi The density (counts for X and Y) of the target image.
+	 * @param depth The bit depth of the target image.
+	 * @param quality The quality of the target image (1-100).
+	 * @param colorspace The color space of the image (Default: sRGB).
+	 * @param cropX If mode is crop: The x coordinate of the point (if image is extended (outside) it is negative)
+	 * @param cropY If mode is crop: The y coordinate of the point (if image is extended (outside) it is negative)
+	 * @param cropWidth If mode&#x3D;crop: The width of the cropping rectangle (from original pixel)
+	 * @param cropHeight If mode&#x3D;crop: The height of the cropping rectangle (from original pixel)
+	 * @param filter Which filter should be applied. To get all filters available use: /api/helper/imageeditfilters
+	 * @param original If set to true the internal image is used instead of the default original
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetImageEdit(
+		id: string,
+		width?: number,
+		height?: number,
+		mode?: string,
+		target?: string,
+		bgcolor?: string,
+		dpi?: number,
+		depth?: number,
+		quality?: number,
+		colorspace?: string,
+		cropX?: number,
+		cropY?: number,
+		cropWidth?: number,
+		cropHeight?: number,
+		filter?: string,
+		original?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<Blob>;
+	public httpAssetImageEdit(
+		id: string,
+		width?: number,
+		height?: number,
+		mode?: string,
+		target?: string,
+		bgcolor?: string,
+		dpi?: number,
+		depth?: number,
+		quality?: number,
+		colorspace?: string,
+		cropX?: number,
+		cropY?: number,
+		cropWidth?: number,
+		cropHeight?: number,
+		filter?: string,
+		original?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<HttpResponse<Blob>>;
+	public httpAssetImageEdit(
+		id: string,
+		width?: number,
+		height?: number,
+		mode?: string,
+		target?: string,
+		bgcolor?: string,
+		dpi?: number,
+		depth?: number,
+		quality?: number,
+		colorspace?: string,
+		cropX?: number,
+		cropY?: number,
+		cropWidth?: number,
+		cropHeight?: number,
+		filter?: string,
+		original?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<HttpEvent<Blob>>;
+	public httpAssetImageEdit(
+		id: string,
+		width?: number,
+		height?: number,
+		mode?: string,
+		target?: string,
+		bgcolor?: string,
+		dpi?: number,
+		depth?: number,
+		quality?: number,
+		colorspace?: string,
+		cropX?: number,
+		cropY?: number,
+		cropWidth?: number,
+		cropHeight?: number,
+		filter?: string,
+		original?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpAssetImageEdit.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (width !== undefined && width !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>width, 'width');
+		}
+		if (height !== undefined && height !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>height, 'height');
+		}
+		if (mode !== undefined && mode !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>mode, 'mode');
+		}
+		if (target !== undefined && target !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>target, 'target');
+		}
+		if (bgcolor !== undefined && bgcolor !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>bgcolor, 'bgcolor');
+		}
+		if (dpi !== undefined && dpi !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>dpi, 'dpi');
+		}
+		if (depth !== undefined && depth !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>depth, 'depth');
+		}
+		if (quality !== undefined && quality !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>quality, 'quality');
+		}
+		if (colorspace !== undefined && colorspace !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>colorspace, 'colorspace');
+		}
+		if (cropX !== undefined && cropX !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>cropX, 'crop_x');
+		}
+		if (cropY !== undefined && cropY !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>cropY, 'crop_y');
+		}
+		if (cropWidth !== undefined && cropWidth !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>cropWidth, 'crop_width');
+		}
+		if (cropHeight !== undefined && cropHeight !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>cropHeight, 'crop_height');
+		}
+		if (filter !== undefined && filter !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>filter, 'filter');
+		}
+		if (original !== undefined && original !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>original, 'original');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['image/xyz', 'application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/imageedit`, {
+			params: queryParameters,
+			responseType: 'blob',
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint lets you resize/modify the image asset according to the given parameter(s).
+	 * @param id The ID of the asset.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetResize(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }): Observable<Blob>;
+	public httpAssetResize(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }): Observable<HttpResponse<Blob>>;
+	public httpAssetResize(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }): Observable<HttpEvent<Blob>>;
+	public httpAssetResize(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpAssetResize.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['image/xyz', 'application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/resize`, {
+			responseType: 'blob',
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint checks, if an asset exists and returns the url for the requested blob.
+	 * @param id The ID of the asset.
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAssetBlob(id: string, c: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
+	public httpGetAssetBlob(id: string, c: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetBlob>>;
+	public httpGetAssetBlob(id: string, c: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetBlob>>;
+	public httpGetAssetBlob(id: string, c: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetAssetBlob.');
+		}
+		if (c === null || c === undefined) {
+			throw new Error('Required parameter c was null or undefined when calling httpGetAssetBlob.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (c !== undefined && c !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>c, 'c');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/blobs`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * Returns all collections of a specific asset.
+	 * @param id The ID of the asset.
+	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAssetCollectionsById(
+		id: string,
+		fields?: string,
+		translations?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<Collection>>;
+	public httpGetAssetCollectionsById(
+		id: string,
+		fields?: string,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<Collection>>>;
+	public httpGetAssetCollectionsById(
+		id: string,
+		fields?: string,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<Collection>>>;
+	public httpGetAssetCollectionsById(
+		id: string,
+		fields?: string,
+		translations?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetAssetCollectionsById.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (fields !== undefined && fields !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>fields, 'fields');
+		}
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<Array<Collection>>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/collections`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
+	 * @param id The ID of the asset.
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAssetDownload(id: string, c?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
+	public httpGetAssetDownload(id: string, c?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetBlob>>;
+	public httpGetAssetDownload(id: string, c?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetBlob>>;
+	public httpGetAssetDownload(id: string, c?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetAssetDownload.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (c !== undefined && c !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>c, 'c');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/download`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint lets you use the entire api of Imagemagick to edit the image.
+	 * @param id The ID of the asset.
+	 * @param dynamicImageOperation Operations to be performed on the image directly mapped to c# imagemagick sdk
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpImageDynamicEdit(
+		id: string,
+		dynamicImageOperation: Array<DynamicImageOperation>,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<Blob>;
+	public httpImageDynamicEdit(
+		id: string,
+		dynamicImageOperation: Array<DynamicImageOperation>,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<HttpResponse<Blob>>;
+	public httpImageDynamicEdit(
+		id: string,
+		dynamicImageOperation: Array<DynamicImageOperation>,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<HttpEvent<Blob>>;
+	public httpImageDynamicEdit(
+		id: string,
+		dynamicImageOperation: Array<DynamicImageOperation>,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpImageDynamicEdit.');
+		}
+		if (dynamicImageOperation === null || dynamicImageOperation === undefined) {
+			throw new Error('Required parameter dynamicImageOperation was null or undefined when calling httpImageDynamicEdit.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['image/xyz', 'application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
+		return this.httpClient.post(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/imageedit`, dynamicImageOperation, {
+			responseType: 'blob',
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns an image with the requested download format applied.
+	 * @param id The ID of the asset.
+	 * @param downloadFormatId The ID of the download format.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpImageDynamicGetFromDownloadId(
+		id: string,
+		downloadFormatId: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<Blob>;
+	public httpImageDynamicGetFromDownloadId(
+		id: string,
+		downloadFormatId: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<HttpResponse<Blob>>;
+	public httpImageDynamicGetFromDownloadId(
+		id: string,
+		downloadFormatId: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<HttpEvent<Blob>>;
+	public httpImageDynamicGetFromDownloadId(
+		id: string,
+		downloadFormatId: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpImageDynamicGetFromDownloadId.');
+		}
+		if (downloadFormatId === null || downloadFormatId === undefined) {
+			throw new Error('Required parameter downloadFormatId was null or undefined when calling httpImageDynamicGetFromDownloadId.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['image/xyz', 'application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/imageedit/${encodeURIComponent(String(downloadFormatId))}`, {
+			responseType: 'blob',
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint sets the availability of the asset. All properties are put on the asset and replace previous values.To make an asset unavailable set the &#x60;availability&#x60; property to \&#39;locked\&#39; or set the &#x60;available_from&#x60; property below the current date. To make it available set empty string to &#x60;availability&#x60; property or &#x60;available_to&#x60; property into past.
+	 * @param id The ID of the asset.
+	 * @param assetAvailability The values are validated and put directly on the asset.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPutAssetAvailability(
+		id: string,
+		assetAvailability: AssetAvailability,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AssetAvailability>;
+	public httpPutAssetAvailability(
+		id: string,
+		assetAvailability: AssetAvailability,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AssetAvailability>>;
+	public httpPutAssetAvailability(
+		id: string,
+		assetAvailability: AssetAvailability,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AssetAvailability>>;
+	public httpPutAssetAvailability(
+		id: string,
+		assetAvailability: AssetAvailability,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpPutAssetAvailability.');
+		}
+		if (assetAvailability === null || assetAvailability === undefined) {
+			throw new Error('Required parameter assetAvailability was null or undefined when calling httpPutAssetAvailability.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.put<AssetAvailability>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/availability`, assetAvailability, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 }

@@ -10,16 +10,14 @@
  * Do not edit the class manually.
  */
 
-
-export interface InfoEntitySkillEnhanced { 
-    collection_names?: Array<string>;
-    collection_descs?: Array<string>;
-    udl_coll_ids?: Array<string>;
-    translation_values?: Array<string>;
-    collectiontypeids?: Array<string>;
-    allcustom?: any;
-    custom_values?: Array<string>;
-    perm_groups?: Array<string>;
-    fulltext?: string;
+export interface InfoEntitySkillEnhanced {
+	collection_names?: Array<string>;
+	collection_descs?: Array<string>;
+	udl_coll_ids?: Array<string>;
+	translation_values?: Array<string>;
+	collectiontypeids?: Array<string>;
+	allcustom?: any;
+	custom_values?: Array<string>;
+	perm_groups?: Array<string>;
+	fulltext?: string;
 }
-

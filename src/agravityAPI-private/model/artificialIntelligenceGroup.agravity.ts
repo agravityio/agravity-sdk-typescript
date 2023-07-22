@@ -10,11 +10,9 @@
  * Do not edit the class manually.
  */
 
-
-export interface ArtificialIntelligenceGroup { 
-    origin?: string;
-    url?: string;
-    min_confidence?: number | null;
-    values?: Array<{ [key: string]: object; }>;
+export interface ArtificialIntelligenceGroup {
+	origin?: string;
+	url?: string;
+	min_confidence?: number | null;
+	values?: Array<{ [key: string]: object }>;
 }
-

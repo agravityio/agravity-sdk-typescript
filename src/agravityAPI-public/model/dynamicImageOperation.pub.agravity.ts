@@ -10,9 +10,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface DynamicImageOperation { 
-    operation?: string;
-    params?: Array<object>;
+export interface DynamicImageOperation {
+	operation?: string;
+	params?: Array<object>;
 }
-

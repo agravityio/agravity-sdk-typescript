@@ -11,19 +11,17 @@
  */
 import { SharedAsset } from './sharedAsset.agravity';
 
-
-export interface SharedCollectionFull { 
-    page?: Array<SharedAsset>;
-    page_size?: number;
-    size?: number | null;
-    continuation_token?: string;
-    id?: string;
-    collection_id?: string;
-    created_date?: string;
-    url?: string;
-    valid_until?: string;
-    valid_for?: string;
-    message?: string;
-    global?: boolean;
+export interface SharedCollectionFull {
+	page?: Array<SharedAsset>;
+	page_size?: number;
+	size?: number | null;
+	continuation_token?: string;
+	id?: string;
+	collection_id?: string;
+	created_date?: string;
+	url?: string;
+	valid_until?: string;
+	valid_for?: string;
+	message?: string;
+	global?: boolean;
 }
-

@@ -10,10 +10,8 @@
  * Do not edit the class manually.
  */
 
-
-export interface SearchFacetEntity { 
-    count?: number | null;
-    value?: string;
-    name?: string;
+export interface SearchFacetEntity {
+	count?: number | null;
+	value?: string;
+	name?: string;
 }
-

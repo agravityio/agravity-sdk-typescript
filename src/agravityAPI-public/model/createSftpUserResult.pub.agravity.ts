@@ -10,9 +10,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface CreateSftpUserResult { 
-    url?: string;
-    password?: string;
+export interface CreateSftpUserResult {
+	url?: string;
+	password?: string;
 }
-

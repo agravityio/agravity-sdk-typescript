@@ -10,9 +10,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface EmailAddress { 
-    name?: string;
-    email?: string;
+export interface EmailAddress {
+	name?: string;
+	email?: string;
 }
-

@@ -10,8 +10,6 @@
  * Do not edit the class manually.
  */
 
-
-export interface EntityId { 
-    id?: string;
+export interface EntityId {
+	id?: string;
 }
-

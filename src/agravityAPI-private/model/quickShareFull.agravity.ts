@@ -13,25 +13,23 @@ import { EntityId } from './entityId.agravity';
 import { AssetIdFormat } from './assetIdFormat.agravity';
 import { SharedAsset } from './sharedAsset.agravity';
 
-
-export interface QuickShareFull { 
-    page?: Array<SharedAsset>;
-    page_size?: number;
-    size?: number | null;
-    continuation_token?: string;
-    id?: string;
-    entity_type?: string;
-    assets?: Array<AssetIdFormat>;
-    users?: Array<EntityId>;
-    expires?: string;
-    url?: string;
-    zip_url?: string;
-    status?: string;
-    created_date?: string | null;
-    created_by?: string;
-    modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+export interface QuickShareFull {
+	page?: Array<SharedAsset>;
+	page_size?: number;
+	size?: number | null;
+	continuation_token?: string;
+	id?: string;
+	entity_type?: string;
+	assets?: Array<AssetIdFormat>;
+	users?: Array<EntityId>;
+	expires?: string;
+	url?: string;
+	zip_url?: string;
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
-

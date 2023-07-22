@@ -10,10 +10,8 @@
  * Do not edit the class manually.
  */
 
-
-export interface AssetIdFormat { 
-    id?: string;
-    name?: string;
-    format?: string;
+export interface AssetIdFormat {
+	id?: string;
+	name?: string;
+	format?: string;
 }
-

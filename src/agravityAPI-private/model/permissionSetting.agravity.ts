@@ -11,17 +11,15 @@
  */
 import { AzureIdentity } from './azureIdentity.agravity';
 
-
-export interface PermissionSetting { 
-    id?: string;
-    entity_type?: string;
-    all_permissions?: Array<AzureIdentity>;
-    status?: string;
-    created_date?: string | null;
-    created_by?: string;
-    modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+export interface PermissionSetting {
+	id?: string;
+	entity_type?: string;
+	all_permissions?: Array<AzureIdentity>;
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
-

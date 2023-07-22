@@ -11,17 +11,15 @@
  */
 import { CreateSftpUserResult } from './createSftpUserResult.agravity';
 
-
-export interface SecureUploadEntity { 
-    id?: string;
-    collection_id?: string;
-    created_date?: string;
-    created_by?: string;
-    url?: string;
-    valid_until?: string;
-    password?: string;
-    asset_tags?: Array<string>;
-    message?: string;
-    sftp_connection?: CreateSftpUserResult;
+export interface SecureUploadEntity {
+	id?: string;
+	collection_id?: string;
+	created_date?: string;
+	created_by?: string;
+	url?: string;
+	valid_until?: string;
+	password?: string;
+	asset_tags?: Array<string>;
+	message?: string;
+	sftp_connection?: CreateSftpUserResult;
 }
-

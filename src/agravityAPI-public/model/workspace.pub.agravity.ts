@@ -12,23 +12,21 @@
 import { EntityId } from './entityId.pub.agravity';
 import { CollectionType } from './collectionType.pub.agravity';
 
-
-export interface Workspace { 
-    id?: string;
-    entity_type?: string;
-    name?: string;
-    collection_types?: Array<CollectionType>;
-    translations?: { [key: string]: { [key: string]: object; }; };
-    order?: number | null;
-    permissions?: Array<EntityId>;
-    description?: string;
-    add_properties?: { [key: string]: any; };
-    status?: string;
-    created_date?: string | null;
-    created_by?: string;
-    modified_date?: string | null;
-    modified_by?: string;
-    pk?: string;
-    _etag?: string;
+export interface Workspace {
+	id?: string;
+	entity_type?: string;
+	name?: string;
+	collection_types?: Array<CollectionType>;
+	translations?: { [key: string]: { [key: string]: object } };
+	order?: number | null;
+	permissions?: Array<EntityId>;
+	description?: string;
+	add_properties?: { [key: string]: any };
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
-

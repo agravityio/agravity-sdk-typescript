@@ -14,11 +14,9 @@ import { SearchAdminSkillStatus } from './searchAdminSkillStatus.agravity';
 import { SearchAdminIndexStatus } from './searchAdminIndexStatus.agravity';
 import { SearchAdminDataSourceStatus } from './searchAdminDataSourceStatus.agravity';
 
-
-export interface SearchAdminStatus { 
-    index?: SearchAdminIndexStatus;
-    indexer?: SearchAdminIndexerStatus;
-    datasource?: SearchAdminDataSourceStatus;
-    skillsets?: Array<SearchAdminSkillStatus>;
+export interface SearchAdminStatus {
+	index?: SearchAdminIndexStatus;
+	indexer?: SearchAdminIndexerStatus;
+	datasource?: SearchAdminDataSourceStatus;
+	skillsets?: Array<SearchAdminSkillStatus>;
 }
-

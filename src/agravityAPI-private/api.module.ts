@@ -37,27 +37,25 @@ import { WordpressManagementService } from './api/wordpressManagement.agravity';
 import { WorkspaceManagementService } from './api/workspaceManagement.agravity';
 
 @NgModule({
-  imports:      [],
-  declarations: [],
-  exports:      [],
-  providers: []
+	imports: [],
+	declarations: [],
+	exports: [],
+	providers: []
 })
 export class AgravityApiModule {
-    public static forRoot(configurationFactory: () => AgravityConfiguration): ModuleWithProviders<AgravityApiModule> {
-        return {
-            ngModule: AgravityApiModule,
-            providers: [ { provide: AgravityConfiguration, useFactory: configurationFactory } ]
-        };
-    }
+	public static forRoot(configurationFactory: () => AgravityConfiguration): ModuleWithProviders<AgravityApiModule> {
+		return {
+			ngModule: AgravityApiModule,
+			providers: [{ provide: AgravityConfiguration, useFactory: configurationFactory }]
+		};
+	}
 
-    constructor( @Optional() @SkipSelf() parentModule: AgravityApiModule,
-                 @Optional() http: HttpClient) {
-        if (parentModule) {
-            throw new Error('AgravityApiModule is already loaded. Import in your base AppModule only.');
-        }
-        if (!http) {
-            throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
-            'See also https://github.com/angular/angular/issues/20575');
-        }
-    }
+	constructor(@Optional() @SkipSelf() parentModule: AgravityApiModule, @Optional() http: HttpClient) {
+		if (parentModule) {
+			throw new Error('AgravityApiModule is already loaded. Import in your base AppModule only.');
+		}
+		if (!http) {
+			throw new Error('You need to import the HttpClientModule in your AppModule! \n' + 'See also https://github.com/angular/angular/issues/20575');
+		}
+	}
 }

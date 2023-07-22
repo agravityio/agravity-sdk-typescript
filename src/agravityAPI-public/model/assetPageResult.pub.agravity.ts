@@ -12,12 +12,10 @@
 import { WhereParam } from './whereParam.pub.agravity';
 import { Asset } from './asset.pub.agravity';
 
-
-export interface AssetPageResult { 
-    page?: Array<Asset>;
-    page_size?: number;
-    size?: number | null;
-    continuation_token?: string;
-    filter?: Array<WhereParam>;
+export interface AssetPageResult {
+	page?: Array<Asset>;
+	page_size?: number;
+	size?: number | null;
+	continuation_token?: string;
+	filter?: Array<WhereParam>;
 }
-

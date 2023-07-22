@@ -10,21 +10,18 @@
  * Do not edit the class manually.
  */
 
-
-export interface AzureIdentity { 
-    id?: string;
-    name?: string;
-    description?: string;
-    email?: string;
-    ident_type?: AzureIdentity.IdentTypeEnum | null;
+export interface AzureIdentity {
+	id?: string;
+	name?: string;
+	description?: string;
+	email?: string;
+	ident_type?: AzureIdentity.IdentTypeEnum | null;
 }
 export namespace AzureIdentity {
-    export type IdentTypeEnum = 'USER' | 'GROUP' | 'APIKEY';
-    export const IdentTypeEnum = {
-        User: 'USER' as IdentTypeEnum,
-        Group: 'GROUP' as IdentTypeEnum,
-        Apikey: 'APIKEY' as IdentTypeEnum
-    };
+	export type IdentTypeEnum = 'USER' | 'GROUP' | 'APIKEY';
+	export const IdentTypeEnum = {
+		User: 'USER' as IdentTypeEnum,
+		Group: 'GROUP' as IdentTypeEnum,
+		Apikey: 'APIKEY' as IdentTypeEnum
+	};
 }
-
-

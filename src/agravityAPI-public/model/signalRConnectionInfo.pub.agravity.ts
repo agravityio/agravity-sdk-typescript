@@ -10,9 +10,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface SignalRConnectionInfo { 
-    url?: string;
-    accessToken?: string;
+export interface SignalRConnectionInfo {
+	url?: string;
+	accessToken?: string;
 }
-

@@ -10,15 +10,13 @@
  * Do not edit the class manually.
  */
 
-
-export interface AgravityVersion { 
-    name?: string;
-    company?: string;
-    customer?: string;
-    updated?: string;
-    client_id?: string;
-    version?: string;
-    permission_enabled?: boolean;
-    region?: string;
+export interface AgravityVersion {
+	name?: string;
+	company?: string;
+	customer?: string;
+	updated?: string;
+	client_id?: string;
+	version?: string;
+	permission_enabled?: boolean;
+	region?: string;
 }
-

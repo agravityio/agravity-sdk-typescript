@@ -10,9 +10,7 @@
  * Do not edit the class manually.
  */
 
-
-export interface SearchAdminSkillStatus { 
-    name?: string;
-    skills?: Array<string>;
+export interface SearchAdminSkillStatus {
+	name?: string;
+	skills?: Array<string>;
 }
-
