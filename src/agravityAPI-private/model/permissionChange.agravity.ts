@@ -9,18 +9,19 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { PermissionEntity } from './permissionEntity.agravity';
 
 export interface PermissionChange {
-	ids?: Array<string>;
+	entities?: Array<PermissionEntity>;
 	modify?: PermissionChange.ModifyEnum;
 }
 export namespace PermissionChange {
-	export type ModifyEnum = 0 | 1 | 2 | 3 | 4;
+	export type ModifyEnum = 'CREATE' | 'ADD' | 'UPDATE' | 'REPLACE' | 'DELETE';
 	export const ModifyEnum = {
-		NUMBER_0: 0 as ModifyEnum,
-		NUMBER_1: 1 as ModifyEnum,
-		NUMBER_2: 2 as ModifyEnum,
-		NUMBER_3: 3 as ModifyEnum,
-		NUMBER_4: 4 as ModifyEnum
+		Create: 'CREATE' as ModifyEnum,
+		Add: 'ADD' as ModifyEnum,
+		Update: 'UPDATE' as ModifyEnum,
+		Replace: 'REPLACE' as ModifyEnum,
+		Delete: 'DELETE' as ModifyEnum
 	};
 }
