@@ -28,6 +28,8 @@ export * from './generalManagement.agravity';
 import { GeneralManagementService } from './generalManagement.agravity';
 export * from './helperTools.agravity';
 import { HelperToolsService } from './helperTools.agravity';
+export * from './historyEntryManagement.agravity';
+import { HistoryEntryManagementService } from './historyEntryManagement.agravity';
 export * from './iccProfileManagement.agravity';
 import { IccProfileManagementService } from './iccProfileManagement.agravity';
 export * from './listBlobs.agravity';
@@ -56,12 +58,44 @@ export * from './structureImport.agravity';
 import { StructureImportService } from './structureImport.agravity';
 export * from './translationManagement.agravity';
 import { TranslationManagementService } from './translationManagement.agravity';
-export * from './upgradeManagement.agravity';
-import { UpgradeManagementService } from './upgradeManagement.agravity';
 export * from './webAppData.agravity';
 import { WebAppDataService } from './webAppData.agravity';
 export * from './wordpressManagement.agravity';
 import { WordpressManagementService } from './wordpressManagement.agravity';
 export * from './workspaceManagement.agravity';
 import { WorkspaceManagementService } from './workspaceManagement.agravity';
-export const APIS = [AssetIconRuleManagementService, AssetManagementService, AssetOperationsService, AssetPublishingService, AssetVersioningService, AuthenticationManagementService, CollectionManagementService, CollectionSharingService, CollectionTypeItemBlueprintManagementService, CollectionTypeManagementService, ConfigurationManagementService, DownloadFormatManagementService, DownloadZipService, GeneralManagementService, HelperToolsService, IccProfileManagementService, ListBlobsService, ListQueuesService, PermissionsManagementService, PublishingService, QuickshareManagementService, SavedSearchManagementService, SearchManagementService, SecureUploadService, SignalRConnectionManagementService, StaticDefinedListManagementService, StockImportService, StructureImportService, TranslationManagementService, UpgradeManagementService, WebAppDataService, WordpressManagementService, WorkspaceManagementService];
+export const APIS = [
+	AssetIconRuleManagementService,
+	AssetManagementService,
+	AssetOperationsService,
+	AssetPublishingService,
+	AssetVersioningService,
+	AuthenticationManagementService,
+	CollectionManagementService,
+	CollectionSharingService,
+	CollectionTypeItemBlueprintManagementService,
+	CollectionTypeManagementService,
+	ConfigurationManagementService,
+	DownloadFormatManagementService,
+	DownloadZipService,
+	GeneralManagementService,
+	HelperToolsService,
+	HistoryEntryManagementService,
+	IccProfileManagementService,
+	ListBlobsService,
+	ListQueuesService,
+	PermissionsManagementService,
+	PublishingService,
+	QuickshareManagementService,
+	SavedSearchManagementService,
+	SearchManagementService,
+	SecureUploadService,
+	SignalRConnectionManagementService,
+	StaticDefinedListManagementService,
+	StockImportService,
+	StructureImportService,
+	TranslationManagementService,
+	WebAppDataService,
+	WordpressManagementService,
+	WorkspaceManagementService
+];

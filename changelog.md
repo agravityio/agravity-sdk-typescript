@@ -9,28 +9,111 @@ and this project does not adheres to [Semantic Versioning](https://semver.org/sp
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
 ---
-## AgravityAPI <a name="5.1.2"/> [5.1.2](https://www.nuget.org/packages/Agravity.Public/5.1.2) (2023-03-23)
+
+## AgravityAPI <a name="5.3.0"/> [5.3.0](https://www.npmjs.com/package/@agravity/private/v/5.3.0) (2023-07-21)
+
+- Add new API for Asset History Management:
+  - Add GET `/history/id` Returns a list with history entries for the given entity id.
+
+- Other improvements:
+  - Add "contains" to search filter query with new separator `<>`
+  - Remove old upgrade endpoints
+
 ---
+
+## AgravityAPI 5.2.2 (2023-07-06)
+
+(no changes - just update according to backend version)
+
+---
+
+## AgravityAPI 5.2.1 (2023-07-04)
+
+- Add endpoint PATCH `/helper/clearconfigcache` - This method starts queues in all functions to clear the config cache.
+- Add `name` property to AssetIdFormat
+- Remove format from downloadObject (now each asset can have individual format)
+- Refactor AssetIdContainer to AssetIdFormat
+- Add `zip_url` to quickshare (and full)
+
+---
+
+## AgravityAPI <a name="5.2.0"/> [5.2.0](https://www.npmjs.com/package/@agravity/private/v/5.2.0) (2023-06-06)
+
+- Add new API for QuickShares:
+- Add POST `/quickshares` to create a new QuickShare (for user)
+- Add GET `/quickshares` to get all QuickShares of user (can be specified by Admin when adding userid query param)
+- Add GET `/quickshares/{id}` to get a specific QuickShares of user
+- Add DELETE `/quickshares/{id}` to delete a specific QuickShares of user
+- Add DELETE `/quickshares` deletes all quick shares of a user (can be specified by Admin when adding userid query param)
+
+Enhance Auth Mangement API:
+- Add GET `/auth/users/{id}` to get user information (if not ADMIN or the requesting user - only name and email
+are returned)
+- new query parameter limit
+- Add GET `/auth/users` (only ADMIN) to get all user informations
+new query parameter limit
+
+Public API:
+- Add public PUT `/assets/{id}/availability` to set the availability of an asset
+
+---
+
+## AgravityAPI 5.1.6 (2023-05-23)
+
+- Remove techdata from all assets get endpoint and moved to GetAssetById:
+  - add GET endpoint `/assets/{id}/techdata` to private
+  - add query parameter `techdata` to public and private GetAssetById endpoints
+- Refactor public SignalR management class to have the prefix "public"
+- Update description of get asset techdata endpoint
+
+---
+
+## AgravityAPI 5.1.5 (2023-05-04)
+(no changes - just update according to backend version)
+
+---
+
+## AgravityAPI 5.1.4 (2023-04-27)
+(no changes - just update according to backend version)
+
+---
+
+## AgravityAPI 5.1.3 (2023-04-23)
+
+- Add new endpoints for download formats:
+- GET `/downloadformats/{id}` - This endpoint get a single download format.
+- POST `/downloadformats/{id}` - This endpoint updates one download format entry in the database. (Roles: Editor, Admin)
+- Include more translation options (show all)
+- Allow filtering of exported data (asset, workspace, collection_type and/or only certain collection types (IDs) for exporting. When providing multiple values separate it with comma)
+- Change separator of filter in searches (so comma (',') could be included in SDL values)
+
+---
+
+## AgravityAPI 5.1.2 (2023-03-23)
 
 - Change all `AddProperties` from  `Dictionary<string, Object>` to `Dictionary<string, object>`
 - Add property `Profile` which could have the ICC-Profile name for the original blob
 - Add `Format` property to CollTypeItem model to get and store additional information about the format of the item_type
 - Add `ClientId` property to VersionInfo
 
-## AgravityAPI 5.1.1 (2023-03-16)
 ---
+
+## AgravityAPI 5.1.1 (2023-03-16)
 (no changes - was not published on nuget - just update according to backend version)
 
-## AgravityAPI <a name="5.1.0"/> [5.1.0](https://www.nuget.org/packages/Agravity.Public/5.1.0) (2023-02-19)
 ---
+
+## AgravityAPI 5.1.0 (2023-02-19)
 (no changes - just update according to backend version)
 
-## AgravityAPI <a name="5.0.2"/> [5.0.2](https://www.nuget.org/packages/Agravity.Public/5.0.2) (2023-02-06)
 ---
+
+## AgravityAPI 5.0.2 (2023-02-06)
 (no changes - just update according to backend version)
 
-## AgravityAPI <a name="5.0.1"/> [5.0.1](https://www.nuget.org/packages/Agravity.Public/5.0.1) (2023-01-27)
 ---
+
+## AgravityAPI 5.0.1 (2023-01-27)
 - Add / modifiy multipart/formdata endpoint POST `/assets/{id}/versionsupload`: This endpoint allows to upload one asset which replaces the asset with given id and creates a version which is returned.
 - modified `/assets/{id}/versions` to now only take json as input (VersionedAsset)
 - add missing `filter` parameter to HttpAssetsGet and made collectionId not mandatory.
@@ -38,7 +121,9 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 - Add upload to storage use case;
 - Add `notPrefix`to WhereParam (only used in backend);
 
-## AgravityAPI <a name="5.0.0"/> [5.0.0](https://www.nuget.org/packages/Agravity.Public/5.0.0) (2023-01-07)
+---
+
+## AgravityAPI 5.0.0 (2023-01-07)
 
 - Add new permission endpoints:
   - CollectionType Management: POST `/collectiontypes/{id}/permissions`
@@ -79,7 +164,7 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
-## AgravityAPI <a name="4.9.3"/> [4.9.3](https://www.nuget.org/packages/Agravity.Public/4.9.3) (2022-12-15)
+## AgravityAPI 4.9.3 (2022-12-15)
 
 Add parameter:
 - Paging with param `skip` in GET `/api/search`
@@ -98,7 +183,7 @@ Repaired some annotations
 
 ---
 
-## AgravityAPI <a name="4.9.2"/> [4.9.2](https://www.nuget.org/packages/Agravity.Public/4.9.2) (2022-12-05)
+## AgravityAPI 4.9.2 (2022-12-05)
 
 - Add to Public the Download Format Management and Custom Image Manipulation (with DownloadID):
   - Add POST `assets/{id}/imageedit` to Public Asset Operation Management
@@ -108,7 +193,7 @@ Repaired some annotations
 
 ---
 
-## AgravityAPI <a name="4.9.1"/> [4.9.1](https://www.nuget.org/packages/Agravity.Public/4.9.1) (2022-12-01)
+## AgravityAPI 4.9.1 (2022-12-01)
 
 - Add `ids` param to search endpoint (private and public) to limit the results to given ids (comma separated);
 - introduce new `options` property to searchResult which reflect all filter params given
@@ -121,7 +206,7 @@ Repaired some annotations
 
 ---
 
-## AgravityAPI <a name="4.9.0"/> [4.9.0](https://www.nuget.org/packages/Agravity.Public/4.9.0) (2022-11-28)
+## AgravityAPI 4.9.0 (2022-11-28)
 
 Add `translations` param in nearly all endpoints which receives translateable objects
 Add missing `items` as param PublicAssetManagement
@@ -132,10 +217,12 @@ Add Saved Search Management:
 - DELETE `/savedsearches/{id}` (editor + admin) This endpoint deletes a single saved search.
 
 ---
-## AgravityAPI <a name="4.8.1"/> [4.8.1](https://www.nuget.org/packages/Agravity.Public/4.8.1) (2022-11-14)
+
+## AgravityAPI 4.8.1 (2022-11-14)
 - Change GET `/assetsenhancer/{id}` to GET `/helper/skillenhancer/{id}` - Show the result of the SkillEnhancer for assets and collections
 
 ---
+
 ## AgravityAPI 4.8.0 (2022-11-13)
 - Add methods to public functions:
   - Update GET `/assets/{id}` - Add "uncomplete" flag return uncomplete
@@ -144,7 +231,8 @@ Add Saved Search Management:
   - Fix return value from HttpStaticDefinedListsGetById
 
 ---
-## AgravityAPI <a name="4.7.3"/> [4.7.3](https://www.nuget.org/packages/Agravity.Public/4.7.3) (2022-10-31)
+
+## AgravityAPI 4.7.3 (2022-10-31)
 > Just version upgrade to match backend
 
 ---

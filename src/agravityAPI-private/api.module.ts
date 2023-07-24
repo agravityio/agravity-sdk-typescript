@@ -17,6 +17,7 @@ import { DownloadFormatManagementService } from './api/downloadFormatManagement.
 import { DownloadZipService } from './api/downloadZip.agravity';
 import { GeneralManagementService } from './api/generalManagement.agravity';
 import { HelperToolsService } from './api/helperTools.agravity';
+import { HistoryEntryManagementService } from './api/historyEntryManagement.agravity';
 import { IccProfileManagementService } from './api/iccProfileManagement.agravity';
 import { ListBlobsService } from './api/listBlobs.agravity';
 import { ListQueuesService } from './api/listQueues.agravity';
@@ -31,33 +32,30 @@ import { StaticDefinedListManagementService } from './api/staticDefinedListManag
 import { StockImportService } from './api/stockImport.agravity';
 import { StructureImportService } from './api/structureImport.agravity';
 import { TranslationManagementService } from './api/translationManagement.agravity';
-import { UpgradeManagementService } from './api/upgradeManagement.agravity';
 import { WebAppDataService } from './api/webAppData.agravity';
 import { WordpressManagementService } from './api/wordpressManagement.agravity';
 import { WorkspaceManagementService } from './api/workspaceManagement.agravity';
 
 @NgModule({
-  imports:      [],
-  declarations: [],
-  exports:      [],
-  providers: []
+	imports: [],
+	declarations: [],
+	exports: [],
+	providers: []
 })
 export class AgravityApiModule {
-    public static forRoot(configurationFactory: () => AgravityConfiguration): ModuleWithProviders<AgravityApiModule> {
-        return {
-            ngModule: AgravityApiModule,
-            providers: [ { provide: AgravityConfiguration, useFactory: configurationFactory } ]
-        };
-    }
+	public static forRoot(configurationFactory: () => AgravityConfiguration): ModuleWithProviders<AgravityApiModule> {
+		return {
+			ngModule: AgravityApiModule,
+			providers: [{ provide: AgravityConfiguration, useFactory: configurationFactory }]
+		};
+	}
 
-    constructor( @Optional() @SkipSelf() parentModule: AgravityApiModule,
-                 @Optional() http: HttpClient) {
-        if (parentModule) {
-            throw new Error('AgravityApiModule is already loaded. Import in your base AppModule only.');
-        }
-        if (!http) {
-            throw new Error('You need to import the HttpClientModule in your AppModule! \n' +
-            'See also https://github.com/angular/angular/issues/20575');
-        }
-    }
+	constructor(@Optional() @SkipSelf() parentModule: AgravityApiModule, @Optional() http: HttpClient) {
+		if (parentModule) {
+			throw new Error('AgravityApiModule is already loaded. Import in your base AppModule only.');
+		}
+		if (!http) {
+			throw new Error('You need to import the HttpClientModule in your AppModule! \n' + 'See also https://github.com/angular/angular/issues/20575');
+		}
+	}
 }

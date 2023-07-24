@@ -35,7 +35,7 @@ model/artificialIntelligenceGroup.pub.agravity.ts
 model/asset.pub.agravity.ts
 model/assetAvailability.pub.agravity.ts
 model/assetBlob.pub.agravity.ts
-model/assetIdContainer.pub.agravity.ts
+model/assetIdFormat.pub.agravity.ts
 model/assetPageResult.pub.agravity.ts
 model/azSearchOptions.pub.agravity.ts
 model/badRequestResult.pub.agravity.ts
@@ -74,4 +74,7 @@ model/versionEntity.pub.agravity.ts
 model/versionedAsset.pub.agravity.ts
 model/whereParam.pub.agravity.ts
 model/workspace.pub.agravity.ts
+ng-package.json
+package.json
+tsconfig.json
 variables.ts

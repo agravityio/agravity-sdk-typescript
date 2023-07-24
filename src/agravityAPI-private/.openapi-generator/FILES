@@ -18,6 +18,7 @@ api/downloadFormatManagement.agravity.ts
 api/downloadZip.agravity.ts
 api/generalManagement.agravity.ts
 api/helperTools.agravity.ts
+api/historyEntryManagement.agravity.ts
 api/iccProfileManagement.agravity.ts
 api/listBlobs.agravity.ts
 api/listQueues.agravity.ts
@@ -32,7 +33,6 @@ api/staticDefinedListManagement.agravity.ts
 api/stockImport.agravity.ts
 api/structureImport.agravity.ts
 api/translationManagement.agravity.ts
-api/upgradeManagement.agravity.ts
 api/webAppData.agravity.ts
 api/wordpressManagement.agravity.ts
 api/workspaceManagement.agravity.ts
@@ -54,7 +54,7 @@ model/assetBlob.agravity.ts
 model/assetBulkUpdate.agravity.ts
 model/assetCollectionLink.agravity.ts
 model/assetIconRule.agravity.ts
-model/assetIdContainer.agravity.ts
+model/assetIdFormat.agravity.ts
 model/assetPageResult.agravity.ts
 model/assetsOperationBody.agravity.ts
 model/azSearchOptions.agravity.ts
@@ -78,6 +78,7 @@ model/entityIdName.agravity.ts
 model/entityTranslations.agravity.ts
 model/frontendAppConfig.agravity.ts
 model/groupAllAppData.agravity.ts
+model/historyEntry.agravity.ts
 model/infoEntitySkillEnhanced.agravity.ts
 model/metadata.agravity.ts
 model/models.ts
@@ -110,9 +111,11 @@ model/signalRConnectionInfo.agravity.ts
 model/simpleAsset.agravity.ts
 model/staticDefinedList.agravity.ts
 model/uiTutorials.agravity.ts
-model/upgradeV2V3CollectionCustomItemTableEntity.agravity.ts
 model/versionEntity.agravity.ts
 model/versionedAsset.agravity.ts
 model/whereParam.agravity.ts
 model/workspace.agravity.ts
+ng-package.json
+package.json
+tsconfig.json
 variables.ts
