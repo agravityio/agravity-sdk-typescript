@@ -84,15 +84,33 @@ export class HistoryEntryManagementService {
 	/**
 	 * This endpoint gets the complete history of an entity.
 	 * @param id The ID of the entity of which the history should be fetched.
+	 * @param include The fields (comma separate) which should be included in the result. (i.e. collections on asset)
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpHistoryEntriesGetById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<HistoryEntry>>;
-	public httpHistoryEntriesGetById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<HistoryEntry>>>;
-	public httpHistoryEntriesGetById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<HistoryEntry>>>;
-	public httpHistoryEntriesGetById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpHistoryEntriesGetById(id: string, include?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<HistoryEntry>>;
+	public httpHistoryEntriesGetById(
+		id: string,
+		include?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<HistoryEntry>>>;
+	public httpHistoryEntriesGetById(
+		id: string,
+		include?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<HistoryEntry>>>;
+	public httpHistoryEntriesGetById(id: string, include?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpHistoryEntriesGetById.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (include !== undefined && include !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>include, 'include');
 		}
 
 		let headers = this.defaultHeaders;
@@ -120,6 +138,7 @@ export class HistoryEntryManagementService {
 		}
 
 		return this.httpClient.get<Array<HistoryEntry>>(`${this.configuration.basePath}/history/${encodeURIComponent(String(id))}`, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
