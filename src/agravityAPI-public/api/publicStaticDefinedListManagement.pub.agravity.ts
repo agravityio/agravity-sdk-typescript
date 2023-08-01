@@ -16,6 +16,7 @@ import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParam
 import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
+import { AgravityErrorResponse } from '../model/models';
 import { StaticDefinedList } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -209,6 +210,110 @@ export class PublicStaticDefinedListManagementService {
 		}
 
 		return this.httpClient.get<StaticDefinedList>(`${this.configuration.basePath}/staticdefinedlists/${encodeURIComponent(String(id))}`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint update a static defined list in database (add, delete or replace values).
+	 * @param id The ID of the static defined list.
+	 * @param updatemode The mode how the list should be updated. Available values are: add, delete and replace.
+	 * @param staticDefinedList The values which should be updated.
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpStaticDefinedListsUpdateById(
+		id: string,
+		updatemode: string,
+		staticDefinedList: StaticDefinedList,
+		translations?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<StaticDefinedList>;
+	public httpStaticDefinedListsUpdateById(
+		id: string,
+		updatemode: string,
+		staticDefinedList: StaticDefinedList,
+		translations?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<StaticDefinedList>>;
+	public httpStaticDefinedListsUpdateById(
+		id: string,
+		updatemode: string,
+		staticDefinedList: StaticDefinedList,
+		translations?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<StaticDefinedList>>;
+	public httpStaticDefinedListsUpdateById(
+		id: string,
+		updatemode: string,
+		staticDefinedList: StaticDefinedList,
+		translations?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpStaticDefinedListsUpdateById.');
+		}
+		if (updatemode === null || updatemode === undefined) {
+			throw new Error('Required parameter updatemode was null or undefined when calling httpStaticDefinedListsUpdateById.');
+		}
+		if (staticDefinedList === null || staticDefinedList === undefined) {
+			throw new Error('Required parameter staticDefinedList was null or undefined when calling httpStaticDefinedListsUpdateById.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
+		if (updatemode !== undefined && updatemode !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>updatemode, 'updatemode');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.post<StaticDefinedList>(`${this.configuration.basePath}/staticdefinedlists/${encodeURIComponent(String(id))}`, staticDefinedList, {
 			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
