@@ -1,2 +1,5 @@
 # Ignore all markdown files
 *.md
+.gitignore
+.openapi-generator*
+*.sh
