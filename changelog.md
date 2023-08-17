@@ -10,6 +10,10 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="5.3.2"/> [5.3.2](https://www.npmjs.com/package/@agravity/private/v/5.3.2) (2023-08-17)
+(no changes - just update according to backend version)
+---
+
 ## AgravityAPI <a name="5.3.1"/> [5.3.1](https://www.npmjs.com/package/@agravity/private/v/5.3.1) (2023-08-01)
 
 - Add query parameter include to add certain fields to history (i.e. collections for assets)
