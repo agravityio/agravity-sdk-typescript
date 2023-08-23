@@ -18,6 +18,8 @@ import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
 import { EntityTranslations } from '../model/models';
+import { TranslationRequest } from '../model/models';
+import { TranslationResult } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
@@ -159,6 +161,80 @@ export class TranslationManagementService {
 
 		return this.httpClient.post<Array<EntityTranslations>>(`${this.configuration.basePath}/translations`, requestBody, {
 			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * Translates the given text into the requested languages by the Microsoft AI Translator. (only when enabled in settings)
+	 * @param translationRequest This endpoint creates translations for the provided text
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpCognitiveTranslateText(
+		translationRequest: TranslationRequest,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<TranslationResult>>;
+	public httpCognitiveTranslateText(
+		translationRequest: TranslationRequest,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<TranslationResult>>>;
+	public httpCognitiveTranslateText(
+		translationRequest: TranslationRequest,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<TranslationResult>>>;
+	public httpCognitiveTranslateText(
+		translationRequest: TranslationRequest,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (translationRequest === null || translationRequest === undefined) {
+			throw new Error('Required parameter translationRequest was null or undefined when calling httpCognitiveTranslateText.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.post<Array<TranslationResult>>(`${this.configuration.basePath}/translations-ai`, translationRequest, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
