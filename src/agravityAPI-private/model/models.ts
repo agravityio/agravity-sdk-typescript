@@ -70,7 +70,6 @@ export * from './simpleAsset.agravity';
 export * from './staticDefinedList.agravity';
 export * from './translation.agravity';
 export * from './translationRequest.agravity';
-export * from './translationResult.agravity';
 export * from './uiTutorials.agravity';
 export * from './versionEntity.agravity';
 export * from './versionedAsset.agravity';

@@ -18,8 +18,8 @@ import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
 import { EntityTranslations } from '../model/models';
+import { Translation } from '../model/models';
 import { TranslationRequest } from '../model/models';
-import { TranslationResult } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
@@ -180,19 +180,19 @@ export class TranslationManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<Array<TranslationResult>>;
+	): Observable<Array<Translation>>;
 	public httpCognitiveTranslateText(
 		translationRequest: TranslationRequest,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<HttpResponse<Array<TranslationResult>>>;
+	): Observable<HttpResponse<Array<Translation>>>;
 	public httpCognitiveTranslateText(
 		translationRequest: TranslationRequest,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<HttpEvent<Array<TranslationResult>>>;
+	): Observable<HttpEvent<Array<Translation>>>;
 	public httpCognitiveTranslateText(
 		translationRequest: TranslationRequest,
 		observe: any = 'body',
@@ -234,7 +234,7 @@ export class TranslationManagementService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.post<Array<TranslationResult>>(`${this.configuration.basePath}/translations-ai`, translationRequest, {
+		return this.httpClient.post<Array<Translation>>(`${this.configuration.basePath}/translations-ai`, translationRequest, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
