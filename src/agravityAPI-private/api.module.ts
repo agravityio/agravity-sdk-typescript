@@ -12,6 +12,7 @@ import { CollectionManagementService } from './api/collectionManagement.agravity
 import { CollectionSharingService } from './api/collectionSharing.agravity';
 import { CollectionTypeItemBlueprintManagementService } from './api/collectionTypeItemBlueprintManagement.agravity';
 import { CollectionTypeManagementService } from './api/collectionTypeManagement.agravity';
+import { CommentsManagementService } from './api/commentsManagement.agravity';
 import { ConfigurationManagementService } from './api/configurationManagement.agravity';
 import { DownloadFormatManagementService } from './api/downloadFormatManagement.agravity';
 import { DownloadZipService } from './api/downloadZip.agravity';

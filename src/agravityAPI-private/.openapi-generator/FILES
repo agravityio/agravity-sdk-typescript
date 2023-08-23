@@ -13,6 +13,7 @@ api/collectionManagement.agravity.ts
 api/collectionSharing.agravity.ts
 api/collectionTypeItemBlueprintManagement.agravity.ts
 api/collectionTypeManagement.agravity.ts
+api/commentsManagement.agravity.ts
 api/configurationManagement.agravity.ts
 api/downloadFormatManagement.agravity.ts
 api/downloadZip.agravity.ts
@@ -65,6 +66,7 @@ model/collTypeItemBlueprint.agravity.ts
 model/collection.agravity.ts
 model/collectionType.agravity.ts
 model/collectionUDL.agravity.ts
+model/comment.agravity.ts
 model/createSftpUserResult.agravity.ts
 model/dataResult.agravity.ts
 model/distZipResponse.agravity.ts

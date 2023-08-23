@@ -18,6 +18,8 @@ export * from './collectionTypeItemBlueprintManagement.agravity';
 import { CollectionTypeItemBlueprintManagementService } from './collectionTypeItemBlueprintManagement.agravity';
 export * from './collectionTypeManagement.agravity';
 import { CollectionTypeManagementService } from './collectionTypeManagement.agravity';
+export * from './commentsManagement.agravity';
+import { CommentsManagementService } from './commentsManagement.agravity';
 export * from './configurationManagement.agravity';
 import { ConfigurationManagementService } from './configurationManagement.agravity';
 export * from './downloadFormatManagement.agravity';
@@ -75,6 +77,7 @@ export const APIS = [
 	CollectionSharingService,
 	CollectionTypeItemBlueprintManagementService,
 	CollectionTypeManagementService,
+	CommentsManagementService,
 	ConfigurationManagementService,
 	DownloadFormatManagementService,
 	DownloadZipService,
