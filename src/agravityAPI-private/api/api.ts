@@ -22,6 +22,8 @@ export * from './commentsManagement.agravity';
 import { CommentsManagementService } from './commentsManagement.agravity';
 export * from './configurationManagement.agravity';
 import { ConfigurationManagementService } from './configurationManagement.agravity';
+export * from './dashboardWidgetManagement.agravity';
+import { DashboardWidgetManagementService } from './dashboardWidgetManagement.agravity';
 export * from './downloadFormatManagement.agravity';
 import { DownloadFormatManagementService } from './downloadFormatManagement.agravity';
 export * from './downloadZip.agravity';
@@ -62,6 +64,8 @@ export * from './translationManagement.agravity';
 import { TranslationManagementService } from './translationManagement.agravity';
 export * from './webAppData.agravity';
 import { WebAppDataService } from './webAppData.agravity';
+export * from './widgetLayoutManagement.agravity';
+import { WidgetLayoutManagementService } from './widgetLayoutManagement.agravity';
 export * from './wordpressManagement.agravity';
 import { WordpressManagementService } from './wordpressManagement.agravity';
 export * from './workspaceManagement.agravity';
@@ -79,6 +83,7 @@ export const APIS = [
 	CollectionTypeManagementService,
 	CommentsManagementService,
 	ConfigurationManagementService,
+	DashboardWidgetManagementService,
 	DownloadFormatManagementService,
 	DownloadZipService,
 	GeneralManagementService,
@@ -99,6 +104,7 @@ export const APIS = [
 	StructureImportService,
 	TranslationManagementService,
 	WebAppDataService,
+	WidgetLayoutManagementService,
 	WordpressManagementService,
 	WorkspaceManagementService
 ];
