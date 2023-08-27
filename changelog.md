@@ -10,6 +10,12 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="5.3.3"/> [5.3.3](https://www.npmjs.com/package/@agravity/private/v/5.3.3) (2023-08-27)
+
+- Add optional `filename` as property for httpAssetUploadFile
+
+---
+
 ## AgravityAPI <a name="5.3.2"/> [5.3.2](https://www.npmjs.com/package/@agravity/private/v/5.3.2) (2023-08-17)
 (no changes - just update according to backend version)
 ---
