@@ -101,14 +101,24 @@ export class PublicAssetManagementService {
 	 * @param name
 	 * @param collectionId
 	 * @param file
+	 * @param filename
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetUploadFile(name?: string, collectionId?: string, file?: Blob, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Asset>;
 	public httpAssetUploadFile(
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
+		filename?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Asset>;
+	public httpAssetUploadFile(
+		name?: string,
+		collectionId?: string,
+		file?: Blob,
+		filename?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -117,6 +127,7 @@ export class PublicAssetManagementService {
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
+		filename?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -125,6 +136,7 @@ export class PublicAssetManagementService {
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
+		filename?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -173,6 +185,9 @@ export class PublicAssetManagementService {
 		}
 		if (file !== undefined) {
 			formParams = (formParams.append('file', <any>file) as any) || formParams;
+		}
+		if (filename !== undefined) {
+			formParams = (formParams.append('filename', <any>filename) as any) || formParams;
 		}
 
 		let responseType_: 'text' | 'json' = 'json';
