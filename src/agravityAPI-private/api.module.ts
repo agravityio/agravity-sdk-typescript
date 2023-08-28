@@ -12,7 +12,9 @@ import { CollectionManagementService } from './api/collectionManagement.agravity
 import { CollectionSharingService } from './api/collectionSharing.agravity';
 import { CollectionTypeItemBlueprintManagementService } from './api/collectionTypeItemBlueprintManagement.agravity';
 import { CollectionTypeManagementService } from './api/collectionTypeManagement.agravity';
+import { CommentsManagementService } from './api/commentsManagement.agravity';
 import { ConfigurationManagementService } from './api/configurationManagement.agravity';
+import { DashboardWidgetManagementService } from './api/dashboardWidgetManagement.agravity';
 import { DownloadFormatManagementService } from './api/downloadFormatManagement.agravity';
 import { DownloadZipService } from './api/downloadZip.agravity';
 import { GeneralManagementService } from './api/generalManagement.agravity';
@@ -33,6 +35,7 @@ import { StockImportService } from './api/stockImport.agravity';
 import { StructureImportService } from './api/structureImport.agravity';
 import { TranslationManagementService } from './api/translationManagement.agravity';
 import { WebAppDataService } from './api/webAppData.agravity';
+import { WidgetLayoutManagementService } from './api/widgetLayoutManagement.agravity';
 import { WordpressManagementService } from './api/wordpressManagement.agravity';
 import { WorkspaceManagementService } from './api/workspaceManagement.agravity';
 

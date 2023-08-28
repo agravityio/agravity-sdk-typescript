@@ -13,7 +13,9 @@ api/collectionManagement.agravity.ts
 api/collectionSharing.agravity.ts
 api/collectionTypeItemBlueprintManagement.agravity.ts
 api/collectionTypeManagement.agravity.ts
+api/commentsManagement.agravity.ts
 api/configurationManagement.agravity.ts
+api/dashboardWidgetManagement.agravity.ts
 api/downloadFormatManagement.agravity.ts
 api/downloadZip.agravity.ts
 api/generalManagement.agravity.ts
@@ -34,6 +36,7 @@ api/stockImport.agravity.ts
 api/structureImport.agravity.ts
 api/translationManagement.agravity.ts
 api/webAppData.agravity.ts
+api/widgetLayoutManagement.agravity.ts
 api/wordpressManagement.agravity.ts
 api/workspaceManagement.agravity.ts
 configuration.ts
@@ -65,7 +68,9 @@ model/collTypeItemBlueprint.agravity.ts
 model/collection.agravity.ts
 model/collectionType.agravity.ts
 model/collectionUDL.agravity.ts
+model/comment.agravity.ts
 model/createSftpUserResult.agravity.ts
+model/dashboardWidget.agravity.ts
 model/dataResult.agravity.ts
 model/distZipResponse.agravity.ts
 model/downloadFormat.agravity.ts
@@ -110,10 +115,14 @@ model/sharedCollectionFull.agravity.ts
 model/signalRConnectionInfo.agravity.ts
 model/simpleAsset.agravity.ts
 model/staticDefinedList.agravity.ts
+model/translation.agravity.ts
+model/translationRequest.agravity.ts
 model/uiTutorials.agravity.ts
 model/versionEntity.agravity.ts
 model/versionedAsset.agravity.ts
 model/whereParam.agravity.ts
+model/widgetLayout.agravity.ts
+model/widgetProperties.agravity.ts
 model/workspace.agravity.ts
 ng-package.json
 package.json
