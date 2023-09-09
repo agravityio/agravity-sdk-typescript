@@ -531,7 +531,7 @@ export class CollectionTypeManagementService {
 	}
 
 	/**
-	 * This method returns a list of collection types items.
+	 * This method returns a list of all collection types items. (Regardless of the permissions)
 	 * @param includeblueprint True if the blueprint items should be included.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
