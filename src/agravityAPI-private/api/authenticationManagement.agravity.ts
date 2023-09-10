@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 import { AgravityErrorResponse } from '../model/models';
 import { AgravityInfoResponse } from '../model/models';
 import { AgravityUser } from '../model/models';
+import { AgravityUserDto } from '../model/models';
 import { SasToken } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -85,6 +86,70 @@ export class AuthenticationManagementService {
 	}
 
 	/**
+	 * This endpoint creates a new api key user in database and registers it on the public function
+	 * @param agravityUserDto The user to create.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAuthCreatePublicApiKey(agravityUserDto: AgravityUserDto, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityUser>;
+	public httpAuthCreatePublicApiKey(
+		agravityUserDto: AgravityUserDto,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityUser>>;
+	public httpAuthCreatePublicApiKey(
+		agravityUserDto: AgravityUserDto,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityUser>>;
+	public httpAuthCreatePublicApiKey(agravityUserDto: AgravityUserDto, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (agravityUserDto === null || agravityUserDto === undefined) {
+			throw new Error('Required parameter agravityUserDto was null or undefined when calling httpAuthCreatePublicApiKey.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.post<AgravityUser>(`${this.configuration.basePath}/auth/apikey`, agravityUserDto, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint to end impersonation an Agravity user.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
@@ -118,6 +183,53 @@ export class AuthenticationManagementService {
 		}
 
 		return this.httpClient.delete<AgravityInfoResponse>(`${this.configuration.basePath}/auth/impersonate`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint deletes an api key user and removed the key from public functions.
+	 * @param id The ID of api key user
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAuthDeletePublicApiKey(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
+	public httpAuthDeletePublicApiKey(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
+	public httpAuthDeletePublicApiKey(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
+	public httpAuthDeletePublicApiKey(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpAuthDeletePublicApiKey.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.delete<any>(`${this.configuration.basePath}/auth/apikey/${encodeURIComponent(String(id))}`, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
@@ -237,21 +349,38 @@ export class AuthenticationManagementService {
 	/**
 	 * This endpoint returns all the Agravity users from database.
 	 * @param limit (Optional): If the reponse should be limited to name and email.
+	 * @param apikey (Optional): If the response should be limited to api key users
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAuthGetAgravityUsers(limit?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<AgravityUser>>;
 	public httpAuthGetAgravityUsers(
 		limit?: boolean,
+		apikey?: boolean,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<AgravityUser>>;
+	public httpAuthGetAgravityUsers(
+		limit?: boolean,
+		apikey?: boolean,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<AgravityUser>>>;
-	public httpAuthGetAgravityUsers(limit?: boolean, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<AgravityUser>>>;
-	public httpAuthGetAgravityUsers(limit?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAuthGetAgravityUsers(
+		limit?: boolean,
+		apikey?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<AgravityUser>>>;
+	public httpAuthGetAgravityUsers(limit?: boolean, apikey?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (limit !== undefined && limit !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>limit, 'limit');
+		}
+		if (apikey !== undefined && apikey !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>apikey, 'apikey');
 		}
 
 		let headers = this.defaultHeaders;

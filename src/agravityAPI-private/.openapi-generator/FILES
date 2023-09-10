@@ -46,6 +46,7 @@ index.ts
 model/agravityErrorResponse.agravity.ts
 model/agravityInfoResponse.agravity.ts
 model/agravityUser.agravity.ts
+model/agravityUserDto.agravity.ts
 model/agravityVersion.agravity.ts
 model/allWebAppData.agravity.ts
 model/apiKeyResponse.agravity.ts

@@ -9,29 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UiTutorials } from './uiTutorials.agravity';
-import { DownloadObject } from './downloadObject.agravity';
-import { SecureUploadEntity } from './secureUploadEntity.agravity';
-import { SharedCollection } from './sharedCollection.agravity';
 
-export interface AgravityUser {
-	id?: string;
-	entity_type?: string;
-	downloads?: Array<DownloadObject>;
-	sharedcollections?: Array<SharedCollection>;
-	secureuploads?: Array<SecureUploadEntity>;
+export interface AgravityUserDto {
 	name?: string;
 	email?: string;
-	impersonation?: string;
-	apikey?: string;
 	roles?: Array<string>;
-	groups?: Array<string>;
-	tutorials?: Array<UiTutorials>;
-	status?: string;
-	created_date?: string | null;
-	created_by?: string;
-	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
 }
