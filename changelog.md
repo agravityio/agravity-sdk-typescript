@@ -10,6 +10,12 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="5.3.4"/> [5.3.4](https://www.npmjs.com/package/@agravity/private/v/5.3.4) (2023-09-10)
+
+- Return list of collection type items now contains ALL items (regardless of permissions)
+
+---
+
 ## AgravityAPI <a name="5.3.3"/> [5.3.3](https://www.npmjs.com/package/@agravity/private/v/5.3.3) (2023-08-27)
 
 - Add optional `filename` as property for httpAssetUploadFile
