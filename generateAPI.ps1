@@ -71,7 +71,7 @@ Write-Host "Replace ai complete"
 
 # add line in file src\agravityAPI-private\api\assetManagement.agravity.ts after line 482
 $fileContent = Get-Content "src\agravityAPI-private\api\assetManagement.agravity.ts"
-$fileContent[234] = $fileContent[234] + ",`n" + "                body: assetBulkUpdate"
+$fileContent[239] = $fileContent[239] + ",`n" + "                body: assetBulkUpdate"
 # write file
 $fileContent | Set-Content "src\agravityAPI-private\api\assetManagement.agravity.ts"
 

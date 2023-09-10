@@ -102,6 +102,7 @@ export class PublicAssetManagementService {
 	 * @param collectionId
 	 * @param file
 	 * @param filename
+	 * @param previewof
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -110,6 +111,7 @@ export class PublicAssetManagementService {
 		collectionId?: string,
 		file?: Blob,
 		filename?: string,
+		previewof?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -119,6 +121,7 @@ export class PublicAssetManagementService {
 		collectionId?: string,
 		file?: Blob,
 		filename?: string,
+		previewof?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -128,6 +131,7 @@ export class PublicAssetManagementService {
 		collectionId?: string,
 		file?: Blob,
 		filename?: string,
+		previewof?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -137,6 +141,7 @@ export class PublicAssetManagementService {
 		collectionId?: string,
 		file?: Blob,
 		filename?: string,
+		previewof?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -188,6 +193,9 @@ export class PublicAssetManagementService {
 		}
 		if (filename !== undefined) {
 			formParams = (formParams.append('filename', <any>filename) as any) || formParams;
+		}
+		if (previewof !== undefined) {
+			formParams = (formParams.append('previewof', <any>previewof) as any) || formParams;
 		}
 
 		let responseType_: 'text' | 'json' = 'json';
