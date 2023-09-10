@@ -37,6 +37,7 @@ export * from './emailAddress.agravity';
 export * from './entityId.agravity';
 export * from './entityIdName.agravity';
 export * from './entityTranslations.agravity';
+export * from './excelExportTableEntity.agravity';
 export * from './frontendAppConfig.agravity';
 export * from './groupAllAppData.agravity';
 export * from './historyEntry.agravity';

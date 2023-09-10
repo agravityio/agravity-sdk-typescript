@@ -82,6 +82,7 @@ model/emailAddress.agravity.ts
 model/entityId.agravity.ts
 model/entityIdName.agravity.ts
 model/entityTranslations.agravity.ts
+model/excelExportTableEntity.agravity.ts
 model/frontendAppConfig.agravity.ts
 model/groupAllAppData.agravity.ts
 model/historyEntry.agravity.ts
