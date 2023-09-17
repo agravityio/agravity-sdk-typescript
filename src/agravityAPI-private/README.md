@@ -1,4 +1,4 @@
-## @agravity/private@5.3.4
+## @agravity/private@5.3.5
 
 ### Building
 
@@ -19,7 +19,7 @@ Navigate to the folder of your consuming project and run one of next commands.
 _published:_
 
 ```
-npm install @agravity/private@5.3.4 --save
+npm install @agravity/private@5.3.5 --save
 ```
 
 _without publishing (not recommended):_
