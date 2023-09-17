@@ -18,6 +18,7 @@ export interface InfoEntitySkillEnhanced {
 	collectiontypeids?: Array<string>;
 	allcustom?: any;
 	custom_values?: Array<string>;
+	search_terms?: string;
 	perm_groups?: Array<string>;
 	fulltext?: string;
 }
