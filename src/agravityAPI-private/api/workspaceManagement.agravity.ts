@@ -17,7 +17,6 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
-import { AgravityInfoResponse } from '../model/models';
 import { PermissionChange } from '../model/models';
 import { Workspace } from '../model/models';
 
@@ -473,21 +472,21 @@ export class WorkspaceManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<AgravityInfoResponse>;
+	): Observable<Workspace>;
 	public httpWorkspacesUpdatePermissionsById(
 		id: string,
 		permissionChange: PermissionChange,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<HttpResponse<AgravityInfoResponse>>;
+	): Observable<HttpResponse<Workspace>>;
 	public httpWorkspacesUpdatePermissionsById(
 		id: string,
 		permissionChange: PermissionChange,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<HttpEvent<AgravityInfoResponse>>;
+	): Observable<HttpEvent<Workspace>>;
 	public httpWorkspacesUpdatePermissionsById(
 		id: string,
 		permissionChange: PermissionChange,
@@ -533,7 +532,7 @@ export class WorkspaceManagementService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.post<AgravityInfoResponse>(`${this.configuration.basePath}/workspaces/${encodeURIComponent(String(id))}/permissions`, permissionChange, {
+		return this.httpClient.post<Workspace>(`${this.configuration.basePath}/workspaces/${encodeURIComponent(String(id))}/permissions`, permissionChange, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

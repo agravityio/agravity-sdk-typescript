@@ -17,7 +17,6 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
-import { AgravityInfoResponse } from '../model/models';
 import { CollTypeItem } from '../model/models';
 import { CollectionType } from '../model/models';
 import { PermissionChange } from '../model/models';
@@ -462,21 +461,21 @@ export class CollectionTypeManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<AgravityInfoResponse>;
+	): Observable<CollectionType>;
 	public httpCollectionTypesUpdatePermissionsById(
 		id: string,
 		permissionChange: PermissionChange,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<HttpResponse<AgravityInfoResponse>>;
+	): Observable<HttpResponse<CollectionType>>;
 	public httpCollectionTypesUpdatePermissionsById(
 		id: string,
 		permissionChange: PermissionChange,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<HttpEvent<AgravityInfoResponse>>;
+	): Observable<HttpEvent<CollectionType>>;
 	public httpCollectionTypesUpdatePermissionsById(
 		id: string,
 		permissionChange: PermissionChange,
@@ -522,7 +521,7 @@ export class CollectionTypeManagementService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.post<AgravityInfoResponse>(`${this.configuration.basePath}/collectiontypes/${encodeURIComponent(String(id))}/permissions`, permissionChange, {
+		return this.httpClient.post<CollectionType>(`${this.configuration.basePath}/collectiontypes/${encodeURIComponent(String(id))}/permissions`, permissionChange, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

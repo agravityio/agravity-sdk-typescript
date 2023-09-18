@@ -9,8 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { EntityId } from './entityId.pub.agravity';
 import { CollectionType } from './collectionType.pub.agravity';
-import { PermissionEntity } from './permissionEntity.pub.agravity';
 
 export interface Workspace {
 	id?: string;
@@ -19,7 +19,7 @@ export interface Workspace {
 	collection_types?: Array<CollectionType>;
 	translations?: { [key: string]: { [key: string]: object } };
 	order?: number | null;
-	permissions?: Array<PermissionEntity>;
+	permissions?: Array<EntityId>;
 	description?: string;
 	add_properties?: { [key: string]: any };
 	status?: string;

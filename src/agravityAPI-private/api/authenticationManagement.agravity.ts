@@ -150,48 +150,6 @@ export class AuthenticationManagementService {
 	}
 
 	/**
-	 * This endpoint to end impersonation an Agravity user.
-	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-	 * @param reportProgress flag to report request and response progress.
-	 */
-	public httpAuthDeleteImpersonateUser(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpAuthDeleteImpersonateUser(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpAuthDeleteImpersonateUser(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpAuthDeleteImpersonateUser(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
-		let headers = this.defaultHeaders;
-
-		let credential: string | undefined;
-		// authentication (msal_auth) required
-		credential = this.configuration.lookupCredential('msal_auth');
-		if (credential) {
-			headers = headers.set('Authorization', 'Bearer ' + credential);
-		}
-
-		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (httpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
-		if (httpHeaderAcceptSelected !== undefined) {
-			headers = headers.set('Accept', httpHeaderAcceptSelected);
-		}
-
-		let responseType_: 'text' | 'json' = 'json';
-		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-			responseType_ = 'text';
-		}
-
-		return this.httpClient.delete<AgravityInfoResponse>(`${this.configuration.basePath}/auth/impersonate`, {
-			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
-			headers: headers,
-			observe: observe,
-			reportProgress: reportProgress
-		});
-	}
-
-	/**
 	 * This endpoint deletes an api key user and removed the key from public functions.
 	 * @param id The ID of api key user
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -634,58 +592,6 @@ export class AuthenticationManagementService {
 		}
 
 		return this.httpClient.get<AgravityInfoResponse>(`${this.configuration.basePath}/auth/userid`, {
-			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
-			headers: headers,
-			observe: observe,
-			reportProgress: reportProgress
-		});
-	}
-
-	/**
-	 * This endpoint to impersonate an Agravity user.
-	 * @param id The ID of the user which should be impersonated.
-	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-	 * @param reportProgress flag to report request and response progress.
-	 */
-	public httpAuthPatchImpersonateUser(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpAuthPatchImpersonateUser(
-		id: string,
-		observe?: 'response',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpAuthPatchImpersonateUser(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpAuthPatchImpersonateUser(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
-		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpAuthPatchImpersonateUser.');
-		}
-
-		let headers = this.defaultHeaders;
-
-		let credential: string | undefined;
-		// authentication (msal_auth) required
-		credential = this.configuration.lookupCredential('msal_auth');
-		if (credential) {
-			headers = headers.set('Authorization', 'Bearer ' + credential);
-		}
-
-		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (httpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
-		if (httpHeaderAcceptSelected !== undefined) {
-			headers = headers.set('Accept', httpHeaderAcceptSelected);
-		}
-
-		let responseType_: 'text' | 'json' = 'json';
-		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-			responseType_ = 'text';
-		}
-
-		return this.httpClient.patch<AgravityInfoResponse>(`${this.configuration.basePath}/auth/impersonate/${encodeURIComponent(String(id))}`, null, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
