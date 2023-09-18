@@ -10,6 +10,18 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="5.3.6"/> [5.3.6](https://www.npmjs.com/package/@agravity/private/v/5.3.6) (2023-09-18)
+
+- Just version upgrade to match backend
+
+---
+
+## AgravityAPI <a name="5.3.5"/> [5.3.5](https://www.npmjs.com/package/@agravity/private/v/5.3.5) (2023-09-18)
+
+- Add `search_terms`to info entity skill enhanced model (not used anywhere)
+
+---
+
 ## AgravityAPI <a name="5.3.4"/> [5.3.4](https://www.npmjs.com/package/@agravity/private/v/5.3.4) (2023-09-10)
 
 - Return list of collection type items now contains ALL items (regardless of permissions)

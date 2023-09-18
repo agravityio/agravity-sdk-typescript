@@ -184,4 +184,6 @@ if ($answer -eq "y") {
     npm publish --access public
     Set-Location ../..
     Write-Host "Publish complete"
+
+    code.cmd .\changelog.md
 }
