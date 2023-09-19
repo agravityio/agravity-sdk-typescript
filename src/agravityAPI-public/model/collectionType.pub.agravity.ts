@@ -9,8 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { EntityId } from './entityId.pub.agravity';
 import { CollTypeItem } from './collTypeItem.pub.agravity';
+import { PermissionEntity } from './permissionEntity.pub.agravity';
 
 export interface CollectionType {
 	id?: string;
@@ -19,8 +19,9 @@ export interface CollectionType {
 	items?: Array<CollTypeItem>;
 	translations?: { [key: string]: { [key: string]: object } };
 	order?: number | null;
-	permissions?: Array<EntityId>;
+	permissions?: Array<PermissionEntity>;
 	permissionless?: boolean | null;
+	role?: CollectionType.RoleEnum;
 	description?: string;
 	add_properties?: { [key: string]: any };
 	status?: string;
@@ -30,4 +31,12 @@ export interface CollectionType {
 	modified_by?: string;
 	pk?: string;
 	_etag?: string;
+}
+export namespace CollectionType {
+	export type RoleEnum = 'NONE' | 'VIEWER' | 'EDITOR';
+	export const RoleEnum = {
+		None: 'NONE' as RoleEnum,
+		Viewer: 'VIEWER' as RoleEnum,
+		Editor: 'EDITOR' as RoleEnum
+	};
 }

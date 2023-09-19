@@ -9,30 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { CollTypeItem } from './collTypeItem.pub.agravity';
 
-export interface Collection {
+export interface PermissionEntity {
 	id?: string;
-	entity_type?: string;
-	parent?: string;
-	path?: string;
-	level?: number | null;
-	custom?: any;
-	items?: Array<CollTypeItem>;
-	translations?: { [key: string]: { [key: string]: object } };
-	role?: Collection.RoleEnum;
-	name?: string;
-	description?: string;
-	add_properties?: { [key: string]: any };
-	status?: string;
-	created_date?: string | null;
-	created_by?: string;
-	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	role?: PermissionEntity.RoleEnum;
 }
-export namespace Collection {
+export namespace PermissionEntity {
 	export type RoleEnum = 'NONE' | 'VIEWER' | 'EDITOR';
 	export const RoleEnum = {
 		None: 'NONE' as RoleEnum,

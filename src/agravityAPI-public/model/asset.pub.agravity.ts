@@ -33,6 +33,7 @@ export interface Asset {
 	custom?: any;
 	items?: Array<CollTypeItem>;
 	translations?: { [key: string]: { [key: string]: object } };
+	role?: Asset.RoleEnum;
 	description?: string;
 	add_properties?: { [key: string]: any };
 	status?: string;
@@ -42,4 +43,12 @@ export interface Asset {
 	modified_by?: string;
 	pk?: string;
 	_etag?: string;
+}
+export namespace Asset {
+	export type RoleEnum = 'NONE' | 'VIEWER' | 'EDITOR';
+	export const RoleEnum = {
+		None: 'NONE' as RoleEnum,
+		Viewer: 'VIEWER' as RoleEnum,
+		Editor: 'EDITOR' as RoleEnum
+	};
 }

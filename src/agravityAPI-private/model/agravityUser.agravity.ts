@@ -22,6 +22,7 @@ export interface AgravityUser {
 	secureuploads?: Array<SecureUploadEntity>;
 	name?: string;
 	email?: string;
+	impersonation?: string;
 	apikey?: string;
 	roles?: Array<string>;
 	groups?: Array<string>;
