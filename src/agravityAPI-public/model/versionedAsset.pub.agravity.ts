@@ -15,4 +15,5 @@ export interface VersionedAsset {
 	until_date?: string;
 	version_info?: string;
 	created_by?: string;
+	mime_type?: string;
 }
