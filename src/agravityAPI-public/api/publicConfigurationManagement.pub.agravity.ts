@@ -82,14 +82,30 @@ export class PublicConfigurationManagementService {
 	}
 
 	/**
-	 * Lists config value only for frontend stored in config table
+	 * Lists config value only for frontend stored in config table. Optional to filter for custom values only.
+	 * @param customonly This returns only the custom created configurations.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpConfigGetFrontendAll(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<FrontendAppConfig>>;
-	public httpConfigGetFrontendAll(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<FrontendAppConfig>>>;
-	public httpConfigGetFrontendAll(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<FrontendAppConfig>>>;
-	public httpConfigGetFrontendAll(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpConfigGetFrontendAll(customonly?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<FrontendAppConfig>>;
+	public httpConfigGetFrontendAll(
+		customonly?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<FrontendAppConfig>>>;
+	public httpConfigGetFrontendAll(
+		customonly?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<FrontendAppConfig>>>;
+	public httpConfigGetFrontendAll(customonly?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (customonly !== undefined && customonly !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>customonly, 'customonly');
+		}
+
 		let headers = this.defaultHeaders;
 
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
@@ -108,6 +124,7 @@ export class PublicConfigurationManagementService {
 		}
 
 		return this.httpClient.get<Array<FrontendAppConfig>>(`${this.configuration.basePath}/config/frontend`, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

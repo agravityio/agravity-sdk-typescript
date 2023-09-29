@@ -83,6 +83,53 @@ export class ConfigurationManagementService {
 	}
 
 	/**
+	 * Deletes an existing custom config value with the given key. It will also refresh the current application configuration cache for this key.
+	 * @param key The key of the configuration.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpConfigDeleteSingle(key: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<any>;
+	public httpConfigDeleteSingle(key: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpResponse<any>>;
+	public httpConfigDeleteSingle(key: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpEvent<any>>;
+	public httpConfigDeleteSingle(key: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: undefined }): Observable<any> {
+		if (key === null || key === undefined) {
+			throw new Error('Required parameter key was null or undefined when calling httpConfigDeleteSingle.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = [];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.delete<any>(`${this.configuration.basePath}/config/${encodeURIComponent(String(key))}`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * Lists all config values stored in config table
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
@@ -125,14 +172,30 @@ export class ConfigurationManagementService {
 	}
 
 	/**
-	 * Lists config value only for frontend stored in config table
+	 * Lists config value only for frontend stored in config table. Optional to filter for custom values only.
+	 * @param customonly This returns only the custom created configurations.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpConfigGetFrontendAll(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<FrontendAppConfig>>;
-	public httpConfigGetFrontendAll(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<FrontendAppConfig>>>;
-	public httpConfigGetFrontendAll(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<FrontendAppConfig>>>;
-	public httpConfigGetFrontendAll(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpConfigGetFrontendAll(customonly?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<FrontendAppConfig>>;
+	public httpConfigGetFrontendAll(
+		customonly?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<FrontendAppConfig>>>;
+	public httpConfigGetFrontendAll(
+		customonly?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<FrontendAppConfig>>>;
+	public httpConfigGetFrontendAll(customonly?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (customonly !== undefined && customonly !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>customonly, 'customonly');
+		}
+
 		let headers = this.defaultHeaders;
 
 		let credential: string | undefined;
@@ -158,6 +221,7 @@ export class ConfigurationManagementService {
 		}
 
 		return this.httpClient.get<Array<FrontendAppConfig>>(`${this.configuration.basePath}/config/frontend`, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
@@ -233,9 +297,9 @@ export class ConfigurationManagementService {
 	}
 
 	/**
-	 * Update an existing config value with the given key. (Only value, content-type and description)
+	 * Update an existing (pre-generated) config value (only value, content-type and description) or creates/updates custom config with the given key (full). It will also refresh the current application configuration cache for this key.
 	 * @param key The key of the configuration.
-	 * @param appConfigTableEntity The body has just to contain: value, content_type and/or description
+	 * @param appConfigTableEntity The body has just to contain: value, content_type and/or description or full when custom config.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
