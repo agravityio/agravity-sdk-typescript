@@ -10,6 +10,47 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="6.0.0"/> [6.0.0](https://www.npmjs.com/package/@agravity/private/v/6.0.0) (2023-10-02)
+
+#784 Add Roles to Permission System
+
+Add `role` property to Asset, Collection and CollectionType which can be NONE, VIEWER, EDITOR
+- Change `permissions` property from workspace and collection to to be an array of `PermissionEntity` (role and id)
+
+#858 Impersonate User
+- PATCH `/auth/impersonate/{id}` - This endpoint to impersonate an Agravity user.
+- DELETE `/auth/impersonate` - This endpoint to end impersonation an Agravity user.
+- Add `impersonation` property to AgravityUser to indicate if this user is impersonating (will be null most of the time)
+
+#905 Translations excel import/export
+- Add endpoint GET `/helper/excel/export/translations` -  This endpoint creates an excel export of translations of db entities
+- Add endpoint DELETE `/helper/excel/export/translations/{exportId}` - This endpoint retrieves the status and if populated the url to the excel export
+- Add endpoint GET `/helper/excel/export/translations/{exportId}` - This endpoint retrieves the status and if populated the url to the excel export.
+- Add endpoint POST `/helper/excel/import/translations` - This endpoint puts a excel file on the translations import blob container
+
+#917 Api key management
+- Add `apikey`as property to AgravityUser;
+- Add endpoint POST `/auth/apikey` - This endpoint creates a new api key user in database and registers it on the public function
+- Add endpoint DELETE `/auth/apikey/{apiUserId}` - This endpoint deletes an api key user and removed the key from public functions.
+- Add param `apikey` to endpoint GET `/auth/users` - This optional parameter if the response should be limited to api key users
+
+#70 Alternative thumbnails for assets
+- Add new optional param `previewof`to `/assetupload` endpoint
+- Respect `version`endpoint as well for preview
+- Adapt generate to build assetManagement
+
+#974 Allow free custom configs for any frontend to be stored and called
+- Add endpoint DELETE  `/config/{key}` - Deletes an existing custom config value with the given key. It will also refresh the current application configuration cache for this key.
+- Update endpoint GET `/config/frontend` - add param `customonly` - This returns only the custom created configurations.
+- Update endpoint POST `/config/{key}` - Update an existing (pre-generated) config value (only value, content-type and description) or creates/updates custom config with the given key (full). It will also refresh the current application configuration cache for this key.
+- add `is_custom` property to appConfigTableEntity field (default false)
+
+### Bugfixes
+- Fix: WorkspacesUpdatePermissionsById `/workspaces/{id}/permissions` - Now responses a AgravityInfoResponse
+- Fix: CollectionTypesUpdatePermissionsById `/collectiontypes/{id}/permissions` - Now responses a AgravityInfoResponse
+
+---
+
 ## AgravityAPI <a name="5.3.6"/> [5.3.6](https://www.npmjs.com/package/@agravity/private/v/5.3.6) (2023-09-18)
 
 - Just version upgrade to match backend
