@@ -27,4 +27,5 @@ export interface DownloadObject {
 	url?: string;
 	size?: string;
 	message?: string;
+	tempate_id?: string;
 }

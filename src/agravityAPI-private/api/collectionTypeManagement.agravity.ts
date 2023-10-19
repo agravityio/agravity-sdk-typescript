@@ -184,10 +184,10 @@ export class CollectionTypeManagementService {
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCollectionTypesDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<any>;
-	public httpCollectionTypesDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpResponse<any>>;
-	public httpCollectionTypesDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpEvent<any>>;
-	public httpCollectionTypesDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: undefined }): Observable<any> {
+	public httpCollectionTypesDelete(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
+	public httpCollectionTypesDelete(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
+	public httpCollectionTypesDelete(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
+	public httpCollectionTypesDelete(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCollectionTypesDelete.');
 		}
@@ -204,7 +204,7 @@ export class CollectionTypeManagementService {
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
 		if (httpHeaderAcceptSelected === undefined) {
 			// to determine the Accept header
-			const httpHeaderAccepts: string[] = [];
+			const httpHeaderAccepts: string[] = ['application/json'];
 			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
 		}
 		if (httpHeaderAcceptSelected !== undefined) {
