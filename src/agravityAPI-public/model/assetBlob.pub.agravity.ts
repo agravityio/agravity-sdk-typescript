@@ -20,7 +20,7 @@ export interface AssetBlob {
 	content_type?: string;
 	md5?: string;
 	techdata?: Array<Metadata>;
-	add_data?: Array<Metadata>;
+	add_data?: { [key: string]: object };
 	width?: number | null;
 	height?: number | null;
 	maxwidthheight?: number | null;
