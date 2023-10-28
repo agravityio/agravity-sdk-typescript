@@ -271,21 +271,21 @@ export class PublicSharingManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<SharedCollectionFull>;
+	): Observable<SharedCollectionZipRequest>;
 	public httpSharedCollectionsGetStatusZipById(
 		id: string,
 		zipId: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<HttpResponse<SharedCollectionFull>>;
+	): Observable<HttpResponse<SharedCollectionZipRequest>>;
 	public httpSharedCollectionsGetStatusZipById(
 		id: string,
 		zipId: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<HttpEvent<SharedCollectionFull>>;
+	): Observable<HttpEvent<SharedCollectionZipRequest>>;
 	public httpSharedCollectionsGetStatusZipById(
 		id: string,
 		zipId: string,
@@ -317,7 +317,7 @@ export class PublicSharingManagementService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.get<SharedCollectionFull>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}/zip/${encodeURIComponent(String(zipId))}`, {
+		return this.httpClient.get<SharedCollectionZipRequest>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}/zip/${encodeURIComponent(String(zipId))}`, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
