@@ -510,6 +510,86 @@ export class PublicAssetOperationsService {
 	}
 
 	/**
+	 * This endpoint checks, if an asset exists, is an image, has original blob, is status active, is part of the shared collection and returns byte array.
+	 * @param id The ID of the asset.
+	 * @param format Which download format the blob is requested.
+	 * @param shared The shared collection id which the blob is requesting.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetSharedAssetBlob(
+		id: string,
+		format: string,
+		shared: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<Blob>;
+	public httpGetSharedAssetBlob(
+		id: string,
+		format: string,
+		shared: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<HttpResponse<Blob>>;
+	public httpGetSharedAssetBlob(
+		id: string,
+		format: string,
+		shared: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<HttpEvent<Blob>>;
+	public httpGetSharedAssetBlob(
+		id: string,
+		format: string,
+		shared: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetSharedAssetBlob.');
+		}
+		if (format === null || format === undefined) {
+			throw new Error('Required parameter format was null or undefined when calling httpGetSharedAssetBlob.');
+		}
+		if (shared === null || shared === undefined) {
+			throw new Error('Required parameter shared was null or undefined when calling httpGetSharedAssetBlob.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (format !== undefined && format !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>format, 'format');
+		}
+		if (shared !== undefined && shared !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>shared, 'shared');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['image/xyz', 'application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/blob`, {
+			params: queryParameters,
+			responseType: 'blob',
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint lets you use the entire api of Imagemagick to edit the image.
 	 * @param id The ID of the asset.
 	 * @param dynamicImageOperation Operations to be performed on the image directly mapped to c# imagemagick sdk

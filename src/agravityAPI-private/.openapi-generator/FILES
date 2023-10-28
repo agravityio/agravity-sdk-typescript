@@ -111,6 +111,7 @@ model/searchFacetEntity.agravity.ts
 model/searchResult.agravity.ts
 model/searchableItem.agravity.ts
 model/secureUploadEntity.agravity.ts
+model/sharedAllowedFormat.agravity.ts
 model/sharedAsset.agravity.ts
 model/sharedCollection.agravity.ts
 model/sharedCollectionFull.agravity.ts

@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 import { AgravityErrorResponse } from '../model/models';
 import { QuickShareFull } from '../model/models';
 import { SharedCollectionFull } from '../model/models';
+import { SharedCollectionZipRequest } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
@@ -249,6 +250,124 @@ export class PublicSharingManagementService {
 
 		return this.httpClient.get<SharedCollectionFull>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}`, {
 			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * Returns one single shared collection (from ID)
+	 * @param id The ID of the shared collection.
+	 * @param zipId The ID of the requested zip.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpSharedCollectionsGetStatusZipById(
+		id: string,
+		zipId: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SharedCollectionFull>;
+	public httpSharedCollectionsGetStatusZipById(
+		id: string,
+		zipId: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SharedCollectionFull>>;
+	public httpSharedCollectionsGetStatusZipById(
+		id: string,
+		zipId: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SharedCollectionFull>>;
+	public httpSharedCollectionsGetStatusZipById(
+		id: string,
+		zipId: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpSharedCollectionsGetStatusZipById.');
+		}
+		if (zipId === null || zipId === undefined) {
+			throw new Error('Required parameter zipId was null or undefined when calling httpSharedCollectionsGetStatusZipById.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<SharedCollectionFull>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}/zip/${encodeURIComponent(String(zipId))}`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * Returns one single shared collection (from ID)
+	 * @param id The ID of the shared collection.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpSharedCollectionsRequestZipById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SharedCollectionZipRequest>;
+	public httpSharedCollectionsRequestZipById(
+		id: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SharedCollectionZipRequest>>;
+	public httpSharedCollectionsRequestZipById(
+		id: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SharedCollectionZipRequest>>;
+	public httpSharedCollectionsRequestZipById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpSharedCollectionsRequestZipById.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.post<SharedCollectionZipRequest>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}/zip`, null, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { SharedAllowedFormat } from './sharedAllowedFormat.agravity';
 import { SharedAsset } from './sharedAsset.agravity';
 
 export interface SharedCollectionFull {
@@ -17,11 +18,20 @@ export interface SharedCollectionFull {
 	size?: number | null;
 	continuation_token?: string;
 	id?: string;
+	entity_type?: string;
 	collection_id?: string;
-	created_date?: string;
 	url?: string;
 	valid_until?: string;
 	valid_for?: string;
 	message?: string;
 	global?: boolean;
+	opened?: number;
+	allowed_formats?: Array<SharedAllowedFormat>;
+	status?: string;
+	created_date?: string | null;
+	created_by?: string;
+	modified_date?: string | null;
+	modified_by?: string;
+	pk?: string;
+	_etag?: string;
 }
