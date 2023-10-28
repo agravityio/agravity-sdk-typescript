@@ -10,7 +10,7 @@ api/assetPublishing.agravity.ts
 api/assetVersioning.agravity.ts
 api/authenticationManagement.agravity.ts
 api/collectionManagement.agravity.ts
-api/collectionSharing.agravity.ts
+api/collectionShareManagement.agravity.ts
 api/collectionTypeItemBlueprintManagement.agravity.ts
 api/collectionTypeManagement.agravity.ts
 api/commentsManagement.agravity.ts
