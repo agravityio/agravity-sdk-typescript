@@ -22,6 +22,7 @@ export interface SharedCollection {
 	global?: boolean;
 	opened?: number;
 	allowed_formats?: Array<SharedAllowedFormat>;
+	password?: string;
 	status?: string;
 	created_date?: string | null;
 	created_by?: string;
