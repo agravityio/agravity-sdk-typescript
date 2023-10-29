@@ -177,6 +177,7 @@ export class PublicSharingManagementService {
 	 * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
 	 * @param limit This number limits the page result of assets.
 	 * @param orderby How the return assets are sorted. Default is property: created_date (newest first).
+	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 401 (Unauthorized) is returned.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -185,6 +186,7 @@ export class PublicSharingManagementService {
 		continuationToken?: string,
 		limit?: number,
 		orderby?: string,
+		ayPassword?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -194,6 +196,7 @@ export class PublicSharingManagementService {
 		continuationToken?: string,
 		limit?: number,
 		orderby?: string,
+		ayPassword?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -203,6 +206,7 @@ export class PublicSharingManagementService {
 		continuationToken?: string,
 		limit?: number,
 		orderby?: string,
+		ayPassword?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -212,6 +216,7 @@ export class PublicSharingManagementService {
 		continuationToken?: string,
 		limit?: number,
 		orderby?: string,
+		ayPassword?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -232,6 +237,9 @@ export class PublicSharingManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (ayPassword !== undefined && ayPassword !== null) {
+			headers = headers.set('ay-password', String(ayPassword));
+		}
 
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
 		if (httpHeaderAcceptSelected === undefined) {
@@ -262,12 +270,14 @@ export class PublicSharingManagementService {
 	 * Returns one single shared collection (from ID)
 	 * @param id The ID of the shared collection.
 	 * @param zipId The ID of the requested zip.
+	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 401 (Unauthorized) is returned.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSharedCollectionsGetStatusZipById(
 		id: string,
 		zipId: string,
+		ayPassword?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -275,6 +285,7 @@ export class PublicSharingManagementService {
 	public httpSharedCollectionsGetStatusZipById(
 		id: string,
 		zipId: string,
+		ayPassword?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -282,6 +293,7 @@ export class PublicSharingManagementService {
 	public httpSharedCollectionsGetStatusZipById(
 		id: string,
 		zipId: string,
+		ayPassword?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -289,6 +301,7 @@ export class PublicSharingManagementService {
 	public httpSharedCollectionsGetStatusZipById(
 		id: string,
 		zipId: string,
+		ayPassword?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -301,6 +314,9 @@ export class PublicSharingManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (ayPassword !== undefined && ayPassword !== null) {
+			headers = headers.set('ay-password', String(ayPassword));
+		}
 
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
 		if (httpHeaderAcceptSelected === undefined) {
@@ -329,28 +345,46 @@ export class PublicSharingManagementService {
 	/**
 	 * Returns one single shared collection (from ID)
 	 * @param id The ID of the shared collection.
+	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 401 (Unauthorized) is returned.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpSharedCollectionsRequestZipById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SharedCollectionZipRequest>;
 	public httpSharedCollectionsRequestZipById(
 		id: string,
+		ayPassword?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SharedCollectionZipRequest>;
+	public httpSharedCollectionsRequestZipById(
+		id: string,
+		ayPassword?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SharedCollectionZipRequest>>;
 	public httpSharedCollectionsRequestZipById(
 		id: string,
+		ayPassword?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<SharedCollectionZipRequest>>;
-	public httpSharedCollectionsRequestZipById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSharedCollectionsRequestZipById(
+		id: string,
+		ayPassword?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpSharedCollectionsRequestZipById.');
 		}
 
 		let headers = this.defaultHeaders;
+		if (ayPassword !== undefined && ayPassword !== null) {
+			headers = headers.set('ay-password', String(ayPassword));
+		}
 
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
 		if (httpHeaderAcceptSelected === undefined) {

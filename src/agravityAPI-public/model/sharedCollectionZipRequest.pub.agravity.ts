@@ -18,6 +18,7 @@ export interface SharedCollectionZipRequest {
 	instance_id?: string;
 	sharedcoll_id?: string;
 	valid_until?: string;
+	password?: string;
 	allowed_formats?: Array<SharedAllowedFormat>;
 	status?: string;
 	created_date?: string | null;
