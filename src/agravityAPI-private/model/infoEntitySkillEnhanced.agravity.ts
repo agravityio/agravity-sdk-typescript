@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { PermissionEntity } from './permissionEntity.agravity';
 
 export interface InfoEntitySkillEnhanced {
 	collection_names?: Array<string>;
@@ -19,6 +20,6 @@ export interface InfoEntitySkillEnhanced {
 	allcustom?: any;
 	custom_values?: Array<string>;
 	search_terms?: string;
-	perm_groups?: Array<string>;
+	perm_groups?: Array<PermissionEntity>;
 	fulltext?: string;
 }
