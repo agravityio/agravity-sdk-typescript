@@ -346,12 +346,14 @@ export class PublicSharingManagementService {
 	 * Returns one single shared collection (from ID)
 	 * @param id The ID of the shared collection.
 	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 401 (Unauthorized) is returned.
+	 * @param sharedCollectionZipRequest The allowed formats are the input which could be optionally added.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSharedCollectionsRequestZipById(
 		id: string,
 		ayPassword?: string,
+		sharedCollectionZipRequest?: SharedCollectionZipRequest,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -359,6 +361,7 @@ export class PublicSharingManagementService {
 	public httpSharedCollectionsRequestZipById(
 		id: string,
 		ayPassword?: string,
+		sharedCollectionZipRequest?: SharedCollectionZipRequest,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -366,6 +369,7 @@ export class PublicSharingManagementService {
 	public httpSharedCollectionsRequestZipById(
 		id: string,
 		ayPassword?: string,
+		sharedCollectionZipRequest?: SharedCollectionZipRequest,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -373,6 +377,7 @@ export class PublicSharingManagementService {
 	public httpSharedCollectionsRequestZipById(
 		id: string,
 		ayPassword?: string,
+		sharedCollectionZipRequest?: SharedCollectionZipRequest,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -396,12 +401,19 @@ export class PublicSharingManagementService {
 			headers = headers.set('Accept', httpHeaderAcceptSelected);
 		}
 
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
 		let responseType_: 'text' | 'json' = 'json';
 		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.post<SharedCollectionZipRequest>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}/zip`, null, {
+		return this.httpClient.post<SharedCollectionZipRequest>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}/zip`, sharedCollectionZipRequest, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
