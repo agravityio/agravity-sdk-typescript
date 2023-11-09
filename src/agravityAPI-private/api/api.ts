@@ -12,8 +12,8 @@ export * from './authenticationManagement.agravity';
 import { AuthenticationManagementService } from './authenticationManagement.agravity';
 export * from './collectionManagement.agravity';
 import { CollectionManagementService } from './collectionManagement.agravity';
-export * from './collectionSharing.agravity';
-import { CollectionSharingService } from './collectionSharing.agravity';
+export * from './collectionShareManagement.agravity';
+import { CollectionShareManagementService } from './collectionShareManagement.agravity';
 export * from './collectionTypeItemBlueprintManagement.agravity';
 import { CollectionTypeItemBlueprintManagementService } from './collectionTypeItemBlueprintManagement.agravity';
 export * from './collectionTypeManagement.agravity';
@@ -78,7 +78,7 @@ export const APIS = [
 	AssetVersioningService,
 	AuthenticationManagementService,
 	CollectionManagementService,
-	CollectionSharingService,
+	CollectionShareManagementService,
 	CollectionTypeItemBlueprintManagementService,
 	CollectionTypeManagementService,
 	CommentsManagementService,

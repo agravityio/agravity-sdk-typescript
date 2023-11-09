@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 import { AgravityErrorResponse } from '../model/models';
 import { QuickShareFull } from '../model/models';
 import { SharedCollectionFull } from '../model/models';
+import { SharedCollectionZipRequest } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
@@ -173,6 +174,7 @@ export class PublicSharingManagementService {
 	/**
 	 * Returns one single shared collection (from ID)
 	 * @param id The ID of the shared collection.
+	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 403 (Forbidden) is returned.
 	 * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
 	 * @param limit This number limits the page result of assets.
 	 * @param orderby How the return assets are sorted. Default is property: created_date (newest first).
@@ -181,6 +183,7 @@ export class PublicSharingManagementService {
 	 */
 	public httpSharedCollectionsGetById(
 		id: string,
+		ayPassword?: string,
 		continuationToken?: string,
 		limit?: number,
 		orderby?: string,
@@ -190,6 +193,7 @@ export class PublicSharingManagementService {
 	): Observable<SharedCollectionFull>;
 	public httpSharedCollectionsGetById(
 		id: string,
+		ayPassword?: string,
 		continuationToken?: string,
 		limit?: number,
 		orderby?: string,
@@ -199,6 +203,7 @@ export class PublicSharingManagementService {
 	): Observable<HttpResponse<SharedCollectionFull>>;
 	public httpSharedCollectionsGetById(
 		id: string,
+		ayPassword?: string,
 		continuationToken?: string,
 		limit?: number,
 		orderby?: string,
@@ -208,6 +213,7 @@ export class PublicSharingManagementService {
 	): Observable<HttpEvent<SharedCollectionFull>>;
 	public httpSharedCollectionsGetById(
 		id: string,
+		ayPassword?: string,
 		continuationToken?: string,
 		limit?: number,
 		orderby?: string,
@@ -231,6 +237,9 @@ export class PublicSharingManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (ayPassword !== undefined && ayPassword !== null) {
+			headers = headers.set('ay-password', String(ayPassword));
+		}
 
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
 		if (httpHeaderAcceptSelected === undefined) {
@@ -249,6 +258,162 @@ export class PublicSharingManagementService {
 
 		return this.httpClient.get<SharedCollectionFull>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}`, {
 			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint gets the progress/status of the ZIP creation of a shared collection.
+	 * @param id The ID of the zip request collection.
+	 * @param zipId The ID of the requested zip.
+	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 401 (Unauthorized) is returned.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpSharedCollectionsGetStatusZipById(
+		id: string,
+		zipId: string,
+		ayPassword?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SharedCollectionZipRequest>;
+	public httpSharedCollectionsGetStatusZipById(
+		id: string,
+		zipId: string,
+		ayPassword?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SharedCollectionZipRequest>>;
+	public httpSharedCollectionsGetStatusZipById(
+		id: string,
+		zipId: string,
+		ayPassword?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SharedCollectionZipRequest>>;
+	public httpSharedCollectionsGetStatusZipById(
+		id: string,
+		zipId: string,
+		ayPassword?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpSharedCollectionsGetStatusZipById.');
+		}
+		if (zipId === null || zipId === undefined) {
+			throw new Error('Required parameter zipId was null or undefined when calling httpSharedCollectionsGetStatusZipById.');
+		}
+
+		let headers = this.defaultHeaders;
+		if (ayPassword !== undefined && ayPassword !== null) {
+			headers = headers.set('ay-password', String(ayPassword));
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<SharedCollectionZipRequest>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}/zip/${encodeURIComponent(String(zipId))}`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * Initiates the ZIP creation of a shared collection.
+	 * @param id The ID of the shared collection.
+	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 403 (Forbidden) is returned.
+	 * @param sharedCollectionZipRequest The allowed formats are the input which could be optionally added.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpSharedCollectionsRequestZipById(
+		id: string,
+		ayPassword?: string,
+		sharedCollectionZipRequest?: SharedCollectionZipRequest,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SharedCollectionZipRequest>;
+	public httpSharedCollectionsRequestZipById(
+		id: string,
+		ayPassword?: string,
+		sharedCollectionZipRequest?: SharedCollectionZipRequest,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SharedCollectionZipRequest>>;
+	public httpSharedCollectionsRequestZipById(
+		id: string,
+		ayPassword?: string,
+		sharedCollectionZipRequest?: SharedCollectionZipRequest,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SharedCollectionZipRequest>>;
+	public httpSharedCollectionsRequestZipById(
+		id: string,
+		ayPassword?: string,
+		sharedCollectionZipRequest?: SharedCollectionZipRequest,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpSharedCollectionsRequestZipById.');
+		}
+
+		let headers = this.defaultHeaders;
+		if (ayPassword !== undefined && ayPassword !== null) {
+			headers = headers.set('ay-password', String(ayPassword));
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.post<SharedCollectionZipRequest>(`${this.configuration.basePath}/shared/${encodeURIComponent(String(id))}/zip`, sharedCollectionZipRequest, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

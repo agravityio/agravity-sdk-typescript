@@ -66,8 +66,10 @@ model/searchFacetEntity.pub.agravity.ts
 model/searchResult.pub.agravity.ts
 model/searchableItem.pub.agravity.ts
 model/secureUploadEntity.pub.agravity.ts
+model/sharedAllowedFormat.pub.agravity.ts
 model/sharedAsset.pub.agravity.ts
 model/sharedCollectionFull.pub.agravity.ts
+model/sharedCollectionZipRequest.pub.agravity.ts
 model/signalRConnectionInfo.pub.agravity.ts
 model/staticDefinedList.pub.agravity.ts
 model/versionEntity.pub.agravity.ts

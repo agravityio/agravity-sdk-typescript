@@ -26,7 +26,7 @@ import { AgravityConfiguration } from '../configuration';
 @Injectable({
 	providedIn: 'root'
 })
-export class CollectionSharingService {
+export class CollectionShareManagementService {
 	protected basePath = 'http://localhost:7071/api';
 	public defaultHeaders = new HttpHeaders();
 	public configuration = new AgravityConfiguration();

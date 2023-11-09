@@ -9,7 +9,7 @@ import { AssetPublishingService } from './api/assetPublishing.agravity';
 import { AssetVersioningService } from './api/assetVersioning.agravity';
 import { AuthenticationManagementService } from './api/authenticationManagement.agravity';
 import { CollectionManagementService } from './api/collectionManagement.agravity';
-import { CollectionSharingService } from './api/collectionSharing.agravity';
+import { CollectionShareManagementService } from './api/collectionShareManagement.agravity';
 import { CollectionTypeItemBlueprintManagementService } from './api/collectionTypeItemBlueprintManagement.agravity';
 import { CollectionTypeManagementService } from './api/collectionTypeManagement.agravity';
 import { CommentsManagementService } from './api/commentsManagement.agravity';

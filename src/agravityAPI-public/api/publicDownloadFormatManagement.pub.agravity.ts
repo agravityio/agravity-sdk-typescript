@@ -122,4 +122,78 @@ export class PublicDownloadFormatManagementService {
 			reportProgress: reportProgress
 		});
 	}
+
+	/**
+	 * This endpoint lists all download formats for a specific shared collections in database.Needs a valid shared collection ID to be authenticated.
+	 * @param shareId This share ID is like an API key. Check on validy (format, expire, collection still availabe). Otherwise StatusCode 403 (Forbidden) is returned.
+	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 403 (Forbidden) is returned.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpDownloadFormatsGetAllFromShared(
+		shareId: string,
+		ayPassword?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<DownloadFormat>>;
+	public httpDownloadFormatsGetAllFromShared(
+		shareId: string,
+		ayPassword?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<DownloadFormat>>>;
+	public httpDownloadFormatsGetAllFromShared(
+		shareId: string,
+		ayPassword?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<DownloadFormat>>>;
+	public httpDownloadFormatsGetAllFromShared(
+		shareId: string,
+		ayPassword?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (shareId === null || shareId === undefined) {
+			throw new Error('Required parameter shareId was null or undefined when calling httpDownloadFormatsGetAllFromShared.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (shareId !== undefined && shareId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>shareId, 'share-id');
+		}
+
+		let headers = this.defaultHeaders;
+		if (ayPassword !== undefined && ayPassword !== null) {
+			headers = headers.set('ay-password', String(ayPassword));
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<Array<DownloadFormat>>(`${this.configuration.basePath}/downloadformats-shared`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
 }

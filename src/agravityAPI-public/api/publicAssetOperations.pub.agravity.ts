@@ -510,6 +510,99 @@ export class PublicAssetOperationsService {
 	}
 
 	/**
+	 * This endpoint checks, if an asset exists, is an image, has original blob, is status active, is part of the shared collection and returns the requested asset blob.
+	 * @param shareId This share ID is like an API key. Check on validy (format, expire, collection still availabe). Otherwise StatusCode 403 (Forbidden) is returned.
+	 * @param id The ID of the asset.
+	 * @param format Which download format the blob is requested.
+	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 403 (Forbidden) is returned.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetSharedAssetBlob(
+		shareId: string,
+		id: string,
+		format: string,
+		ayPassword?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AssetBlob>;
+	public httpGetSharedAssetBlob(
+		shareId: string,
+		id: string,
+		format: string,
+		ayPassword?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AssetBlob>>;
+	public httpGetSharedAssetBlob(
+		shareId: string,
+		id: string,
+		format: string,
+		ayPassword?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AssetBlob>>;
+	public httpGetSharedAssetBlob(
+		shareId: string,
+		id: string,
+		format: string,
+		ayPassword?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (shareId === null || shareId === undefined) {
+			throw new Error('Required parameter shareId was null or undefined when calling httpGetSharedAssetBlob.');
+		}
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetSharedAssetBlob.');
+		}
+		if (format === null || format === undefined) {
+			throw new Error('Required parameter format was null or undefined when calling httpGetSharedAssetBlob.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (shareId !== undefined && shareId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>shareId, 'share-id');
+		}
+		if (format !== undefined && format !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>format, 'format');
+		}
+
+		let headers = this.defaultHeaders;
+		if (ayPassword !== undefined && ayPassword !== null) {
+			headers = headers.set('ay-password', String(ayPassword));
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/blob`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint lets you use the entire api of Imagemagick to edit the image.
 	 * @param id The ID of the asset.
 	 * @param dynamicImageOperation Operations to be performed on the image directly mapped to c# imagemagick sdk

@@ -65,6 +65,7 @@ export * from './searchFacetEntity.agravity';
 export * from './searchResult.agravity';
 export * from './searchableItem.agravity';
 export * from './secureUploadEntity.agravity';
+export * from './sharedAllowedFormat.agravity';
 export * from './sharedAsset.agravity';
 export * from './sharedCollection.agravity';
 export * from './sharedCollectionFull.agravity';
