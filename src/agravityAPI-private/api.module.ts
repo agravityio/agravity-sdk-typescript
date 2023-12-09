@@ -23,6 +23,7 @@ import { HistoryEntryManagementService } from './api/historyEntryManagement.agra
 import { IccProfileManagementService } from './api/iccProfileManagement.agravity';
 import { ListBlobsService } from './api/listBlobs.agravity';
 import { ListQueuesService } from './api/listQueues.agravity';
+import { ListTablesService } from './api/listTables.agravity';
 import { PermissionsManagementService } from './api/permissionsManagement.agravity';
 import { PublishingService } from './api/publishing.agravity';
 import { QuickshareManagementService } from './api/quickshareManagement.agravity';

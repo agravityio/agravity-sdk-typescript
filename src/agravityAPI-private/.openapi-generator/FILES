@@ -24,6 +24,7 @@ api/historyEntryManagement.agravity.ts
 api/iccProfileManagement.agravity.ts
 api/listBlobs.agravity.ts
 api/listQueues.agravity.ts
+api/listTables.agravity.ts
 api/permissionsManagement.agravity.ts
 api/publishing.agravity.ts
 api/quickshareManagement.agravity.ts

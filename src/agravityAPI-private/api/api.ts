@@ -40,6 +40,8 @@ export * from './listBlobs.agravity';
 import { ListBlobsService } from './listBlobs.agravity';
 export * from './listQueues.agravity';
 import { ListQueuesService } from './listQueues.agravity';
+export * from './listTables.agravity';
+import { ListTablesService } from './listTables.agravity';
 export * from './permissionsManagement.agravity';
 import { PermissionsManagementService } from './permissionsManagement.agravity';
 export * from './publishing.agravity';
@@ -92,6 +94,7 @@ export const APIS = [
 	IccProfileManagementService,
 	ListBlobsService,
 	ListQueuesService,
+	ListTablesService,
 	PermissionsManagementService,
 	PublishingService,
 	QuickshareManagementService,
