@@ -60,6 +60,7 @@ model/assetCollectionLink.agravity.ts
 model/assetIconRule.agravity.ts
 model/assetIdFormat.agravity.ts
 model/assetPageResult.agravity.ts
+model/assetTextContent.agravity.ts
 model/assetsOperationBody.agravity.ts
 model/azSearchOptions.agravity.ts
 model/azureIdentity.agravity.ts

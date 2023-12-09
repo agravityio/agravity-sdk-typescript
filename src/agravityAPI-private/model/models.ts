@@ -15,6 +15,7 @@ export * from './assetCollectionLink.agravity';
 export * from './assetIconRule.agravity';
 export * from './assetIdFormat.agravity';
 export * from './assetPageResult.agravity';
+export * from './assetTextContent.agravity';
 export * from './assetsOperationBody.agravity';
 export * from './azSearchOptions.agravity';
 export * from './azureIdentity.agravity';

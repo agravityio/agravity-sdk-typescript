@@ -10,6 +10,12 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="6.0.4"/> [6.0.4](https://www.npmjs.com/package/@agravity/private/v/6.0.4) (2023-11-06)
+
+-   Just version upgrade to match backend
+
+---
+
 ## AgravityAPI <a name="6.0.3"/> [6.0.3](https://www.npmjs.com/package/@agravity/private/v/6.0.3) (2023-11-04)
 
 -   Add endpoint DELETE /assets - (Admin only) - which can have filters and/or collection-ids to remove lots of assets

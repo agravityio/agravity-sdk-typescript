@@ -10,13 +10,7 @@
  * Do not edit the class manually.
  */
 
-export interface ExcelExportTableEntity {
-	url?: string;
-	status?: string;
-	filters?: string;
-	orchestrationId?: string;
-	partitionKey?: string;
-	rowKey?: string;
-	timestamp?: string | null;
-	eTag?: object;
+export interface AssetTextContent {
+	id?: string;
+	textcontent?: string;
 }
