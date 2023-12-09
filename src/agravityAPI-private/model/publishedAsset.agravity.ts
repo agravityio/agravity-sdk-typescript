@@ -13,11 +13,13 @@
 export interface PublishedAsset {
 	id?: string;
 	name?: string;
+	target?: string;
 	description?: string;
 	usecases?: Array<string>;
 	created_date?: string;
 	url?: string;
 	cdn?: string;
+	status_table_id?: string;
 	format?: string;
 	properties?: { [key: string]: object };
 }

@@ -141,6 +141,63 @@ export class AssetPublishingService {
 	}
 
 	/**
+	 * This endpoint retrieves the status and if populated the url to the excel export.
+	 * @param id The ID of translation export
+	 * @param pid The published asset ID.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPublishedAssetsCheckStatus(id: string, pid: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<string>;
+	public httpPublishedAssetsCheckStatus(
+		id: string,
+		pid: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<string>>;
+	public httpPublishedAssetsCheckStatus(id: string, pid: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<string>>;
+	public httpPublishedAssetsCheckStatus(id: string, pid: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpPublishedAssetsCheckStatus.');
+		}
+		if (pid === null || pid === undefined) {
+			throw new Error('Required parameter pid was null or undefined when calling httpPublishedAssetsCheckStatus.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<string>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/publish/${encodeURIComponent(String(pid))}/status`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint creates an additional published asset
 	 * @param id The ID of the asset.
 	 * @param publishedAsset This creates / adds an unique published asset ID and adds the information to the asset (in DB).

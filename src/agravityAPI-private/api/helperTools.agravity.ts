@@ -22,6 +22,7 @@ import { AssetBlob } from '../model/models';
 import { CollectionUDL } from '../model/models';
 import { ExcelExportTableEntity } from '../model/models';
 import { InfoEntitySkillEnhanced } from '../model/models';
+import { PublishedAsset } from '../model/models';
 import { SearchableItem } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -430,6 +431,48 @@ export class HelperToolsService {
 
 		return this.httpClient.get<Array<CollectionUDL>>(`${this.configuration.basePath}/helper/userdefinedlists`, {
 			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This Endpoint fetches all videos that are published on vimeo (to get their video id for error handling) [admin only]
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAllVimeoVideos(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<PublishedAsset>;
+	public httpGetAllVimeoVideos(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<PublishedAsset>>;
+	public httpGetAllVimeoVideos(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<PublishedAsset>>;
+	public httpGetAllVimeoVideos(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<PublishedAsset>(`${this.configuration.basePath}/helper/vimeo-videos`, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
