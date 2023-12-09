@@ -141,7 +141,7 @@ export class AssetPublishingService {
 	}
 
 	/**
-	 * This endpoint retrieves the status and if populated the url to the excel export.
+	 * This endpoint retrieves the status of the published entity i.e. vimeo video upload
 	 * @param id The ID of translation export
 	 * @param pid The published asset ID.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
