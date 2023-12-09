@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
+import { AgravityErrorResponse } from './agravityErrorResponse.pub.agravity';
 
 export interface SharedCollectionZipRequest {
 	id?: string;
@@ -20,6 +21,7 @@ export interface SharedCollectionZipRequest {
 	valid_until?: string;
 	password?: string;
 	allowed_formats?: Array<SharedAllowedFormat>;
+	error?: AgravityErrorResponse;
 	status?: string;
 	created_date?: string | null;
 	created_by?: string;

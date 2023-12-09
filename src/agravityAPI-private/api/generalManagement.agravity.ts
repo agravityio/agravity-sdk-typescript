@@ -168,14 +168,20 @@ export class GeneralManagementService {
 	}
 
 	/**
-	 * This endpoint queries all entities from which are marked as status \&quot;D\&quot; and cleans internal containers from that assets
+	 * This endpoint queries all entities from which are marked as status \&quot;D\&quot; and cleans internal archive container from that assets
+	 * @param olderThanDays (Default 90 days) - How many days in the entity.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCleanup(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpCleanup(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpCleanup(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpCleanup(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCleanup(olderThanDays?: number, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
+	public httpCleanup(olderThanDays?: number, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpCleanup(olderThanDays?: number, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpCleanup(olderThanDays?: number, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (olderThanDays !== undefined && olderThanDays !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>olderThanDays, 'olderThanDays');
+		}
+
 		let headers = this.defaultHeaders;
 
 		let credential: string | undefined;
@@ -201,6 +207,7 @@ export class GeneralManagementService {
 		}
 
 		return this.httpClient.patch<AgravityInfoResponse>(`${this.configuration.basePath}/cleanup`, null, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

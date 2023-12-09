@@ -744,7 +744,6 @@ export class AssetManagementService {
 	 * @param fields Which fields are need to be filled out with comma separated. If one is set all non mandatory fields are left out. No validation if field exist.
 	 * @param expose This indicates if the given blobs should have URLs where these can be requested. It will expose placeholder blobs if no \&#39;thumbnail\&#39; is found.)
 	 * @param items The items can be extended to fully filled items.
-	 * @param techdata This parameter will include the techdata property inside orig_blob.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
@@ -754,7 +753,6 @@ export class AssetManagementService {
 		fields?: string,
 		expose?: boolean,
 		items?: boolean,
-		techdata?: boolean,
 		translations?: boolean,
 		observe?: 'body',
 		reportProgress?: boolean,
@@ -765,7 +763,6 @@ export class AssetManagementService {
 		fields?: string,
 		expose?: boolean,
 		items?: boolean,
-		techdata?: boolean,
 		translations?: boolean,
 		observe?: 'response',
 		reportProgress?: boolean,
@@ -776,7 +773,6 @@ export class AssetManagementService {
 		fields?: string,
 		expose?: boolean,
 		items?: boolean,
-		techdata?: boolean,
 		translations?: boolean,
 		observe?: 'events',
 		reportProgress?: boolean,
@@ -787,7 +783,6 @@ export class AssetManagementService {
 		fields?: string,
 		expose?: boolean,
 		items?: boolean,
-		techdata?: boolean,
 		translations?: boolean,
 		observe: any = 'body',
 		reportProgress: boolean = false,
@@ -806,9 +801,6 @@ export class AssetManagementService {
 		}
 		if (items !== undefined && items !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>items, 'items');
-		}
-		if (techdata !== undefined && techdata !== null) {
-			queryParameters = this.addToHttpParams(queryParameters, <any>techdata, 'techdata');
 		}
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');

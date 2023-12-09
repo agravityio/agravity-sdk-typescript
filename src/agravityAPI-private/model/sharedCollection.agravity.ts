@@ -20,7 +20,6 @@ export interface SharedCollection {
 	valid_for?: string;
 	message?: string;
 	global?: boolean;
-	opened?: number;
 	allowed_formats?: Array<SharedAllowedFormat>;
 	password?: string;
 	status?: string;

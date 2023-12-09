@@ -21,6 +21,7 @@ import { AgravityInfoResponse } from '../model/models';
 import { Asset } from '../model/models';
 import { AssetAvailability } from '../model/models';
 import { AssetBlob } from '../model/models';
+import { AssetTextContent } from '../model/models';
 import { AssetsOperationBody } from '../model/models';
 import { Collection } from '../model/models';
 import { DynamicImageOperation } from '../model/models';
@@ -930,6 +931,53 @@ export class AssetOperationsService {
 		}
 
 		return this.httpClient.get<Array<Metadata>>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/techdata`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns all textual content of an asset (i.e. text of PDF)
+	 * @param id The ID of the asset.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAssetTextContentById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetTextContent>;
+	public httpGetAssetTextContentById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetTextContent>>;
+	public httpGetAssetTextContentById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetTextContent>>;
+	public httpGetAssetTextContentById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetAssetTextContentById.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<AssetTextContent>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/textcontent`, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
