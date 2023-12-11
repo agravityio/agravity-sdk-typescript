@@ -17,6 +17,7 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
+import { AgravityInfoResponse } from '../model/models';
 import { PublishEntity } from '../model/models';
 import { PublishedAsset } from '../model/models';
 
@@ -141,21 +142,90 @@ export class AssetPublishingService {
 	}
 
 	/**
+	 * This endpoint fetches specific information (e.g. statistics) of the published asset (from ID) from the target platform
+	 * @param id The ID of the asset.
+	 * @param pid The published asset ID.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public getPublishedAssetDetails(id: string, pid: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<{ [key: string]: object }>;
+	public getPublishedAssetDetails(
+		id: string,
+		pid: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<{ [key: string]: object }>>;
+	public getPublishedAssetDetails(
+		id: string,
+		pid: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<{ [key: string]: object }>>;
+	public getPublishedAssetDetails(id: string, pid: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling getPublishedAssetDetails.');
+		}
+		if (pid === null || pid === undefined) {
+			throw new Error('Required parameter pid was null or undefined when calling getPublishedAssetDetails.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<{ [key: string]: object }>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/publish/${encodeURIComponent(String(pid))}/info`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint retrieves the status of the published entity i.e. vimeo video upload
 	 * @param id The ID of translation export
 	 * @param pid The published asset ID.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPublishedAssetsCheckStatus(id: string, pid: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<string>;
+	public httpPublishedAssetsCheckStatus(id: string, pid: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpPublishedAssetsCheckStatus(
 		id: string,
 		pid: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<HttpResponse<string>>;
-	public httpPublishedAssetsCheckStatus(id: string, pid: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<string>>;
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpPublishedAssetsCheckStatus(
+		id: string,
+		pid: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpPublishedAssetsCheckStatus(id: string, pid: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPublishedAssetsCheckStatus.');
@@ -188,7 +258,7 @@ export class AssetPublishingService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.get<string>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/publish/${encodeURIComponent(String(pid))}/status`, {
+		return this.httpClient.get<AgravityInfoResponse>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/publish/${encodeURIComponent(String(pid))}/status`, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
