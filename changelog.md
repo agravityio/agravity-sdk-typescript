@@ -10,6 +10,40 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="6.1.0"/> [6.1.0](https://www.npmjs.com/package/@agravity/private/v/6.1.0) (2023-12-14)
+
+Extend Share to have passwords, allowed_formats and be a separate entity:
+
+-   add GET `/assets/{id}/blob` - This endpoint checks, if an asset exists, is an image, has original blob, is status active, is part of the shared collection and returns the requested asset blob.
+-   add GET `/downloadformats-shared` - This endpoint lists all download formats for a specific shared collections in database. Needs a valid shared collection ID to be authenticated.
+-   add GET `/shared/{id}/zip/{zipId}` - This endpoint gets the progress/status of the ZIP creation of a shared collection.
+-   add POST `/shared/{id}/zip` - Initiates the ZIP creation of a shared collection.
+-   add param `ay-password` to get share
+-   fix add_data in AssetBlob to be not an array of metadata
+-   add model `SharedAllowedFormat`
+-   add model `SharedCollectionZipRequest`
+-   refactor collectionSharingService to collectionShareManagementService
+-   Add ay-password header to shared collection (and zip request) endpoints
+-   Add password to shared collection model
+
+Extend publish endpoints:
+
+-   add GET `/assets/{id}/publish/{pid}/status` - This endpoint retrieves the status of the published entity i.e. vimeo video upload
+-   add GET `/helpers/vimeo-videos` - This endpoint fetches all videos that are published on vimeo (to get their video id for error handling) [admin only]
+-   add `target´and `status_table_id` - to the PublishAsset to have a publishing target and keep track via status_table_id
+-   add `force` query parameter to DELETE `/assets/{id}/publish/{pid} - so the published video can be deleted even when external unpublish failed
+
+Other changes:
+
+-   GET `/assets/{id}/textcontent` - This endpoint returns all textual content of an asset (i.e. text of PDF)
+-   PATCH `/cleanup` - Add `olderThanDays` parameter which cleans archived assets and collections (marked as deleted) which are older than this day count. If no parameter is added, default value of 90 days is used.
+-   Add `Removed` and `DirtyMarked` as history entry types. `DirtyMarked` is only used backend internally.
+-   Added `error`(AgravityErrorResponse) to sharedCollectionZipRequest class if zip caused an error.
+-   Removed unused `opened` field from sharedCollection model.
+-   Add DELETE `/tables` endpoint: This deletes all table entries.
+
+---
+
 ## AgravityAPI <a name="6.0.4"/> [6.0.4](https://www.npmjs.com/package/@agravity/private/v/6.0.4) (2023-11-06)
 
 -   Just version upgrade to match backend
@@ -37,44 +71,40 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="6.0.0"/> [6.0.0](https://www.npmjs.com/package/@agravity/private/v/6.0.0) (2023-10-02)
 
-#784 Add Roles to Permission System
+-   #784 Add Roles to Permission System
 
-Add `role` property to Asset, Collection and CollectionType which can be NONE, VIEWER, EDITOR
+    -   Add `role` property to Asset, Collection and CollectionType which can be NONE, VIEWER, EDITOR
+    -   Change `permissions` property from workspace and collection to to be an array of `PermissionEntity` (role and id)
 
--   Change `permissions` property from workspace and collection to to be an array of `PermissionEntity` (role and id)
+-   #858 Impersonate User
 
-#858 Impersonate User
+    -   PATCH `/auth/impersonate/{id}` - This endpoint to impersonate an Agravity user.
+    -   DELETE `/auth/impersonate` - This endpoint to end impersonation an Agravity user.
+    -   Add `impersonation` property to AgravityUser to indicate if this user is impersonating (will be null most of the time)
 
--   PATCH `/auth/impersonate/{id}` - This endpoint to impersonate an Agravity user.
--   DELETE `/auth/impersonate` - This endpoint to end impersonation an Agravity user.
--   Add `impersonation` property to AgravityUser to indicate if this user is impersonating (will be null most of the time)
+-   #905 Translations excel import/export
+    -   Add endpoint GET `/helper/excel/export/translations` - This endpoint creates an excel export of translations of db entities
+    -   Add endpoint DELETE `/helper/excel/export/translations/{exportId}` - This endpoint retrieves the status and if populated the url to the excel export
+    -   Add endpoint GET `/helper/excel/export/translations/{exportId}` - This endpoint retrieves the status and if populated the url to the excel export.
+    -   Add endpoint POST `/helper/excel/import/translations` - This endpoint puts a excel file on the translations import blob container
+-   #917 Api key management
 
-#905 Translations excel import/export
+    -   Add `apikey`as property to AgravityUser;
+    -   Add endpoint POST `/auth/apikey` - This endpoint creates a new api key user in database and registers it on the public function
+    -   Add endpoint DELETE `/auth/apikey/{apiUserId}` - This endpoint deletes an api key user and removed the key from public functions.
+    -   Add param `apikey` to endpoint GET `/auth/users` - This optional parameter if the response should be limited to api key users
 
--   Add endpoint GET `/helper/excel/export/translations` - This endpoint creates an excel export of translations of db entities
--   Add endpoint DELETE `/helper/excel/export/translations/{exportId}` - This endpoint retrieves the status and if populated the url to the excel export
--   Add endpoint GET `/helper/excel/export/translations/{exportId}` - This endpoint retrieves the status and if populated the url to the excel export.
--   Add endpoint POST `/helper/excel/import/translations` - This endpoint puts a excel file on the translations import blob container
+-   #70 Alternative thumbnails for assets
 
-#917 Api key management
+    -   Add new optional param `previewof` to `/assetupload` endpoint
+    -   Respect `version`endpoint as well for preview
+    -   Adapt generate to build assetManagement
 
--   Add `apikey`as property to AgravityUser;
--   Add endpoint POST `/auth/apikey` - This endpoint creates a new api key user in database and registers it on the public function
--   Add endpoint DELETE `/auth/apikey/{apiUserId}` - This endpoint deletes an api key user and removed the key from public functions.
--   Add param `apikey` to endpoint GET `/auth/users` - This optional parameter if the response should be limited to api key users
-
-#70 Alternative thumbnails for assets
-
--   Add new optional param `previewof`to `/assetupload` endpoint
--   Respect `version`endpoint as well for preview
--   Adapt generate to build assetManagement
-
-#974 Allow free custom configs for any frontend to be stored and called
-
--   Add endpoint DELETE `/config/{key}` - Deletes an existing custom config value with the given key. It will also refresh the current application configuration cache for this key.
--   Update endpoint GET `/config/frontend` - add param `customonly` - This returns only the custom created configurations.
--   Update endpoint POST `/config/{key}` - Update an existing (pre-generated) config value (only value, content-type and description) or creates/updates custom config with the given key (full). It will also refresh the current application configuration cache for this key.
--   add `is_custom` property to appConfigTableEntity field (default false)
+-   #974 Allow free custom configs for any frontend to be stored and called
+    -   Add endpoint DELETE `/config/{key}` - Deletes an existing custom config value with the given key. It will also refresh the current application configuration cache for this key.
+    -   Update endpoint GET `/config/frontend` - add param `customonly` - This returns only the custom created configurations.
+    -   Update endpoint POST `/config/{key}` - Update an existing (pre-generated) config value (only value, content-type and description) or creates/updates custom config with the given key (full). It will also refresh the current application configuration cache for this key.
+    -   add `is_custom` property to appConfigTableEntity field (default false)
 
 ### Bugfixes
 
@@ -109,7 +139,7 @@ Add `role` property to Asset, Collection and CollectionType which can be NONE, V
 
 ## AgravityAPI <a name="5.3.2"/> [5.3.2](https://www.npmjs.com/package/@agravity/private/v/5.3.2) (2023-08-17)
 
-## (no changes - just update according to backend version)
+-   Just version upgrade to match backend
 
 ## AgravityAPI <a name="5.3.1"/> [5.3.1](https://www.npmjs.com/package/@agravity/private/v/5.3.1) (2023-08-01)
 
