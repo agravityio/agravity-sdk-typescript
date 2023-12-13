@@ -400,18 +400,45 @@ export class AssetPublishingService {
 	 * This endpoint deletes the published asset with the given ID.
 	 * @param id The ID of the asset.
 	 * @param pid The published asset ID.
+	 * @param force Even if the unpublish in the third party system is not successful, the published asset should be removed.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPublishedAssetsDeleteById(id: string, pid: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpPublishedAssetsDeleteById(id: string, pid: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpPublishedAssetsDeleteById(id: string, pid: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpPublishedAssetsDeleteById(id: string, pid: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPublishedAssetsDeleteById(id: string, pid: string, force?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
+	public httpPublishedAssetsDeleteById(
+		id: string,
+		pid: string,
+		force?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpPublishedAssetsDeleteById(
+		id: string,
+		pid: string,
+		force?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpPublishedAssetsDeleteById(
+		id: string,
+		pid: string,
+		force?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPublishedAssetsDeleteById.');
 		}
 		if (pid === null || pid === undefined) {
 			throw new Error('Required parameter pid was null or undefined when calling httpPublishedAssetsDeleteById.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (force !== undefined && force !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>force, 'force');
 		}
 
 		let headers = this.defaultHeaders;
@@ -439,6 +466,7 @@ export class AssetPublishingService {
 		}
 
 		return this.httpClient.delete<any>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/publish/${encodeURIComponent(String(pid))}`, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
