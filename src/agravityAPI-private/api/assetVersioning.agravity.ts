@@ -411,7 +411,7 @@ export class AssetVersioningService {
 	 * This endpoint checks if assets and version exists and returns the url for the requested blob.
 	 * @param id The ID of the asset.
 	 * @param vNr The version number of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;o\&quot; for original; \&quot;os\&quot; for original-size.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -476,7 +476,7 @@ export class AssetVersioningService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/versions/${encodeURIComponent(String(vNr))}/blobs`, {
+		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/versions/${encodeURIComponent(String(vNr))}/blob`, {
 			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,

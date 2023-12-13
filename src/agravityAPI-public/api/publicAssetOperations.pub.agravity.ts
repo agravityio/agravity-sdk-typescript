@@ -315,19 +315,16 @@ export class PublicAssetOperationsService {
 	/**
 	 * This endpoint checks, if an asset exists and returns the url for the requested blob.
 	 * @param id The ID of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;o\&quot; for original; \&quot;os\&quot; for original-size; \&quot;at\&quot; for alternative thumbnail.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAssetBlob(id: string, c: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
-	public httpGetAssetBlob(id: string, c: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetBlob>>;
-	public httpGetAssetBlob(id: string, c: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetBlob>>;
-	public httpGetAssetBlob(id: string, c: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAssetBlob(id: string, c?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
+	public httpGetAssetBlob(id: string, c?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetBlob>>;
+	public httpGetAssetBlob(id: string, c?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetBlob>>;
+	public httpGetAssetBlob(id: string, c?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetBlob.');
-		}
-		if (c === null || c === undefined) {
-			throw new Error('Required parameter c was null or undefined when calling httpGetAssetBlob.');
 		}
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
@@ -359,7 +356,7 @@ export class PublicAssetOperationsService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/blobs`, {
+		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/blob`, {
 			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
@@ -456,16 +453,16 @@ export class PublicAssetOperationsService {
 	}
 
 	/**
-	 * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
+	 * This endpoint is similar to HttpGetAssetBlob it forward directly to URL with ContentDistribution and filename.
 	 * @param id The ID of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;o\&quot; for original; \&quot;os\&quot; for original-size; \&quot;at\&quot; for alternative thumbnail.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetBlob>>;
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetBlob>>;
-	public httpGetAssetDownload(id: string, c?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAssetDownload(id: string, c?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/octet-stream' }): Observable<Blob>;
+	public httpGetAssetDownload(id: string, c?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/octet-stream' }): Observable<HttpResponse<Blob>>;
+	public httpGetAssetDownload(id: string, c?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/octet-stream' }): Observable<HttpEvent<Blob>>;
+	public httpGetAssetDownload(id: string, c?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/octet-stream' }): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetDownload.');
 		}
@@ -487,21 +484,16 @@ export class PublicAssetOperationsService {
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
 		if (httpHeaderAcceptSelected === undefined) {
 			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
+			const httpHeaderAccepts: string[] = ['application/octet-stream'];
 			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
 		}
 		if (httpHeaderAcceptSelected !== undefined) {
 			headers = headers.set('Accept', httpHeaderAcceptSelected);
 		}
 
-		let responseType_: 'text' | 'json' = 'json';
-		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-			responseType_ = 'text';
-		}
-
-		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/download`, {
+		return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/download`, {
 			params: queryParameters,
-			responseType: <any>responseType_,
+			responseType: 'blob',
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
 			observe: observe,
@@ -514,6 +506,7 @@ export class PublicAssetOperationsService {
 	 * @param shareId This share ID is like an API key. Check on validy (format, expire, collection still availabe). Otherwise StatusCode 403 (Forbidden) is returned.
 	 * @param id The ID of the asset.
 	 * @param format Which download format the blob is requested.
+	 * @param download This indicates if the blob URL should contain the filename and be ready to be downloaded.
 	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 403 (Forbidden) is returned.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
@@ -522,6 +515,7 @@ export class PublicAssetOperationsService {
 		shareId: string,
 		id: string,
 		format: string,
+		download: boolean,
 		ayPassword?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
@@ -531,6 +525,7 @@ export class PublicAssetOperationsService {
 		shareId: string,
 		id: string,
 		format: string,
+		download: boolean,
 		ayPassword?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
@@ -540,6 +535,7 @@ export class PublicAssetOperationsService {
 		shareId: string,
 		id: string,
 		format: string,
+		download: boolean,
 		ayPassword?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
@@ -549,6 +545,7 @@ export class PublicAssetOperationsService {
 		shareId: string,
 		id: string,
 		format: string,
+		download: boolean,
 		ayPassword?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
@@ -563,6 +560,9 @@ export class PublicAssetOperationsService {
 		if (format === null || format === undefined) {
 			throw new Error('Required parameter format was null or undefined when calling httpGetSharedAssetBlob.');
 		}
+		if (download === null || download === undefined) {
+			throw new Error('Required parameter download was null or undefined when calling httpGetSharedAssetBlob.');
+		}
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (shareId !== undefined && shareId !== null) {
@@ -570,6 +570,9 @@ export class PublicAssetOperationsService {
 		}
 		if (format !== undefined && format !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>format, 'format');
+		}
+		if (download !== undefined && download !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>download, 'download');
 		}
 
 		let headers = this.defaultHeaders;
@@ -592,9 +595,108 @@ export class PublicAssetOperationsService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/blob`, {
+		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/sharedblob`, {
 			params: queryParameters,
 			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint checks, if an asset exists, is an image, has original blob, is status active, is part of the shared collection and returns the requested asset blob.
+	 * @param shareId This share ID is like an API key. Check on validy (format, expire, collection still availabe). Otherwise StatusCode 403 (Forbidden) is returned.
+	 * @param id The ID of the asset.
+	 * @param format Which download format the blob is requested.
+	 * @param download This indicates if the blob URL should contain the filename and be ready to be downloaded.
+	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 403 (Forbidden) is returned.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetSharedAssetBlobDownload(
+		shareId: string,
+		id: string,
+		format: string,
+		download: boolean,
+		ayPassword?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json' }
+	): Observable<Blob>;
+	public httpGetSharedAssetBlobDownload(
+		shareId: string,
+		id: string,
+		format: string,
+		download: boolean,
+		ayPassword?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json' }
+	): Observable<HttpResponse<Blob>>;
+	public httpGetSharedAssetBlobDownload(
+		shareId: string,
+		id: string,
+		format: string,
+		download: boolean,
+		ayPassword?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json' }
+	): Observable<HttpEvent<Blob>>;
+	public httpGetSharedAssetBlobDownload(
+		shareId: string,
+		id: string,
+		format: string,
+		download: boolean,
+		ayPassword?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json' }
+	): Observable<any> {
+		if (shareId === null || shareId === undefined) {
+			throw new Error('Required parameter shareId was null or undefined when calling httpGetSharedAssetBlobDownload.');
+		}
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetSharedAssetBlobDownload.');
+		}
+		if (format === null || format === undefined) {
+			throw new Error('Required parameter format was null or undefined when calling httpGetSharedAssetBlobDownload.');
+		}
+		if (download === null || download === undefined) {
+			throw new Error('Required parameter download was null or undefined when calling httpGetSharedAssetBlobDownload.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (shareId !== undefined && shareId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>shareId, 'share-id');
+		}
+		if (format !== undefined && format !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>format, 'format');
+		}
+		if (download !== undefined && download !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>download, 'download');
+		}
+
+		let headers = this.defaultHeaders;
+		if (ayPassword !== undefined && ayPassword !== null) {
+			headers = headers.set('ay-password', String(ayPassword));
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/octet-stream', 'application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/shareddownload`, {
+			params: queryParameters,
+			responseType: 'blob',
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
 			observe: observe,

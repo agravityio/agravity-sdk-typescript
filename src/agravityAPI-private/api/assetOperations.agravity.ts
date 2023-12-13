@@ -701,7 +701,7 @@ export class AssetOperationsService {
 	/**
 	 * This endpoint checks, if an asset exists and returns the url for the requested blob.
 	 * @param id The ID of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;o\&quot; for original; \&quot;os\&quot; for original-size; \&quot;at\&quot; for alternative thumbnail.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -742,7 +742,7 @@ export class AssetOperationsService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/blobs`, {
+		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/blob`, {
 			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
@@ -839,16 +839,16 @@ export class AssetOperationsService {
 	}
 
 	/**
-	 * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
+	 * This endpoint is similar to HttpGetAssetBlob it forward directly to URL with ContentDistribution and filename.
 	 * @param id The ID of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;o\&quot; for original; \&quot;os\&quot; for original-size; \&quot;at\&quot; for alternative thumbnail.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetBlob>>;
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetBlob>>;
-	public httpGetAssetDownload(id: string, c?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAssetDownload(id: string, c?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/octet-stream' }): Observable<Blob>;
+	public httpGetAssetDownload(id: string, c?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/octet-stream' }): Observable<HttpResponse<Blob>>;
+	public httpGetAssetDownload(id: string, c?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/octet-stream' }): Observable<HttpEvent<Blob>>;
+	public httpGetAssetDownload(id: string, c?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/octet-stream' }): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetDownload.');
 		}
@@ -870,21 +870,16 @@ export class AssetOperationsService {
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
 		if (httpHeaderAcceptSelected === undefined) {
 			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
+			const httpHeaderAccepts: string[] = ['application/octet-stream'];
 			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
 		}
 		if (httpHeaderAcceptSelected !== undefined) {
 			headers = headers.set('Accept', httpHeaderAcceptSelected);
 		}
 
-		let responseType_: 'text' | 'json' = 'json';
-		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-			responseType_ = 'text';
-		}
-
-		return this.httpClient.get<AssetBlob>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/download`, {
+		return this.httpClient.get(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/download`, {
 			params: queryParameters,
-			responseType: <any>responseType_,
+			responseType: 'blob',
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
 			observe: observe,
