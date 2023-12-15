@@ -10,6 +10,13 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="6.1.1"/> [6.1.1](https://www.npmjs.com/package/@agravity/private/v/6.1.1) (2023-12-15)
+
+-   Change PATCH `/assets/{id}/alternative` to DELETE for alternative removal
+-   Add new HistoryEntryType: SystemUpgrade which does not use modifiedBy to write changes
+
+---
+
 ## AgravityAPI <a name="6.1.0"/> [6.1.0](https://www.npmjs.com/package/@agravity/private/v/6.1.0) (2023-12-14)
 
 Extend Share to have passwords, allowed_formats and be a separate entity:
