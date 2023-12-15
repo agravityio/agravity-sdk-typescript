@@ -573,7 +573,7 @@ export class AssetOperationsService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.patch<AgravityInfoResponse>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/alternative`, null, {
+		return this.httpClient.delete<AgravityInfoResponse>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/alternative`, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
