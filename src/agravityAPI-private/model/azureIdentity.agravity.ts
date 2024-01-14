@@ -18,10 +18,11 @@ export interface AzureIdentity {
 	ident_type?: AzureIdentity.IdentTypeEnum | null;
 }
 export namespace AzureIdentity {
-	export type IdentTypeEnum = 'USER' | 'GROUP' | 'APIKEY';
+	export type IdentTypeEnum = 'USER' | 'GROUP' | 'APIKEY' | 'PORTAL';
 	export const IdentTypeEnum = {
 		User: 'USER' as IdentTypeEnum,
 		Group: 'GROUP' as IdentTypeEnum,
-		Apikey: 'APIKEY' as IdentTypeEnum
+		Apikey: 'APIKEY' as IdentTypeEnum,
+		Portal: 'PORTAL' as IdentTypeEnum
 	};
 }

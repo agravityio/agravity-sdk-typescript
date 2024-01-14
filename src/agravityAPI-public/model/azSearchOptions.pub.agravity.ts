@@ -20,4 +20,5 @@ export interface AzSearchOptions {
 	orderby?: string;
 	mode?: string;
 	ids?: string;
+	portal_id?: string;
 }
