@@ -25,6 +25,7 @@ import { ListBlobsService } from './api/listBlobs.agravity';
 import { ListQueuesService } from './api/listQueues.agravity';
 import { ListTablesService } from './api/listTables.agravity';
 import { PermissionsManagementService } from './api/permissionsManagement.agravity';
+import { PortalManagementService } from './api/portalManagement.agravity';
 import { PublishingService } from './api/publishing.agravity';
 import { QuickshareManagementService } from './api/quickshareManagement.agravity';
 import { SavedSearchManagementService } from './api/savedSearchManagement.agravity';

@@ -48,6 +48,7 @@ export * from './moveCollectionBody.agravity';
 export * from './permissionChange.agravity';
 export * from './permissionEntity.agravity';
 export * from './permissionSetting.agravity';
+export * from './portal.agravity';
 export * from './publishEntity.agravity';
 export * from './publishedAsset.agravity';
 export * from './quickShare.agravity';

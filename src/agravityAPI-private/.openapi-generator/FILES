@@ -26,6 +26,7 @@ api/listBlobs.agravity.ts
 api/listQueues.agravity.ts
 api/listTables.agravity.ts
 api/permissionsManagement.agravity.ts
+api/portalManagement.agravity.ts
 api/publishing.agravity.ts
 api/quickshareManagement.agravity.ts
 api/savedSearchManagement.agravity.ts
@@ -95,6 +96,7 @@ model/moveCollectionBody.agravity.ts
 model/permissionChange.agravity.ts
 model/permissionEntity.agravity.ts
 model/permissionSetting.agravity.ts
+model/portal.agravity.ts
 model/publishEntity.agravity.ts
 model/publishedAsset.agravity.ts
 model/quickShare.agravity.ts
