@@ -10,6 +10,24 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="6.1.5"/> [6.1.5](https://www.npmjs.com/package/@agravity/private/v/6.1.5) (2024-01-28)
+
+-   Just version upgrade to match backend
+
+---
+
+## AgravityAPI <a name="6.1.4"/> [6.1.4](https://www.npmjs.com/package/@agravity/private/v/6.1.4) (2024-01-17)
+
+-   Just version upgrade to match backend
+
+---
+
+## AgravityAPI <a name="6.1.3"/> [6.1.3](https://www.npmjs.com/package/@agravity/private/v/6.1.3) (2024-01-14)
+
+-   Just update year to 2024 in description
+
+---
+
 ## AgravityAPI <a name="6.1.2"/> [6.1.2](https://www.npmjs.com/package/@agravity/private/v/6.1.2) (2023-12-18)
 
 -   Just version upgrade to match backend
