@@ -24,7 +24,7 @@ export interface CollTypeItem {
 	multi?: boolean | null;
 	md5?: string;
 	group?: string;
-	order?: number | null;
+	order?: number;
 	translations?: { [key: string]: { [key: string]: object } };
 	status?: string;
 	created_date?: string | null;

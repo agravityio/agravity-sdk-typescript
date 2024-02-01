@@ -18,7 +18,7 @@ export interface CollectionType {
 	name?: string;
 	items?: Array<CollTypeItem>;
 	translations?: { [key: string]: { [key: string]: object } };
-	order?: number | null;
+	order?: number;
 	permissions?: Array<PermissionEntity>;
 	permissionless?: boolean | null;
 	role?: CollectionType.RoleEnum;
