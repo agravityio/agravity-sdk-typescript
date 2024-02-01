@@ -33,10 +33,6 @@ Write-Host "Calling public API"
 $params = "apiModulePrefix=AgravityPublic,configurationPrefix=AgravityPublic,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=16.1.2,npmName=@agravity/public,supportsES6=true,npmRepository=https://registry.npmjs.org/"
 npx @openapitools/openapi-generator-cli generate -i http://localhost:7072/api/openapi/v3.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
 
-Write-Host "Calling portal API"
-$params = "apiModulePrefix=AgravityPortal,configurationPrefix=AgravityPortal,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=16.1.2,npmName=@agravity/portal,supportsES6=true,npmRepository=https://registry.npmjs.org/"
-npx @openapitools/openapi-generator-cli generate -i http://localhost:7073/api/openapi/v3.json -g typescript-angular -o src/agravityAPI-portal/ --additional-properties=$params
-
 Write-Host "Generate complete"
 Write-Host "Start replacements"
 function ReplaceStringInFiles {
@@ -158,29 +154,6 @@ $fileContent[36] = $fileContent[36] + "`n" + $access
 # write file
 $fileContent | Set-Content "src\agravityAPI-public\package.json"
 
-############### portal ###############
-
-$portalKeywords = $keywords
-$portalKeywords += "portal"
-
-$description = "The Agravity GlobalDAM API which allowes customer defined authenticated access the Agravity GlobalDAM Backend for portal"
-
-$json = Get-Content -Path src/agravityAPI-portal/package.json -Raw | ConvertFrom-Json
-
-$json.keywords = $portalKeywords
-$json.author = $author
-$json.license = $licence
-$json.description = $description
-
-$json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-portal/package.json
-
-# add $repoUrl to package.json in line 12
-$fileContent = Get-Content "src\agravityAPI-portal\package.json"
-$fileContent[15] = $fileContent[15] + "`n" + $repoUrl
-$fileContent[36] = $fileContent[36] + "`n" + $access
-# write file
-$fileContent | Set-Content "src\agravityAPI-portal\package.json"
-
 # pretty print whole project using prettier
 npx prettier --write src/**
 
@@ -198,10 +171,6 @@ if ($answer -eq "y") {
     $publicSrc = $portalPath+"\src\app\commons\agravityAPI-public\"
     Remove-Item -Path $publicSrc -Recurse -Force -ErrorAction SilentlyContinue 
     Copy-Item -Path .\src\agravityAPI-public -Destination $publicSrc -Recurse -Force
-
-    $portalSrc = $portalPath+"\src\app\commons\agravityAPI-portal\"
-    Remove-Item -Path $portalSrc -Recurse -Force -ErrorAction SilentlyContinue 
-    Copy-Item -Path .\src\agravityAPI-portal -Destination $portalSrc -Recurse -Force
 
     Write-Host "Copy complete"
 }
