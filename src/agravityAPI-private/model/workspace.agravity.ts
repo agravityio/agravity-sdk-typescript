@@ -18,7 +18,7 @@ export interface Workspace {
 	name?: string;
 	collection_types?: Array<CollectionType>;
 	translations?: { [key: string]: { [key: string]: object } };
-	order?: number | null;
+	order?: number;
 	permissions?: Array<PermissionEntity>;
 	description?: string;
 	add_properties?: { [key: string]: any };
