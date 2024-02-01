@@ -1,6 +1,6 @@
 {
 	"name": "@agravity/portal",
-	"version": "6.1.5",
+	"version": "6.1.6",
 	"description": "The Agravity GlobalDAM API which allowes customer defined authenticated access the Agravity GlobalDAM Backend for portal",
 	"author": "Philipp Losbichler",
 	"keywords": [
