@@ -94,6 +94,7 @@ export class PublicSearchManagementService {
 	 * @param filter Colon separated key value filter for filterable strings and string collections. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled)
 	 * @param orderby Sortable fields can be used. For descendant sorting use leading \&quot;!\&quot;. (Only if Azure Search is enabled)
 	 * @param ids Comma separated values list with all ids which should be returned.
+	 * @param portalId If the search should be redirected to a specific portal.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
@@ -109,6 +110,7 @@ export class PublicSearchManagementService {
 		filter?: string,
 		orderby?: string,
 		ids?: string,
+		portalId?: string,
 		translations?: boolean,
 		observe?: 'body',
 		reportProgress?: boolean,
@@ -125,6 +127,7 @@ export class PublicSearchManagementService {
 		filter?: string,
 		orderby?: string,
 		ids?: string,
+		portalId?: string,
 		translations?: boolean,
 		observe?: 'response',
 		reportProgress?: boolean,
@@ -141,6 +144,7 @@ export class PublicSearchManagementService {
 		filter?: string,
 		orderby?: string,
 		ids?: string,
+		portalId?: string,
 		translations?: boolean,
 		observe?: 'events',
 		reportProgress?: boolean,
@@ -157,6 +161,7 @@ export class PublicSearchManagementService {
 		filter?: string,
 		orderby?: string,
 		ids?: string,
+		portalId?: string,
 		translations?: boolean,
 		observe: any = 'body',
 		reportProgress: boolean = false,
@@ -196,6 +201,9 @@ export class PublicSearchManagementService {
 		}
 		if (ids !== undefined && ids !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>ids, 'ids');
+		}
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
 		}
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
