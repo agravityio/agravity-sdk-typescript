@@ -11,6 +11,9 @@ if ($null -eq $portalPath) {
     $portalPath="..\..\portal_unleashed"
 }
 
+#add "\apps\globaldam" to portalPath
+$portalPath = $portalPath + "\apps\globaldam"
+
 # echo apiVersion
 Write-Host "Generate API with apiVersion: $version"
 
