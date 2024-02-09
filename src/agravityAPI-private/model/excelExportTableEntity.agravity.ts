@@ -14,6 +14,8 @@ export interface ExcelExportTableEntity {
 	url?: string;
 	status?: string;
 	filters?: string;
+	ids?: string;
+	language?: string;
 	orchestrationId?: string;
 	partitionKey?: string;
 	rowKey?: string;

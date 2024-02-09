@@ -15,6 +15,7 @@ import { CollectionTypeManagementService } from './api/collectionTypeManagement.
 import { CommentsManagementService } from './api/commentsManagement.agravity';
 import { ConfigurationManagementService } from './api/configurationManagement.agravity';
 import { DashboardWidgetManagementService } from './api/dashboardWidgetManagement.agravity';
+import { DataImportExportManagementService } from './api/dataImportExportManagement.agravity';
 import { DownloadFormatManagementService } from './api/downloadFormatManagement.agravity';
 import { DownloadZipService } from './api/downloadZip.agravity';
 import { GeneralManagementService } from './api/generalManagement.agravity';

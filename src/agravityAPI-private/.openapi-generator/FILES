@@ -16,6 +16,7 @@ api/collectionTypeManagement.agravity.ts
 api/commentsManagement.agravity.ts
 api/configurationManagement.agravity.ts
 api/dashboardWidgetManagement.agravity.ts
+api/dataImportExportManagement.agravity.ts
 api/downloadFormatManagement.agravity.ts
 api/downloadZip.agravity.ts
 api/generalManagement.agravity.ts

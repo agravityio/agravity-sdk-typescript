@@ -24,6 +24,8 @@ export * from './configurationManagement.agravity';
 import { ConfigurationManagementService } from './configurationManagement.agravity';
 export * from './dashboardWidgetManagement.agravity';
 import { DashboardWidgetManagementService } from './dashboardWidgetManagement.agravity';
+export * from './dataImportExportManagement.agravity';
+import { DataImportExportManagementService } from './dataImportExportManagement.agravity';
 export * from './downloadFormatManagement.agravity';
 import { DownloadFormatManagementService } from './downloadFormatManagement.agravity';
 export * from './downloadZip.agravity';
@@ -88,6 +90,7 @@ export const APIS = [
 	CommentsManagementService,
 	ConfigurationManagementService,
 	DashboardWidgetManagementService,
+	DataImportExportManagementService,
 	DownloadFormatManagementService,
 	DownloadZipService,
 	GeneralManagementService,
