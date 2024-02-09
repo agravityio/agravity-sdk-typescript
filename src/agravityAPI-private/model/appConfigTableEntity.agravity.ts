@@ -19,6 +19,6 @@ export interface AppConfigTableEntity {
 	content_type?: string;
 	partitionkey?: string;
 	is_frontend?: boolean;
-	is_custom?: boolean;
+	is_custom?: boolean | null;
 	timestamp?: string | null;
 }
