@@ -167,11 +167,11 @@ Write-Host "Do you want to copy src files to unleashed portal ($apiPath)? (y/n)"
 $answer = Read-Host
 if ($answer -eq "y") {
     # copy src files to agrvity-angular-app
-    $privateSrc = $apiPath+"\private\" 
+    $privateSrc = $apiPath+"\private\src" 
     Remove-Item -Path $privateSrc -Recurse -Force -ErrorAction SilentlyContinue
     Copy-Item -Path .\src\agravityAPI-private -Destination $privateSrc -Recurse -Force
 
-    $publicSrc = $apiPath+"\public\"
+    $publicSrc = $apiPath+"\public\src"
     Remove-Item -Path $publicSrc -Recurse -Force -ErrorAction SilentlyContinue 
     Copy-Item -Path .\src\agravityAPI-public -Destination $publicSrc -Recurse -Force
 
