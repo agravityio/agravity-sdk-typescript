@@ -96,6 +96,17 @@ $fileContent | Set-Content "src\agravityAPI-public\api\publicCollectionSecureUpl
 
 Write-Host "Remove line in file src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts after line 150 complete"
 
+# add line "export * from './encoder';" at the end of index.ts in src\agravityAPI-private
+$fileContent = Get-Content "src\agravityAPI-private\index.ts"
+$fileContent += "export * from './encoder';"
+# write file
+$fileContent | Set-Content "src\agravityAPI-private\index.ts"
+
+# add line "export * from './encoder';" at the end of index.ts in src\agravityAPI-public
+$fileContent = Get-Content "src\agravityAPI-public\index.ts"
+$fileContent += "export * from './encoder';"
+# write file
+$fileContent | Set-Content "src\agravityAPI-public\index.ts"
 
 ReplaceStringInFiles -FolderPath "src" -SearchString "`r`n" -ReplaceString "`n"
 
