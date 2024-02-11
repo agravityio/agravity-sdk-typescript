@@ -5,14 +5,14 @@ if ($null -eq $version) {
     exit
 }
 
-# get portal path from portalPath.txt file (optional)
-$portalPath = Get-Content .\portalPath.txt -ErrorAction SilentlyContinue
-if ($null -eq $portalPath) {
-    $portalPath="..\..\portal_unleashed"
+# get portal path from apiPath.txt file (optional)
+$apiPath = Get-Content .\apiPath.txt -ErrorAction SilentlyContinue
+if ($null -eq $apiPath) {
+    $apiPath="..\..\portal_unleashed"
 }
 
-#add "\apps\globaldam" to portalPath
-$portalPath = $portalPath + "\apps\globaldam"
+#add "\api" to apiPath
+$apiPath = $apiPath + "\api"
 
 # echo apiVersion
 Write-Host "Generate API with apiVersion: $version"
@@ -163,15 +163,15 @@ npx prettier --write src/**
 ######################### ASK FOR COPY SRC FILES TO AGRVITY-ANGULAR-APP #########################
 
 # ask for copy src files to agrvity-angular-app
-Write-Host "Do you want to copy src files to unleashed portal ($portalPath)? (y/n)"
+Write-Host "Do you want to copy src files to unleashed portal ($apiPath)? (y/n)"
 $answer = Read-Host
 if ($answer -eq "y") {
     # copy src files to agrvity-angular-app
-    $privateSrc = $portalPath+"\src\app\commons\agravityAPI-private\" 
+    $privateSrc = $apiPath+"\private\" 
     Remove-Item -Path $privateSrc -Recurse -Force -ErrorAction SilentlyContinue
     Copy-Item -Path .\src\agravityAPI-private -Destination $privateSrc -Recurse -Force
 
-    $publicSrc = $portalPath+"\src\app\commons\agravityAPI-public\"
+    $publicSrc = $apiPath+"\public\"
     Remove-Item -Path $publicSrc -Recurse -Force -ErrorAction SilentlyContinue 
     Copy-Item -Path .\src\agravityAPI-public -Destination $publicSrc -Recurse -Force
 
