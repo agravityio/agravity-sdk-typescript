@@ -9,24 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { PortalLanguages } from './portalLanguages.pub.agravity';
 
-export interface Portal {
-	id?: string;
-	entity_type?: string;
-	filter?: string;
-	languages?: PortalLanguages;
-	metadata?: Array<string>;
-	download_formats?: Array<string>;
-	limit_ids?: Array<string>;
-	name?: string;
-	description?: string;
-	add_properties?: { [key: string]: any };
-	status?: string;
-	created_date?: string | null;
-	created_by?: string;
-	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+export interface PortalLanguages {
+	metadata?: string;
+	ui?: string;
 }

@@ -12,6 +12,7 @@
 import { DownloadFormat } from './downloadFormat.pub.agravity';
 import { CollTypeItem } from './collTypeItem.pub.agravity';
 import { CollectionUDL } from './collectionUDL.pub.agravity';
+import { PortalLanguages } from './portalLanguages.pub.agravity';
 import { StaticDefinedList } from './staticDefinedList.pub.agravity';
 
 export interface PortalConfiguration {
@@ -22,6 +23,7 @@ export interface PortalConfiguration {
 	id?: string;
 	entity_type?: string;
 	filter?: string;
+	languages?: PortalLanguages;
 	metadata?: Array<string>;
 	download_formats?: Array<string>;
 	limit_ids?: Array<string>;
