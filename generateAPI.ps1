@@ -12,7 +12,7 @@ if ($null -eq $apiPath) {
 }
 
 #add "\api" to apiPath
-$apiPath = $apiPath + "\api"
+$apiPath = $apiPath + "\libs\api"
 
 # echo apiVersion
 Write-Host "Generate API with apiVersion: $version"
