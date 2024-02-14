@@ -10,12 +10,14 @@
  * Do not edit the class manually.
  */
 import { PortalLanguages } from './portalLanguages.pub.agravity';
+import { PortalTheme } from './portalTheme.pub.agravity';
 
 export interface Portal {
 	id?: string;
 	entity_type?: string;
 	filter?: string;
 	languages?: PortalLanguages;
+	theme?: PortalTheme;
 	metadata?: Array<string>;
 	download_formats?: Array<string>;
 	limit_ids?: Array<string>;

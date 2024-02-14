@@ -28,6 +28,7 @@ export * from './permissionEntity.pub.agravity';
 export * from './portal.pub.agravity';
 export * from './portalConfiguration.pub.agravity';
 export * from './portalLanguages.pub.agravity';
+export * from './portalTheme.pub.agravity';
 export * from './publishEntity.pub.agravity';
 export * from './publishedAsset.pub.agravity';
 export * from './quickShareFull.pub.agravity';

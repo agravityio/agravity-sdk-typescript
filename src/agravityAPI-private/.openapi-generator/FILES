@@ -99,6 +99,7 @@ model/permissionEntity.agravity.ts
 model/permissionSetting.agravity.ts
 model/portal.agravity.ts
 model/portalLanguages.agravity.ts
+model/portalTheme.agravity.ts
 model/publishEntity.agravity.ts
 model/publishedAsset.agravity.ts
 model/quickShare.agravity.ts
