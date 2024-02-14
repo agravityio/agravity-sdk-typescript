@@ -22,6 +22,8 @@ export * from './publicGeneralManagement.pub.agravity';
 import { PublicGeneralManagementService } from './publicGeneralManagement.pub.agravity';
 export * from './publicHelperTools.pub.agravity';
 import { PublicHelperToolsService } from './publicHelperTools.pub.agravity';
+export * from './publicPortalManagement.pub.agravity';
+import { PublicPortalManagementService } from './publicPortalManagement.pub.agravity';
 export * from './publicPublishing.pub.agravity';
 import { PublicPublishingService } from './publicPublishing.pub.agravity';
 export * from './publicSavedSearch.pub.agravity';
@@ -53,6 +55,7 @@ export const APIS = [
 	PublicDownloadFormatManagementService,
 	PublicGeneralManagementService,
 	PublicHelperToolsService,
+	PublicPortalManagementService,
 	PublicPublishingService,
 	PublicSavedSearchService,
 	PublicSearchManagementService,

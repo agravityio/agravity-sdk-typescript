@@ -14,6 +14,7 @@ import { PublicConfigurationManagementService } from './api/publicConfigurationM
 import { PublicDownloadFormatManagementService } from './api/publicDownloadFormatManagement.pub.agravity';
 import { PublicGeneralManagementService } from './api/publicGeneralManagement.pub.agravity';
 import { PublicHelperToolsService } from './api/publicHelperTools.pub.agravity';
+import { PublicPortalManagementService } from './api/publicPortalManagement.pub.agravity';
 import { PublicPublishingService } from './api/publicPublishing.pub.agravity';
 import { PublicSavedSearchService } from './api/publicSavedSearch.pub.agravity';
 import { PublicSearchManagementService } from './api/publicSearchManagement.pub.agravity';

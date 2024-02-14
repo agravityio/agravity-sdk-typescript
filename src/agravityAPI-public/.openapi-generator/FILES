@@ -15,6 +15,7 @@ api/publicConfigurationManagement.pub.agravity.ts
 api/publicDownloadFormatManagement.pub.agravity.ts
 api/publicGeneralManagement.pub.agravity.ts
 api/publicHelperTools.pub.agravity.ts
+api/publicPortalManagement.pub.agravity.ts
 api/publicPublishing.pub.agravity.ts
 api/publicSavedSearch.pub.agravity.ts
 api/publicSearchManagement.pub.agravity.ts
@@ -56,6 +57,8 @@ model/metadata.pub.agravity.ts
 model/models.ts
 model/okResult.pub.agravity.ts
 model/permissionEntity.pub.agravity.ts
+model/portal.pub.agravity.ts
+model/portalConfiguration.pub.agravity.ts
 model/publishEntity.pub.agravity.ts
 model/publishedAsset.pub.agravity.ts
 model/quickShareFull.pub.agravity.ts

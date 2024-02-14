@@ -25,6 +25,8 @@ export * from './groupAllAppData.pub.agravity';
 export * from './metadata.pub.agravity';
 export * from './okResult.pub.agravity';
 export * from './permissionEntity.pub.agravity';
+export * from './portal.pub.agravity';
+export * from './portalConfiguration.pub.agravity';
 export * from './publishEntity.pub.agravity';
 export * from './publishedAsset.pub.agravity';
 export * from './quickShareFull.pub.agravity';
