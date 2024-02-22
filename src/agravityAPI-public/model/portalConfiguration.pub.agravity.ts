@@ -11,6 +11,7 @@
  */
 import { DownloadFormat } from './downloadFormat.pub.agravity';
 import { CollTypeItem } from './collTypeItem.pub.agravity';
+import { FrontendAppConfig } from './frontendAppConfig.pub.agravity';
 import { CollectionUDL } from './collectionUDL.pub.agravity';
 import { PortalLanguages } from './portalLanguages.pub.agravity';
 import { PortalTheme } from './portalTheme.pub.agravity';
@@ -21,6 +22,7 @@ export interface PortalConfiguration {
 	sdls?: Array<StaticDefinedList>;
 	udls?: Array<CollectionUDL>;
 	items?: Array<CollTypeItem>;
+	configs?: Array<FrontendAppConfig>;
 	id?: string;
 	entity_type?: string;
 	filter?: string;
