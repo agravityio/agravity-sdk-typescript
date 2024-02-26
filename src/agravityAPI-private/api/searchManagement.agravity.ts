@@ -86,13 +86,29 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint deletes the index, indexes and data source connection. Has to be recreated with recreate endpoint.
+	 * @param portalId If the search should be redirected to a specific portal.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAzureDeleteSearchCompletely(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpAzureDeleteSearchCompletely(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpAzureDeleteSearchCompletely(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpAzureDeleteSearchCompletely(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAzureDeleteSearchCompletely(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
+	public httpAzureDeleteSearchCompletely(
+		portalId?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpAzureDeleteSearchCompletely(
+		portalId?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpAzureDeleteSearchCompletely(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+
 		let headers = this.defaultHeaders;
 
 		let credential: string | undefined;
@@ -118,6 +134,7 @@ export class SearchManagementService {
 		}
 
 		return this.httpClient.patch<AgravityInfoResponse>(`${this.configuration.basePath}/searchadmin/delete`, null, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
@@ -128,13 +145,29 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint recreates the index and creates the indexes, skillset and data source connection if not existing
+	 * @param portalId If the search should be redirected to a specific portal.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAzureRecreateGlobalIndex(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpAzureRecreateGlobalIndex(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpAzureRecreateGlobalIndex(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpAzureRecreateGlobalIndex(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAzureRecreateGlobalIndex(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
+	public httpAzureRecreateGlobalIndex(
+		portalId?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpAzureRecreateGlobalIndex(
+		portalId?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpAzureRecreateGlobalIndex(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+
 		let headers = this.defaultHeaders;
 
 		let credential: string | undefined;
@@ -160,6 +193,7 @@ export class SearchManagementService {
 		}
 
 		return this.httpClient.patch<AgravityInfoResponse>(`${this.configuration.basePath}/searchadmin/recreate`, null, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
@@ -331,13 +365,24 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint gives the status about the index, indexes and data source connection.
+	 * @param portalId If the search should be redirected to a specific portal.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpSearchAdminGetStatus(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SearchAdminStatus>;
-	public httpSearchAdminGetStatus(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<SearchAdminStatus>>;
-	public httpSearchAdminGetStatus(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<SearchAdminStatus>>;
-	public httpSearchAdminGetStatus(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSearchAdminGetStatus(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SearchAdminStatus>;
+	public httpSearchAdminGetStatus(
+		portalId?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SearchAdminStatus>>;
+	public httpSearchAdminGetStatus(portalId?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<SearchAdminStatus>>;
+	public httpSearchAdminGetStatus(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+
 		let headers = this.defaultHeaders;
 
 		let credential: string | undefined;
@@ -363,6 +408,7 @@ export class SearchManagementService {
 		}
 
 		return this.httpClient.get<SearchAdminStatus>(`${this.configuration.basePath}/searchadmin/status`, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
