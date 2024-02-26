@@ -701,7 +701,7 @@ export class AssetOperationsService {
 	/**
 	 * This endpoint checks, if an asset exists and returns the url for the requested blob.
 	 * @param id The ID of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -841,7 +841,7 @@ export class AssetOperationsService {
 	/**
 	 * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
 	 * @param id The ID of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */

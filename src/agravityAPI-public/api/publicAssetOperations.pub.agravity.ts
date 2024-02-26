@@ -315,14 +315,48 @@ export class PublicAssetOperationsService {
 	/**
 	 * This endpoint checks, if an asset exists and returns the url for the requested blob.
 	 * @param id The ID of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original.
+	 * @param portalId If the request comes from portal this is the indicator. If used the \&quot;key\&quot; param becomes mandatory.
+	 * @param key The key is the MD5 hash of the original blob of the asset.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAssetBlob(id: string, c: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
-	public httpGetAssetBlob(id: string, c: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetBlob>>;
-	public httpGetAssetBlob(id: string, c: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetBlob>>;
-	public httpGetAssetBlob(id: string, c: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAssetBlob(
+		id: string,
+		c: string,
+		portalId?: string,
+		key?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AssetBlob>;
+	public httpGetAssetBlob(
+		id: string,
+		c: string,
+		portalId?: string,
+		key?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AssetBlob>>;
+	public httpGetAssetBlob(
+		id: string,
+		c: string,
+		portalId?: string,
+		key?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AssetBlob>>;
+	public httpGetAssetBlob(
+		id: string,
+		c: string,
+		portalId?: string,
+		key?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetBlob.');
 		}
@@ -333,6 +367,12 @@ export class PublicAssetOperationsService {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (c !== undefined && c !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>c, 'c');
+		}
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+		if (key !== undefined && key !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>key, 'key');
 		}
 
 		let headers = this.defaultHeaders;
@@ -458,7 +498,7 @@ export class PublicAssetOperationsService {
 	/**
 	 * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
 	 * @param id The ID of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized; \&quot;i\&quot; for internal.
+	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
