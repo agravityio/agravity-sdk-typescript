@@ -11,6 +11,7 @@
  */
 import { DownloadFormat } from './downloadFormat.pub.agravity';
 import { CollTypeItem } from './collTypeItem.pub.agravity';
+import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
 import { FrontendAppConfig } from './frontendAppConfig.pub.agravity';
 import { CollectionUDL } from './collectionUDL.pub.agravity';
 import { PortalLanguages } from './portalLanguages.pub.agravity';
@@ -18,7 +19,7 @@ import { PortalTheme } from './portalTheme.pub.agravity';
 import { StaticDefinedList } from './staticDefinedList.pub.agravity';
 
 export interface PortalConfiguration {
-	dl_formats?: Array<DownloadFormat>;
+	download_formats?: Array<DownloadFormat>;
 	sdls?: Array<StaticDefinedList>;
 	udls?: Array<CollectionUDL>;
 	items?: Array<CollTypeItem>;
@@ -29,7 +30,7 @@ export interface PortalConfiguration {
 	languages?: PortalLanguages;
 	theme?: PortalTheme;
 	metadata?: Array<string>;
-	download_formats?: Array<string>;
+	allowed_formats?: Array<SharedAllowedFormat>;
 	limit_ids?: Array<string>;
 	name?: string;
 	description?: string;

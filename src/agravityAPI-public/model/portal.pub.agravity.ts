@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
 import { PortalLanguages } from './portalLanguages.pub.agravity';
 import { PortalTheme } from './portalTheme.pub.agravity';
 
@@ -19,7 +20,7 @@ export interface Portal {
 	languages?: PortalLanguages;
 	theme?: PortalTheme;
 	metadata?: Array<string>;
-	download_formats?: Array<string>;
+	allowed_formats?: Array<SharedAllowedFormat>;
 	limit_ids?: Array<string>;
 	name?: string;
 	description?: string;
