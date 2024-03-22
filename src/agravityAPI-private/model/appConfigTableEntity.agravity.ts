@@ -19,7 +19,7 @@ export interface AppConfigTableEntity {
 	content_type?: string;
 	partitionkey?: string;
 	is_frontend?: boolean;
-	is_portal?: boolean;
+	is_portal?: boolean | null;
 	is_custom?: boolean | null;
 	timestamp?: string | null;
 }
