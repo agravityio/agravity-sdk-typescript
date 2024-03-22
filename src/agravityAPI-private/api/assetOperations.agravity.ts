@@ -842,13 +842,47 @@ export class AssetOperationsService {
 	 * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
 	 * @param id The ID of the asset.
 	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original.
+	 * @param f (optional) provide the id of any valid download format.
+	 * @param portalId If the request comes from portal this is the indicator. It will be checked if the requested blob is valid for the portal.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetBlob>>;
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetBlob>>;
-	public httpGetAssetDownload(id: string, c?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAssetDownload(
+		id: string,
+		c?: string,
+		f?: string,
+		portalId?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AssetBlob>;
+	public httpGetAssetDownload(
+		id: string,
+		c?: string,
+		f?: string,
+		portalId?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AssetBlob>>;
+	public httpGetAssetDownload(
+		id: string,
+		c?: string,
+		f?: string,
+		portalId?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AssetBlob>>;
+	public httpGetAssetDownload(
+		id: string,
+		c?: string,
+		f?: string,
+		portalId?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetDownload.');
 		}
@@ -856,6 +890,12 @@ export class AssetOperationsService {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (c !== undefined && c !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>c, 'c');
+		}
+		if (f !== undefined && f !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>f, 'f');
+		}
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
 		}
 
 		let headers = this.defaultHeaders;
