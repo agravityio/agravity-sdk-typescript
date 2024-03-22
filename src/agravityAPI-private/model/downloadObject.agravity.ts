@@ -15,6 +15,7 @@ import { SimpleAsset } from './simpleAsset.agravity';
 
 export interface DownloadObject {
 	id?: string;
+	created_date?: string;
 	user_id?: string;
 	email_from?: EmailAddress;
 	simple_assets?: Array<SimpleAsset>;
