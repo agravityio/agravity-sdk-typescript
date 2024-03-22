@@ -21,6 +21,7 @@ import { AssetAvailability } from '../model/models';
 import { AssetBlob } from '../model/models';
 import { Collection } from '../model/models';
 import { DynamicImageOperation } from '../model/models';
+import { MoveCollectionBody } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
@@ -313,6 +314,82 @@ export class PublicAssetOperationsService {
 	}
 
 	/**
+	 * This endpoint allows to move/assign from/to another collection with the given operation parameter.
+	 * @param id The ID of the asset.
+	 * @param moveCollectionBody Contains information about this operation.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetToCollection(id: string, moveCollectionBody: MoveCollectionBody, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
+	public httpAssetToCollection(
+		id: string,
+		moveCollectionBody: MoveCollectionBody,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpAssetToCollection(
+		id: string,
+		moveCollectionBody: MoveCollectionBody,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpAssetToCollection(
+		id: string,
+		moveCollectionBody: MoveCollectionBody,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpAssetToCollection.');
+		}
+		if (moveCollectionBody === null || moveCollectionBody === undefined) {
+			throw new Error('Required parameter moveCollectionBody was null or undefined when calling httpAssetToCollection.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.post<any>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/tocollection`, moveCollectionBody, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint checks, if an asset exists and returns the url for the requested blob.
 	 * @param id The ID of the asset.
 	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original.
@@ -499,13 +576,52 @@ export class PublicAssetOperationsService {
 	 * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
 	 * @param id The ID of the asset.
 	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original.
+	 * @param f (optional) provide the id of any valid download format.
+	 * @param portalId If the request comes from portal this is the indicator. It will be checked if the requested blob is valid for the portal.
+	 * @param key The key is the MD5 hash of the original blob of the asset.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetBlob>>;
-	public httpGetAssetDownload(id: string, c?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetBlob>>;
-	public httpGetAssetDownload(id: string, c?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAssetDownload(
+		id: string,
+		c?: string,
+		f?: string,
+		portalId?: string,
+		key?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AssetBlob>;
+	public httpGetAssetDownload(
+		id: string,
+		c?: string,
+		f?: string,
+		portalId?: string,
+		key?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AssetBlob>>;
+	public httpGetAssetDownload(
+		id: string,
+		c?: string,
+		f?: string,
+		portalId?: string,
+		key?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AssetBlob>>;
+	public httpGetAssetDownload(
+		id: string,
+		c?: string,
+		f?: string,
+		portalId?: string,
+		key?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetDownload.');
 		}
@@ -513,6 +629,15 @@ export class PublicAssetOperationsService {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (c !== undefined && c !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>c, 'c');
+		}
+		if (f !== undefined && f !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>f, 'f');
+		}
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+		if (key !== undefined && key !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>key, 'key');
 		}
 
 		let headers = this.defaultHeaders;

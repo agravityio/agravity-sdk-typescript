@@ -23,6 +23,7 @@ export * from './entityIdName.pub.agravity';
 export * from './frontendAppConfig.pub.agravity';
 export * from './groupAllAppData.pub.agravity';
 export * from './metadata.pub.agravity';
+export * from './moveCollectionBody.pub.agravity';
 export * from './okResult.pub.agravity';
 export * from './permissionEntity.pub.agravity';
 export * from './portal.pub.agravity';

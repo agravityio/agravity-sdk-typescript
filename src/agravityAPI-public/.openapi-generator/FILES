@@ -55,6 +55,7 @@ model/frontendAppConfig.pub.agravity.ts
 model/groupAllAppData.pub.agravity.ts
 model/metadata.pub.agravity.ts
 model/models.ts
+model/moveCollectionBody.pub.agravity.ts
 model/okResult.pub.agravity.ts
 model/permissionEntity.pub.agravity.ts
 model/portal.pub.agravity.ts
