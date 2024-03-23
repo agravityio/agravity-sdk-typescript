@@ -10,6 +10,40 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="7.0.0"/> [7.0.0](https://www.npmjs.com/package/@agravity/private/v/7.0.0) (2024-03-23)
+
+General:
+
+-   Order start with 999 as default
+-   Add `/assets/{id}/tocollection` endpoint to allow assigning / moving / removing an asset to/from a collection (public)
+
+Add AgravityAPI for Portal Management (private):
+
+-   Add POST `/api/portals` - This endpoint creates one portal entry in the database.
+-   Add DELETE `/api/portals/{id}` - This endpoint deletes a single portal.
+-   Add GET `/api/portals` - This endpoint show all the portals from database.
+-   Add GET `/api/portals/{id}` - This endpoint show the portal from database.
+-   Add GET `/portals/{id}` endpoint (public) - This endpoint returns a portal with specific id.
+-   Add GET `/portals/{id}/config` endpoint (private and public) - This endpoint returns a full configuration of the portal. Incl. download formats, SDLs, UDLs and coll type items
+    -   Add the way how to fetch UDLs, SDLs (limit by ID and with language)
+
+Enhance download endpoint(s):
+
+-   Add `f`and `portal_id` parameter to `/assets/{id}/download` (private + public)
+-   Add `key` (asset MD5) parameter to `/assets/{id}/download` when coming via portal identification (public only)
+-   extend original blob metadata and add download format behaviour to download
+
+Add DataImportExport Management API (move some from Helper Management)
+
+-   add GET `/helper/excel/export/assets` to `/data/excel/export/assets` - This endpoint creates an excel export of an asset list.
+-   move GET `/helper/excel/export` to `/data/excel/export`
+-   move GET `/helper/excel/export/translations` to `/data/excel/export/translations`
+-   move DELETE `/helper/excel/export/translations/{id}` to `/data/excel/export/translations/{id}`
+-   move GET `/helper/excel/export/translations/{id}` to `/data/excel/export/translations/{id}`
+-   move POST `/helper/excel/import/translations` to `/data/excel/import/translations`
+
+---
+
 ## AgravityAPI <a name="6.1.6"/> [6.1.6](https://www.npmjs.com/package/@agravity/private/v/6.1.6) (2024-02-01)
 
 -   Just version upgrade to match backend
@@ -67,7 +101,7 @@ Extend publish endpoints:
 
 -   add GET `/assets/{id}/publish/{pid}/status` - This endpoint retrieves the status of the published entity i.e. vimeo video upload
 -   add GET `/helpers/vimeo-videos` - This endpoint fetches all videos that are published on vimeo (to get their video id for error handling) [admin only]
--   add `target´and `status_table_id` - to the PublishAsset to have a publishing target and keep track via status_table_id
+-   add `target`and `status_table_id` - to the PublishAsset to have a publishing target and keep track via status_table_id
 -   add `force` query parameter to DELETE `/assets/{id}/publish/{pid} - so the published video can be deleted even when external unpublish failed
 
 Other changes:
