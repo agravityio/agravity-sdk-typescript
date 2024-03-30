@@ -9,30 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SharedAllowedFormat } from './sharedAllowedFormat.agravity';
-import { PortalLinks } from './portalLinks.agravity';
-import { PortalLanguages } from './portalLanguages.agravity';
-import { PortalTheme } from './portalTheme.agravity';
 
-export interface Portal {
-	id?: string;
-	entity_type?: string;
-	filter?: string;
-	languages?: PortalLanguages;
-	theme?: PortalTheme;
-	links?: PortalLinks;
-	metadata?: Array<string>;
-	facettes?: Array<string>;
-	allowed_formats?: Array<SharedAllowedFormat>;
-	limit_ids?: Array<string>;
-	name?: string;
-	description?: string;
-	add_properties?: { [key: string]: any };
-	status?: string;
-	created_date?: string | null;
-	created_by?: string;
-	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+export interface PortalLinks {
+	conditions?: string;
+	privacy?: string;
+	impressum?: string;
 }

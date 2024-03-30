@@ -10,24 +10,19 @@
  * Do not edit the class manually.
  */
 import { SharedAllowedFormat } from './sharedAllowedFormat.agravity';
-import { PortalLinks } from './portalLinks.agravity';
-import { PortalLanguages } from './portalLanguages.agravity';
-import { PortalTheme } from './portalTheme.agravity';
+import { AgravityErrorResponse } from './agravityErrorResponse.agravity';
 
-export interface Portal {
+export interface PortalZipRequest {
+	zip_type?: string;
+	portal_id?: string;
+	asset_ids?: Array<string>;
 	id?: string;
 	entity_type?: string;
-	filter?: string;
-	languages?: PortalLanguages;
-	theme?: PortalTheme;
-	links?: PortalLinks;
-	metadata?: Array<string>;
-	facettes?: Array<string>;
+	url?: string;
+	instance_id?: string;
+	valid_until?: string;
 	allowed_formats?: Array<SharedAllowedFormat>;
-	limit_ids?: Array<string>;
-	name?: string;
-	description?: string;
-	add_properties?: { [key: string]: any };
+	error?: AgravityErrorResponse;
 	status?: string;
 	created_date?: string | null;
 	created_by?: string;

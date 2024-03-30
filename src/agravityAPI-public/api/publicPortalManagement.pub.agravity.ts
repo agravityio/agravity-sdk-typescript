@@ -16,8 +16,10 @@ import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParam
 import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
+import { AgravityErrorResponse } from '../model/models';
 import { Portal } from '../model/models';
 import { PortalConfiguration } from '../model/models';
+import { PortalZipRequest } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
@@ -80,6 +82,151 @@ export class PublicPortalManagementService {
 			throw Error('key may not be null if value is not object or array');
 		}
 		return httpParams;
+	}
+
+	/**
+	 * This endpoint gets the progress/status of the ZIP creation of a portal.
+	 * @param id The ID of the zip request collection.
+	 * @param zipId The ID of the requested zip.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPortalGetStatusZipById(id: string, zipId: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<PortalZipRequest>;
+	public httpPortalGetStatusZipById(
+		id: string,
+		zipId: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<PortalZipRequest>>;
+	public httpPortalGetStatusZipById(
+		id: string,
+		zipId: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<PortalZipRequest>>;
+	public httpPortalGetStatusZipById(id: string, zipId: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpPortalGetStatusZipById.');
+		}
+		if (zipId === null || zipId === undefined) {
+			throw new Error('Required parameter zipId was null or undefined when calling httpPortalGetStatusZipById.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<PortalZipRequest>(`${this.configuration.basePath}/portals/${encodeURIComponent(String(id))}/zip/${encodeURIComponent(String(zipId))}`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * Initiates the ZIP creation of an asset basket from an portal.
+	 * @param id The ID of the portal.
+	 * @param portalZipRequest The allowed formats are the input which could be added.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPortalRequestZipById(
+		id: string,
+		portalZipRequest: PortalZipRequest,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<PortalZipRequest>;
+	public httpPortalRequestZipById(
+		id: string,
+		portalZipRequest: PortalZipRequest,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<PortalZipRequest>>;
+	public httpPortalRequestZipById(
+		id: string,
+		portalZipRequest: PortalZipRequest,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<PortalZipRequest>>;
+	public httpPortalRequestZipById(
+		id: string,
+		portalZipRequest: PortalZipRequest,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpPortalRequestZipById.');
+		}
+		if (portalZipRequest === null || portalZipRequest === undefined) {
+			throw new Error('Required parameter portalZipRequest was null or undefined when calling httpPortalRequestZipById.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			headers = headers.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.post<PortalZipRequest>(`${this.configuration.basePath}/portals/${encodeURIComponent(String(id))}/zip`, portalZipRequest, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
 	}
 
 	/**

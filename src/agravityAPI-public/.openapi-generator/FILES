@@ -61,7 +61,9 @@ model/permissionEntity.pub.agravity.ts
 model/portal.pub.agravity.ts
 model/portalConfiguration.pub.agravity.ts
 model/portalLanguages.pub.agravity.ts
+model/portalLinks.pub.agravity.ts
 model/portalTheme.pub.agravity.ts
+model/portalZipRequest.pub.agravity.ts
 model/publishEntity.pub.agravity.ts
 model/publishedAsset.pub.agravity.ts
 model/quickShareFull.pub.agravity.ts

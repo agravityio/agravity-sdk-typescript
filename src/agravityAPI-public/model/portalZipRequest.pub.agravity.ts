@@ -12,12 +12,12 @@
 import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
 import { AgravityErrorResponse } from './agravityErrorResponse.pub.agravity';
 
-export interface SharedCollectionZipRequest {
-	sharedcoll_id?: string;
-	password?: string;
+export interface PortalZipRequest {
+	zip_type?: string;
+	portal_id?: string;
+	asset_ids?: Array<string>;
 	id?: string;
 	entity_type?: string;
-	zip_type?: string;
 	url?: string;
 	instance_id?: string;
 	valid_until?: string;

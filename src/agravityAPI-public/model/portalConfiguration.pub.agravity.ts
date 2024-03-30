@@ -14,6 +14,7 @@ import { CollTypeItem } from './collTypeItem.pub.agravity';
 import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
 import { FrontendAppConfig } from './frontendAppConfig.pub.agravity';
 import { CollectionUDL } from './collectionUDL.pub.agravity';
+import { PortalLinks } from './portalLinks.pub.agravity';
 import { PortalLanguages } from './portalLanguages.pub.agravity';
 import { PortalTheme } from './portalTheme.pub.agravity';
 import { StaticDefinedList } from './staticDefinedList.pub.agravity';
@@ -29,7 +30,9 @@ export interface PortalConfiguration {
 	filter?: string;
 	languages?: PortalLanguages;
 	theme?: PortalTheme;
+	links?: PortalLinks;
 	metadata?: Array<string>;
+	facettes?: Array<string>;
 	allowed_formats?: Array<SharedAllowedFormat>;
 	limit_ids?: Array<string>;
 	name?: string;

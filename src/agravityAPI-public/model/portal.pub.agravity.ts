@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
+import { PortalLinks } from './portalLinks.pub.agravity';
 import { PortalLanguages } from './portalLanguages.pub.agravity';
 import { PortalTheme } from './portalTheme.pub.agravity';
 
@@ -19,7 +20,9 @@ export interface Portal {
 	filter?: string;
 	languages?: PortalLanguages;
 	theme?: PortalTheme;
+	links?: PortalLinks;
 	metadata?: Array<string>;
+	facettes?: Array<string>;
 	allowed_formats?: Array<SharedAllowedFormat>;
 	limit_ids?: Array<string>;
 	name?: string;

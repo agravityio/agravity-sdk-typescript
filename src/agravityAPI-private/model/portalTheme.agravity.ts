@@ -15,4 +15,6 @@ export interface PortalTheme {
 	logo_url?: string;
 	colors?: { [key: string]: object };
 	topbar_color?: string;
+	icon_empty?: string;
+	icon_active?: string;
 }
