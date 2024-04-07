@@ -10,6 +10,20 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="7.0.1"/> [7.0.1](https://www.npmjs.com/package/@agravity/private/v/7.0.1) (2024-04-07)
+
+Portal:
+
+-   Add links to portal model for impressum, privacy and conditions;
+-   Add optional icon_empty and icon_active to theme
+-   Add portalZipRequest class and add zip_type to SharedCollectionZipRequest
+-   Add endpoint POST /portals/{id}/zip - Which initiates the ZIP creation of a portal id. (public)
+-   Add endpoint GET /portals/{id}/zip/{zipId} - This endpoint gets the progress/status of the ZIP creation of a portal. (public)
+
+Search:
+
+-   Add PATCH /searchadmin/clean - This endpoint cleans the deleted assets from the search index (with param portal_id the portal gets cleared).
+
 ## AgravityAPI <a name="7.0.0"/> [7.0.0](https://www.npmjs.com/package/@agravity/private/v/7.0.0) (2024-03-23)
 
 General:

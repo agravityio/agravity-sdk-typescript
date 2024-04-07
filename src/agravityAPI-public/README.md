@@ -1,4 +1,4 @@
-## @agravity/public@7.0.0
+## @agravity/public@7.0.1
 
 ### Building
 
@@ -19,7 +19,7 @@ Navigate to the folder of your consuming project and run one of next commands.
 _published:_
 
 ```
-npm install @agravity/public@7.0.0 --save
+npm install @agravity/public@7.0.1 --save
 ```
 
 _without publishing (not recommended):_
