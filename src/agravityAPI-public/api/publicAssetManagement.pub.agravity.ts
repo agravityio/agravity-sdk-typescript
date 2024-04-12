@@ -310,12 +310,13 @@ export class PublicAssetManagementService {
 
 	/**
 	 * This endpoint lists all the assets, which are stored in the database and not deleted (status \&quot;A\&quot;)
-	 * @param collectionid The ID of the collection where these assets should come from. (\&quot;empty\&quot; is allowed)
+	 * @param collectionid The ID of the collection where these assets should come from. (Is not required when \&#39;collectiontypeid\&#39; is set.)
+	 * @param collectiontypeid The ID of the collection type where these assets should come from. (Is not required when \&#39;collectionid\&#39; is set.) CAUTION: The assets returned are not distinct &#x3D;&gt; Duplicates are possible if assets are in multiple collections in this collection type!
 	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;). Blobs can be limited with \&#39;.\&#39; on their container. (i.e. fields&#x3D;blobs.thumbnails). Only if \&#39;thumbnails\&#39; is set, the placeholder of this asset type are returned if no thumbnail blob is found.
 	 * @param expose This indicates if the given blobs should have URLs where these can be requested. (If not limited through \&#39;fields\&#39; parameter it will expose all URLs of all blobs.)
 	 * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
 	 * @param limit This number limits the page result of assets.
-	 * @param orderby How the return assets are sorted. Default is property: created_date (newest first).
+	 * @param orderby How the return assets are sorted. Default is property: modified_date (newest first).
 	 * @param filter This will limit the output on specific parameters which are separated by \&#39;:\&#39;, \&#39;!:\&#39;, \&#39;&gt;\&#39;, \&#39;&gt;&#x3D;\&#39;, \&#39;&lt;\&#39;, \&#39;&lt;&#x3D;\&#39;
 	 * @param items The items can be extended to fully filled items.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
@@ -324,6 +325,7 @@ export class PublicAssetManagementService {
 	 */
 	public httpAssetsGet(
 		collectionid?: string,
+		collectiontypeid?: string,
 		fields?: string,
 		expose?: boolean,
 		continuationToken?: string,
@@ -338,6 +340,7 @@ export class PublicAssetManagementService {
 	): Observable<AssetPageResult>;
 	public httpAssetsGet(
 		collectionid?: string,
+		collectiontypeid?: string,
 		fields?: string,
 		expose?: boolean,
 		continuationToken?: string,
@@ -352,6 +355,7 @@ export class PublicAssetManagementService {
 	): Observable<HttpResponse<AssetPageResult>>;
 	public httpAssetsGet(
 		collectionid?: string,
+		collectiontypeid?: string,
 		fields?: string,
 		expose?: boolean,
 		continuationToken?: string,
@@ -366,6 +370,7 @@ export class PublicAssetManagementService {
 	): Observable<HttpEvent<AssetPageResult>>;
 	public httpAssetsGet(
 		collectionid?: string,
+		collectiontypeid?: string,
 		fields?: string,
 		expose?: boolean,
 		continuationToken?: string,
@@ -381,6 +386,9 @@ export class PublicAssetManagementService {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (collectionid !== undefined && collectionid !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>collectionid, 'collectionid');
+		}
+		if (collectiontypeid !== undefined && collectiontypeid !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>collectiontypeid, 'collectiontypeid');
 		}
 		if (fields !== undefined && fields !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>fields, 'fields');
