@@ -1315,7 +1315,7 @@ export class AssetOperationsService {
 	}
 
 	/**
-	 * This endpoint repairs the items of an asset. Checks all collection type items and assign it to asset.
+	 * This endpoint repairs the asset, it\&#39;s items, custom fields and collections. It also checks the original blob and the blobs of the asset.
 	 * @param id The ID of the asset.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
