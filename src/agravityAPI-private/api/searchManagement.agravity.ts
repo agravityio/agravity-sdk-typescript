@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 import { AgravityErrorResponse } from '../model/models';
 import { AgravityInfoResponse } from '../model/models';
 import { SearchAdminStatus } from '../model/models';
+import { SearchFacet } from '../model/models';
 import { SearchResult } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -193,6 +194,135 @@ export class SearchManagementService {
 		}
 
 		return this.httpClient.patch<AgravityInfoResponse>(`${this.configuration.basePath}/searchadmin/recreate`, null, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns one facette based on the search parameters.
+	 * @param name The name of the facette.
+	 * @param s The search string which should be found.
+	 * @param collectiontypeid Limits the result on all collections from the given collectiontypeid parameter.
+	 * @param collectionid Limits the result on collection id (and siblings). Will be overwritten by collectiontypeid parameter.
+	 * @param mode Two modes supported: \&quot;any\&quot; or \&quot;all\&quot; search terms should be applied. (Only if Azure Search is enabled)
+	 * @param filter Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled)
+	 * @param ids Comma separated values list with all ids which should be returned.
+	 * @param portalId If the search should be redirected to a specific portal.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetSearchFacetteByName(
+		name: string,
+		s: string,
+		collectiontypeid?: string,
+		collectionid?: string,
+		mode?: string,
+		filter?: string,
+		ids?: string,
+		portalId?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SearchFacet>;
+	public httpGetSearchFacetteByName(
+		name: string,
+		s: string,
+		collectiontypeid?: string,
+		collectionid?: string,
+		mode?: string,
+		filter?: string,
+		ids?: string,
+		portalId?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SearchFacet>>;
+	public httpGetSearchFacetteByName(
+		name: string,
+		s: string,
+		collectiontypeid?: string,
+		collectionid?: string,
+		mode?: string,
+		filter?: string,
+		ids?: string,
+		portalId?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SearchFacet>>;
+	public httpGetSearchFacetteByName(
+		name: string,
+		s: string,
+		collectiontypeid?: string,
+		collectionid?: string,
+		mode?: string,
+		filter?: string,
+		ids?: string,
+		portalId?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (name === null || name === undefined) {
+			throw new Error('Required parameter name was null or undefined when calling httpGetSearchFacetteByName.');
+		}
+		if (s === null || s === undefined) {
+			throw new Error('Required parameter s was null or undefined when calling httpGetSearchFacetteByName.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (s !== undefined && s !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>s, 's');
+		}
+		if (collectiontypeid !== undefined && collectiontypeid !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>collectiontypeid, 'collectiontypeid');
+		}
+		if (collectionid !== undefined && collectionid !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>collectionid, 'collectionid');
+		}
+		if (mode !== undefined && mode !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>mode, 'mode');
+		}
+		if (filter !== undefined && filter !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>filter, 'filter');
+		}
+		if (ids !== undefined && ids !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>ids, 'ids');
+		}
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (msal_auth) required
+		credential = this.configuration.lookupCredential('msal_auth');
+		if (credential) {
+			headers = headers.set('Authorization', 'Bearer ' + credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<SearchFacet>(`${this.configuration.basePath}/search/facettes/${encodeURIComponent(String(name))}`, {
 			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
