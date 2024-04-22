@@ -16,6 +16,7 @@ import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParam
 import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
+import { AgravityErrorResponse } from '../model/models';
 import { CollectionUDL } from '../model/models';
 import { SearchableItem } from '../model/models';
 
@@ -143,13 +144,24 @@ export class PublicHelperToolsService {
 
 	/**
 	 * Returns all filterable items directly from the search index
+	 * @param portalId If the search should be redirected to a specific portal.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAllowedFilterableItems(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<string>>;
-	public httpGetAllowedFilterableItems(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<string>>>;
-	public httpGetAllowedFilterableItems(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<string>>>;
-	public httpGetAllowedFilterableItems(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAllowedFilterableItems(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<string>>;
+	public httpGetAllowedFilterableItems(
+		portalId?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<string>>>;
+	public httpGetAllowedFilterableItems(portalId?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<string>>>;
+	public httpGetAllowedFilterableItems(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+
 		let headers = this.defaultHeaders;
 
 		let credential: string | undefined;
@@ -175,6 +187,7 @@ export class PublicHelperToolsService {
 		}
 
 		return this.httpClient.get<Array<string>>(`${this.configuration.basePath}/helper/filterableitems`, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
@@ -185,13 +198,29 @@ export class PublicHelperToolsService {
 
 	/**
 	 * Returns all searchable items directly from the search index
+	 * @param portalId If the search should be redirected to a specific portal.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAllowedSearchableItemNames(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<string>>;
-	public httpGetAllowedSearchableItemNames(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<string>>>;
-	public httpGetAllowedSearchableItemNames(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<string>>>;
-	public httpGetAllowedSearchableItemNames(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAllowedSearchableItemNames(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<string>>;
+	public httpGetAllowedSearchableItemNames(
+		portalId?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<string>>>;
+	public httpGetAllowedSearchableItemNames(
+		portalId?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<string>>>;
+	public httpGetAllowedSearchableItemNames(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+
 		let headers = this.defaultHeaders;
 
 		let credential: string | undefined;
@@ -217,6 +246,7 @@ export class PublicHelperToolsService {
 		}
 
 		return this.httpClient.get<Array<string>>(`${this.configuration.basePath}/helper/searchableitemnames`, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
@@ -227,13 +257,29 @@ export class PublicHelperToolsService {
 
 	/**
 	 * Returns all searchable items directly from the search index
+	 * @param portalId If the search should be redirected to a specific portal.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAllowedSearchableItems(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<SearchableItem>>;
-	public httpGetAllowedSearchableItems(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<SearchableItem>>>;
-	public httpGetAllowedSearchableItems(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<SearchableItem>>>;
-	public httpGetAllowedSearchableItems(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAllowedSearchableItems(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<SearchableItem>>;
+	public httpGetAllowedSearchableItems(
+		portalId?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<SearchableItem>>>;
+	public httpGetAllowedSearchableItems(
+		portalId?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<SearchableItem>>>;
+	public httpGetAllowedSearchableItems(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+
 		let headers = this.defaultHeaders;
 
 		let credential: string | undefined;
@@ -259,6 +305,7 @@ export class PublicHelperToolsService {
 		}
 
 		return this.httpClient.get<Array<SearchableItem>>(`${this.configuration.basePath}/helper/searchableitems`, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

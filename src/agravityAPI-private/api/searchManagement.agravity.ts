@@ -276,6 +276,9 @@ export class SearchManagementService {
 		}
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (name !== undefined && name !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>name, 'name');
+		}
 		if (s !== undefined && s !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>s, 's');
 		}
@@ -322,7 +325,7 @@ export class SearchManagementService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.get<SearchFacet>(`${this.configuration.basePath}/search/facettes/${encodeURIComponent(String(name))}`, {
+		return this.httpClient.get<SearchFacet>(`${this.configuration.basePath}/search/facette`, {
 			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
