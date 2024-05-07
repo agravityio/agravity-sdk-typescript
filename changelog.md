@@ -10,6 +10,15 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="7.1.0"/> [7.1.0](https://www.npmjs.com/package/@agravity/private/v/7.1.0) (2024-05-08)
+
+-   Add PATCH /collections/{collectionId}/repairendpoint - This endpoint repairs the collection with name and items.
+-   Add GET /search/facette with nearly same attributes than search - This endpoint returns one facette based on the search parameters.
+-   Add param collectiontypeid to GET /assets endpoint to query all assets from collection type
+-   Add endpoint PATCH /searchadmin/reindex/{id} - This endpoint takes the ID and check if it is a collection type, collection or asset and re-index it in search.
+-   Add POST /collectiontypeitems- This endpoint updates all collection type items in all collection types regarding: Label, Order, Translations and Group.
+-   Put full SDL in response of portal config
+
 ## AgravityAPI <a name="7.0.1"/> [7.0.1](https://www.npmjs.com/package/@agravity/private/v/7.0.1) (2024-04-07)
 
 Portal:
