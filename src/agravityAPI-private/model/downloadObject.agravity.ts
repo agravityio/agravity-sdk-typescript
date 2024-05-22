@@ -21,6 +21,7 @@ export interface DownloadObject {
 	simple_assets?: Array<SimpleAsset>;
 	valid_for?: string;
 	watermarked?: boolean;
+	zipname?: string;
 	assets?: Array<AssetIdFormat>;
 	valid_from?: string;
 	valid_until?: string;
