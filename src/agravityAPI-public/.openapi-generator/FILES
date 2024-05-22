@@ -13,6 +13,7 @@ api/publicCollectionSecureUpload.pub.agravity.ts
 api/publicCollectionTypeManagement.pub.agravity.ts
 api/publicConfigurationManagement.pub.agravity.ts
 api/publicDownloadFormatManagement.pub.agravity.ts
+api/publicEndpoints.pub.agravity.ts
 api/publicGeneralManagement.pub.agravity.ts
 api/publicHelperTools.pub.agravity.ts
 api/publicPortalManagement.pub.agravity.ts

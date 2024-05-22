@@ -12,6 +12,7 @@ import { PublicCollectionSecureUploadService } from './api/publicCollectionSecur
 import { PublicCollectionTypeManagementService } from './api/publicCollectionTypeManagement.pub.agravity';
 import { PublicConfigurationManagementService } from './api/publicConfigurationManagement.pub.agravity';
 import { PublicDownloadFormatManagementService } from './api/publicDownloadFormatManagement.pub.agravity';
+import { PublicEndpointsService } from './api/publicEndpoints.pub.agravity';
 import { PublicGeneralManagementService } from './api/publicGeneralManagement.pub.agravity';
 import { PublicHelperToolsService } from './api/publicHelperTools.pub.agravity';
 import { PublicPortalManagementService } from './api/publicPortalManagement.pub.agravity';

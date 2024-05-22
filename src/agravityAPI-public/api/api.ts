@@ -18,6 +18,8 @@ export * from './publicConfigurationManagement.pub.agravity';
 import { PublicConfigurationManagementService } from './publicConfigurationManagement.pub.agravity';
 export * from './publicDownloadFormatManagement.pub.agravity';
 import { PublicDownloadFormatManagementService } from './publicDownloadFormatManagement.pub.agravity';
+export * from './publicEndpoints.pub.agravity';
+import { PublicEndpointsService } from './publicEndpoints.pub.agravity';
 export * from './publicGeneralManagement.pub.agravity';
 import { PublicGeneralManagementService } from './publicGeneralManagement.pub.agravity';
 export * from './publicHelperTools.pub.agravity';
@@ -53,6 +55,7 @@ export const APIS = [
 	PublicCollectionTypeManagementService,
 	PublicConfigurationManagementService,
 	PublicDownloadFormatManagementService,
+	PublicEndpointsService,
 	PublicGeneralManagementService,
 	PublicHelperToolsService,
 	PublicPortalManagementService,
