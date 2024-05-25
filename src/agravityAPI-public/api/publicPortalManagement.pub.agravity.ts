@@ -85,6 +85,53 @@ export class PublicPortalManagementService {
 	}
 
 	/**
+	 * This endpoint gets all Asset IDs in portal scope.
+	 * @param id The ID of the portal.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPortalGetAllAssetIdsById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<string>>;
+	public httpPortalGetAllAssetIdsById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<string>>>;
+	public httpPortalGetAllAssetIdsById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<string>>>;
+	public httpPortalGetAllAssetIdsById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpPortalGetAllAssetIdsById.');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<Array<string>>(`${this.configuration.basePath}/portals/${encodeURIComponent(String(id))}/assetids`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint gets the progress/status of the ZIP creation of a portal.
 	 * @param id The ID of the zip request collection.
 	 * @param zipId The ID of the requested zip.
