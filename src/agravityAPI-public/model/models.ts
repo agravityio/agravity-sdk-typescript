@@ -15,6 +15,7 @@ export * from './collectionType.pub.agravity';
 export * from './collectionUDL.pub.agravity';
 export * from './createSftpUserResult.pub.agravity';
 export * from './dataResult.pub.agravity';
+export * from './deletedEntities.pub.agravity';
 export * from './distZipResponse.pub.agravity';
 export * from './downloadFormat.pub.agravity';
 export * from './dynamicImageOperation.pub.agravity';

@@ -47,6 +47,7 @@ model/collectionType.pub.agravity.ts
 model/collectionUDL.pub.agravity.ts
 model/createSftpUserResult.pub.agravity.ts
 model/dataResult.pub.agravity.ts
+model/deletedEntities.pub.agravity.ts
 model/distZipResponse.pub.agravity.ts
 model/downloadFormat.pub.agravity.ts
 model/dynamicImageOperation.pub.agravity.ts

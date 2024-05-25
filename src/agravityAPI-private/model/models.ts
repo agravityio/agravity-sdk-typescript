@@ -29,6 +29,7 @@ export * from './comment.agravity';
 export * from './createSftpUserResult.agravity';
 export * from './dashboardWidget.agravity';
 export * from './dataResult.agravity';
+export * from './deletedEntities.agravity';
 export * from './distZipResponse.agravity';
 export * from './downloadFormat.agravity';
 export * from './downloadObject.agravity';

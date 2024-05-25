@@ -77,6 +77,7 @@ model/comment.agravity.ts
 model/createSftpUserResult.agravity.ts
 model/dashboardWidget.agravity.ts
 model/dataResult.agravity.ts
+model/deletedEntities.agravity.ts
 model/distZipResponse.agravity.ts
 model/downloadFormat.agravity.ts
 model/downloadObject.agravity.ts

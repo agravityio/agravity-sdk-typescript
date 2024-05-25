@@ -19,6 +19,7 @@ import { Observable } from 'rxjs';
 import { AgravityErrorResponse } from '../model/models';
 import { AgravityVersion } from '../model/models';
 import { BadRequestResult } from '../model/models';
+import { DeletedEntities } from '../model/models';
 import { OkResult } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -111,6 +112,99 @@ export class PublicGeneralManagementService {
 		}
 
 		return this.httpClient.get<AgravityVersion>(`${this.configuration.basePath}/version`, {
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint checks all deleted entities in the database until a specific date and returns the elements which are deleted.
+	 * @param entityType The date in the past since the entities are marked as deleted in the database.
+	 * @param since The date in the past since the entities are marked as deleted in the database.
+	 * @param until The date in the past until the entities are marked as deleted in the database.
+	 * @param portalId If the request comes from portal this is the indicator.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetDeletedEntities(
+		entityType?: string,
+		since?: string,
+		until?: string,
+		portalId?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<DeletedEntities>>;
+	public httpGetDeletedEntities(
+		entityType?: string,
+		since?: string,
+		until?: string,
+		portalId?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<DeletedEntities>>>;
+	public httpGetDeletedEntities(
+		entityType?: string,
+		since?: string,
+		until?: string,
+		portalId?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<DeletedEntities>>>;
+	public httpGetDeletedEntities(
+		entityType?: string,
+		since?: string,
+		until?: string,
+		portalId?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (entityType !== undefined && entityType !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>entityType, 'entity_type');
+		}
+		if (since !== undefined && since !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>since, 'since');
+		}
+		if (until !== undefined && until !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>until, 'until');
+		}
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<Array<DeletedEntities>>(`${this.configuration.basePath}/deleted`, {
+			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,
