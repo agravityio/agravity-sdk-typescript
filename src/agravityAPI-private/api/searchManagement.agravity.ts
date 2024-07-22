@@ -603,23 +603,34 @@ export class SearchManagementService {
 	}
 
 	/**
-	 * This endpoint gives the status about the index, indexes and data source connection.
+	 * This endpoint gives the status about the index and indexer. Skill and data source connection only when \&#39;full\&#39; is set to true.
 	 * @param portalId If the search should be redirected to a specific portal.
+	 * @param full If all information is needed (incl. datasource, etc.).
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpSearchAdminGetStatus(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SearchAdminStatus>;
+	public httpSearchAdminGetStatus(portalId?: string, full?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SearchAdminStatus>;
 	public httpSearchAdminGetStatus(
 		portalId?: string,
+		full?: boolean,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SearchAdminStatus>>;
-	public httpSearchAdminGetStatus(portalId?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<SearchAdminStatus>>;
-	public httpSearchAdminGetStatus(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSearchAdminGetStatus(
+		portalId?: string,
+		full?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SearchAdminStatus>>;
+	public httpSearchAdminGetStatus(portalId?: string, full?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (portalId !== undefined && portalId !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+		if (full !== undefined && full !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>full, 'full');
 		}
 
 		let headers = this.defaultHeaders;

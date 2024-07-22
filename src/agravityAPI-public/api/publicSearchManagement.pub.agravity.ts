@@ -17,6 +17,7 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 import { AgravityErrorResponse } from '../model/models';
+import { SearchAdminStatus } from '../model/models';
 import { SearchFacet } from '../model/models';
 import { SearchResult } from '../model/models';
 
@@ -367,6 +368,60 @@ export class PublicSearchManagementService {
 		}
 
 		return this.httpClient.get<SearchResult>(`${this.configuration.basePath}/search`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint gives the status about the index and indexer.
+	 * @param portalId If the search should be redirected to a specific portal.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpSearchAdminGetStatus(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SearchAdminStatus>;
+	public httpSearchAdminGetStatus(
+		portalId?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SearchAdminStatus>>;
+	public httpSearchAdminGetStatus(portalId?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<SearchAdminStatus>>;
+	public httpSearchAdminGetStatus(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (portalId !== undefined && portalId !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.get<SearchAdminStatus>(`${this.configuration.basePath}/searchadmin/status`, {
 			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,

@@ -71,6 +71,13 @@ model/publishedAsset.pub.agravity.ts
 model/quickShareFull.pub.agravity.ts
 model/sasToken.pub.agravity.ts
 model/savedSearch.pub.agravity.ts
+model/searchAdminDataSourceStatus.pub.agravity.ts
+model/searchAdminIndexStatus.pub.agravity.ts
+model/searchAdminIndexerLastRun.pub.agravity.ts
+model/searchAdminIndexerStatus.pub.agravity.ts
+model/searchAdminSkillStatus.pub.agravity.ts
+model/searchAdminStatistics.pub.agravity.ts
+model/searchAdminStatus.pub.agravity.ts
 model/searchFacet.pub.agravity.ts
 model/searchFacetEntity.pub.agravity.ts
 model/searchResult.pub.agravity.ts
