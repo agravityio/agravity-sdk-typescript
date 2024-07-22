@@ -25,6 +25,8 @@ export * from './collTypeItemBlueprint.agravity';
 export * from './collection.agravity';
 export * from './collectionType.agravity';
 export * from './collectionUDL.agravity';
+export * from './collectionUDLListEntity.agravity';
+export * from './collectionUDLReference.agravity';
 export * from './comment.agravity';
 export * from './createSftpUserResult.agravity';
 export * from './dashboardWidget.agravity';

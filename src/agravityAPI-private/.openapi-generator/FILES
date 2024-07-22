@@ -73,6 +73,8 @@ model/collTypeItemBlueprint.agravity.ts
 model/collection.agravity.ts
 model/collectionType.agravity.ts
 model/collectionUDL.agravity.ts
+model/collectionUDLListEntity.agravity.ts
+model/collectionUDLReference.agravity.ts
 model/comment.agravity.ts
 model/createSftpUserResult.agravity.ts
 model/dashboardWidget.agravity.ts
