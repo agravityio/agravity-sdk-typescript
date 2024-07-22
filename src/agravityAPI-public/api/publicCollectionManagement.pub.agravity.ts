@@ -586,6 +586,78 @@ export class PublicCollectionManagementService {
 	}
 
 	/**
+	 * This endpoint deletes the collection with the given ID (and their siblings).
+	 * @param id The ID of the collection.
+	 * @param deleteassets If this is true the assigned assets are set to delete as well.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPublicCollectionsDeleteById(id: string, deleteassets?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
+	public httpPublicCollectionsDeleteById(
+		id: string,
+		deleteassets?: boolean,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpPublicCollectionsDeleteById(
+		id: string,
+		deleteassets?: boolean,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpPublicCollectionsDeleteById(
+		id: string,
+		deleteassets?: boolean,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpPublicCollectionsDeleteById.');
+		}
+
+		let queryParameters = new HttpParams({ encoder: this.encoder });
+		if (deleteassets !== undefined && deleteassets !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>deleteassets, 'deleteassets');
+		}
+
+		let headers = this.defaultHeaders;
+
+		let credential: string | undefined;
+		// authentication (function_key) required
+		credential = this.configuration.lookupCredential('function_key');
+		if (credential) {
+			headers = headers.set('x-functions-key', credential);
+		}
+
+		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (httpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (httpHeaderAcceptSelected !== undefined) {
+			headers = headers.set('Accept', httpHeaderAcceptSelected);
+		}
+
+		let responseType_: 'text' | 'json' = 'json';
+		if (httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+			responseType_ = 'text';
+		}
+
+		return this.httpClient.delete<any>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}`, {
+			params: queryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: headers,
+			observe: observe,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint updates the collection. Specific properties could be updated.
 	 * @param id The ID of the collection.
 	 * @param collection The body has to be a valid collection json.Not fitting properties are ignored.
