@@ -17,6 +17,7 @@ export interface PublishedAsset {
 	description?: string;
 	usecases?: Array<string>;
 	created_date?: string;
+	created_by?: string;
 	url?: string;
 	cdn?: string;
 	status_table_id?: string;
