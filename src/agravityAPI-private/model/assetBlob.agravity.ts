@@ -56,6 +56,8 @@ export interface AssetBlob {
 	size_readable?: string;
 	downloadable?: boolean | null;
 	expires?: string | null;
+	uploaded_date?: string | null;
+	uploaded_by?: string;
 }
 export namespace AssetBlob {
 	export type BlobTypeEnum = 'UNKNOWN' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT' | 'TEXT' | 'OTHER';
