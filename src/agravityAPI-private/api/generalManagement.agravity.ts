@@ -261,7 +261,7 @@ export class GeneralManagementService {
 
 	/**
 	 * This endpoint checks all deleted entities in the database until a specific date and returns the elements which are deleted.
-	 * @param entityType The date in the past since the entities are marked as deleted in the database.
+	 * @param entityType The type of the entity (e.g. \&#39;asset\&#39;, \&#39;collection_type\&#39;, \&#39;collection_type\&#39;. Admins are allowed to list the other types as well.
 	 * @param since The date in the past since the entities are marked as deleted in the database.
 	 * @param until The date in the past until the entities are marked as deleted in the database.
 	 * @param portalId If the request comes from portal this is the indicator.
