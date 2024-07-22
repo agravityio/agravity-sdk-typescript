@@ -19,7 +19,6 @@ export interface Asset {
 	name?: string;
 	asset_type?: string;
 	duplicates?: Array<string>;
-	text_content?: string;
 	ai_groups?: Array<ArtificialIntelligenceGroup>;
 	keywords?: Array<string>;
 	orig_blob?: AssetBlob;

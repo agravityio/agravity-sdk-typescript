@@ -12,13 +12,11 @@
 import { UiTutorials } from './uiTutorials.agravity';
 import { DownloadObject } from './downloadObject.agravity';
 import { SecureUploadEntity } from './secureUploadEntity.agravity';
-import { SharedCollection } from './sharedCollection.agravity';
 
 export interface AgravityUser {
 	id?: string;
 	entity_type?: string;
 	downloads?: Array<DownloadObject>;
-	sharedcollections?: Array<SharedCollection>;
 	secureuploads?: Array<SecureUploadEntity>;
 	name?: string;
 	email?: string;

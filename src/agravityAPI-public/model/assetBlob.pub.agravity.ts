@@ -9,7 +9,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { Metadata } from './metadata.pub.agravity';
 
 export interface AssetBlob {
 	blob_type?: AssetBlob.BlobTypeEnum;
@@ -19,7 +18,6 @@ export interface AssetBlob {
 	extension?: string;
 	content_type?: string;
 	md5?: string;
-	techdata?: Array<Metadata>;
 	add_data?: { [key: string]: object };
 	width?: number | null;
 	height?: number | null;
@@ -48,10 +46,10 @@ export interface AssetBlob {
 	audiochanneloutput?: string;
 	audiobitrate?: number | null;
 	author?: string;
+	title?: string;
 	language?: string;
 	wordcount?: number | null;
 	pages?: number | null;
-	title?: string;
 	encoding_name?: string;
 	encoding_code?: string;
 	url?: string;
