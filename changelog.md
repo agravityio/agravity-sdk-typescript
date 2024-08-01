@@ -10,9 +10,25 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="7.3.0"/> [7.3.0](https://www.npmjs.com/package/@agravity/private/v/7.3.0) (2024-08-02)
+
+-   Add public API: GET `/searchadmin/status` - This endpoint gives the status about the index and indexer.
+-   Add (hidden) `simulate` parameter to create asset in active state
+-   Add endpoint PATCH `/helper/userdefinedlists` (admin) - To (re-)create the user defined lists cache
+-   Add endpoint DELETE `/collection/{id}` to public - This endpoint deletes the collection with the given ID (and their siblings).
+-   Update some of the descriptions.
+-   1167 Remove obsolete marked fields and queues
+    -   removed metadata from asset Blob
+    -   shared collections from users
+    -   text_content from asset
+-   1100 Created/Change date saved on asset (create/update/modified)
+-   1176 Add 'created_by' to published asset
+
+---
+
 ## AgravityAPI <a name="7.2.2"/> [7.2.2](https://www.npmjs.com/package/@agravity/private/v/7.2.2) (2024-06-10)
 
--  Add optional `id` to body of create portal to allow to create a portal with a specific id
+-   Add optional `id` to body of create portal to allow to create a portal with a specific id
 
 ---
 
