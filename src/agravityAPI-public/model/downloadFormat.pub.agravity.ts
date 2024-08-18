@@ -18,6 +18,7 @@ export interface DownloadFormat {
 	extension?: string;
 	asset_type?: string;
 	origin?: string;
+	fallback_thumb?: boolean | null;
 	translations?: { [key: string]: { [key: string]: object } };
 	name?: string;
 	description?: string;
