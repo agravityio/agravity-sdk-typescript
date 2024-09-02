@@ -11,10 +11,10 @@
  */
 
 export interface AzureIdentity {
-	id?: string;
-	name?: string;
-	description?: string;
-	email?: string;
+	id?: string | null;
+	name?: string | null;
+	description?: string | null;
+	email?: string | null;
 	ident_type?: AzureIdentity.IdentTypeEnum | null;
 }
 export namespace AzureIdentity {

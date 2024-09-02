@@ -11,10 +11,10 @@
  */
 
 export interface WidgetProperties {
-	widget_id?: string;
-	x?: number;
-	y?: number;
-	width?: number;
-	height?: number;
-	locked_position?: boolean;
+	widget_id?: string | null;
+	x?: number | null;
+	y?: number | null;
+	width?: number | null;
+	height?: number | null;
+	locked_position?: boolean | null;
 }

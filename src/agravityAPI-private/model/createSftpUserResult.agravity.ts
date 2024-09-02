@@ -11,6 +11,6 @@
  */
 
 export interface CreateSftpUserResult {
-	url?: string;
-	password?: string;
+	url?: string | null;
+	password?: string | null;
 }

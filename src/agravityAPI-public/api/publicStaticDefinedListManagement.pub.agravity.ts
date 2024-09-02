@@ -85,29 +85,47 @@ export class PublicStaticDefinedListManagementService {
 	/**
 	 * This endpoint lists all static defined lists in database.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpStaticDefinedListsGetAll(translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<StaticDefinedList>>;
 	public httpStaticDefinedListsGetAll(
 		translations?: boolean,
+		acceptLanguage?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<StaticDefinedList>>;
+	public httpStaticDefinedListsGetAll(
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<StaticDefinedList>>>;
 	public httpStaticDefinedListsGetAll(
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<StaticDefinedList>>>;
-	public httpStaticDefinedListsGetAll(translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpStaticDefinedListsGetAll(
+		translations?: boolean,
+		acceptLanguage?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -145,12 +163,14 @@ export class PublicStaticDefinedListManagementService {
 	 * This endpoint gets a static defined list from database.
 	 * @param id The ID of the static defined list.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStaticDefinedListsGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -158,6 +178,7 @@ export class PublicStaticDefinedListManagementService {
 	public httpStaticDefinedListsGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -165,6 +186,7 @@ export class PublicStaticDefinedListManagementService {
 	public httpStaticDefinedListsGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -172,6 +194,7 @@ export class PublicStaticDefinedListManagementService {
 	public httpStaticDefinedListsGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -186,6 +209,9 @@ export class PublicStaticDefinedListManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -225,6 +251,7 @@ export class PublicStaticDefinedListManagementService {
 	 * @param updatemode The mode how the list should be updated. Available values are: add, delete and replace.
 	 * @param staticDefinedList The values which should be updated.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -233,6 +260,7 @@ export class PublicStaticDefinedListManagementService {
 		updatemode: string,
 		staticDefinedList: StaticDefinedList,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -242,6 +270,7 @@ export class PublicStaticDefinedListManagementService {
 		updatemode: string,
 		staticDefinedList: StaticDefinedList,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -251,6 +280,7 @@ export class PublicStaticDefinedListManagementService {
 		updatemode: string,
 		staticDefinedList: StaticDefinedList,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -260,6 +290,7 @@ export class PublicStaticDefinedListManagementService {
 		updatemode: string,
 		staticDefinedList: StaticDefinedList,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -283,6 +314,9 @@ export class PublicStaticDefinedListManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required

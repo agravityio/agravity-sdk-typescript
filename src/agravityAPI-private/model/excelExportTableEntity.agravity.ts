@@ -11,11 +11,11 @@
  */
 
 export interface ExcelExportTableEntity {
-	url?: string;
+	url?: string | null;
 	status?: string;
-	filters?: string;
-	ids?: string;
-	language?: string;
+	filters?: string | null;
+	ids?: string | null;
+	language?: string | null;
 	orchestrationId?: string;
 	partitionKey?: string;
 	rowKey?: string;

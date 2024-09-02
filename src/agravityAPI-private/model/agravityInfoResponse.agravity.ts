@@ -11,7 +11,7 @@
  */
 
 export interface AgravityInfoResponse {
-	info_id?: string;
-	info_message?: string;
-	info_object?: object;
+	info_id?: string | null;
+	info_message?: string | null;
+	info_object?: object | null;
 }

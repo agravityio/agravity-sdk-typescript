@@ -13,21 +13,21 @@ import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
 import { AgravityErrorResponse } from './agravityErrorResponse.pub.agravity';
 
 export interface PortalZipRequest {
-	zip_type?: string;
-	portal_id?: string;
-	asset_ids?: Array<string>;
-	id?: string;
-	entity_type?: string;
-	url?: string;
-	instance_id?: string;
-	valid_until?: string;
-	allowed_formats?: Array<SharedAllowedFormat>;
+	zip_type?: string | null;
+	portal_id?: string | null;
+	asset_ids?: Array<string> | null;
+	id?: string | null;
+	entity_type?: string | null;
+	url?: string | null;
+	instance_id?: string | null;
+	valid_until?: string | null;
+	allowed_formats?: Array<SharedAllowedFormat> | null;
 	error?: AgravityErrorResponse;
-	status?: string;
+	status?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }

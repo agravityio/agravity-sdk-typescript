@@ -11,7 +11,7 @@
  */
 
 export interface TranslationRequest {
-	input_language?: string;
-	output_languages?: Array<string>;
-	text?: string;
+	input_language?: string | null;
+	output_languages?: Array<string> | null;
+	text?: string | null;
 }

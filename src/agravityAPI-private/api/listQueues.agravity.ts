@@ -16,6 +16,8 @@ import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParam
 import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
+import { AgravityInfoResponse } from '../model/models';
+
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
@@ -84,10 +86,10 @@ export class ListQueuesService {
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpListQueues(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' }): Observable<string>;
-	public httpListQueues(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' }): Observable<HttpResponse<string>>;
-	public httpListQueues(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' }): Observable<HttpEvent<string>>;
-	public httpListQueues(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' }): Observable<any> {
+	public httpListQueues(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
+	public httpListQueues(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpListQueues(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpListQueues(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
 		let headers = this.defaultHeaders;
 
 		let credential: string | undefined;
@@ -100,7 +102,7 @@ export class ListQueuesService {
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
 		if (httpHeaderAcceptSelected === undefined) {
 			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['text/plain'];
+			const httpHeaderAccepts: string[] = ['application/json'];
 			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
 		}
 		if (httpHeaderAcceptSelected !== undefined) {
@@ -112,7 +114,7 @@ export class ListQueuesService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.get<string>(`${this.configuration.basePath}/queues`, {
+		return this.httpClient.get<AgravityInfoResponse>(`${this.configuration.basePath}/queues`, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

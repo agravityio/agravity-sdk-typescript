@@ -86,29 +86,47 @@ export class PublicCollectionTypeManagementService {
 	/**
 	 * This lists all available collection types which are stored in the database and not deleted (status \&quot;A\&quot;).
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCollectionTypesGet(translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<CollectionType>>;
 	public httpCollectionTypesGet(
 		translations?: boolean,
+		acceptLanguage?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<CollectionType>>;
+	public httpCollectionTypesGet(
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<CollectionType>>>;
 	public httpCollectionTypesGet(
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<CollectionType>>>;
-	public httpCollectionTypesGet(translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCollectionTypesGet(
+		translations?: boolean,
+		acceptLanguage?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -146,13 +164,22 @@ export class PublicCollectionTypeManagementService {
 	 * Returns one single collection type (from ID).
 	 * @param id The ID of the collection type.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCollectionTypesGetById(id: string, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<CollectionType>;
 	public httpCollectionTypesGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<CollectionType>;
+	public httpCollectionTypesGetById(
+		id: string,
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -160,6 +187,7 @@ export class PublicCollectionTypeManagementService {
 	public httpCollectionTypesGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -167,6 +195,7 @@ export class PublicCollectionTypeManagementService {
 	public httpCollectionTypesGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -181,6 +210,9 @@ export class PublicCollectionTypeManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -218,12 +250,14 @@ export class PublicCollectionTypeManagementService {
 	 * This method returns a list of collection types items. (Regardless of the permissions)
 	 * @param includeblueprint True if the blueprint items should be included.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGetCollectionTypeItems(
 		includeblueprint?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -231,6 +265,7 @@ export class PublicCollectionTypeManagementService {
 	public httpGetCollectionTypeItems(
 		includeblueprint?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -238,6 +273,7 @@ export class PublicCollectionTypeManagementService {
 	public httpGetCollectionTypeItems(
 		includeblueprint?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -245,6 +281,7 @@ export class PublicCollectionTypeManagementService {
 	public httpGetCollectionTypeItems(
 		includeblueprint?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -258,6 +295,9 @@ export class PublicCollectionTypeManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required

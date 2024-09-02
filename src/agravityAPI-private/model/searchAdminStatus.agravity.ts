@@ -15,8 +15,8 @@ import { SearchAdminIndexStatus } from './searchAdminIndexStatus.agravity';
 import { SearchAdminDataSourceStatus } from './searchAdminDataSourceStatus.agravity';
 
 export interface SearchAdminStatus {
-	index?: SearchAdminIndexStatus;
-	indexer?: SearchAdminIndexerStatus;
-	datasource?: SearchAdminDataSourceStatus;
-	skillsets?: Array<SearchAdminSkillStatus>;
+	index?: SearchAdminIndexStatus | null;
+	indexer?: SearchAdminIndexerStatus | null;
+	datasource?: SearchAdminDataSourceStatus | null;
+	skillsets?: Array<SearchAdminSkillStatus> | null;
 }

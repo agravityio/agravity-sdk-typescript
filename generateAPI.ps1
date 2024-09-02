@@ -1,5 +1,19 @@
-# check REST API endpoint /version if backend is running, catch it and if it is not running: exit
-$version = (Invoke-RestMethod -Uri http://localhost:7072/api/version -Method Get -ContentType "application/json" -ErrorAction SilentlyContinue).version
+
+# check if $env:API_KEY is set, if not: exit
+if ($null -eq $env:AGRAVITY_API_KEY) {
+    Write-Host "Please set API_KEY environment variable"
+    exit
+}
+
+# check if $env:OAUTH2_TOKEN is set, if not: exit
+if ($null -eq $env:AGRAVITY_OAUTH2_TOKEN) {
+    Write-Host "Please set OAUTH2_TOKEN environment variable"
+    exit
+}
+
+# check REST API endpoint /version if backend is running with API key $env:API_KEY as "x-functions-key" header, catch it and if it is not running: exit
+$version = (Invoke-RestMethod -Uri http://localhost:7072/api/version -Method Get -ContentType "application/json" -Headers @{"x-functions-key" = $env:AGRAVITY_API_KEY} -ErrorAction SilentlyContinue).version
+
 if ($null -eq $version) {
     Write-Host "Please start backend before generating API"
     exit
@@ -28,13 +42,36 @@ Remove-Item -Path .\src -Recurse -Force -ErrorAction SilentlyContinue
 
 Write-Host "Calling private API"
 
+# download file with Authentication header (Bearer token)
+Invoke-WebRequest -Uri "http://localhost:7071/api/openapi/v3.json" -Headers @{"Authorization" = "$env:AGRAVITY_OAUTH2_TOKEN"} -OutFile "openapi.json"
+
+# check if openapi.json exists and is not empty; if not: exit
+if (!(Test-Path "openapi.json") -or (Get-Content "openapi.json" -Raw) -eq "") {
+    Write-Host "openapi.json is empty or does not exist"
+    exit
+}
+
 #$params="apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=14.0.0,npmName=agravityAPI-private,npmVersion=$version"
-$params = "apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=16.1.2,npmName=@agravity/private,supportsES6=true,npmRepository=https://registry.npmjs.org/"
-npx @openapitools/openapi-generator-cli generate -i http://localhost:7071/api/openapi/v3.json -g typescript-angular -o src/agravityAPI-private/ --additional-properties=$params
+$params = "apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=16.1.2,npmName=@agravity/private,supportsES6=true,npmRepository=https://registry.npmjs.org/,useSingleRequestParameter=true"
+npx @openapitools/openapi-generator-cli generate -i openapi.json -g typescript-angular -o src/agravityAPI-private/ --additional-properties=$params
+
+# delete openapi.json
+Remove-Item -Path .\openapi.json -Force
 
 Write-Host "Calling public API"
+Invoke-WebRequest -Uri "http://localhost:7072/api/openapi/v3.json" -Headers @{"x-functions-key" = $env:AGRAVITY_API_KEY} -OutFile "openapi.json"
+
+# check if openapi.json exists and is not empty; if not: exit
+if (!(Test-Path "openapi.json") -or (Get-Content "openapi.json" -Raw) -eq "") {
+    Write-Host "openapi.json is empty or does not exist"
+    exit
+}
+
 $params = "apiModulePrefix=AgravityPublic,configurationPrefix=AgravityPublic,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=16.1.2,npmName=@agravity/public,supportsES6=true,npmRepository=https://registry.npmjs.org/"
-npx @openapitools/openapi-generator-cli generate -i http://localhost:7072/api/openapi/v3.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
+npx @openapitools/openapi-generator-cli generate -i openapi.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
+
+# delete openapi.json
+Remove-Item -Path .\openapi.json -Force
 
 Write-Host "Generate complete"
 Write-Host "Start replacements"
@@ -71,10 +108,9 @@ Write-Host "Replace custom complete"
 ReplaceStringInFiles -FolderPath "src" -SearchString "ai\?: object;" -ReplaceString "ai?: any;"
 Write-Host "Replace ai complete"
 
-
 # add line in file src\agravityAPI-private\api\assetManagement.agravity.ts after line 482
 $fileContent = Get-Content "src\agravityAPI-private\api\assetManagement.agravity.ts"
-$fileContent[239] = $fileContent[239] + ",`n" + "                body: assetBulkUpdate"
+$fileContent[243] = $fileContent[243] + ",`n" + "                body: assetBulkUpdate"
 # write file
 $fileContent | Set-Content "src\agravityAPI-private\api\assetManagement.agravity.ts"
 

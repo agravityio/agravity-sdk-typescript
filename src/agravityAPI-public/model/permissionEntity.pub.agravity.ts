@@ -11,7 +11,7 @@
  */
 
 export interface PermissionEntity {
-	id?: string;
+	id?: string | null;
 	role?: PermissionEntity.RoleEnum;
 }
 export namespace PermissionEntity {

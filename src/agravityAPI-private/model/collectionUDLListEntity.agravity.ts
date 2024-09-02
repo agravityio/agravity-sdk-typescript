@@ -13,15 +13,15 @@ import { CollectionUDLReference } from './collectionUDLReference.agravity';
 import { CollectionUDL } from './collectionUDL.agravity';
 
 export interface CollectionUDLListEntity {
-	id?: string;
-	entity_type?: string;
-	udl_refs?: Array<CollectionUDLReference>;
-	udl_entries?: Array<CollectionUDL>;
-	status?: string;
+	id?: string | null;
+	entity_type?: string | null;
+	udl_refs?: Array<CollectionUDLReference> | null;
+	udl_entries?: Array<CollectionUDL> | null;
+	status?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }

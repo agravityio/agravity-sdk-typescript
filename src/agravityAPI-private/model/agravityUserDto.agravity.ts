@@ -11,7 +11,7 @@
  */
 
 export interface AgravityUserDto {
-	name?: string;
-	email?: string;
-	roles?: Array<string>;
+	name?: string | null;
+	email?: string | null;
+	roles?: Array<string> | null;
 }

@@ -11,6 +11,6 @@
  */
 
 export interface EmailAddress {
-	name?: string;
-	email?: string;
+	name?: string | null;
+	email?: string | null;
 }

@@ -12,7 +12,7 @@
 import { PermissionEntity } from './permissionEntity.agravity';
 
 export interface CollectionUDLReference {
-	parent?: string;
-	coll_types?: Array<string>;
-	permissions?: Array<PermissionEntity>;
+	parent?: string | null;
+	coll_types?: Array<string> | null;
+	permissions?: Array<PermissionEntity> | null;
 }

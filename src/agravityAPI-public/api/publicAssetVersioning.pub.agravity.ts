@@ -536,9 +536,21 @@ export class PublicAssetVersioningService {
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpUpdateVersionedAssetsById(id: string, vNr: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpUpdateVersionedAssetsById(id: string, vNr: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpUpdateVersionedAssetsById(id: string, vNr: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
+	public httpUpdateVersionedAssetsById(id: string, vNr: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<VersionedAsset>;
+	public httpUpdateVersionedAssetsById(
+		id: string,
+		vNr: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<VersionedAsset>>;
+	public httpUpdateVersionedAssetsById(
+		id: string,
+		vNr: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<VersionedAsset>>;
 	public httpUpdateVersionedAssetsById(id: string, vNr: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpUpdateVersionedAssetsById.');
@@ -571,7 +583,7 @@ export class PublicAssetVersioningService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.post<any>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/versions/${encodeURIComponent(String(vNr))}`, null, {
+		return this.httpClient.post<VersionedAsset>(`${this.configuration.basePath}/assets/${encodeURIComponent(String(id))}/versions/${encodeURIComponent(String(vNr))}`, null, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

@@ -11,14 +11,14 @@
  */
 
 export interface AppConfigTableEntity {
-	key?: string;
-	value?: string;
-	default_value?: string;
-	api_version?: string;
-	description?: string;
-	content_type?: string;
-	partitionkey?: string;
-	is_frontend?: boolean;
+	key?: string | null;
+	value?: string | null;
+	default_value?: string | null;
+	api_version?: string | null;
+	description?: string | null;
+	content_type?: string | null;
+	partitionkey?: string | null;
+	is_frontend?: boolean | null;
 	is_portal?: boolean | null;
 	is_custom?: boolean | null;
 	timestamp?: string | null;

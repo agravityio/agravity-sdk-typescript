@@ -189,7 +189,7 @@ export class SignalRConnectionManagementService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.get<AgravityInfoResponse>(`${this.configuration.basePath}/signalr/info/${encodeURIComponent(String(id))}`, {
+		return this.httpClient.post<AgravityInfoResponse>(`${this.configuration.basePath}/signalr/info/${encodeURIComponent(String(id))}`, null, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

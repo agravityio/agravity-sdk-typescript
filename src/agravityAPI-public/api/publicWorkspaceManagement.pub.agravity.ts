@@ -85,19 +85,47 @@ export class PublicWorkspaceManagementService {
 	/**
 	 * This lists all available workspaces which are stored in the database and not deleted (status \&quot;A\&quot;).
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpWorkspacesGet(translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<Workspace>>;
-	public httpWorkspacesGet(translations?: boolean, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<Workspace>>>;
-	public httpWorkspacesGet(translations?: boolean, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<Workspace>>>;
-	public httpWorkspacesGet(translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpWorkspacesGet(
+		translations?: boolean,
+		acceptLanguage?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<Workspace>>;
+	public httpWorkspacesGet(
+		translations?: boolean,
+		acceptLanguage?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<Workspace>>>;
+	public httpWorkspacesGet(
+		translations?: boolean,
+		acceptLanguage?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<Workspace>>>;
+	public httpWorkspacesGet(
+		translations?: boolean,
+		acceptLanguage?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -135,13 +163,22 @@ export class PublicWorkspaceManagementService {
 	 * Returns one single workspace (from ID).
 	 * @param id The ID of the workspace.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpWorkspacesGetById(id: string, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Workspace>;
 	public httpWorkspacesGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Workspace>;
+	public httpWorkspacesGetById(
+		id: string,
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -149,11 +186,19 @@ export class PublicWorkspaceManagementService {
 	public httpWorkspacesGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Workspace>>;
-	public httpWorkspacesGetById(id: string, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpWorkspacesGetById(
+		id: string,
+		translations?: boolean,
+		acceptLanguage?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpWorkspacesGetById.');
 		}
@@ -164,6 +209,9 @@ export class PublicWorkspaceManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required

@@ -98,6 +98,7 @@ export class PublicAssetManagementService {
 	}
 
 	/**
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param name
 	 * @param collectionId
 	 * @param file
@@ -107,6 +108,7 @@ export class PublicAssetManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetUploadFile(
+		acceptLanguage?: string,
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
@@ -117,6 +119,7 @@ export class PublicAssetManagementService {
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Asset>;
 	public httpAssetUploadFile(
+		acceptLanguage?: string,
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
@@ -127,6 +130,7 @@ export class PublicAssetManagementService {
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Asset>>;
 	public httpAssetUploadFile(
+		acceptLanguage?: string,
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
@@ -137,6 +141,7 @@ export class PublicAssetManagementService {
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Asset>>;
 	public httpAssetUploadFile(
+		acceptLanguage?: string,
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
@@ -147,6 +152,9 @@ export class PublicAssetManagementService {
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -217,6 +225,7 @@ export class PublicAssetManagementService {
 	 * @param collectionid The ID of the collection where this assets should be assigned.
 	 * @param asset This endpoint creates an unique asset ID and adds the information to the database.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -224,6 +233,7 @@ export class PublicAssetManagementService {
 		collectionid: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -232,6 +242,7 @@ export class PublicAssetManagementService {
 		collectionid: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -240,6 +251,7 @@ export class PublicAssetManagementService {
 		collectionid: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -248,6 +260,7 @@ export class PublicAssetManagementService {
 		collectionid: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -268,6 +281,9 @@ export class PublicAssetManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -320,6 +336,7 @@ export class PublicAssetManagementService {
 	 * @param filter This will limit the output on specific parameters which are separated by \&#39;:\&#39;, \&#39;!:\&#39;, \&#39;&gt;\&#39;, \&#39;&gt;&#x3D;\&#39;, \&#39;&lt;\&#39;, \&#39;&lt;&#x3D;\&#39;
 	 * @param items The items can be extended to fully filled items.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -334,6 +351,7 @@ export class PublicAssetManagementService {
 		filter?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -349,6 +367,7 @@ export class PublicAssetManagementService {
 		filter?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -364,6 +383,7 @@ export class PublicAssetManagementService {
 		filter?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -379,6 +399,7 @@ export class PublicAssetManagementService {
 		filter?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -416,6 +437,9 @@ export class PublicAssetManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -455,6 +479,7 @@ export class PublicAssetManagementService {
 	 * @param fields Which fields are need to be filled out with comma separated. If one is set all non mandatory fields are left out. No validation if field exist.
 	 * @param expose This indicates if the given blobs should have URLs where these can be requested. It will expose placeholder blobs if no \&#39;thumbnail\&#39; is found.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -463,6 +488,7 @@ export class PublicAssetManagementService {
 		fields?: string,
 		expose?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -472,6 +498,7 @@ export class PublicAssetManagementService {
 		fields?: string,
 		expose?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -481,6 +508,7 @@ export class PublicAssetManagementService {
 		fields?: string,
 		expose?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -490,6 +518,7 @@ export class PublicAssetManagementService {
 		fields?: string,
 		expose?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -510,6 +539,9 @@ export class PublicAssetManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -548,6 +580,7 @@ export class PublicAssetManagementService {
 	 * @param id The ID of the asset.
 	 * @param asset The body has to contain one of the mentioned elements and a valid json. Not fitting properties are ignored.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -555,6 +588,7 @@ export class PublicAssetManagementService {
 		id: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -563,6 +597,7 @@ export class PublicAssetManagementService {
 		id: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -571,6 +606,7 @@ export class PublicAssetManagementService {
 		id: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -579,6 +615,7 @@ export class PublicAssetManagementService {
 		id: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -596,6 +633,9 @@ export class PublicAssetManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required

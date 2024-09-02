@@ -86,12 +86,14 @@ export class AssetIconRuleManagementService {
 	 * This endpoint creates one asset icon rule entry in the database.
 	 * @param assetIconRule This endpoint creates an asset icon rule ID and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetIconRuleCreate(
 		assetIconRule: AssetIconRule,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -99,6 +101,7 @@ export class AssetIconRuleManagementService {
 	public httpAssetIconRuleCreate(
 		assetIconRule: AssetIconRule,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -106,6 +109,7 @@ export class AssetIconRuleManagementService {
 	public httpAssetIconRuleCreate(
 		assetIconRule: AssetIconRule,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -113,6 +117,7 @@ export class AssetIconRuleManagementService {
 	public httpAssetIconRuleCreate(
 		assetIconRule: AssetIconRule,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -127,6 +132,9 @@ export class AssetIconRuleManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -219,6 +227,7 @@ export class AssetIconRuleManagementService {
 	 * @param id The ID of the asset icon rule.
 	 * @param assetIconRule This endpoint updates an asset icon rule and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -226,6 +235,7 @@ export class AssetIconRuleManagementService {
 		id: string,
 		assetIconRule: AssetIconRule,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -234,6 +244,7 @@ export class AssetIconRuleManagementService {
 		id: string,
 		assetIconRule: AssetIconRule,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -242,6 +253,7 @@ export class AssetIconRuleManagementService {
 		id: string,
 		assetIconRule: AssetIconRule,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -250,6 +262,7 @@ export class AssetIconRuleManagementService {
 		id: string,
 		assetIconRule: AssetIconRule,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -267,6 +280,9 @@ export class AssetIconRuleManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -310,29 +326,47 @@ export class AssetIconRuleManagementService {
 	/**
 	 * This endpoint lists all asset icon rules in database.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetIconRulesGetAll(translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<AssetIconRule>>;
 	public httpAssetIconRulesGetAll(
 		translations?: boolean,
+		acceptLanguage?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<AssetIconRule>>;
+	public httpAssetIconRulesGetAll(
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<AssetIconRule>>>;
 	public httpAssetIconRulesGetAll(
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<AssetIconRule>>>;
-	public httpAssetIconRulesGetAll(translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAssetIconRulesGetAll(
+		translations?: boolean,
+		acceptLanguage?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -370,13 +404,22 @@ export class AssetIconRuleManagementService {
 	 * This endpoint gets a single asset icon rule from the database.
 	 * @param id The ID of the asset icon rule.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetIconRulesGetById(id: string, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetIconRule>;
 	public httpAssetIconRulesGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AssetIconRule>;
+	public httpAssetIconRulesGetById(
+		id: string,
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -384,11 +427,19 @@ export class AssetIconRuleManagementService {
 	public httpAssetIconRulesGetById(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AssetIconRule>>;
-	public httpAssetIconRulesGetById(id: string, translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAssetIconRulesGetById(
+		id: string,
+		translations?: boolean,
+		acceptLanguage?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetIconRulesGetById.');
 		}
@@ -399,6 +450,9 @@ export class AssetIconRuleManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required

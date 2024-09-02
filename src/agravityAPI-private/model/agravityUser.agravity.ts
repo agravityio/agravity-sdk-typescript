@@ -14,22 +14,22 @@ import { DownloadObject } from './downloadObject.agravity';
 import { SecureUploadEntity } from './secureUploadEntity.agravity';
 
 export interface AgravityUser {
-	id?: string;
-	entity_type?: string;
-	downloads?: Array<DownloadObject>;
-	secureuploads?: Array<SecureUploadEntity>;
-	name?: string;
-	email?: string;
-	impersonation?: string;
-	apikey?: string;
-	roles?: Array<string>;
-	groups?: Array<string>;
-	tutorials?: Array<UiTutorials>;
-	status?: string;
+	id?: string | null;
+	entity_type?: string | null;
+	downloads?: Array<DownloadObject> | null;
+	secureuploads?: Array<SecureUploadEntity> | null;
+	name?: string | null;
+	email?: string | null;
+	impersonation?: string | null;
+	apikey?: string | null;
+	roles?: Array<string> | null;
+	groups?: Array<string> | null;
+	tutorials?: Array<UiTutorials> | null;
+	status?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }

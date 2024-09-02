@@ -11,5 +11,5 @@
  */
 
 export interface EntityId {
-	id?: string;
+	id?: string | null;
 }

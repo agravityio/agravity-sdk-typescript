@@ -86,12 +86,14 @@ export class PublicCollectionManagementService {
 	 * This endpoint creates a unique collection ID and adds the information to the database.
 	 * @param collectiontypeid The ID of the collection type where this collections should be assigned.
 	 * @param collection This endpoint creates a unique collection ID and adds the information to the database.
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsCreate(
 		collectiontypeid: string,
 		collection: Collection,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -99,6 +101,7 @@ export class PublicCollectionManagementService {
 	public httpCollectionsCreate(
 		collectiontypeid: string,
 		collection: Collection,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -106,6 +109,7 @@ export class PublicCollectionManagementService {
 	public httpCollectionsCreate(
 		collectiontypeid: string,
 		collection: Collection,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -113,6 +117,7 @@ export class PublicCollectionManagementService {
 	public httpCollectionsCreate(
 		collectiontypeid: string,
 		collection: Collection,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -130,6 +135,9 @@ export class PublicCollectionManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -178,6 +186,7 @@ export class PublicCollectionManagementService {
 	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
 	 * @param items The items can be extended to fully filled items.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -188,6 +197,7 @@ export class PublicCollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -199,6 +209,7 @@ export class PublicCollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -210,6 +221,7 @@ export class PublicCollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -221,6 +233,7 @@ export class PublicCollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -250,6 +263,9 @@ export class PublicCollectionManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -289,6 +305,7 @@ export class PublicCollectionManagementService {
 	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
 	 * @param items The items can be extended to fully filled items.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -297,6 +314,7 @@ export class PublicCollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -306,6 +324,7 @@ export class PublicCollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -315,6 +334,7 @@ export class PublicCollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -324,6 +344,7 @@ export class PublicCollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -344,6 +365,9 @@ export class PublicCollectionManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -381,12 +405,14 @@ export class PublicCollectionManagementService {
 	 * Get the complete tree of descendants from a single collection.
 	 * @param id The ID of the collection.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsGetDescendantsTreeOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -394,6 +420,7 @@ export class PublicCollectionManagementService {
 	public httpCollectionsGetDescendantsTreeOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -401,6 +428,7 @@ export class PublicCollectionManagementService {
 	public httpCollectionsGetDescendantsTreeOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -408,6 +436,7 @@ export class PublicCollectionManagementService {
 	public httpCollectionsGetDescendantsTreeOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -422,6 +451,9 @@ export class PublicCollectionManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -459,12 +491,14 @@ export class PublicCollectionManagementService {
 	 * Get the complete tree of ancestors from a single collection.
 	 * @param id The ID of the collection.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsGetTreeAncestorsOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -472,6 +506,7 @@ export class PublicCollectionManagementService {
 	public httpCollectionsGetTreeAncestorsOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -479,6 +514,7 @@ export class PublicCollectionManagementService {
 	public httpCollectionsGetTreeAncestorsOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -486,6 +522,7 @@ export class PublicCollectionManagementService {
 	public httpCollectionsGetTreeAncestorsOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -500,6 +537,9 @@ export class PublicCollectionManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -661,14 +701,14 @@ export class PublicCollectionManagementService {
 	 * This endpoint updates the collection. Specific properties could be updated.
 	 * @param id The ID of the collection.
 	 * @param collection The body has to be a valid collection json.Not fitting properties are ignored.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPublicCollectionsUpdateById(
 		id: string,
 		collection: Collection,
-		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -676,7 +716,7 @@ export class PublicCollectionManagementService {
 	public httpPublicCollectionsUpdateById(
 		id: string,
 		collection: Collection,
-		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -684,7 +724,7 @@ export class PublicCollectionManagementService {
 	public httpPublicCollectionsUpdateById(
 		id: string,
 		collection: Collection,
-		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -692,7 +732,7 @@ export class PublicCollectionManagementService {
 	public httpPublicCollectionsUpdateById(
 		id: string,
 		collection: Collection,
-		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -704,12 +744,10 @@ export class PublicCollectionManagementService {
 			throw new Error('Required parameter collection was null or undefined when calling httpPublicCollectionsUpdateById.');
 		}
 
-		let queryParameters = new HttpParams({ encoder: this.encoder });
-		if (translations !== undefined && translations !== null) {
-			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
-		}
-
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -741,7 +779,6 @@ export class PublicCollectionManagementService {
 		}
 
 		return this.httpClient.post<Collection>(`${this.configuration.basePath}/collections/${encodeURIComponent(String(id))}`, collection, {
-			params: queryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

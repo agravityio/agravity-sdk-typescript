@@ -11,6 +11,6 @@
  */
 
 export interface Translation {
-	text?: string;
-	to?: string;
+	text?: string | null;
+	to?: string | null;
 }

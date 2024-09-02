@@ -11,11 +11,11 @@
  */
 
 export interface VersionedAsset {
-	version_nr?: number;
-	until_date?: string;
-	version_info?: string;
+	version_nr?: number | null;
+	until_date?: string | null;
+	version_info?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	blob_uploaded?: string | null;
-	mime_type?: string;
+	mime_type?: string | null;
 }

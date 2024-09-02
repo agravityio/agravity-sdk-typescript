@@ -83,14 +83,28 @@ export class PublicDownloadFormatManagementService {
 
 	/**
 	 * This endpoint lists all download formats in database.
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDownloadFormatsGetAll(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<DownloadFormat>>;
-	public httpDownloadFormatsGetAll(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<DownloadFormat>>>;
-	public httpDownloadFormatsGetAll(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<DownloadFormat>>>;
-	public httpDownloadFormatsGetAll(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDownloadFormatsGetAll(acceptLanguage?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<DownloadFormat>>;
+	public httpDownloadFormatsGetAll(
+		acceptLanguage?: string,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<DownloadFormat>>>;
+	public httpDownloadFormatsGetAll(
+		acceptLanguage?: string,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<DownloadFormat>>>;
+	public httpDownloadFormatsGetAll(acceptLanguage?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required
@@ -127,12 +141,14 @@ export class PublicDownloadFormatManagementService {
 	 * This endpoint lists all download formats for a specific shared collections in database.Needs a valid shared collection ID to be authenticated.
 	 * @param shareId This share ID is like an API key. Check on validy (format, expire, collection still availabe). Otherwise StatusCode 403 (Forbidden) is returned.
 	 * @param ayPassword If shared collection has a password, this header is mandatory. Otherwise StatusCode 403 (Forbidden) is returned.
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDownloadFormatsGetAllFromShared(
 		shareId: string,
 		ayPassword?: string,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -140,6 +156,7 @@ export class PublicDownloadFormatManagementService {
 	public httpDownloadFormatsGetAllFromShared(
 		shareId: string,
 		ayPassword?: string,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -147,6 +164,7 @@ export class PublicDownloadFormatManagementService {
 	public httpDownloadFormatsGetAllFromShared(
 		shareId: string,
 		ayPassword?: string,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -154,6 +172,7 @@ export class PublicDownloadFormatManagementService {
 	public httpDownloadFormatsGetAllFromShared(
 		shareId: string,
 		ayPassword?: string,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -170,6 +189,9 @@ export class PublicDownloadFormatManagementService {
 		let headers = this.defaultHeaders;
 		if (ayPassword !== undefined && ayPassword !== null) {
 			headers = headers.set('ay-password', String(ayPassword));
+		}
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
 		}
 
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;

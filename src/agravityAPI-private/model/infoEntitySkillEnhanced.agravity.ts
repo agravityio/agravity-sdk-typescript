@@ -12,14 +12,14 @@
 import { PermissionEntity } from './permissionEntity.agravity';
 
 export interface InfoEntitySkillEnhanced {
-	collection_names?: Array<string>;
-	collection_descs?: Array<string>;
-	udl_coll_ids?: Array<string>;
-	translation_values?: Array<string>;
-	collectiontypeids?: Array<string>;
-	allcustom?: any;
-	custom_values?: Array<string>;
-	search_terms?: string;
-	perm_groups?: Array<PermissionEntity>;
-	fulltext?: string;
+	collection_names?: Array<string> | null;
+	collection_descs?: Array<string> | null;
+	udl_coll_ids?: Array<string> | null;
+	translation_values?: Array<string> | null;
+	collectiontypeids?: Array<string> | null;
+	allcustom?: { [key: string]: object } | null;
+	custom_values?: Array<string> | null;
+	search_terms?: string | null;
+	perm_groups?: Array<PermissionEntity> | null;
+	fulltext?: string | null;
 }

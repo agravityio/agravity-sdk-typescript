@@ -12,21 +12,21 @@
 import { SharedAllowedFormat } from './sharedAllowedFormat.agravity';
 
 export interface SharedCollection {
-	id?: string;
-	entity_type?: string;
-	collection_id?: string;
-	url?: string;
-	valid_until?: string;
-	valid_for?: string;
-	message?: string;
-	global?: boolean;
-	allowed_formats?: Array<SharedAllowedFormat>;
-	password?: string;
-	status?: string;
+	id?: string | null;
+	entity_type?: string | null;
+	collection_id?: string | null;
+	url?: string | null;
+	valid_until?: string | null;
+	valid_for?: string | null;
+	message?: string | null;
+	global?: boolean | null;
+	allowed_formats?: Array<SharedAllowedFormat> | null;
+	password?: string | null;
+	status?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }

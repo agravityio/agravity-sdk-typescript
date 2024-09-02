@@ -13,13 +13,13 @@ import { AssetIdFormat } from './assetIdFormat.agravity';
 import { EmailAddress } from './emailAddress.agravity';
 
 export interface DownloadZipRequest {
-	zipname?: string;
-	assets?: Array<AssetIdFormat>;
-	valid_from?: string;
-	valid_until?: string;
-	email_to?: Array<EmailAddress>;
-	url?: string;
-	size?: string;
-	message?: string;
-	tempate_id?: string;
+	zipname?: string | null;
+	assets?: Array<AssetIdFormat> | null;
+	valid_from?: string | null;
+	valid_until?: string | null;
+	email_to?: Array<EmailAddress> | null;
+	url?: string | null;
+	size?: string | null;
+	message?: string | null;
+	tempate_id?: string | null;
 }

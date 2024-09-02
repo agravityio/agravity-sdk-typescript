@@ -11,15 +11,15 @@
  */
 
 export interface Comment {
-	id?: string;
-	entity_type?: string;
-	content?: string;
-	mentioned?: Array<string>;
-	status?: string;
+	id?: string | null;
+	entity_type?: string | null;
+	content?: string | null;
+	mentioned?: Array<string> | null;
+	status?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }

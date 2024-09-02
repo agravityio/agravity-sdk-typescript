@@ -11,6 +11,6 @@
  */
 
 export interface ApiKeyResponse {
-	id?: string;
-	api_key?: string;
+	id?: string | null;
+	api_key?: string | null;
 }

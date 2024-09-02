@@ -11,26 +11,26 @@
  */
 
 export interface CollTypeItem {
-	id?: string;
-	entity_type?: string;
-	name?: string;
-	item_type?: string;
-	format?: string;
-	label?: string;
-	default_value?: any;
+	id?: string | null;
+	entity_type?: string | null;
+	name?: string | null;
+	item_type?: string | null;
+	format?: string | null;
+	label?: string | null;
+	default_value?: object | null;
 	mandatory?: boolean | null;
 	searchable?: boolean | null;
 	onlyasset?: boolean | null;
 	multi?: boolean | null;
-	md5?: string;
-	group?: string;
-	order?: number;
-	translations?: { [key: string]: { [key: string]: object } };
-	status?: string;
+	md5?: string | null;
+	group?: string | null;
+	order?: number | null;
+	translations?: { [key: string]: { [key: string]: object } } | null;
+	status?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }

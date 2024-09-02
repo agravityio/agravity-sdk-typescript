@@ -12,18 +12,18 @@
 import { CollTypeItem } from './collTypeItem.agravity';
 
 export interface CollTypeItemBlueprint {
-	id?: string;
-	entity_type?: string;
-	name?: string;
-	items?: Array<CollTypeItem>;
-	translations?: { [key: string]: { [key: string]: object } };
-	description?: string;
-	add_properties?: { [key: string]: any };
-	status?: string;
+	id?: string | null;
+	entity_type?: string | null;
+	name?: string | null;
+	items?: Array<CollTypeItem> | null;
+	translations?: { [key: string]: { [key: string]: object } } | null;
+	description?: string | null;
+	add_properties?: { [key: string]: object } | null;
+	status?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }

@@ -11,7 +11,7 @@
  */
 
 export interface PortalLinks {
-	conditions?: string;
-	privacy?: string;
-	impressum?: string;
+	conditions?: string | null;
+	privacy?: string | null;
+	impressum?: string | null;
 }

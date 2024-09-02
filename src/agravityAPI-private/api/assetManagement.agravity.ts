@@ -101,6 +101,7 @@ export class AssetManagementService {
 
 	/**
 	 * This endpoint allows to upload one asset which is put onto the storage (INBOX). Collection ID is mandatory on asset upload. Previewof can be used alone.
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param name
 	 * @param collectionId
 	 * @param file
@@ -110,6 +111,7 @@ export class AssetManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetUploadFile(
+		acceptLanguage?: string,
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
@@ -120,6 +122,7 @@ export class AssetManagementService {
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Asset>;
 	public httpAssetUploadFile(
+		acceptLanguage?: string,
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
@@ -130,6 +133,7 @@ export class AssetManagementService {
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Asset>>;
 	public httpAssetUploadFile(
+		acceptLanguage?: string,
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
@@ -140,6 +144,7 @@ export class AssetManagementService {
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Asset>>;
 	public httpAssetUploadFile(
+		acceptLanguage?: string,
 		name?: string,
 		collectionId?: string,
 		file?: Blob,
@@ -150,6 +155,9 @@ export class AssetManagementService {
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
 		if (httpHeaderAcceptSelected === undefined) {
@@ -279,33 +287,46 @@ export class AssetManagementService {
 
 	/**
 	 * @param assetBulkUpdate The body has to be valid json which contains the reference asset, which for which collection (reference for collection type items) and which assets are to update. The containing keywords (tags) will be distinctly added (no removal). Only custom values are replaces if they are part of the given collection id.
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetsBulkPostUpdate(
 		assetBulkUpdate: AssetBulkUpdate,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AgravityInfoResponse>;
 	public httpAssetsBulkPostUpdate(
 		assetBulkUpdate: AssetBulkUpdate,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpAssetsBulkPostUpdate(
 		assetBulkUpdate: AssetBulkUpdate,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpAssetsBulkPostUpdate(assetBulkUpdate: AssetBulkUpdate, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAssetsBulkPostUpdate(
+		assetBulkUpdate: AssetBulkUpdate,
+		acceptLanguage?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		if (assetBulkUpdate === null || assetBulkUpdate === undefined) {
 			throw new Error('Required parameter assetBulkUpdate was null or undefined when calling httpAssetsBulkPostUpdate.');
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -347,28 +368,46 @@ export class AssetManagementService {
 
 	/**
 	 * @param assetBulkUpdate The body has to be valid json which contains the reference asset, a collection (used as reference for collection type items) and which asset ids are to update. The containing keywords (tags) will be fully replaced. ONLY custom items are replaced which are in body (others in same collection will be ignored)!Only custom values are replaces if they are part of the given collection id.
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetsBulkPutUpdate(assetBulkUpdate: AssetBulkUpdate, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpAssetsBulkPutUpdate(
 		assetBulkUpdate: AssetBulkUpdate,
+		acceptLanguage?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpAssetsBulkPutUpdate(
+		assetBulkUpdate: AssetBulkUpdate,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpAssetsBulkPutUpdate(
 		assetBulkUpdate: AssetBulkUpdate,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpAssetsBulkPutUpdate(assetBulkUpdate: AssetBulkUpdate, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAssetsBulkPutUpdate(
+		assetBulkUpdate: AssetBulkUpdate,
+		acceptLanguage?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		if (assetBulkUpdate === null || assetBulkUpdate === undefined) {
 			throw new Error('Required parameter assetBulkUpdate was null or undefined when calling httpAssetsBulkPutUpdate.');
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -413,6 +452,7 @@ export class AssetManagementService {
 	 * @param collectionid The ID of the collection where this assets should be assigned.
 	 * @param asset This endpoint creates an unique asset ID and adds the information to the database.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -420,6 +460,7 @@ export class AssetManagementService {
 		collectionid: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -428,6 +469,7 @@ export class AssetManagementService {
 		collectionid: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -436,6 +478,7 @@ export class AssetManagementService {
 		collectionid: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -444,6 +487,7 @@ export class AssetManagementService {
 		collectionid: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -464,6 +508,9 @@ export class AssetManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -617,6 +664,7 @@ export class AssetManagementService {
 	 * @param filter This will limit the output on specific parameters which are separated by \&#39;:\&#39;, \&#39;!:\&#39;, \&#39;&gt;\&#39;, \&#39;&gt;&#x3D;\&#39;, \&#39;&lt;\&#39;, \&#39;&lt;&#x3D;\&#39;
 	 * @param items The items can be extended to fully filled items.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -631,6 +679,7 @@ export class AssetManagementService {
 		filter?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -646,6 +695,7 @@ export class AssetManagementService {
 		filter?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -661,6 +711,7 @@ export class AssetManagementService {
 		filter?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -676,6 +727,7 @@ export class AssetManagementService {
 		filter?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -713,6 +765,9 @@ export class AssetManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -753,6 +808,7 @@ export class AssetManagementService {
 	 * @param expose This indicates if the given blobs should have URLs where these can be requested. It will expose placeholder blobs if no \&#39;thumbnail\&#39; is found.)
 	 * @param items The items can be extended to fully filled items.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -762,6 +818,7 @@ export class AssetManagementService {
 		expose?: boolean,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -772,6 +829,7 @@ export class AssetManagementService {
 		expose?: boolean,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -782,6 +840,7 @@ export class AssetManagementService {
 		expose?: boolean,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -792,6 +851,7 @@ export class AssetManagementService {
 		expose?: boolean,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -815,6 +875,9 @@ export class AssetManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -853,14 +916,24 @@ export class AssetManagementService {
 	 * @param id The ID of the asset.
 	 * @param asset The body has to contain one of the mentioned elements and a valid json. Not fitting properties are ignored.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetsUpdateById(id: string, asset: Asset, translations?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Asset>;
 	public httpAssetsUpdateById(
 		id: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Asset>;
+	public httpAssetsUpdateById(
+		id: string,
+		asset: Asset,
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -869,6 +942,7 @@ export class AssetManagementService {
 		id: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -877,6 +951,7 @@ export class AssetManagementService {
 		id: string,
 		asset: Asset,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -894,6 +969,9 @@ export class AssetManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required

@@ -87,12 +87,16 @@ export class CollectionManagementService {
 	 * This endpoint creates a unique collection ID and adds the information to the database.
 	 * @param collectiontypeid The ID of the collection type where this collections should be assigned.
 	 * @param collection This endpoint creates a unique collection ID and adds the information to the database.
+	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsCreate(
 		collectiontypeid: string,
 		collection: Collection,
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -100,6 +104,8 @@ export class CollectionManagementService {
 	public httpCollectionsCreate(
 		collectiontypeid: string,
 		collection: Collection,
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -107,6 +113,8 @@ export class CollectionManagementService {
 	public httpCollectionsCreate(
 		collectiontypeid: string,
 		collection: Collection,
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -114,6 +122,8 @@ export class CollectionManagementService {
 	public httpCollectionsCreate(
 		collectiontypeid: string,
 		collection: Collection,
+		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -129,8 +139,14 @@ export class CollectionManagementService {
 		if (collectiontypeid !== undefined && collectiontypeid !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>collectiontypeid, 'collectiontypeid');
 		}
+		if (translations !== undefined && translations !== null) {
+			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
+		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -239,6 +255,7 @@ export class CollectionManagementService {
 	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
 	 * @param items The items can be extended to fully filled items.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -249,6 +266,7 @@ export class CollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -260,6 +278,7 @@ export class CollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -271,6 +290,7 @@ export class CollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -282,6 +302,7 @@ export class CollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -307,6 +328,9 @@ export class CollectionManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -346,6 +370,7 @@ export class CollectionManagementService {
 	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
 	 * @param items The items can be extended to fully filled items.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -354,6 +379,7 @@ export class CollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -363,6 +389,7 @@ export class CollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -372,6 +399,7 @@ export class CollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -381,6 +409,7 @@ export class CollectionManagementService {
 		fields?: string,
 		items?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -401,6 +430,9 @@ export class CollectionManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -438,12 +470,14 @@ export class CollectionManagementService {
 	 * This endpoint returns the complete tree of descendants from a single collection.
 	 * @param id The ID of the collection.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsGetDescendantsTreeOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -451,6 +485,7 @@ export class CollectionManagementService {
 	public httpCollectionsGetDescendantsTreeOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -458,6 +493,7 @@ export class CollectionManagementService {
 	public httpCollectionsGetDescendantsTreeOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -465,6 +501,7 @@ export class CollectionManagementService {
 	public httpCollectionsGetDescendantsTreeOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -479,6 +516,9 @@ export class CollectionManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -516,12 +556,14 @@ export class CollectionManagementService {
 	 * This endpoint returns the complete tree of ancestors from a single collection.
 	 * @param id The ID of the collection.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsGetTreeAncestorsOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -529,6 +571,7 @@ export class CollectionManagementService {
 	public httpCollectionsGetTreeAncestorsOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -536,6 +579,7 @@ export class CollectionManagementService {
 	public httpCollectionsGetTreeAncestorsOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -543,6 +587,7 @@ export class CollectionManagementService {
 	public httpCollectionsGetTreeAncestorsOfId(
 		id: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -557,6 +602,9 @@ export class CollectionManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -595,6 +643,7 @@ export class CollectionManagementService {
 	 * @param id The ID of the collection.
 	 * @param collection The body has to be a valid collection json.Not fitting properties are ignored.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -602,6 +651,7 @@ export class CollectionManagementService {
 		id: string,
 		collection: Collection,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -610,6 +660,7 @@ export class CollectionManagementService {
 		id: string,
 		collection: Collection,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -618,6 +669,7 @@ export class CollectionManagementService {
 		id: string,
 		collection: Collection,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -626,6 +678,7 @@ export class CollectionManagementService {
 		id: string,
 		collection: Collection,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -643,6 +696,9 @@ export class CollectionManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required

@@ -12,7 +12,7 @@
 import { AssetCollectionLink } from './assetCollectionLink.agravity';
 
 export interface AssetsOperationBody {
-	asset_links?: Array<AssetCollectionLink>;
-	to_collection_id?: string;
-	operation?: string;
+	asset_links?: Array<AssetCollectionLink> | null;
+	to_collection_id?: string | null;
+	operation?: string | null;
 }

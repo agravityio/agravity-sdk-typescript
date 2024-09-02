@@ -14,22 +14,22 @@ import { AssetIdFormat } from './assetIdFormat.agravity';
 import { SharedAsset } from './sharedAsset.agravity';
 
 export interface QuickShareFull {
-	page?: Array<SharedAsset>;
-	page_size?: number;
+	page?: Array<SharedAsset> | null;
+	page_size?: number | null;
 	size?: number | null;
-	continuation_token?: string;
-	id?: string;
-	entity_type?: string;
-	assets?: Array<AssetIdFormat>;
-	users?: Array<EntityId>;
-	expires?: string;
-	url?: string;
-	zip_url?: string;
-	status?: string;
+	continuation_token?: string | null;
+	id?: string | null;
+	entity_type?: string | null;
+	assets?: Array<AssetIdFormat> | null;
+	users?: Array<EntityId> | null;
+	expires?: string | null;
+	url?: string | null;
+	zip_url?: string | null;
+	status?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }

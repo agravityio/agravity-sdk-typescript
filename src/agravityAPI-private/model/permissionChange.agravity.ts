@@ -12,7 +12,7 @@
 import { PermissionEntity } from './permissionEntity.agravity';
 
 export interface PermissionChange {
-	entities?: Array<PermissionEntity>;
+	entities?: Array<PermissionEntity> | null;
 	modify?: PermissionChange.ModifyEnum;
 }
 export namespace PermissionChange {

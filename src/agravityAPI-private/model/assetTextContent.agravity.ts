@@ -11,6 +11,6 @@
  */
 
 export interface AssetTextContent {
-	id?: string;
-	textcontent?: string;
+	id?: string | null;
+	textcontent?: string | null;
 }

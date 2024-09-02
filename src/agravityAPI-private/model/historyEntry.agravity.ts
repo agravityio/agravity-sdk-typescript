@@ -11,18 +11,18 @@
  */
 
 export interface HistoryEntry {
-	id?: string;
-	entity_type?: string;
-	new_value?: object;
-	old_value?: object;
+	id?: string | null;
+	entity_type?: string | null;
+	new_value?: object | null;
+	old_value?: object | null;
 	name?: HistoryEntry.NameEnum;
-	status?: string;
+	status?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }
 export namespace HistoryEntry {
 	export type NameEnum = 'Created' | 'Updated' | 'Deleted' | 'Removed' | 'Published' | 'Unpublished' | 'Locked' | 'Unlocked' | 'Renewed' | 'Versioned' | 'DirtyMarked' | 'SystemUpgrade';

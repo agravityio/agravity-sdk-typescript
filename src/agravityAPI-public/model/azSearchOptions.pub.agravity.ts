@@ -13,12 +13,12 @@
 export interface AzSearchOptions {
 	searchString?: string;
 	limit?: number | null;
-	skip?: number;
-	collectiontypeid?: string;
-	collectionid?: string;
-	filter?: string;
-	orderby?: string;
-	mode?: string;
-	ids?: string;
-	portal_id?: string;
+	skip?: number | null;
+	collectiontypeid?: string | null;
+	collectionid?: string | null;
+	filter?: string | null;
+	orderby?: string | null;
+	mode?: string | null;
+	ids?: string | null;
+	portal_id?: string | null;
 }

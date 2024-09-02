@@ -11,6 +11,6 @@
  */
 
 export interface SharedAllowedFormat {
-	asset_type?: string;
-	format?: string;
+	asset_type?: string | null;
+	format?: string | null;
 }

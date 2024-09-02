@@ -129,10 +129,10 @@ export class ListBlobsService {
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpListAllBlobs(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' }): Observable<string>;
-	public httpListAllBlobs(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' }): Observable<HttpResponse<string>>;
-	public httpListAllBlobs(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' }): Observable<HttpEvent<string>>;
-	public httpListAllBlobs(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'text/plain' | 'application/json' }): Observable<any> {
+	public httpListAllBlobs(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
+	public httpListAllBlobs(observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpListAllBlobs(observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpListAllBlobs(observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
 		let headers = this.defaultHeaders;
 
 		let credential: string | undefined;
@@ -145,7 +145,7 @@ export class ListBlobsService {
 		let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
 		if (httpHeaderAcceptSelected === undefined) {
 			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['text/plain', 'application/json'];
+			const httpHeaderAccepts: string[] = ['application/json'];
 			httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
 		}
 		if (httpHeaderAcceptSelected !== undefined) {
@@ -157,7 +157,7 @@ export class ListBlobsService {
 			responseType_ = 'text';
 		}
 
-		return this.httpClient.get<string>(`${this.configuration.basePath}/blobs`, {
+		return this.httpClient.get<AgravityInfoResponse>(`${this.configuration.basePath}/blobs`, {
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: headers,

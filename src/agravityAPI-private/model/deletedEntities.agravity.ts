@@ -11,8 +11,8 @@
  */
 
 export interface DeletedEntities {
-	id?: string;
-	name?: string;
-	deleted?: string;
-	entity_type?: string;
+	id?: string | null;
+	name?: string | null;
+	deleted?: string | null;
+	entity_type?: string | null;
 }

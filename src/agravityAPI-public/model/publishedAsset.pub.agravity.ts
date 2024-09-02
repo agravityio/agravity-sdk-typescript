@@ -11,16 +11,16 @@
  */
 
 export interface PublishedAsset {
-	id?: string;
-	name?: string;
-	target?: string;
-	description?: string;
-	usecases?: Array<string>;
-	created_date?: string;
-	created_by?: string;
-	url?: string;
-	cdn?: string;
-	status_table_id?: string;
-	format?: string;
-	properties?: { [key: string]: object };
+	id?: string | null;
+	name?: string | null;
+	target?: string | null;
+	description?: string | null;
+	usecases?: Array<string> | null;
+	created_date?: string | null;
+	created_by?: string | null;
+	url?: string | null;
+	cdn?: string | null;
+	status_table_id?: string | null;
+	format?: string | null;
+	properties?: { [key: string]: object } | null;
 }

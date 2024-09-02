@@ -12,14 +12,14 @@
 import { WidgetProperties } from './widgetProperties.agravity';
 
 export interface WidgetLayout {
-	id?: string;
-	entity_type?: string;
-	widget_properties?: Array<WidgetProperties>;
-	status?: string;
+	id?: string | null;
+	entity_type?: string | null;
+	widget_properties?: Array<WidgetProperties> | null;
+	status?: string | null;
 	created_date?: string | null;
-	created_by?: string;
+	created_by?: string | null;
 	modified_date?: string | null;
-	modified_by?: string;
-	pk?: string;
-	_etag?: string;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }

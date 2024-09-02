@@ -16,9 +16,9 @@ import { DistZipResponse } from './distZipResponse.agravity';
 
 export interface GroupAllAppData {
 	collection_type?: CollectionType;
-	collections?: Array<Collection>;
-	assets?: Array<Asset>;
-	created_date?: string;
-	add_info?: Array<{ [key: string]: object }>;
-	dist?: DistZipResponse;
+	collections?: Array<Collection> | null;
+	assets?: Array<Asset> | null;
+	created_date?: string | null;
+	add_info?: Array<{ [key: string]: object }> | null;
+	dist?: DistZipResponse | null;
 }

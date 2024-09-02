@@ -12,8 +12,8 @@
 import { SearchAdminIndexerLastRun } from './searchAdminIndexerLastRun.agravity';
 
 export interface SearchAdminIndexerStatus {
-	name?: string;
-	status?: string;
-	error?: string;
-	lastrun?: SearchAdminIndexerLastRun;
+	name?: string | null;
+	status?: string | null;
+	error?: string | null;
+	lastrun?: SearchAdminIndexerLastRun | null;
 }

@@ -86,12 +86,14 @@ export class SavedSearchManagementService {
 	 * This endpoint creates one saved search entry in the database.
 	 * @param savedSearch This endpoint creates an unique saved search ID and adds the information to the database.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSavedSearchesCreate(
 		savedSearch: SavedSearch,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -99,6 +101,7 @@ export class SavedSearchManagementService {
 	public httpSavedSearchesCreate(
 		savedSearch: SavedSearch,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -106,6 +109,7 @@ export class SavedSearchManagementService {
 	public httpSavedSearchesCreate(
 		savedSearch: SavedSearch,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -113,6 +117,7 @@ export class SavedSearchManagementService {
 	public httpSavedSearchesCreate(
 		savedSearch: SavedSearch,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -127,6 +132,9 @@ export class SavedSearchManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -218,12 +226,14 @@ export class SavedSearchManagementService {
 	 * This endpoint lists all saved searches in database.
 	 * @param external This parameter filters out all saved searches on basis this boolean.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSavedSearchesGetAll(
 		external?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -231,6 +241,7 @@ export class SavedSearchManagementService {
 	public httpSavedSearchesGetAll(
 		external?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -238,6 +249,7 @@ export class SavedSearchManagementService {
 	public httpSavedSearchesGetAll(
 		external?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -245,6 +257,7 @@ export class SavedSearchManagementService {
 	public httpSavedSearchesGetAll(
 		external?: boolean,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -258,6 +271,9 @@ export class SavedSearchManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required

@@ -11,6 +11,6 @@
  */
 
 export interface PortalLanguages {
-	metadata?: string;
-	ui?: string;
+	metadata?: string | null;
+	ui?: string | null;
 }

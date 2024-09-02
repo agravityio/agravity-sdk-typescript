@@ -86,12 +86,14 @@ export class CollectionTypeItemBlueprintManagementService {
 	 * This endpoint creates one collection type item blueprint entry in the database.
 	 * @param collTypeItemBlueprint This endpoint creates an unique blueprint and adds the information to the database.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollTypeItemBlueprintsCreate(
 		collTypeItemBlueprint: CollTypeItemBlueprint,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -99,6 +101,7 @@ export class CollectionTypeItemBlueprintManagementService {
 	public httpCollTypeItemBlueprintsCreate(
 		collTypeItemBlueprint: CollTypeItemBlueprint,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -106,6 +109,7 @@ export class CollectionTypeItemBlueprintManagementService {
 	public httpCollTypeItemBlueprintsCreate(
 		collTypeItemBlueprint: CollTypeItemBlueprint,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -113,6 +117,7 @@ export class CollectionTypeItemBlueprintManagementService {
 	public httpCollTypeItemBlueprintsCreate(
 		collTypeItemBlueprint: CollTypeItemBlueprint,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -127,6 +132,9 @@ export class CollectionTypeItemBlueprintManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -217,34 +225,47 @@ export class CollectionTypeItemBlueprintManagementService {
 	/**
 	 * This endpoint lists all collection type item blueprint in database.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollTypeItemBlueprintsGetAll(
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<CollTypeItemBlueprint>>;
 	public httpCollTypeItemBlueprintsGetAll(
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<CollTypeItemBlueprint>>>;
 	public httpCollTypeItemBlueprintsGetAll(
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<CollTypeItemBlueprint>>>;
-	public httpCollTypeItemBlueprintsGetAll(translations?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCollTypeItemBlueprintsGetAll(
+		translations?: boolean,
+		acceptLanguage?: string,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required
@@ -283,6 +304,7 @@ export class CollectionTypeItemBlueprintManagementService {
 	 * @param id The ID of the blueprint.
 	 * @param collTypeItemBlueprint This endpoint updates an the given blueprint with ID and adds the information to the database.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -290,6 +312,7 @@ export class CollectionTypeItemBlueprintManagementService {
 		id: string,
 		collTypeItemBlueprint: CollTypeItemBlueprint,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -298,6 +321,7 @@ export class CollectionTypeItemBlueprintManagementService {
 		id: string,
 		collTypeItemBlueprint: CollTypeItemBlueprint,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -306,6 +330,7 @@ export class CollectionTypeItemBlueprintManagementService {
 		id: string,
 		collTypeItemBlueprint: CollTypeItemBlueprint,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -314,6 +339,7 @@ export class CollectionTypeItemBlueprintManagementService {
 		id: string,
 		collTypeItemBlueprint: CollTypeItemBlueprint,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -331,6 +357,9 @@ export class CollectionTypeItemBlueprintManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (msal_auth) required

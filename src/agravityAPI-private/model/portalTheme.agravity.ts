@@ -11,10 +11,10 @@
  */
 
 export interface PortalTheme {
-	background_url?: string;
-	logo_url?: string;
-	colors?: { [key: string]: object };
-	topbar_color?: string;
-	icon_empty?: string;
-	icon_active?: string;
+	background_url?: string | null;
+	logo_url?: string | null;
+	colors?: { [key: string]: object } | null;
+	topbar_color?: string | null;
+	icon_empty?: string | null;
+	icon_active?: string | null;
 }

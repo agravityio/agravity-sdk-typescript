@@ -11,7 +11,7 @@
  */
 
 export interface SearchableItem {
-	name?: string;
+	name?: string | null;
 	is_key?: boolean | null;
 	filterable?: boolean | null;
 	hidden?: boolean | null;
@@ -19,6 +19,6 @@ export interface SearchableItem {
 	facetable?: boolean | null;
 	sortable?: boolean | null;
 	is_collection?: boolean | null;
-	searchtype?: string;
-	fields?: Array<SearchableItem>;
+	searchtype?: string | null;
+	fields?: Array<SearchableItem> | null;
 }

@@ -12,8 +12,8 @@
 import { EntityIdName } from './entityIdName.pub.agravity';
 
 export interface CollectionUDL {
-	children?: Array<EntityIdName>;
-	name?: string;
-	translations?: { [key: string]: { [key: string]: object } };
-	id?: string;
+	children?: Array<EntityIdName> | null;
+	name?: string | null;
+	translations?: { [key: string]: { [key: string]: object } } | null;
+	id?: string | null;
 }

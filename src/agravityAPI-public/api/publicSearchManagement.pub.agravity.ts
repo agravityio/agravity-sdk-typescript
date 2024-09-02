@@ -230,6 +230,7 @@ export class PublicSearchManagementService {
 	 * @param ids Comma separated values list with all ids which should be returned.
 	 * @param portalId If the search should be redirected to a specific portal.
 	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
+	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -246,6 +247,7 @@ export class PublicSearchManagementService {
 		ids?: string,
 		portalId?: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -263,6 +265,7 @@ export class PublicSearchManagementService {
 		ids?: string,
 		portalId?: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -280,6 +283,7 @@ export class PublicSearchManagementService {
 		ids?: string,
 		portalId?: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -297,6 +301,7 @@ export class PublicSearchManagementService {
 		ids?: string,
 		portalId?: string,
 		translations?: boolean,
+		acceptLanguage?: string,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
@@ -344,6 +349,9 @@ export class PublicSearchManagementService {
 		}
 
 		let headers = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			headers = headers.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let credential: string | undefined;
 		// authentication (function_key) required

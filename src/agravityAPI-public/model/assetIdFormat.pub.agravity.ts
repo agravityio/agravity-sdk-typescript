@@ -11,7 +11,7 @@
  */
 
 export interface AssetIdFormat {
-	id?: string;
-	name?: string;
-	format?: string;
+	id?: string | null;
+	name?: string | null;
+	format?: string | null;
 }

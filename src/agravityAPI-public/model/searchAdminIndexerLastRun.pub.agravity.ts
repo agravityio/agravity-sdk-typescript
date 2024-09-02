@@ -11,9 +11,9 @@
  */
 
 export interface SearchAdminIndexerLastRun {
-	status?: string;
+	status?: string | null;
 	starttime?: string | null;
 	endtime?: string | null;
-	itemcount?: number;
-	faileditemcount?: number;
+	itemcount?: number | null;
+	faileditemcount?: number | null;
 }
