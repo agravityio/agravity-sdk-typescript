@@ -22,6 +22,30 @@ import { FrontendAppConfig } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpConfigDeleteSingleRequestParams {
+	/** The key of the configuration. */
+	key: string;
+}
+
+export interface HttpConfigGetFrontendAllRequestParams {
+	/** This returns only the custom created configurations. */
+	customonly?: boolean;
+}
+
+export interface HttpConfigUpdateRequestParams {
+	/** The key of the configuration. */
+	key: string;
+	/** Comma separated queue-names (have to start with \&#39;setup-\&#39;). */
+	addconfigqueues?: string;
+}
+
+export interface HttpConfigUpdateSingleRequestParams {
+	/** The key of the configuration. */
+	key: string;
+	/** The body has just to contain: value, content_type and/or description or full when custom config. */
+	appConfigTableEntity: AppConfigTableEntity;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,14 +108,30 @@ export class ConfigurationManagementService {
 
 	/**
 	 * Deletes an existing custom config value with the given key. It will also refresh the current application configuration cache for this key.
-	 * @param key The key of the configuration.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpConfigDeleteSingle(key: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<any>;
-	public httpConfigDeleteSingle(key: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpResponse<any>>;
-	public httpConfigDeleteSingle(key: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpEvent<any>>;
-	public httpConfigDeleteSingle(key: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: undefined }): Observable<any> {
+	public httpConfigDeleteSingle(requestParameters: HttpConfigDeleteSingleRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<any>;
+	public httpConfigDeleteSingle(
+		requestParameters: HttpConfigDeleteSingleRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: undefined }
+	): Observable<HttpResponse<any>>;
+	public httpConfigDeleteSingle(
+		requestParameters: HttpConfigDeleteSingleRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: undefined }
+	): Observable<HttpEvent<any>>;
+	public httpConfigDeleteSingle(
+		requestParameters: HttpConfigDeleteSingleRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: undefined }
+	): Observable<any> {
+		const key = requestParameters.key;
 		if (key === null || key === undefined) {
 			throw new Error('Required parameter key was null or undefined when calling httpConfigDeleteSingle.');
 		}
@@ -173,24 +213,36 @@ export class ConfigurationManagementService {
 
 	/**
 	 * Lists config value only for frontend stored in config table. Optional to filter for custom values only.
-	 * @param customonly This returns only the custom created configurations.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpConfigGetFrontendAll(customonly?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<FrontendAppConfig>>;
 	public httpConfigGetFrontendAll(
-		customonly?: boolean,
+		requestParameters: HttpConfigGetFrontendAllRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<FrontendAppConfig>>;
+	public httpConfigGetFrontendAll(
+		requestParameters: HttpConfigGetFrontendAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<FrontendAppConfig>>>;
 	public httpConfigGetFrontendAll(
-		customonly?: boolean,
+		requestParameters: HttpConfigGetFrontendAllRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<FrontendAppConfig>>>;
-	public httpConfigGetFrontendAll(customonly?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpConfigGetFrontendAll(
+		requestParameters: HttpConfigGetFrontendAllRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const customonly = requestParameters.customonly;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (customonly !== undefined && customonly !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>customonly, 'customonly');
@@ -232,30 +284,39 @@ export class ConfigurationManagementService {
 
 	/**
 	 * This initializes all configurations and write them into appconfig table.
-	 * @param key The key of the configuration.
-	 * @param addconfigqueues Comma separated queue-names (have to start with \&#39;setup-\&#39;).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpConfigUpdate(key: string, addconfigqueues?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AppConfigTableEntity>;
 	public httpConfigUpdate(
-		key: string,
-		addconfigqueues?: string,
+		requestParameters: HttpConfigUpdateRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AppConfigTableEntity>;
+	public httpConfigUpdate(
+		requestParameters: HttpConfigUpdateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AppConfigTableEntity>>;
 	public httpConfigUpdate(
-		key: string,
-		addconfigqueues?: string,
+		requestParameters: HttpConfigUpdateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AppConfigTableEntity>>;
-	public httpConfigUpdate(key: string, addconfigqueues?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpConfigUpdate(
+		requestParameters: HttpConfigUpdateRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const key = requestParameters.key;
 		if (key === null || key === undefined) {
 			throw new Error('Required parameter key was null or undefined when calling httpConfigUpdate.');
 		}
+		const addconfigqueues = requestParameters.addconfigqueues;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (addconfigqueues !== undefined && addconfigqueues !== null) {
@@ -298,42 +359,39 @@ export class ConfigurationManagementService {
 
 	/**
 	 * Update an existing (pre-generated) config value (only value, content-type and description) or creates/updates custom config with the given key (full). It will also refresh the current application configuration cache for this key.
-	 * @param key The key of the configuration.
-	 * @param appConfigTableEntity The body has just to contain: value, content_type and/or description or full when custom config.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpConfigUpdateSingle(
-		key: string,
-		appConfigTableEntity: AppConfigTableEntity,
+		requestParameters: HttpConfigUpdateSingleRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AppConfigTableEntity>;
 	public httpConfigUpdateSingle(
-		key: string,
-		appConfigTableEntity: AppConfigTableEntity,
+		requestParameters: HttpConfigUpdateSingleRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AppConfigTableEntity>>;
 	public httpConfigUpdateSingle(
-		key: string,
-		appConfigTableEntity: AppConfigTableEntity,
+		requestParameters: HttpConfigUpdateSingleRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AppConfigTableEntity>>;
 	public httpConfigUpdateSingle(
-		key: string,
-		appConfigTableEntity: AppConfigTableEntity,
+		requestParameters: HttpConfigUpdateSingleRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const key = requestParameters.key;
 		if (key === null || key === undefined) {
 			throw new Error('Required parameter key was null or undefined when calling httpConfigUpdateSingle.');
 		}
+		const appConfigTableEntity = requestParameters.appConfigTableEntity;
 		if (appConfigTableEntity === null || appConfigTableEntity === undefined) {
 			throw new Error('Required parameter appConfigTableEntity was null or undefined when calling httpConfigUpdateSingle.');
 		}

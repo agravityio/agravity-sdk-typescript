@@ -22,6 +22,29 @@ import { SavedSearch } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpSavedSearchesCreateRequestParams {
+	/** This endpoint creates an unique saved search ID and adds the information to the database. */
+	savedSearch: SavedSearch;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpSavedSearchesDeleteByIdRequestParams {
+	/** The ID of the saved search. */
+	id: string;
+}
+
+export interface HttpSavedSearchesGetAllRequestParams {
+	/** This parameter filters out all saved searches on basis this boolean. */
+	external?: boolean;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,47 +107,40 @@ export class SavedSearchManagementService {
 
 	/**
 	 * This endpoint creates one saved search entry in the database.
-	 * @param savedSearch This endpoint creates an unique saved search ID and adds the information to the database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSavedSearchesCreate(
-		savedSearch: SavedSearch,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpSavedSearchesCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<SavedSearch>;
 	public httpSavedSearchesCreate(
-		savedSearch: SavedSearch,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpSavedSearchesCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SavedSearch>>;
 	public httpSavedSearchesCreate(
-		savedSearch: SavedSearch,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpSavedSearchesCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<SavedSearch>>;
 	public httpSavedSearchesCreate(
-		savedSearch: SavedSearch,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpSavedSearchesCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const savedSearch = requestParameters.savedSearch;
 		if (savedSearch === null || savedSearch === undefined) {
 			throw new Error('Required parameter savedSearch was null or undefined when calling httpSavedSearchesCreate.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -177,14 +193,35 @@ export class SavedSearchManagementService {
 
 	/**
 	 * This endpoint deletes a single saved search.
-	 * @param id The ID of the saved search.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpSavedSearchesDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpSavedSearchesDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpSavedSearchesDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpSavedSearchesDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSavedSearchesDeleteById(
+		requestParameters: HttpSavedSearchesDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpSavedSearchesDeleteById(
+		requestParameters: HttpSavedSearchesDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpSavedSearchesDeleteById(
+		requestParameters: HttpSavedSearchesDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpSavedSearchesDeleteById(
+		requestParameters: HttpSavedSearchesDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpSavedSearchesDeleteById.');
 		}
@@ -224,44 +261,38 @@ export class SavedSearchManagementService {
 
 	/**
 	 * This endpoint lists all saved searches in database.
-	 * @param external This parameter filters out all saved searches on basis this boolean.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSavedSearchesGetAll(
-		external?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpSavedSearchesGetAllRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<SavedSearch>>;
 	public httpSavedSearchesGetAll(
-		external?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpSavedSearchesGetAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<SavedSearch>>>;
 	public httpSavedSearchesGetAll(
-		external?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpSavedSearchesGetAllRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<SavedSearch>>>;
 	public httpSavedSearchesGetAll(
-		external?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpSavedSearchesGetAllRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const external = requestParameters.external;
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (external !== undefined && external !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>external, 'external');

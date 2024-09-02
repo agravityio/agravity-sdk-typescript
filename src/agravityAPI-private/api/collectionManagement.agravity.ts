@@ -23,6 +23,93 @@ import { Collection } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpCollectionsCreateRequestParams {
+	/** The ID of the collection type where this collections should be assigned. */
+	collectiontypeid: string;
+	/** This endpoint creates a unique collection ID and adds the information to the database. */
+	collection: Collection;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpCollectionsDeleteByIdRequestParams {
+	/** The ID of the collection. */
+	id: string;
+	/** If this is true the assigned assets are set to delete as well. */
+	deleteassets?: boolean;
+}
+
+export interface HttpCollectionsGetRequestParams {
+	/** The ID of the collection type, where these collections should come from. */
+	collectiontypeid?: string;
+	/** The hierarchy level of collections which should be returned. */
+	level?: number;
+	/** The ID of the parent collection which should be queried. (No collectiontypeid is required) */
+	parentid?: string;
+	/** This limits the fields which are returned, separated by comma (\&#39;,\&#39;). */
+	fields?: string;
+	/** The items can be extended to fully filled items. */
+	items?: boolean;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpCollectionsGetByIdRequestParams {
+	/** The ID of the collection. */
+	id: string;
+	/** This limits the fields which are returned, separated by comma (\&#39;,\&#39;). */
+	fields?: string;
+	/** The items can be extended to fully filled items. */
+	items?: boolean;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpCollectionsGetDescendantsTreeOfIdRequestParams {
+	/** The ID of the collection. */
+	id: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpCollectionsGetTreeAncestorsOfIdRequestParams {
+	/** The ID of the collection. */
+	id: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpCollectionsUpdateByIdRequestParams {
+	/** The ID of the collection. */
+	id: string;
+	/** The body has to be a valid collection json.Not fitting properties are ignored. */
+	collection: Collection;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpGetCollectionPreviewsByIdRequestParams {
+	/** The ID of the collection. */
+	id: string;
+}
+
+export interface HttpPatchCollectionRepairRequestParams {
+	/** The ID of the collection. */
+	id: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -85,55 +172,44 @@ export class CollectionManagementService {
 
 	/**
 	 * This endpoint creates a unique collection ID and adds the information to the database.
-	 * @param collectiontypeid The ID of the collection type where this collections should be assigned.
-	 * @param collection This endpoint creates a unique collection ID and adds the information to the database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsCreate(
-		collectiontypeid: string,
-		collection: Collection,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Collection>;
 	public httpCollectionsCreate(
-		collectiontypeid: string,
-		collection: Collection,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Collection>>;
 	public httpCollectionsCreate(
-		collectiontypeid: string,
-		collection: Collection,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Collection>>;
 	public httpCollectionsCreate(
-		collectiontypeid: string,
-		collection: Collection,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const collectiontypeid = requestParameters.collectiontypeid;
 		if (collectiontypeid === null || collectiontypeid === undefined) {
 			throw new Error('Required parameter collectiontypeid was null or undefined when calling httpCollectionsCreate.');
 		}
+		const collection = requestParameters.collection;
 		if (collection === null || collection === undefined) {
 			throw new Error('Required parameter collection was null or undefined when calling httpCollectionsCreate.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (collectiontypeid !== undefined && collectiontypeid !== null) {
@@ -189,24 +265,39 @@ export class CollectionManagementService {
 
 	/**
 	 * This endpoint deletes the collection with the given ID (and their siblings).
-	 * @param id The ID of the collection.
-	 * @param deleteassets If this is true the assigned assets are set to delete as well.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCollectionsDeleteById(id: string, deleteassets?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
 	public httpCollectionsDeleteById(
-		id: string,
-		deleteassets?: boolean,
+		requestParameters: HttpCollectionsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpCollectionsDeleteById(
+		requestParameters: HttpCollectionsDeleteByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<any>>;
-	public httpCollectionsDeleteById(id: string, deleteassets?: boolean, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpCollectionsDeleteById(id: string, deleteassets?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCollectionsDeleteById(
+		requestParameters: HttpCollectionsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpCollectionsDeleteById(
+		requestParameters: HttpCollectionsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCollectionsDeleteById.');
 		}
+		const deleteassets = requestParameters.deleteassets;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (deleteassets !== undefined && deleteassets !== null) {
@@ -249,64 +340,42 @@ export class CollectionManagementService {
 
 	/**
 	 * This endpoint lists all the collections, which are stored in the database and not deleted (status \&quot;A\&quot;)
-	 * @param collectiontypeid The ID of the collection type, where these collections should come from.
-	 * @param level The hierarchy level of collections which should be returned.
-	 * @param parentid The ID of the parent collection which should be queried. (No collectiontypeid is required)
-	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
-	 * @param items The items can be extended to fully filled items.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsGet(
-		collectiontypeid?: string,
-		level?: number,
-		parentid?: string,
-		fields?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<Collection>>;
 	public httpCollectionsGet(
-		collectiontypeid?: string,
-		level?: number,
-		parentid?: string,
-		fields?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<Collection>>>;
 	public httpCollectionsGet(
-		collectiontypeid?: string,
-		level?: number,
-		parentid?: string,
-		fields?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<Collection>>>;
 	public httpCollectionsGet(
-		collectiontypeid?: string,
-		level?: number,
-		parentid?: string,
-		fields?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const collectiontypeid = requestParameters.collectiontypeid;
+		const level = requestParameters.level;
+		const parentid = requestParameters.parentid;
+		const fields = requestParameters.fields;
+		const items = requestParameters.items;
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (collectiontypeid !== undefined && collectiontypeid !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>collectiontypeid, 'collectiontypeid');
@@ -366,57 +435,42 @@ export class CollectionManagementService {
 
 	/**
 	 * This endpoint returns one single collection (from ID). This will include all specific properties from collection type.
-	 * @param id The ID of the collection.
-	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
-	 * @param items The items can be extended to fully filled items.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsGetById(
-		id: string,
-		fields?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Collection>;
 	public httpCollectionsGetById(
-		id: string,
-		fields?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Collection>>;
 	public httpCollectionsGetById(
-		id: string,
-		fields?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Collection>>;
 	public httpCollectionsGetById(
-		id: string,
-		fields?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCollectionsGetById.');
 		}
+		const fields = requestParameters.fields;
+		const items = requestParameters.items;
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (fields !== undefined && fields !== null) {
@@ -468,47 +522,40 @@ export class CollectionManagementService {
 
 	/**
 	 * This endpoint returns the complete tree of descendants from a single collection.
-	 * @param id The ID of the collection.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsGetDescendantsTreeOfId(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetDescendantsTreeOfIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<Collection>>;
 	public httpCollectionsGetDescendantsTreeOfId(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetDescendantsTreeOfIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<Collection>>>;
 	public httpCollectionsGetDescendantsTreeOfId(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetDescendantsTreeOfIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<Collection>>>;
 	public httpCollectionsGetDescendantsTreeOfId(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetDescendantsTreeOfIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCollectionsGetDescendantsTreeOfId.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -554,47 +601,40 @@ export class CollectionManagementService {
 
 	/**
 	 * This endpoint returns the complete tree of ancestors from a single collection.
-	 * @param id The ID of the collection.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsGetTreeAncestorsOfId(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetTreeAncestorsOfIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<Collection>>;
 	public httpCollectionsGetTreeAncestorsOfId(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetTreeAncestorsOfIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<Collection>>>;
 	public httpCollectionsGetTreeAncestorsOfId(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetTreeAncestorsOfIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<Collection>>>;
 	public httpCollectionsGetTreeAncestorsOfId(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsGetTreeAncestorsOfIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCollectionsGetTreeAncestorsOfId.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -640,55 +680,44 @@ export class CollectionManagementService {
 
 	/**
 	 * This endpoint updates the collection. Specific properties could be updated.
-	 * @param id The ID of the collection.
-	 * @param collection The body has to be a valid collection json.Not fitting properties are ignored.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollectionsUpdateById(
-		id: string,
-		collection: Collection,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Collection>;
 	public httpCollectionsUpdateById(
-		id: string,
-		collection: Collection,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Collection>>;
 	public httpCollectionsUpdateById(
-		id: string,
-		collection: Collection,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Collection>>;
 	public httpCollectionsUpdateById(
-		id: string,
-		collection: Collection,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollectionsUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCollectionsUpdateById.');
 		}
+		const collection = requestParameters.collection;
 		if (collection === null || collection === undefined) {
 			throw new Error('Required parameter collection was null or undefined when calling httpCollectionsUpdateById.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -741,14 +770,35 @@ export class CollectionManagementService {
 
 	/**
 	 * This endpoint returns a generated thumbnail as a preview of the containing assets.
-	 * @param id The ID of the collection.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetCollectionPreviewsById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/png' }): Observable<string>;
-	public httpGetCollectionPreviewsById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/png' }): Observable<HttpResponse<string>>;
-	public httpGetCollectionPreviewsById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/png' }): Observable<HttpEvent<string>>;
-	public httpGetCollectionPreviewsById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'image/png' }): Observable<any> {
+	public httpGetCollectionPreviewsById(
+		requestParameters: HttpGetCollectionPreviewsByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/png' }
+	): Observable<string>;
+	public httpGetCollectionPreviewsById(
+		requestParameters: HttpGetCollectionPreviewsByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/png' }
+	): Observable<HttpResponse<string>>;
+	public httpGetCollectionPreviewsById(
+		requestParameters: HttpGetCollectionPreviewsByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/png' }
+	): Observable<HttpEvent<string>>;
+	public httpGetCollectionPreviewsById(
+		requestParameters: HttpGetCollectionPreviewsByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'image/png' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetCollectionPreviewsById.');
 		}
@@ -788,14 +838,35 @@ export class CollectionManagementService {
 
 	/**
 	 * This endpoint repairs the items of an collection. Checks all collection type items and assign it to collection.
-	 * @param id The ID of the collection.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPatchCollectionRepair(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpPatchCollectionRepair(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpPatchCollectionRepair(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPatchCollectionRepair(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPatchCollectionRepair(
+		requestParameters: HttpPatchCollectionRepairRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPatchCollectionRepair(
+		requestParameters: HttpPatchCollectionRepairRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpPatchCollectionRepair(
+		requestParameters: HttpPatchCollectionRepairRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpPatchCollectionRepair(
+		requestParameters: HttpPatchCollectionRepairRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPatchCollectionRepair.');
 		}

@@ -25,6 +25,45 @@ import { SasToken } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpAuthCreatePublicApiKeyRequestParams {
+	/** The user to create. */
+	agravityUserDto: AgravityUserDto;
+}
+
+export interface HttpAuthDeletePublicApiKeyRequestParams {
+	/** The ID of api key user */
+	id: string;
+}
+
+export interface HttpAuthGetAgravityUserByIdRequestParams {
+	/** The ID of the requested Agravity user. */
+	id: string;
+	/** (Optional): If the reponse should be limited to name and email. */
+	limit?: boolean;
+}
+
+export interface HttpAuthGetAgravityUsersRequestParams {
+	/** (Optional): If the reponse should be limited to name and email. */
+	limit?: boolean;
+	/** (Optional): If the response should be limited to api key users */
+	apikey?: boolean;
+}
+
+export interface HttpAuthGetBlobReadSasTokenRequestParams {
+	/** The name of the blob (aka the ID of the asset) */
+	blobName: string;
+}
+
+export interface HttpAuthGetContainerReadSasTokenRequestParams {
+	/** The name of the requested storage container. */
+	containerName: string;
+}
+
+export interface HttpAuthPatchImpersonateUserRequestParams {
+	/** The ID of the user which should be impersonated. */
+	id: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -87,24 +126,35 @@ export class AuthenticationManagementService {
 
 	/**
 	 * This endpoint creates a new api key user in database and registers it on the public function
-	 * @param agravityUserDto The user to create.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAuthCreatePublicApiKey(agravityUserDto: AgravityUserDto, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityUser>;
 	public httpAuthCreatePublicApiKey(
-		agravityUserDto: AgravityUserDto,
+		requestParameters: HttpAuthCreatePublicApiKeyRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityUser>;
+	public httpAuthCreatePublicApiKey(
+		requestParameters: HttpAuthCreatePublicApiKeyRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityUser>>;
 	public httpAuthCreatePublicApiKey(
-		agravityUserDto: AgravityUserDto,
+		requestParameters: HttpAuthCreatePublicApiKeyRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityUser>>;
-	public httpAuthCreatePublicApiKey(agravityUserDto: AgravityUserDto, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAuthCreatePublicApiKey(
+		requestParameters: HttpAuthCreatePublicApiKeyRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const agravityUserDto = requestParameters.agravityUserDto;
 		if (agravityUserDto === null || agravityUserDto === undefined) {
 			throw new Error('Required parameter agravityUserDto was null or undefined when calling httpAuthCreatePublicApiKey.');
 		}
@@ -193,14 +243,35 @@ export class AuthenticationManagementService {
 
 	/**
 	 * This endpoint deletes an api key user and removed the key from public functions.
-	 * @param id The ID of api key user
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAuthDeletePublicApiKey(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpAuthDeletePublicApiKey(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpAuthDeletePublicApiKey(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpAuthDeletePublicApiKey(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAuthDeletePublicApiKey(
+		requestParameters: HttpAuthDeletePublicApiKeyRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpAuthDeletePublicApiKey(
+		requestParameters: HttpAuthDeletePublicApiKeyRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpAuthDeletePublicApiKey(
+		requestParameters: HttpAuthDeletePublicApiKeyRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpAuthDeletePublicApiKey(
+		requestParameters: HttpAuthDeletePublicApiKeyRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAuthDeletePublicApiKey.');
 		}
@@ -282,30 +353,39 @@ export class AuthenticationManagementService {
 
 	/**
 	 * This endpoint returns the Agravity user from database.
-	 * @param id The ID of the requested Agravity user.
-	 * @param limit (Optional): If the reponse should be limited to name and email.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAuthGetAgravityUserById(id: string, limit?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityUser>;
 	public httpAuthGetAgravityUserById(
-		id: string,
-		limit?: boolean,
+		requestParameters: HttpAuthGetAgravityUserByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityUser>;
+	public httpAuthGetAgravityUserById(
+		requestParameters: HttpAuthGetAgravityUserByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityUser>>;
 	public httpAuthGetAgravityUserById(
-		id: string,
-		limit?: boolean,
+		requestParameters: HttpAuthGetAgravityUserByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityUser>>;
-	public httpAuthGetAgravityUserById(id: string, limit?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAuthGetAgravityUserById(
+		requestParameters: HttpAuthGetAgravityUserByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAuthGetAgravityUserById.');
 		}
+		const limit = requestParameters.limit;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (limit !== undefined && limit !== null) {
@@ -348,33 +428,37 @@ export class AuthenticationManagementService {
 
 	/**
 	 * This endpoint returns all the Agravity users from database.
-	 * @param limit (Optional): If the reponse should be limited to name and email.
-	 * @param apikey (Optional): If the response should be limited to api key users
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAuthGetAgravityUsers(
-		limit?: boolean,
-		apikey?: boolean,
+		requestParameters: HttpAuthGetAgravityUsersRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<AgravityUser>>;
 	public httpAuthGetAgravityUsers(
-		limit?: boolean,
-		apikey?: boolean,
+		requestParameters: HttpAuthGetAgravityUsersRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<AgravityUser>>>;
 	public httpAuthGetAgravityUsers(
-		limit?: boolean,
-		apikey?: boolean,
+		requestParameters: HttpAuthGetAgravityUsersRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<AgravityUser>>>;
-	public httpAuthGetAgravityUsers(limit?: boolean, apikey?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAuthGetAgravityUsers(
+		requestParameters: HttpAuthGetAgravityUsersRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const limit = requestParameters.limit;
+		const apikey = requestParameters.apikey;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (limit !== undefined && limit !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>limit, 'limit');
@@ -461,14 +545,35 @@ export class AuthenticationManagementService {
 
 	/**
 	 * This endpoint creates and returns a SAS token for a single blob inside the optimized OR thumbnails container.
-	 * @param blobName The name of the blob (aka the ID of the asset)
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAuthGetBlobReadSasToken(blobName: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SasToken>;
-	public httpAuthGetBlobReadSasToken(blobName: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<SasToken>>;
-	public httpAuthGetBlobReadSasToken(blobName: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<SasToken>>;
-	public httpAuthGetBlobReadSasToken(blobName: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAuthGetBlobReadSasToken(
+		requestParameters: HttpAuthGetBlobReadSasTokenRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SasToken>;
+	public httpAuthGetBlobReadSasToken(
+		requestParameters: HttpAuthGetBlobReadSasTokenRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<SasToken>>;
+	public httpAuthGetBlobReadSasToken(
+		requestParameters: HttpAuthGetBlobReadSasTokenRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SasToken>>;
+	public httpAuthGetBlobReadSasToken(
+		requestParameters: HttpAuthGetBlobReadSasTokenRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const blobName = requestParameters.blobName;
 		if (blobName === null || blobName === undefined) {
 			throw new Error('Required parameter blobName was null or undefined when calling httpAuthGetBlobReadSasToken.');
 		}
@@ -508,19 +613,35 @@ export class AuthenticationManagementService {
 
 	/**
 	 * This endpoint creates and returns a SAS token for a single container with read only access
-	 * @param containerName The name of the requested storage container.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAuthGetContainerReadSasToken(containerName: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SasToken>;
 	public httpAuthGetContainerReadSasToken(
-		containerName: string,
+		requestParameters: HttpAuthGetContainerReadSasTokenRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SasToken>;
+	public httpAuthGetContainerReadSasToken(
+		requestParameters: HttpAuthGetContainerReadSasTokenRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SasToken>>;
-	public httpAuthGetContainerReadSasToken(containerName: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<SasToken>>;
-	public httpAuthGetContainerReadSasToken(containerName: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAuthGetContainerReadSasToken(
+		requestParameters: HttpAuthGetContainerReadSasTokenRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SasToken>>;
+	public httpAuthGetContainerReadSasToken(
+		requestParameters: HttpAuthGetContainerReadSasTokenRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const containerName = requestParameters.containerName;
 		if (containerName === null || containerName === undefined) {
 			throw new Error('Required parameter containerName was null or undefined when calling httpAuthGetContainerReadSasToken.');
 		}
@@ -644,19 +765,35 @@ export class AuthenticationManagementService {
 
 	/**
 	 * This endpoint to impersonate an Agravity user.
-	 * @param id The ID of the user which should be impersonated.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAuthPatchImpersonateUser(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpAuthPatchImpersonateUser(
-		id: string,
+		requestParameters: HttpAuthPatchImpersonateUserRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpAuthPatchImpersonateUser(
+		requestParameters: HttpAuthPatchImpersonateUserRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpAuthPatchImpersonateUser(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpAuthPatchImpersonateUser(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAuthPatchImpersonateUser(
+		requestParameters: HttpAuthPatchImpersonateUserRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpAuthPatchImpersonateUser(
+		requestParameters: HttpAuthPatchImpersonateUserRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAuthPatchImpersonateUser.');
 		}

@@ -22,6 +22,33 @@ import { ExcelExportTableEntity } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpDataExportAssetsAsExcelRequestParams {
+	/** Used to specify what to be returned. Valid values are: collection_type_ids, collection_ids and asset_ids. When providing multiple values separate it with comma (\&#39;,\&#39;). */
+	ids?: string;
+	/** In which language the assets should be exported. */
+	language?: string;
+}
+
+export interface HttpDataExportItemsAsExcelRequestParams {
+	/** Used to specify what to be retured. Valid values are: asset, workspace, collection_type and/or only certain collection types (IDs) for exporting. When providing multiple values separate it with comma (\&#39;,\&#39;). */
+	filter?: string;
+}
+
+export interface HttpDataExportTranslationsAsExcelRequestParams {
+	/** Used to specify what to be returned. Valid values are: asset, workspace, collection_type, collection, ct_item, download_format and/or only certain collection types (IDs) for exporting. When providing multiple values separate it with comma (\&#39;,\&#39;). */
+	filter?: string;
+}
+
+export interface HttpDataExportTranslationsCancelRequestParams {
+	/** The ID of translation export */
+	id: string;
+}
+
+export interface HttpDataExportTranslationsCheckStatusRequestParams {
+	/** The ID of translation export */
+	id: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,33 +111,37 @@ export class DataImportExportManagementService {
 
 	/**
 	 * This endpoint creates an excel export of an asset list.
-	 * @param ids Used to specify what to be returned. Valid values are: collection_type_ids, collection_ids and asset_ids. When providing multiple values separate it with comma (\&#39;,\&#39;).
-	 * @param language In which language the assets should be exported.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDataExportAssetsAsExcel(
-		ids?: string,
-		language?: string,
+		requestParameters: HttpDataExportAssetsAsExcelRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<ExcelExportTableEntity>;
 	public httpDataExportAssetsAsExcel(
-		ids?: string,
-		language?: string,
+		requestParameters: HttpDataExportAssetsAsExcelRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<ExcelExportTableEntity>>;
 	public httpDataExportAssetsAsExcel(
-		ids?: string,
-		language?: string,
+		requestParameters: HttpDataExportAssetsAsExcelRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<ExcelExportTableEntity>>;
-	public httpDataExportAssetsAsExcel(ids?: string, language?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDataExportAssetsAsExcel(
+		requestParameters: HttpDataExportAssetsAsExcelRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const ids = requestParameters.ids;
+		const language = requestParameters.language;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (ids !== undefined && ids !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>ids, 'ids');
@@ -155,19 +186,36 @@ export class DataImportExportManagementService {
 
 	/**
 	 * This endpoint creates an excel export of the db
-	 * @param filter Used to specify what to be retured. Valid values are: asset, workspace, collection_type and/or only certain collection types (IDs) for exporting. When providing multiple values separate it with comma (\&#39;,\&#39;).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDataExportItemsAsExcel(filter?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpDataExportItemsAsExcel(
-		filter?: string,
+		requestParameters: HttpDataExportItemsAsExcelRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpDataExportItemsAsExcel(
+		requestParameters: HttpDataExportItemsAsExcelRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpDataExportItemsAsExcel(filter?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpDataExportItemsAsExcel(filter?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDataExportItemsAsExcel(
+		requestParameters: HttpDataExportItemsAsExcelRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpDataExportItemsAsExcel(
+		requestParameters: HttpDataExportItemsAsExcelRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const filter = requestParameters.filter;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (filter !== undefined && filter !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>filter, 'filter');
@@ -209,24 +257,36 @@ export class DataImportExportManagementService {
 
 	/**
 	 * This endpoint creates an excel export of translations of db entities
-	 * @param filter Used to specify what to be returned. Valid values are: asset, workspace, collection_type, collection, ct_item, download_format and/or only certain collection types (IDs) for exporting. When providing multiple values separate it with comma (\&#39;,\&#39;).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDataExportTranslationsAsExcel(filter?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<ExcelExportTableEntity>;
 	public httpDataExportTranslationsAsExcel(
-		filter?: string,
+		requestParameters: HttpDataExportTranslationsAsExcelRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<ExcelExportTableEntity>;
+	public httpDataExportTranslationsAsExcel(
+		requestParameters: HttpDataExportTranslationsAsExcelRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<ExcelExportTableEntity>>;
 	public httpDataExportTranslationsAsExcel(
-		filter?: string,
+		requestParameters: HttpDataExportTranslationsAsExcelRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<ExcelExportTableEntity>>;
-	public httpDataExportTranslationsAsExcel(filter?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDataExportTranslationsAsExcel(
+		requestParameters: HttpDataExportTranslationsAsExcelRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const filter = requestParameters.filter;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (filter !== undefined && filter !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>filter, 'filter');
@@ -268,14 +328,35 @@ export class DataImportExportManagementService {
 
 	/**
 	 * This endpoint retrieves the status and if populated the url to the excel export
-	 * @param id The ID of translation export
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDataExportTranslationsCancel(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<any>;
-	public httpDataExportTranslationsCancel(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpResponse<any>>;
-	public httpDataExportTranslationsCancel(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpEvent<any>>;
-	public httpDataExportTranslationsCancel(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: undefined }): Observable<any> {
+	public httpDataExportTranslationsCancel(
+		requestParameters: HttpDataExportTranslationsCancelRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: undefined }
+	): Observable<any>;
+	public httpDataExportTranslationsCancel(
+		requestParameters: HttpDataExportTranslationsCancelRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: undefined }
+	): Observable<HttpResponse<any>>;
+	public httpDataExportTranslationsCancel(
+		requestParameters: HttpDataExportTranslationsCancelRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: undefined }
+	): Observable<HttpEvent<any>>;
+	public httpDataExportTranslationsCancel(
+		requestParameters: HttpDataExportTranslationsCancelRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: undefined }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDataExportTranslationsCancel.');
 		}
@@ -315,24 +396,35 @@ export class DataImportExportManagementService {
 
 	/**
 	 * This endpoint retrieves the status and if populated the url to the excel export.
-	 * @param id The ID of translation export
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDataExportTranslationsCheckStatus(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<ExcelExportTableEntity>;
 	public httpDataExportTranslationsCheckStatus(
-		id: string,
+		requestParameters: HttpDataExportTranslationsCheckStatusRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<ExcelExportTableEntity>;
+	public httpDataExportTranslationsCheckStatus(
+		requestParameters: HttpDataExportTranslationsCheckStatusRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<ExcelExportTableEntity>>;
 	public httpDataExportTranslationsCheckStatus(
-		id: string,
+		requestParameters: HttpDataExportTranslationsCheckStatusRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<ExcelExportTableEntity>>;
-	public httpDataExportTranslationsCheckStatus(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDataExportTranslationsCheckStatus(
+		requestParameters: HttpDataExportTranslationsCheckStatusRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDataExportTranslationsCheckStatus.');
 		}

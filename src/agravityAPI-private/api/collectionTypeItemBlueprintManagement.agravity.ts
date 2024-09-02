@@ -22,6 +22,38 @@ import { CollTypeItemBlueprint } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpCollTypeItemBlueprintsCreateRequestParams {
+	/** This endpoint creates an unique blueprint and adds the information to the database. */
+	collTypeItemBlueprint: CollTypeItemBlueprint;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpCollTypeItemBlueprintsDeleteByIdRequestParams {
+	/** The ID of the blueprint. */
+	id: string;
+}
+
+export interface HttpCollTypeItemBlueprintsGetAllRequestParams {
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpCollTypeItemBlueprintsUpdateByIdRequestParams {
+	/** The ID of the blueprint. */
+	id: string;
+	/** This endpoint updates an the given blueprint with ID and adds the information to the database. */
+	collTypeItemBlueprint: CollTypeItemBlueprint;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,47 +116,40 @@ export class CollectionTypeItemBlueprintManagementService {
 
 	/**
 	 * This endpoint creates one collection type item blueprint entry in the database.
-	 * @param collTypeItemBlueprint This endpoint creates an unique blueprint and adds the information to the database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollTypeItemBlueprintsCreate(
-		collTypeItemBlueprint: CollTypeItemBlueprint,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<CollTypeItemBlueprint>;
 	public httpCollTypeItemBlueprintsCreate(
-		collTypeItemBlueprint: CollTypeItemBlueprint,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<CollTypeItemBlueprint>>;
 	public httpCollTypeItemBlueprintsCreate(
-		collTypeItemBlueprint: CollTypeItemBlueprint,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<CollTypeItemBlueprint>>;
 	public httpCollTypeItemBlueprintsCreate(
-		collTypeItemBlueprint: CollTypeItemBlueprint,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const collTypeItemBlueprint = requestParameters.collTypeItemBlueprint;
 		if (collTypeItemBlueprint === null || collTypeItemBlueprint === undefined) {
 			throw new Error('Required parameter collTypeItemBlueprint was null or undefined when calling httpCollTypeItemBlueprintsCreate.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -177,14 +202,35 @@ export class CollectionTypeItemBlueprintManagementService {
 
 	/**
 	 * This endpoint deletes a single collection type item blueprint.
-	 * @param id The ID of the blueprint.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCollTypeItemBlueprintsDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpCollTypeItemBlueprintsDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpCollTypeItemBlueprintsDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpCollTypeItemBlueprintsDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCollTypeItemBlueprintsDeleteById(
+		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpCollTypeItemBlueprintsDeleteById(
+		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpCollTypeItemBlueprintsDeleteById(
+		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpCollTypeItemBlueprintsDeleteById(
+		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemBlueprintsDeleteById.');
 		}
@@ -224,39 +270,37 @@ export class CollectionTypeItemBlueprintManagementService {
 
 	/**
 	 * This endpoint lists all collection type item blueprint in database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollTypeItemBlueprintsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsGetAllRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<CollTypeItemBlueprint>>;
 	public httpCollTypeItemBlueprintsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsGetAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<CollTypeItemBlueprint>>>;
 	public httpCollTypeItemBlueprintsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsGetAllRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<CollTypeItemBlueprint>>>;
 	public httpCollTypeItemBlueprintsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsGetAllRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
@@ -301,55 +345,44 @@ export class CollectionTypeItemBlueprintManagementService {
 
 	/**
 	 * This endpoint updates a single collection type item blueprint.
-	 * @param id The ID of the blueprint.
-	 * @param collTypeItemBlueprint This endpoint updates an the given blueprint with ID and adds the information to the database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCollTypeItemBlueprintsUpdateById(
-		id: string,
-		collTypeItemBlueprint: CollTypeItemBlueprint,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<CollTypeItemBlueprint>;
 	public httpCollTypeItemBlueprintsUpdateById(
-		id: string,
-		collTypeItemBlueprint: CollTypeItemBlueprint,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<CollTypeItemBlueprint>>;
 	public httpCollTypeItemBlueprintsUpdateById(
-		id: string,
-		collTypeItemBlueprint: CollTypeItemBlueprint,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<CollTypeItemBlueprint>>;
 	public httpCollTypeItemBlueprintsUpdateById(
-		id: string,
-		collTypeItemBlueprint: CollTypeItemBlueprint,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemBlueprintsUpdateById.');
 		}
+		const collTypeItemBlueprint = requestParameters.collTypeItemBlueprint;
 		if (collTypeItemBlueprint === null || collTypeItemBlueprint === undefined) {
 			throw new Error('Required parameter collTypeItemBlueprint was null or undefined when calling httpCollTypeItemBlueprintsUpdateById.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {

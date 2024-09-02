@@ -28,6 +28,43 @@ import { SearchableItem } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpCalculateMD5HashForAssetRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpGetAllUserDefinedListsRequestParams {
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpGetAllowedFilterableItemsRequestParams {
+	/** If the search should be redirected to a specific portal. */
+	portalId?: string;
+}
+
+export interface HttpGetAllowedSearchableItemNamesRequestParams {
+	/** If the search should be redirected to a specific portal. */
+	portalId?: string;
+}
+
+export interface HttpGetAllowedSearchableItemsRequestParams {
+	/** If the search should be redirected to a specific portal. */
+	portalId?: string;
+}
+
+export interface HttpGetAssetSkillEnhancerRequestParams {
+	/** The ID of the entity (Asset or Collection). */
+	id: string;
+}
+
+export interface HttpQueuesAgainRequestParams {
+	/** Enter queue name which has to take messages from poison to regular queue. */
+	queue: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -90,19 +127,35 @@ export class HelperToolsService {
 
 	/**
 	 * This endpoint calculates the md5 hash of an asset.
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCalculateMD5HashForAsset(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpCalculateMD5HashForAsset(
-		id: string,
+		requestParameters: HttpCalculateMD5HashForAssetRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpCalculateMD5HashForAsset(
+		requestParameters: HttpCalculateMD5HashForAssetRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpCalculateMD5HashForAsset(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpCalculateMD5HashForAsset(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCalculateMD5HashForAsset(
+		requestParameters: HttpCalculateMD5HashForAssetRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpCalculateMD5HashForAsset(
+		requestParameters: HttpCalculateMD5HashForAssetRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCalculateMD5HashForAsset.');
 		}
@@ -177,39 +230,37 @@ export class HelperToolsService {
 
 	/**
 	 * Returns all user defined lists of all collection types
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGetAllUserDefinedLists(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGetAllUserDefinedListsRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<CollectionUDL>>;
 	public httpGetAllUserDefinedLists(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGetAllUserDefinedListsRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<CollectionUDL>>>;
 	public httpGetAllUserDefinedLists(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGetAllUserDefinedListsRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<CollectionUDL>>>;
 	public httpGetAllUserDefinedLists(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGetAllUserDefinedListsRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
@@ -289,19 +340,36 @@ export class HelperToolsService {
 
 	/**
 	 * Returns all filterable items directly from the search index
-	 * @param portalId If the search should be redirected to a specific portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAllowedFilterableItems(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<string>>;
 	public httpGetAllowedFilterableItems(
-		portalId?: string,
+		requestParameters: HttpGetAllowedFilterableItemsRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<string>>;
+	public httpGetAllowedFilterableItems(
+		requestParameters: HttpGetAllowedFilterableItemsRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<string>>>;
-	public httpGetAllowedFilterableItems(portalId?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<string>>>;
-	public httpGetAllowedFilterableItems(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAllowedFilterableItems(
+		requestParameters: HttpGetAllowedFilterableItemsRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<string>>>;
+	public httpGetAllowedFilterableItems(
+		requestParameters: HttpGetAllowedFilterableItemsRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const portalId = requestParameters.portalId;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (portalId !== undefined && portalId !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
@@ -371,24 +439,36 @@ export class HelperToolsService {
 
 	/**
 	 * Returns all searchable items directly from the search index
-	 * @param portalId If the search should be redirected to a specific portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAllowedSearchableItemNames(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<string>>;
 	public httpGetAllowedSearchableItemNames(
-		portalId?: string,
+		requestParameters: HttpGetAllowedSearchableItemNamesRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<string>>;
+	public httpGetAllowedSearchableItemNames(
+		requestParameters: HttpGetAllowedSearchableItemNamesRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<string>>>;
 	public httpGetAllowedSearchableItemNames(
-		portalId?: string,
+		requestParameters: HttpGetAllowedSearchableItemNamesRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<string>>>;
-	public httpGetAllowedSearchableItemNames(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAllowedSearchableItemNames(
+		requestParameters: HttpGetAllowedSearchableItemNamesRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const portalId = requestParameters.portalId;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (portalId !== undefined && portalId !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
@@ -423,24 +503,36 @@ export class HelperToolsService {
 
 	/**
 	 * Returns all searchable items directly from the search index
-	 * @param portalId If the search should be redirected to a specific portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAllowedSearchableItems(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<SearchableItem>>;
 	public httpGetAllowedSearchableItems(
-		portalId?: string,
+		requestParameters: HttpGetAllowedSearchableItemsRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<SearchableItem>>;
+	public httpGetAllowedSearchableItems(
+		requestParameters: HttpGetAllowedSearchableItemsRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<SearchableItem>>>;
 	public httpGetAllowedSearchableItems(
-		portalId?: string,
+		requestParameters: HttpGetAllowedSearchableItemsRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<SearchableItem>>>;
-	public httpGetAllowedSearchableItems(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAllowedSearchableItems(
+		requestParameters: HttpGetAllowedSearchableItemsRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const portalId = requestParameters.portalId;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (portalId !== undefined && portalId !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
@@ -475,19 +567,35 @@ export class HelperToolsService {
 
 	/**
 	 * This is a helper method to see the result when an entity (Asset or Collection) is enhanced with the skill-enhancer (for search indexer).
-	 * @param id The ID of the entity (Asset or Collection).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAssetSkillEnhancer(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<InfoEntitySkillEnhanced>;
 	public httpGetAssetSkillEnhancer(
-		id: string,
+		requestParameters: HttpGetAssetSkillEnhancerRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<InfoEntitySkillEnhanced>;
+	public httpGetAssetSkillEnhancer(
+		requestParameters: HttpGetAssetSkillEnhancerRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<InfoEntitySkillEnhanced>>;
-	public httpGetAssetSkillEnhancer(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<InfoEntitySkillEnhanced>>;
-	public httpGetAssetSkillEnhancer(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAssetSkillEnhancer(
+		requestParameters: HttpGetAssetSkillEnhancerRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<InfoEntitySkillEnhanced>>;
+	public httpGetAssetSkillEnhancer(
+		requestParameters: HttpGetAssetSkillEnhancerRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetSkillEnhancer.');
 		}
@@ -671,14 +779,30 @@ export class HelperToolsService {
 
 	/**
 	 * Re-queue poisoned messages.  It takes the only one argument and tries to find the poisoned queue.
-	 * @param queue Enter queue name which has to take messages from poison to regular queue.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpQueuesAgain(queue: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<string>>;
-	public httpQueuesAgain(queue: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<string>>>;
-	public httpQueuesAgain(queue: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<string>>>;
-	public httpQueuesAgain(queue: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpQueuesAgain(requestParameters: HttpQueuesAgainRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<string>>;
+	public httpQueuesAgain(
+		requestParameters: HttpQueuesAgainRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<string>>>;
+	public httpQueuesAgain(
+		requestParameters: HttpQueuesAgainRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<string>>>;
+	public httpQueuesAgain(
+		requestParameters: HttpQueuesAgainRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const queue = requestParameters.queue;
 		if (queue === null || queue === undefined) {
 			throw new Error('Required parameter queue was null or undefined when calling httpQueuesAgain.');
 		}

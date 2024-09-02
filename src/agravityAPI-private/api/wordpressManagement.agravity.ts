@@ -22,6 +22,32 @@ import { Asset } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpWordpressPageRequestParams {
+	/** The title of the wordpress post. */
+	pageTitle: string;
+	/** The excerpt of the wordpress page as well as the first part of the page. */
+	pageContentBefore: string;
+	/** The URL where the image can be publically retrieved. */
+	pageImage: string;
+	/** The content of the wordpress page, which is shown below the image. */
+	pageContentAfter: string;
+	/** This endpoint creates a Wordpress Page */
+	asset: Asset;
+}
+
+export interface HttpWordpressPostRequestParams {
+	/** The title of the wordpress post. */
+	postTitle: string;
+	/** The excerpt of the wordpress post as well as the first part of the post. */
+	postContentBefore: string;
+	/** The URL where the image can be publically retrieved. */
+	postImage: string;
+	/** The content of the wordpress post, which is shown below the image. */
+	postContentAfter: string;
+	/** This endpoint creates a Wordpress Post */
+	asset: Asset;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,66 +110,46 @@ export class WordpressManagementService {
 
 	/**
 	 * This endpoint creates a Wordpress Page
-	 * @param pageTitle The title of the wordpress post.
-	 * @param pageContentBefore The excerpt of the wordpress page as well as the first part of the page.
-	 * @param pageImage The URL where the image can be publically retrieved.
-	 * @param pageContentAfter The content of the wordpress page, which is shown below the image.
-	 * @param asset This endpoint creates a Wordpress Page
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
+	public httpWordpressPage(requestParameters: HttpWordpressPageRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<number>;
 	public httpWordpressPage(
-		pageTitle: string,
-		pageContentBefore: string,
-		pageImage: string,
-		pageContentAfter: string,
-		asset: Asset,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<number>;
-	public httpWordpressPage(
-		pageTitle: string,
-		pageContentBefore: string,
-		pageImage: string,
-		pageContentAfter: string,
-		asset: Asset,
+		requestParameters: HttpWordpressPageRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<number>>;
 	public httpWordpressPage(
-		pageTitle: string,
-		pageContentBefore: string,
-		pageImage: string,
-		pageContentAfter: string,
-		asset: Asset,
+		requestParameters: HttpWordpressPageRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<number>>;
 	public httpWordpressPage(
-		pageTitle: string,
-		pageContentBefore: string,
-		pageImage: string,
-		pageContentAfter: string,
-		asset: Asset,
+		requestParameters: HttpWordpressPageRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const pageTitle = requestParameters.pageTitle;
 		if (pageTitle === null || pageTitle === undefined) {
 			throw new Error('Required parameter pageTitle was null or undefined when calling httpWordpressPage.');
 		}
+		const pageContentBefore = requestParameters.pageContentBefore;
 		if (pageContentBefore === null || pageContentBefore === undefined) {
 			throw new Error('Required parameter pageContentBefore was null or undefined when calling httpWordpressPage.');
 		}
+		const pageImage = requestParameters.pageImage;
 		if (pageImage === null || pageImage === undefined) {
 			throw new Error('Required parameter pageImage was null or undefined when calling httpWordpressPage.');
 		}
+		const pageContentAfter = requestParameters.pageContentAfter;
 		if (pageContentAfter === null || pageContentAfter === undefined) {
 			throw new Error('Required parameter pageContentAfter was null or undefined when calling httpWordpressPage.');
 		}
+		const asset = requestParameters.asset;
 		if (asset === null || asset === undefined) {
 			throw new Error('Required parameter asset was null or undefined when calling httpWordpressPage.');
 		}
@@ -205,66 +211,46 @@ export class WordpressManagementService {
 
 	/**
 	 * This endpoint creates a Wordpress Post
-	 * @param postTitle The title of the wordpress post.
-	 * @param postContentBefore The excerpt of the wordpress post as well as the first part of the post.
-	 * @param postImage The URL where the image can be publically retrieved.
-	 * @param postContentAfter The content of the wordpress post, which is shown below the image.
-	 * @param asset This endpoint creates a Wordpress Post
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
+	public httpWordpressPost(requestParameters: HttpWordpressPostRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<number>;
 	public httpWordpressPost(
-		postTitle: string,
-		postContentBefore: string,
-		postImage: string,
-		postContentAfter: string,
-		asset: Asset,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<number>;
-	public httpWordpressPost(
-		postTitle: string,
-		postContentBefore: string,
-		postImage: string,
-		postContentAfter: string,
-		asset: Asset,
+		requestParameters: HttpWordpressPostRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<number>>;
 	public httpWordpressPost(
-		postTitle: string,
-		postContentBefore: string,
-		postImage: string,
-		postContentAfter: string,
-		asset: Asset,
+		requestParameters: HttpWordpressPostRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<number>>;
 	public httpWordpressPost(
-		postTitle: string,
-		postContentBefore: string,
-		postImage: string,
-		postContentAfter: string,
-		asset: Asset,
+		requestParameters: HttpWordpressPostRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const postTitle = requestParameters.postTitle;
 		if (postTitle === null || postTitle === undefined) {
 			throw new Error('Required parameter postTitle was null or undefined when calling httpWordpressPost.');
 		}
+		const postContentBefore = requestParameters.postContentBefore;
 		if (postContentBefore === null || postContentBefore === undefined) {
 			throw new Error('Required parameter postContentBefore was null or undefined when calling httpWordpressPost.');
 		}
+		const postImage = requestParameters.postImage;
 		if (postImage === null || postImage === undefined) {
 			throw new Error('Required parameter postImage was null or undefined when calling httpWordpressPost.');
 		}
+		const postContentAfter = requestParameters.postContentAfter;
 		if (postContentAfter === null || postContentAfter === undefined) {
 			throw new Error('Required parameter postContentAfter was null or undefined when calling httpWordpressPost.');
 		}
+		const asset = requestParameters.asset;
 		if (asset === null || asset === undefined) {
 			throw new Error('Required parameter asset was null or undefined when calling httpWordpressPost.');
 		}

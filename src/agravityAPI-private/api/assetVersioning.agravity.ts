@@ -24,6 +24,70 @@ import { VersionedAsset } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpAssetCreateNewVersionRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** This VersionedAsset to create empty version (need to upload file with metadata to blob storage) */
+	versionedAsset: VersionedAsset;
+}
+
+export interface HttpAssetCreateUploadVersionRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	name?: string;
+	collectionId?: string;
+	file?: Blob;
+	filename?: string;
+	previewof?: string;
+}
+
+export interface HttpAssetRestoreLastVersionRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpDeleteVersionedAssetsByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The version number of the asset. */
+	vNr: string;
+}
+
+export interface HttpGetVersionedAssetBlobByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The version number of the asset. */
+	vNr: number;
+	/** \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized */
+	c?: string;
+}
+
+export interface HttpRestoreVersionedAssetsByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The version number of the asset. */
+	vNr: string;
+	/** Only the version_info is used and will be added to the current version which is archived (before the old version is restored). */
+	versionedAsset: VersionedAsset;
+}
+
+export interface HttpUpdateVersionedAssetsByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The version number of the asset. */
+	vNr: string;
+}
+
+export interface HttpVersionedAssetsDeleteAllRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpVersionedAssetsGetRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -100,42 +164,39 @@ export class AssetVersioningService {
 
 	/**
 	 * This endpoint allows to create empty version or upload one asset which replaces the asset with given id and creates version.
-	 * @param id The ID of the asset.
-	 * @param versionedAsset This VersionedAsset to create empty version (need to upload file with metadata to blob storage)
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetCreateNewVersion(
-		id: string,
-		versionedAsset: VersionedAsset,
+		requestParameters: HttpAssetCreateNewVersionRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<VersionedAsset>;
 	public httpAssetCreateNewVersion(
-		id: string,
-		versionedAsset: VersionedAsset,
+		requestParameters: HttpAssetCreateNewVersionRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<VersionedAsset>>;
 	public httpAssetCreateNewVersion(
-		id: string,
-		versionedAsset: VersionedAsset,
+		requestParameters: HttpAssetCreateNewVersionRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<VersionedAsset>>;
 	public httpAssetCreateNewVersion(
-		id: string,
-		versionedAsset: VersionedAsset,
+		requestParameters: HttpAssetCreateNewVersionRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetCreateNewVersion.');
 		}
+		const versionedAsset = requestParameters.versionedAsset;
 		if (versionedAsset === null || versionedAsset === undefined) {
 			throw new Error('Required parameter versionedAsset was null or undefined when calling httpAssetCreateNewVersion.');
 		}
@@ -182,62 +243,43 @@ export class AssetVersioningService {
 
 	/**
 	 * This endpoint allows to upload one asset which replaces the asset with given id and creates a version which is returned.
-	 * @param id The ID of the asset.
-	 * @param name
-	 * @param collectionId
-	 * @param file
-	 * @param filename
-	 * @param previewof
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetCreateUploadVersion(
-		id: string,
-		name?: string,
-		collectionId?: string,
-		file?: Blob,
-		filename?: string,
-		previewof?: string,
+		requestParameters: HttpAssetCreateUploadVersionRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<VersionedAsset>;
 	public httpAssetCreateUploadVersion(
-		id: string,
-		name?: string,
-		collectionId?: string,
-		file?: Blob,
-		filename?: string,
-		previewof?: string,
+		requestParameters: HttpAssetCreateUploadVersionRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<VersionedAsset>>;
 	public httpAssetCreateUploadVersion(
-		id: string,
-		name?: string,
-		collectionId?: string,
-		file?: Blob,
-		filename?: string,
-		previewof?: string,
+		requestParameters: HttpAssetCreateUploadVersionRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<VersionedAsset>>;
 	public httpAssetCreateUploadVersion(
-		id: string,
-		name?: string,
-		collectionId?: string,
-		file?: Blob,
-		filename?: string,
-		previewof?: string,
+		requestParameters: HttpAssetCreateUploadVersionRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetCreateUploadVersion.');
 		}
+		const name = requestParameters.name;
+		const collectionId = requestParameters.collectionId;
+		const file = requestParameters.file;
+		const filename = requestParameters.filename;
+		const previewof = requestParameters.previewof;
 
 		let headers = this.defaultHeaders;
 
@@ -311,14 +353,35 @@ export class AssetVersioningService {
 
 	/**
 	 * This endpoint restores the last version of this asset (even when corrupt or no blob was uploaded).
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetRestoreLastVersion(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<VersionedAsset>;
-	public httpAssetRestoreLastVersion(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<VersionedAsset>>;
-	public httpAssetRestoreLastVersion(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<VersionedAsset>>;
-	public httpAssetRestoreLastVersion(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAssetRestoreLastVersion(
+		requestParameters: HttpAssetRestoreLastVersionRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<VersionedAsset>;
+	public httpAssetRestoreLastVersion(
+		requestParameters: HttpAssetRestoreLastVersionRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<VersionedAsset>>;
+	public httpAssetRestoreLastVersion(
+		requestParameters: HttpAssetRestoreLastVersionRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<VersionedAsset>>;
+	public httpAssetRestoreLastVersion(
+		requestParameters: HttpAssetRestoreLastVersionRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetRestoreLastVersion.');
 		}
@@ -358,18 +421,39 @@ export class AssetVersioningService {
 
 	/**
 	 * This endpoint deletes a version of an asset.
-	 * @param id The ID of the asset.
-	 * @param vNr The version number of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDeleteVersionedAssetsById(id: string, vNr: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpDeleteVersionedAssetsById(id: string, vNr: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpDeleteVersionedAssetsById(id: string, vNr: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpDeleteVersionedAssetsById(id: string, vNr: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDeleteVersionedAssetsById(
+		requestParameters: HttpDeleteVersionedAssetsByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpDeleteVersionedAssetsById(
+		requestParameters: HttpDeleteVersionedAssetsByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpDeleteVersionedAssetsById(
+		requestParameters: HttpDeleteVersionedAssetsByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpDeleteVersionedAssetsById(
+		requestParameters: HttpDeleteVersionedAssetsByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDeleteVersionedAssetsById.');
 		}
+		const vNr = requestParameters.vNr;
 		if (vNr === null || vNr === undefined) {
 			throw new Error('Required parameter vNr was null or undefined when calling httpDeleteVersionedAssetsById.');
 		}
@@ -409,43 +493,43 @@ export class AssetVersioningService {
 
 	/**
 	 * This endpoint checks if assets and version exists and returns the url for the requested blob.
-	 * @param id The ID of the asset.
-	 * @param vNr The version number of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;o\&quot; for optimized
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetVersionedAssetBlobById(id: string, vNr: number, c?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
 	public httpGetVersionedAssetBlobById(
-		id: string,
-		vNr: number,
-		c?: string,
+		requestParameters: HttpGetVersionedAssetBlobByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AssetBlob>;
+	public httpGetVersionedAssetBlobById(
+		requestParameters: HttpGetVersionedAssetBlobByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AssetBlob>>;
 	public httpGetVersionedAssetBlobById(
-		id: string,
-		vNr: number,
-		c?: string,
+		requestParameters: HttpGetVersionedAssetBlobByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AssetBlob>>;
 	public httpGetVersionedAssetBlobById(
-		id: string,
-		vNr: number,
-		c?: string,
+		requestParameters: HttpGetVersionedAssetBlobByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetVersionedAssetBlobById.');
 		}
+		const vNr = requestParameters.vNr;
 		if (vNr === null || vNr === undefined) {
 			throw new Error('Required parameter vNr was null or undefined when calling httpGetVersionedAssetBlobById.');
 		}
+		const c = requestParameters.c;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (c !== undefined && c !== null) {
@@ -488,50 +572,43 @@ export class AssetVersioningService {
 
 	/**
 	 * This endpoint restores a version nr to be the current version and saves the current asset as version.
-	 * @param id The ID of the asset.
-	 * @param vNr The version number of the asset.
-	 * @param versionedAsset Only the version_info is used and will be added to the current version which is archived (before the old version is restored).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpRestoreVersionedAssetsById(
-		id: string,
-		vNr: string,
-		versionedAsset: VersionedAsset,
+		requestParameters: HttpRestoreVersionedAssetsByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<VersionedAsset>;
 	public httpRestoreVersionedAssetsById(
-		id: string,
-		vNr: string,
-		versionedAsset: VersionedAsset,
+		requestParameters: HttpRestoreVersionedAssetsByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<VersionedAsset>>;
 	public httpRestoreVersionedAssetsById(
-		id: string,
-		vNr: string,
-		versionedAsset: VersionedAsset,
+		requestParameters: HttpRestoreVersionedAssetsByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<VersionedAsset>>;
 	public httpRestoreVersionedAssetsById(
-		id: string,
-		vNr: string,
-		versionedAsset: VersionedAsset,
+		requestParameters: HttpRestoreVersionedAssetsByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpRestoreVersionedAssetsById.');
 		}
+		const vNr = requestParameters.vNr;
 		if (vNr === null || vNr === undefined) {
 			throw new Error('Required parameter vNr was null or undefined when calling httpRestoreVersionedAssetsById.');
 		}
+		const versionedAsset = requestParameters.versionedAsset;
 		if (versionedAsset === null || versionedAsset === undefined) {
 			throw new Error('Required parameter versionedAsset was null or undefined when calling httpRestoreVersionedAssetsById.');
 		}
@@ -578,30 +655,39 @@ export class AssetVersioningService {
 
 	/**
 	 * This endpoint updates a version of an asset.
-	 * @param id The ID of the asset.
-	 * @param vNr The version number of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpUpdateVersionedAssetsById(id: string, vNr: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<VersionedAsset>;
 	public httpUpdateVersionedAssetsById(
-		id: string,
-		vNr: string,
+		requestParameters: HttpUpdateVersionedAssetsByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<VersionedAsset>;
+	public httpUpdateVersionedAssetsById(
+		requestParameters: HttpUpdateVersionedAssetsByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<VersionedAsset>>;
 	public httpUpdateVersionedAssetsById(
-		id: string,
-		vNr: string,
+		requestParameters: HttpUpdateVersionedAssetsByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<VersionedAsset>>;
-	public httpUpdateVersionedAssetsById(id: string, vNr: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpUpdateVersionedAssetsById(
+		requestParameters: HttpUpdateVersionedAssetsByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpUpdateVersionedAssetsById.');
 		}
+		const vNr = requestParameters.vNr;
 		if (vNr === null || vNr === undefined) {
 			throw new Error('Required parameter vNr was null or undefined when calling httpUpdateVersionedAssetsById.');
 		}
@@ -641,14 +727,35 @@ export class AssetVersioningService {
 
 	/**
 	 * This endpoint deletes all versioned asset.
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpVersionedAssetsDeleteAll(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpVersionedAssetsDeleteAll(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpVersionedAssetsDeleteAll(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpVersionedAssetsDeleteAll(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpVersionedAssetsDeleteAll(
+		requestParameters: HttpVersionedAssetsDeleteAllRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpVersionedAssetsDeleteAll(
+		requestParameters: HttpVersionedAssetsDeleteAllRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpVersionedAssetsDeleteAll(
+		requestParameters: HttpVersionedAssetsDeleteAllRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpVersionedAssetsDeleteAll(
+		requestParameters: HttpVersionedAssetsDeleteAllRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpVersionedAssetsDeleteAll.');
 		}
@@ -688,14 +795,35 @@ export class AssetVersioningService {
 
 	/**
 	 * This endpoint lists all the versioned assets which are stored in the database if asset is still valid.
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpVersionedAssetsGet(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<VersionEntity>;
-	public httpVersionedAssetsGet(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<VersionEntity>>;
-	public httpVersionedAssetsGet(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<VersionEntity>>;
-	public httpVersionedAssetsGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpVersionedAssetsGet(
+		requestParameters: HttpVersionedAssetsGetRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<VersionEntity>;
+	public httpVersionedAssetsGet(
+		requestParameters: HttpVersionedAssetsGetRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<VersionEntity>>;
+	public httpVersionedAssetsGet(
+		requestParameters: HttpVersionedAssetsGetRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<VersionEntity>>;
+	public httpVersionedAssetsGet(
+		requestParameters: HttpVersionedAssetsGetRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpVersionedAssetsGet.');
 		}

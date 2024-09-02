@@ -23,6 +23,11 @@ import { SignalRConnectionInfo } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpSignalRSendMessageToUserRequestParams {
+	/** The ID of the user to which the message should be sent to. */
+	id: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -155,19 +160,35 @@ export class SignalRConnectionManagementService {
 
 	/**
 	 * Allowes a client via rest to send messages to one client (user)
-	 * @param id The ID of the user to which the message should be sent to.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpSignalRSendMessageToUser(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpSignalRSendMessageToUser(
-		id: string,
+		requestParameters: HttpSignalRSendMessageToUserRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpSignalRSendMessageToUser(
+		requestParameters: HttpSignalRSendMessageToUserRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpSignalRSendMessageToUser(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpSignalRSendMessageToUser(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSignalRSendMessageToUser(
+		requestParameters: HttpSignalRSendMessageToUserRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpSignalRSendMessageToUser(
+		requestParameters: HttpSignalRSendMessageToUserRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpSignalRSendMessageToUser.');
 		}

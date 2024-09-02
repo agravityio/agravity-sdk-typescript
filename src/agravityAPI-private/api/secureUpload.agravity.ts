@@ -23,6 +23,33 @@ import { SecureUploadEntity } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpGetSecureUploadApiKeyByIdRequestParams {
+	/** The ID of the secure upload collection. */
+	id: string;
+}
+
+export interface HttpGetSecureUploadListOfUserRequestParams {
+	/** (optional) The ID of the collection where this secure upload should be filtered. */
+	collectionid?: string;
+}
+
+export interface HttpSecureUploadCreateForUserRequestParams {
+	/** This creates / adds an unique secure upload collection ID and adds the information to the collection (in DB). */
+	secureUploadEntity: SecureUploadEntity;
+	/** Used to enable sftp secure file upload */
+	sftpenabled?: boolean;
+}
+
+export interface HttpSecureUploadEntityCheckByIdRequestParams {
+	/** The ID of the secure upload collection. */
+	id: string;
+}
+
+export interface HttpSecureUploadToCollectionsDeleteByIdRequestParams {
+	/** The ID of the secure upload collection. */
+	id: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -85,14 +112,35 @@ export class SecureUploadService {
 
 	/**
 	 * Returns the API Key of a secure upload
-	 * @param id The ID of the secure upload collection.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetSecureUploadApiKeyById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<ApiKeyResponse>;
-	public httpGetSecureUploadApiKeyById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<ApiKeyResponse>>;
-	public httpGetSecureUploadApiKeyById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<ApiKeyResponse>>;
-	public httpGetSecureUploadApiKeyById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetSecureUploadApiKeyById(
+		requestParameters: HttpGetSecureUploadApiKeyByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<ApiKeyResponse>;
+	public httpGetSecureUploadApiKeyById(
+		requestParameters: HttpGetSecureUploadApiKeyByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<ApiKeyResponse>>;
+	public httpGetSecureUploadApiKeyById(
+		requestParameters: HttpGetSecureUploadApiKeyByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<ApiKeyResponse>>;
+	public httpGetSecureUploadApiKeyById(
+		requestParameters: HttpGetSecureUploadApiKeyByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetSecureUploadApiKeyById.');
 		}
@@ -132,24 +180,36 @@ export class SecureUploadService {
 
 	/**
 	 * This lists the secure upload collection which are stored in the database for a specific user (Taken from Bearer token).
-	 * @param collectionid (optional) The ID of the collection where this secure upload should be filtered.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetSecureUploadListOfUser(collectionid?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<SecureUploadEntity>>;
 	public httpGetSecureUploadListOfUser(
-		collectionid?: string,
+		requestParameters: HttpGetSecureUploadListOfUserRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<SecureUploadEntity>>;
+	public httpGetSecureUploadListOfUser(
+		requestParameters: HttpGetSecureUploadListOfUserRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<SecureUploadEntity>>>;
 	public httpGetSecureUploadListOfUser(
-		collectionid?: string,
+		requestParameters: HttpGetSecureUploadListOfUserRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<SecureUploadEntity>>>;
-	public httpGetSecureUploadListOfUser(collectionid?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetSecureUploadListOfUser(
+		requestParameters: HttpGetSecureUploadListOfUserRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const collectionid = requestParameters.collectionid;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (collectionid !== undefined && collectionid !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>collectionid, 'collectionid');
@@ -191,42 +251,39 @@ export class SecureUploadService {
 
 	/**
 	 * Creates an secure upload entry point for a collection
-	 * @param secureUploadEntity This creates / adds an unique secure upload collection ID and adds the information to the collection (in DB).
-	 * @param sftpenabled Used to enable sftp secure file upload
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSecureUploadCreateForUser(
-		secureUploadEntity: SecureUploadEntity,
-		sftpenabled?: boolean,
+		requestParameters: HttpSecureUploadCreateForUserRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<SecureUploadEntity>;
 	public httpSecureUploadCreateForUser(
-		secureUploadEntity: SecureUploadEntity,
-		sftpenabled?: boolean,
+		requestParameters: HttpSecureUploadCreateForUserRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SecureUploadEntity>>;
 	public httpSecureUploadCreateForUser(
-		secureUploadEntity: SecureUploadEntity,
-		sftpenabled?: boolean,
+		requestParameters: HttpSecureUploadCreateForUserRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<SecureUploadEntity>>;
 	public httpSecureUploadCreateForUser(
-		secureUploadEntity: SecureUploadEntity,
-		sftpenabled?: boolean,
+		requestParameters: HttpSecureUploadCreateForUserRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const secureUploadEntity = requestParameters.secureUploadEntity;
 		if (secureUploadEntity === null || secureUploadEntity === undefined) {
 			throw new Error('Required parameter secureUploadEntity was null or undefined when calling httpSecureUploadCreateForUser.');
 		}
+		const sftpenabled = requestParameters.sftpenabled;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (sftpenabled !== undefined && sftpenabled !== null) {
@@ -276,19 +333,35 @@ export class SecureUploadService {
 
 	/**
 	 * Returns one single secure upload entity from ID
-	 * @param id The ID of the secure upload collection.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpSecureUploadEntityCheckById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SecureUploadEntity>;
 	public httpSecureUploadEntityCheckById(
-		id: string,
+		requestParameters: HttpSecureUploadEntityCheckByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SecureUploadEntity>;
+	public httpSecureUploadEntityCheckById(
+		requestParameters: HttpSecureUploadEntityCheckByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SecureUploadEntity>>;
-	public httpSecureUploadEntityCheckById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<SecureUploadEntity>>;
-	public httpSecureUploadEntityCheckById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSecureUploadEntityCheckById(
+		requestParameters: HttpSecureUploadEntityCheckByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<SecureUploadEntity>>;
+	public httpSecureUploadEntityCheckById(
+		requestParameters: HttpSecureUploadEntityCheckByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpSecureUploadEntityCheckById.');
 		}
@@ -328,14 +401,35 @@ export class SecureUploadService {
 
 	/**
 	 * Deletes (&#x3D; disables) the secure upload to collection with the given ID.
-	 * @param id The ID of the secure upload collection.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpSecureUploadToCollectionsDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpSecureUploadToCollectionsDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpSecureUploadToCollectionsDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpSecureUploadToCollectionsDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSecureUploadToCollectionsDeleteById(
+		requestParameters: HttpSecureUploadToCollectionsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpSecureUploadToCollectionsDeleteById(
+		requestParameters: HttpSecureUploadToCollectionsDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpSecureUploadToCollectionsDeleteById(
+		requestParameters: HttpSecureUploadToCollectionsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpSecureUploadToCollectionsDeleteById(
+		requestParameters: HttpSecureUploadToCollectionsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpSecureUploadToCollectionsDeleteById.');
 		}

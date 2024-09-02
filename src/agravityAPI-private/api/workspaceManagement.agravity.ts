@@ -24,6 +24,54 @@ import { Workspace } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpWorkspacesCreateRequestParams {
+	/** This endpoint creates a unique workspace ID and adds the information to the database. */
+	workspace: Workspace;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpWorkspacesDeleteByIdRequestParams {
+	/** The ID of the workspace. */
+	id: string;
+}
+
+export interface HttpWorkspacesGetRequestParams {
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpWorkspacesGetByIdRequestParams {
+	/** The ID of the workspace. */
+	id: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpWorkspacesUpdateByIdRequestParams {
+	/** The ID of the workspace. */
+	id: string;
+	/** The body has to be a valid workspace json. Not fitting properties are ignored. */
+	workspace: Workspace;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpWorkspacesUpdatePermissionsByIdRequestParams {
+	/** The ID of the workspace. */
+	id: string;
+	/** The changes which ids and how they should be added / removed / replaced / etc. */
+	permissionChange: PermissionChange;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -86,47 +134,40 @@ export class WorkspaceManagementService {
 
 	/**
 	 * This endpoint creates a unique workspace ID and adds the information to the database.
-	 * @param workspace This endpoint creates a unique workspace ID and adds the information to the database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpWorkspacesCreate(
-		workspace: Workspace,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Workspace>;
 	public httpWorkspacesCreate(
-		workspace: Workspace,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Workspace>>;
 	public httpWorkspacesCreate(
-		workspace: Workspace,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Workspace>>;
 	public httpWorkspacesCreate(
-		workspace: Workspace,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const workspace = requestParameters.workspace;
 		if (workspace === null || workspace === undefined) {
 			throw new Error('Required parameter workspace was null or undefined when calling httpWorkspacesCreate.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -221,14 +262,30 @@ export class WorkspaceManagementService {
 
 	/**
 	 * This endpoint deletes the workspace with the given ID.
-	 * @param id The ID of the workspace.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpWorkspacesDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<any>;
-	public httpWorkspacesDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpResponse<any>>;
-	public httpWorkspacesDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<HttpEvent<any>>;
-	public httpWorkspacesDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: undefined }): Observable<any> {
+	public httpWorkspacesDeleteById(requestParameters: HttpWorkspacesDeleteByIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: undefined }): Observable<any>;
+	public httpWorkspacesDeleteById(
+		requestParameters: HttpWorkspacesDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: undefined }
+	): Observable<HttpResponse<any>>;
+	public httpWorkspacesDeleteById(
+		requestParameters: HttpWorkspacesDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: undefined }
+	): Observable<HttpEvent<any>>;
+	public httpWorkspacesDeleteById(
+		requestParameters: HttpWorkspacesDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: undefined }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpWorkspacesDeleteById.');
 		}
@@ -268,39 +325,37 @@ export class WorkspaceManagementService {
 
 	/**
 	 * This endpoint lists all available workspaces, which are stored in the database and not deleted (status \&quot;A\&quot;).
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpWorkspacesGet(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesGetRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<Workspace>>;
 	public httpWorkspacesGet(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesGetRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<Workspace>>>;
 	public httpWorkspacesGet(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesGetRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<Workspace>>>;
 	public httpWorkspacesGet(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesGetRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
@@ -345,47 +400,40 @@ export class WorkspaceManagementService {
 
 	/**
 	 * This endpoint returns one single workspace (from ID).
-	 * @param id The ID of the workspace.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpWorkspacesGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Workspace>;
 	public httpWorkspacesGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Workspace>>;
 	public httpWorkspacesGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Workspace>>;
 	public httpWorkspacesGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpWorkspacesGetById.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -431,55 +479,44 @@ export class WorkspaceManagementService {
 
 	/**
 	 * This endpoint updates the workspace. Null fields will be ignored. If \&#39;items\&#39; are set they are fully reset (like PUT).
-	 * @param id The ID of the workspace.
-	 * @param workspace The body has to be a valid workspace json. Not fitting properties are ignored.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpWorkspacesUpdateById(
-		id: string,
-		workspace: Workspace,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Workspace>;
 	public httpWorkspacesUpdateById(
-		id: string,
-		workspace: Workspace,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Workspace>>;
 	public httpWorkspacesUpdateById(
-		id: string,
-		workspace: Workspace,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Workspace>>;
 	public httpWorkspacesUpdateById(
-		id: string,
-		workspace: Workspace,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpWorkspacesUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpWorkspacesUpdateById.');
 		}
+		const workspace = requestParameters.workspace;
 		if (workspace === null || workspace === undefined) {
 			throw new Error('Required parameter workspace was null or undefined when calling httpWorkspacesUpdateById.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -532,42 +569,39 @@ export class WorkspaceManagementService {
 
 	/**
 	 * This endpoint updates the permissions of the workspace. The modifier tells the system what to do with the list of ids.
-	 * @param id The ID of the workspace.
-	 * @param permissionChange The changes which ids and how they should be added / removed / replaced / etc.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpWorkspacesUpdatePermissionsById(
-		id: string,
-		permissionChange: PermissionChange,
+		requestParameters: HttpWorkspacesUpdatePermissionsByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AgravityInfoResponse>;
 	public httpWorkspacesUpdatePermissionsById(
-		id: string,
-		permissionChange: PermissionChange,
+		requestParameters: HttpWorkspacesUpdatePermissionsByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpWorkspacesUpdatePermissionsById(
-		id: string,
-		permissionChange: PermissionChange,
+		requestParameters: HttpWorkspacesUpdatePermissionsByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpWorkspacesUpdatePermissionsById(
-		id: string,
-		permissionChange: PermissionChange,
+		requestParameters: HttpWorkspacesUpdatePermissionsByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpWorkspacesUpdatePermissionsById.');
 		}
+		const permissionChange = requestParameters.permissionChange;
 		if (permissionChange === null || permissionChange === undefined) {
 			throw new Error('Required parameter permissionChange was null or undefined when calling httpWorkspacesUpdatePermissionsById.');
 		}

@@ -23,6 +23,49 @@ import { PortalZipRequest } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpPortalGetAllAssetIdsByIdRequestParams {
+	/** The ID of the portal. */
+	id: string;
+}
+
+export interface HttpPortalGetStatusZipByIdRequestParams {
+	/** The ID of the zip request collection. */
+	id: string;
+	/** The ID of the requested zip. */
+	zipId: string;
+	/** If portal has a password, this header is mandatory. Otherwise StatusCode 401 (Unauthorized) is returned. */
+	ayPassword?: string;
+}
+
+export interface HttpPortalRequestZipByIdRequestParams {
+	/** The ID of the portal. */
+	id: string;
+	/** The allowed formats are the input which could be added. */
+	portalZipRequest: PortalZipRequest;
+	/** The password is a XOR combination of all asset MD5 hashes. Otherwise StatusCode 403 (Forbidden) is returned. */
+	ayPassword?: string;
+}
+
+export interface HttpPortalsConfigurationGetByIdRequestParams {
+	/** The ID of the portal. */
+	id: string;
+}
+
+export interface HttpPortalsCreateRequestParams {
+	/** This endpoint creates an unique portal ID and adds the information to the database. */
+	portal: Portal;
+}
+
+export interface HttpPortalsDeleteByIdRequestParams {
+	/** The ID of the portal. */
+	id: string;
+}
+
+export interface HttpPortalsGetByIdRequestParams {
+	/** The ID of the portal. */
+	id: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -85,14 +128,35 @@ export class PortalManagementService {
 
 	/**
 	 * This endpoint gets all Asset IDs in portal scope.
-	 * @param id The ID of the portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPortalGetAllAssetIdsById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<string>>;
-	public httpPortalGetAllAssetIdsById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<string>>>;
-	public httpPortalGetAllAssetIdsById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<string>>>;
-	public httpPortalGetAllAssetIdsById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPortalGetAllAssetIdsById(
+		requestParameters: HttpPortalGetAllAssetIdsByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<string>>;
+	public httpPortalGetAllAssetIdsById(
+		requestParameters: HttpPortalGetAllAssetIdsByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<string>>>;
+	public httpPortalGetAllAssetIdsById(
+		requestParameters: HttpPortalGetAllAssetIdsByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<string>>>;
+	public httpPortalGetAllAssetIdsById(
+		requestParameters: HttpPortalGetAllAssetIdsByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPortalGetAllAssetIdsById.');
 		}
@@ -132,50 +196,43 @@ export class PortalManagementService {
 
 	/**
 	 * This endpoint gets the progress/status of the ZIP creation of a portal.
-	 * @param id The ID of the zip request collection.
-	 * @param zipId The ID of the requested zip.
-	 * @param ayPassword If portal has a password, this header is mandatory. Otherwise StatusCode 401 (Unauthorized) is returned.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPortalGetStatusZipById(
-		id: string,
-		zipId: string,
-		ayPassword?: string,
+		requestParameters: HttpPortalGetStatusZipByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<PortalZipRequest>;
 	public httpPortalGetStatusZipById(
-		id: string,
-		zipId: string,
-		ayPassword?: string,
+		requestParameters: HttpPortalGetStatusZipByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<PortalZipRequest>>;
 	public httpPortalGetStatusZipById(
-		id: string,
-		zipId: string,
-		ayPassword?: string,
+		requestParameters: HttpPortalGetStatusZipByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<PortalZipRequest>>;
 	public httpPortalGetStatusZipById(
-		id: string,
-		zipId: string,
-		ayPassword?: string,
+		requestParameters: HttpPortalGetStatusZipByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPortalGetStatusZipById.');
 		}
+		const zipId = requestParameters.zipId;
 		if (zipId === null || zipId === undefined) {
 			throw new Error('Required parameter zipId was null or undefined when calling httpPortalGetStatusZipById.');
 		}
+		const ayPassword = requestParameters.ayPassword;
 
 		let headers = this.defaultHeaders;
 		if (ayPassword !== undefined && ayPassword !== null) {
@@ -215,50 +272,43 @@ export class PortalManagementService {
 
 	/**
 	 * Initiates the ZIP creation of an asset basket from an portal.
-	 * @param id The ID of the portal.
-	 * @param portalZipRequest The allowed formats are the input which could be added.
-	 * @param ayPassword The password is a XOR combination of all asset MD5 hashes. Otherwise StatusCode 403 (Forbidden) is returned.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPortalRequestZipById(
-		id: string,
-		portalZipRequest: PortalZipRequest,
-		ayPassword?: string,
+		requestParameters: HttpPortalRequestZipByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<PortalZipRequest>;
 	public httpPortalRequestZipById(
-		id: string,
-		portalZipRequest: PortalZipRequest,
-		ayPassword?: string,
+		requestParameters: HttpPortalRequestZipByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<PortalZipRequest>>;
 	public httpPortalRequestZipById(
-		id: string,
-		portalZipRequest: PortalZipRequest,
-		ayPassword?: string,
+		requestParameters: HttpPortalRequestZipByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<PortalZipRequest>>;
 	public httpPortalRequestZipById(
-		id: string,
-		portalZipRequest: PortalZipRequest,
-		ayPassword?: string,
+		requestParameters: HttpPortalRequestZipByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPortalRequestZipById.');
 		}
+		const portalZipRequest = requestParameters.portalZipRequest;
 		if (portalZipRequest === null || portalZipRequest === undefined) {
 			throw new Error('Required parameter portalZipRequest was null or undefined when calling httpPortalRequestZipById.');
 		}
+		const ayPassword = requestParameters.ayPassword;
 
 		let headers = this.defaultHeaders;
 		if (ayPassword !== undefined && ayPassword !== null) {
@@ -305,14 +355,35 @@ export class PortalManagementService {
 
 	/**
 	 * This endpoint returns a full configuration of the portal. Incl. download formats, SDLs, UDLs, etc.
-	 * @param id The ID of the portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPortalsConfigurationGetById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Portal>;
-	public httpPortalsConfigurationGetById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Portal>>;
-	public httpPortalsConfigurationGetById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Portal>>;
-	public httpPortalsConfigurationGetById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPortalsConfigurationGetById(
+		requestParameters: HttpPortalsConfigurationGetByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Portal>;
+	public httpPortalsConfigurationGetById(
+		requestParameters: HttpPortalsConfigurationGetByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Portal>>;
+	public httpPortalsConfigurationGetById(
+		requestParameters: HttpPortalsConfigurationGetByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Portal>>;
+	public httpPortalsConfigurationGetById(
+		requestParameters: HttpPortalsConfigurationGetByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPortalsConfigurationGetById.');
 		}
@@ -352,14 +423,30 @@ export class PortalManagementService {
 
 	/**
 	 * This endpoint creates one portal entry in the database.
-	 * @param portal This endpoint creates an unique portal ID and adds the information to the database.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPortalsCreate(portal: Portal, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Portal>;
-	public httpPortalsCreate(portal: Portal, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Portal>>;
-	public httpPortalsCreate(portal: Portal, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Portal>>;
-	public httpPortalsCreate(portal: Portal, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPortalsCreate(requestParameters: HttpPortalsCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Portal>;
+	public httpPortalsCreate(
+		requestParameters: HttpPortalsCreateRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Portal>>;
+	public httpPortalsCreate(
+		requestParameters: HttpPortalsCreateRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Portal>>;
+	public httpPortalsCreate(
+		requestParameters: HttpPortalsCreateRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const portal = requestParameters.portal;
 		if (portal === null || portal === undefined) {
 			throw new Error('Required parameter portal was null or undefined when calling httpPortalsCreate.');
 		}
@@ -406,14 +493,35 @@ export class PortalManagementService {
 
 	/**
 	 * This endpoint deletes a single portal.
-	 * @param id The ID of the portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPortalsDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpPortalsDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpPortalsDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpPortalsDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPortalsDeleteById(
+		requestParameters: HttpPortalsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpPortalsDeleteById(
+		requestParameters: HttpPortalsDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpPortalsDeleteById(
+		requestParameters: HttpPortalsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpPortalsDeleteById(
+		requestParameters: HttpPortalsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPortalsDeleteById.');
 		}
@@ -495,14 +603,30 @@ export class PortalManagementService {
 
 	/**
 	 * This endpoint show the portal from database.
-	 * @param id The ID of the portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPortalsGetById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Portal>;
-	public httpPortalsGetById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Portal>>;
-	public httpPortalsGetById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Portal>>;
-	public httpPortalsGetById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPortalsGetById(requestParameters: HttpPortalsGetByIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Portal>;
+	public httpPortalsGetById(
+		requestParameters: HttpPortalsGetByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Portal>>;
+	public httpPortalsGetById(
+		requestParameters: HttpPortalsGetByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Portal>>;
+	public httpPortalsGetById(
+		requestParameters: HttpPortalsGetByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPortalsGetById.');
 		}

@@ -24,6 +24,29 @@ import { DeletedEntities } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpCleanupRequestParams {
+	/** (Default 90 days) - How many days in the entity. */
+	olderThanDays?: number;
+}
+
+export interface HttpGetDeletedEntitiesRequestParams {
+	/** The type of the entity (e.g. \&#39;asset\&#39;, \&#39;collection_type\&#39;, \&#39;collection_type\&#39;. Admins are allowed to list the other types as well. */
+	entityType?: string;
+	/** The date in the past since the entities are marked as deleted in the database. */
+	since?: string;
+	/** The date in the past until the entities are marked as deleted in the database. */
+	until?: string;
+	/** If the request comes from portal this is the indicator. */
+	portalId?: string;
+}
+
+export interface HttpSetupRequestParams {
+	/** (Default true) - Set to false if base collections (Folder) should not be created. */
+	createfolder: boolean;
+	/** Comma separated queue-names (have to start with \&#39;setup-\&#39;). */
+	addconfigqueues?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -170,14 +193,26 @@ export class GeneralManagementService {
 
 	/**
 	 * This endpoint queries all entities from which are marked as status \&quot;D\&quot; and cleans internal archive container from that assets
-	 * @param olderThanDays (Default 90 days) - How many days in the entity.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCleanup(olderThanDays?: number, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpCleanup(olderThanDays?: number, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpCleanup(olderThanDays?: number, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpCleanup(olderThanDays?: number, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCleanup(requestParameters: HttpCleanupRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
+	public httpCleanup(
+		requestParameters: HttpCleanupRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpCleanup(
+		requestParameters: HttpCleanupRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpCleanup(requestParameters: HttpCleanupRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		const olderThanDays = requestParameters.olderThanDays;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (olderThanDays !== undefined && olderThanDays !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>olderThanDays, 'olderThanDays');
@@ -261,49 +296,39 @@ export class GeneralManagementService {
 
 	/**
 	 * This endpoint checks all deleted entities in the database until a specific date and returns the elements which are deleted.
-	 * @param entityType The type of the entity (e.g. \&#39;asset\&#39;, \&#39;collection_type\&#39;, \&#39;collection_type\&#39;. Admins are allowed to list the other types as well.
-	 * @param since The date in the past since the entities are marked as deleted in the database.
-	 * @param until The date in the past until the entities are marked as deleted in the database.
-	 * @param portalId If the request comes from portal this is the indicator.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGetDeletedEntities(
-		entityType?: string,
-		since?: string,
-		until?: string,
-		portalId?: string,
+		requestParameters: HttpGetDeletedEntitiesRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<DeletedEntities>>;
 	public httpGetDeletedEntities(
-		entityType?: string,
-		since?: string,
-		until?: string,
-		portalId?: string,
+		requestParameters: HttpGetDeletedEntitiesRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<DeletedEntities>>>;
 	public httpGetDeletedEntities(
-		entityType?: string,
-		since?: string,
-		until?: string,
-		portalId?: string,
+		requestParameters: HttpGetDeletedEntitiesRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<DeletedEntities>>>;
 	public httpGetDeletedEntities(
-		entityType?: string,
-		since?: string,
-		until?: string,
-		portalId?: string,
+		requestParameters: HttpGetDeletedEntitiesRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const entityType = requestParameters.entityType;
+		const since = requestParameters.since;
+		const until = requestParameters.until;
+		const portalId = requestParameters.portalId;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (entityType !== undefined && entityType !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>entityType, 'entity_type');
@@ -354,36 +379,29 @@ export class GeneralManagementService {
 
 	/**
 	 * This endpoint runs the initial setup of an environment.
-	 * @param createfolder (Default true) - Set to false if base collections (Folder) should not be created.
-	 * @param addconfigqueues Comma separated queue-names (have to start with \&#39;setup-\&#39;).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
+	public httpSetup(requestParameters: HttpSetupRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpSetup(
-		createfolder: boolean,
-		addconfigqueues?: string,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<AgravityInfoResponse>;
-	public httpSetup(
-		createfolder: boolean,
-		addconfigqueues?: string,
+		requestParameters: HttpSetupRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpSetup(
-		createfolder: boolean,
-		addconfigqueues?: string,
+		requestParameters: HttpSetupRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpSetup(createfolder: boolean, addconfigqueues?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSetup(requestParameters: HttpSetupRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		const createfolder = requestParameters.createfolder;
 		if (createfolder === null || createfolder === undefined) {
 			throw new Error('Required parameter createfolder was null or undefined when calling httpSetup.');
 		}
+		const addconfigqueues = requestParameters.addconfigqueues;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (createfolder !== undefined && createfolder !== null) {

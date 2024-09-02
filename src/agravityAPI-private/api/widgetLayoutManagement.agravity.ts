@@ -22,6 +22,11 @@ import { WidgetLayout } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpWidgetLayoutUpdateRequestParams {
+	/** Body has to be a valid widget layout item. */
+	widgetLayout: WidgetLayout;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -126,19 +131,35 @@ export class WidgetLayoutManagementService {
 
 	/**
 	 * Updates the widget layout in database.
-	 * @param widgetLayout Body has to be a valid widget layout item.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpWidgetLayoutUpdate(widgetLayout: WidgetLayout, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<WidgetLayout>;
 	public httpWidgetLayoutUpdate(
-		widgetLayout: WidgetLayout,
+		requestParameters: HttpWidgetLayoutUpdateRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<WidgetLayout>;
+	public httpWidgetLayoutUpdate(
+		requestParameters: HttpWidgetLayoutUpdateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<WidgetLayout>>;
-	public httpWidgetLayoutUpdate(widgetLayout: WidgetLayout, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<WidgetLayout>>;
-	public httpWidgetLayoutUpdate(widgetLayout: WidgetLayout, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpWidgetLayoutUpdate(
+		requestParameters: HttpWidgetLayoutUpdateRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<WidgetLayout>>;
+	public httpWidgetLayoutUpdate(
+		requestParameters: HttpWidgetLayoutUpdateRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const widgetLayout = requestParameters.widgetLayout;
 		if (widgetLayout === null || widgetLayout === undefined) {
 			throw new Error('Required parameter widgetLayout was null or undefined when calling httpWidgetLayoutUpdate.');
 		}

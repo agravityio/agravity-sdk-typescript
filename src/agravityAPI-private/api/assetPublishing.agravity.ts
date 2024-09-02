@@ -24,6 +24,71 @@ import { PublishedAsset } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface GetPublishedAssetByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The published asset ID. */
+	pid: string;
+}
+
+export interface GetPublishedAssetDetailsRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The published asset ID. */
+	pid: string;
+}
+
+export interface HttpPublishedAssetsCheckStatusRequestParams {
+	/** The ID of translation export */
+	id: string;
+	/** The published asset ID. */
+	pid: string;
+}
+
+export interface HttpPublishedAssetsCreateRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** This creates / adds an unique published asset ID and adds the information to the asset (in DB). */
+	publishedAsset: PublishedAsset;
+}
+
+export interface HttpPublishedAssetsDeleteAllRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpPublishedAssetsDeleteByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The published asset ID. */
+	pid: string;
+	/** Even if the unpublish in the third party system is not successful, the published asset should be removed. */
+	force?: boolean;
+}
+
+export interface HttpPublishedAssetsGetRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpPublishedAssetsRepublishByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The published asset ID. */
+	pid: string;
+	/** The body has to contain a valid PublishedAsset in json format. Not fitting properties are ignored. */
+	publishedAsset: PublishedAsset;
+}
+
+export interface HttpPublishedAssetsUpdateByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The published asset ID. */
+	pid: string;
+	/** The body has to contain a valid PublishedAsset in json format. Not fitting properties are ignored. */
+	publishedAsset: PublishedAsset;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -86,24 +151,39 @@ export class AssetPublishingService {
 
 	/**
 	 * This endpoint returns one single published asset (from ID)
-	 * @param id The ID of the asset.
-	 * @param pid The published asset ID.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public getPublishedAssetById(id: string, pid: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<PublishedAsset>;
 	public getPublishedAssetById(
-		id: string,
-		pid: string,
+		requestParameters: GetPublishedAssetByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<PublishedAsset>;
+	public getPublishedAssetById(
+		requestParameters: GetPublishedAssetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<PublishedAsset>>;
-	public getPublishedAssetById(id: string, pid: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<PublishedAsset>>;
-	public getPublishedAssetById(id: string, pid: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public getPublishedAssetById(
+		requestParameters: GetPublishedAssetByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<PublishedAsset>>;
+	public getPublishedAssetById(
+		requestParameters: GetPublishedAssetByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling getPublishedAssetById.');
 		}
+		const pid = requestParameters.pid;
 		if (pid === null || pid === undefined) {
 			throw new Error('Required parameter pid was null or undefined when calling getPublishedAssetById.');
 		}
@@ -143,30 +223,39 @@ export class AssetPublishingService {
 
 	/**
 	 * This endpoint fetches specific information (e.g. statistics) of the published asset (from ID) from the target platform
-	 * @param id The ID of the asset.
-	 * @param pid The published asset ID.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public getPublishedAssetDetails(id: string, pid: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<{ [key: string]: object }>;
 	public getPublishedAssetDetails(
-		id: string,
-		pid: string,
+		requestParameters: GetPublishedAssetDetailsRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<{ [key: string]: object }>;
+	public getPublishedAssetDetails(
+		requestParameters: GetPublishedAssetDetailsRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<{ [key: string]: object }>>;
 	public getPublishedAssetDetails(
-		id: string,
-		pid: string,
+		requestParameters: GetPublishedAssetDetailsRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<{ [key: string]: object }>>;
-	public getPublishedAssetDetails(id: string, pid: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public getPublishedAssetDetails(
+		requestParameters: GetPublishedAssetDetailsRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling getPublishedAssetDetails.');
 		}
+		const pid = requestParameters.pid;
 		if (pid === null || pid === undefined) {
 			throw new Error('Required parameter pid was null or undefined when calling getPublishedAssetDetails.');
 		}
@@ -206,30 +295,39 @@ export class AssetPublishingService {
 
 	/**
 	 * This endpoint retrieves the status of the published entity i.e. vimeo video upload
-	 * @param id The ID of translation export
-	 * @param pid The published asset ID.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPublishedAssetsCheckStatus(id: string, pid: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpPublishedAssetsCheckStatus(
-		id: string,
-		pid: string,
+		requestParameters: HttpPublishedAssetsCheckStatusRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPublishedAssetsCheckStatus(
+		requestParameters: HttpPublishedAssetsCheckStatusRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpPublishedAssetsCheckStatus(
-		id: string,
-		pid: string,
+		requestParameters: HttpPublishedAssetsCheckStatusRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPublishedAssetsCheckStatus(id: string, pid: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPublishedAssetsCheckStatus(
+		requestParameters: HttpPublishedAssetsCheckStatusRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPublishedAssetsCheckStatus.');
 		}
+		const pid = requestParameters.pid;
 		if (pid === null || pid === undefined) {
 			throw new Error('Required parameter pid was null or undefined when calling httpPublishedAssetsCheckStatus.');
 		}
@@ -269,42 +367,39 @@ export class AssetPublishingService {
 
 	/**
 	 * This endpoint creates an additional published asset
-	 * @param id The ID of the asset.
-	 * @param publishedAsset This creates / adds an unique published asset ID and adds the information to the asset (in DB).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPublishedAssetsCreate(
-		id: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<PublishedAsset>;
 	public httpPublishedAssetsCreate(
-		id: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<PublishedAsset>>;
 	public httpPublishedAssetsCreate(
-		id: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<PublishedAsset>>;
 	public httpPublishedAssetsCreate(
-		id: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPublishedAssetsCreate.');
 		}
+		const publishedAsset = requestParameters.publishedAsset;
 		if (publishedAsset === null || publishedAsset === undefined) {
 			throw new Error('Required parameter publishedAsset was null or undefined when calling httpPublishedAssetsCreate.');
 		}
@@ -351,14 +446,35 @@ export class AssetPublishingService {
 
 	/**
 	 * This endpoint deletes the published asset with the given ID.
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPublishedAssetsDeleteAll(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpPublishedAssetsDeleteAll(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpPublishedAssetsDeleteAll(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpPublishedAssetsDeleteAll(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPublishedAssetsDeleteAll(
+		requestParameters: HttpPublishedAssetsDeleteAllRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpPublishedAssetsDeleteAll(
+		requestParameters: HttpPublishedAssetsDeleteAllRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpPublishedAssetsDeleteAll(
+		requestParameters: HttpPublishedAssetsDeleteAllRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpPublishedAssetsDeleteAll(
+		requestParameters: HttpPublishedAssetsDeleteAllRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPublishedAssetsDeleteAll.');
 		}
@@ -398,43 +514,43 @@ export class AssetPublishingService {
 
 	/**
 	 * This endpoint deletes the published asset with the given ID.
-	 * @param id The ID of the asset.
-	 * @param pid The published asset ID.
-	 * @param force Even if the unpublish in the third party system is not successful, the published asset should be removed.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPublishedAssetsDeleteById(id: string, pid: string, force?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
 	public httpPublishedAssetsDeleteById(
-		id: string,
-		pid: string,
-		force?: boolean,
+		requestParameters: HttpPublishedAssetsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpPublishedAssetsDeleteById(
+		requestParameters: HttpPublishedAssetsDeleteByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<any>>;
 	public httpPublishedAssetsDeleteById(
-		id: string,
-		pid: string,
-		force?: boolean,
+		requestParameters: HttpPublishedAssetsDeleteByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<any>>;
 	public httpPublishedAssetsDeleteById(
-		id: string,
-		pid: string,
-		force?: boolean,
+		requestParameters: HttpPublishedAssetsDeleteByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPublishedAssetsDeleteById.');
 		}
+		const pid = requestParameters.pid;
 		if (pid === null || pid === undefined) {
 			throw new Error('Required parameter pid was null or undefined when calling httpPublishedAssetsDeleteById.');
 		}
+		const force = requestParameters.force;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (force !== undefined && force !== null) {
@@ -477,14 +593,35 @@ export class AssetPublishingService {
 
 	/**
 	 * This endpoint lists all the published assets which are stored in the database if asset is still valid.
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPublishedAssetsGet(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<PublishEntity>;
-	public httpPublishedAssetsGet(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<PublishEntity>>;
-	public httpPublishedAssetsGet(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<PublishEntity>>;
-	public httpPublishedAssetsGet(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPublishedAssetsGet(
+		requestParameters: HttpPublishedAssetsGetRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<PublishEntity>;
+	public httpPublishedAssetsGet(
+		requestParameters: HttpPublishedAssetsGetRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<PublishEntity>>;
+	public httpPublishedAssetsGet(
+		requestParameters: HttpPublishedAssetsGetRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<PublishEntity>>;
+	public httpPublishedAssetsGet(
+		requestParameters: HttpPublishedAssetsGetRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPublishedAssetsGet.');
 		}
@@ -524,50 +661,43 @@ export class AssetPublishingService {
 
 	/**
 	 * This endpoint currently republished the published asset with the given ID.
-	 * @param id The ID of the asset.
-	 * @param pid The published asset ID.
-	 * @param publishedAsset The body has to contain a valid PublishedAsset in json format. Not fitting properties are ignored.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPublishedAssetsRepublishById(
-		id: string,
-		pid: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsRepublishByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<PublishedAsset>;
 	public httpPublishedAssetsRepublishById(
-		id: string,
-		pid: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsRepublishByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<PublishedAsset>>;
 	public httpPublishedAssetsRepublishById(
-		id: string,
-		pid: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsRepublishByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<PublishedAsset>>;
 	public httpPublishedAssetsRepublishById(
-		id: string,
-		pid: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsRepublishByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPublishedAssetsRepublishById.');
 		}
+		const pid = requestParameters.pid;
 		if (pid === null || pid === undefined) {
 			throw new Error('Required parameter pid was null or undefined when calling httpPublishedAssetsRepublishById.');
 		}
+		const publishedAsset = requestParameters.publishedAsset;
 		if (publishedAsset === null || publishedAsset === undefined) {
 			throw new Error('Required parameter publishedAsset was null or undefined when calling httpPublishedAssetsRepublishById.');
 		}
@@ -614,50 +744,43 @@ export class AssetPublishingService {
 
 	/**
 	 * This endpoint currently updates only the description of the published asset with the given ID.
-	 * @param id The ID of the asset.
-	 * @param pid The published asset ID.
-	 * @param publishedAsset The body has to contain a valid PublishedAsset in json format. Not fitting properties are ignored.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPublishedAssetsUpdateById(
-		id: string,
-		pid: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<PublishedAsset>;
 	public httpPublishedAssetsUpdateById(
-		id: string,
-		pid: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<PublishedAsset>>;
 	public httpPublishedAssetsUpdateById(
-		id: string,
-		pid: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<PublishedAsset>>;
 	public httpPublishedAssetsUpdateById(
-		id: string,
-		pid: string,
-		publishedAsset: PublishedAsset,
+		requestParameters: HttpPublishedAssetsUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPublishedAssetsUpdateById.');
 		}
+		const pid = requestParameters.pid;
 		if (pid === null || pid === undefined) {
 			throw new Error('Required parameter pid was null or undefined when calling httpPublishedAssetsUpdateById.');
 		}
+		const publishedAsset = requestParameters.publishedAsset;
 		if (publishedAsset === null || publishedAsset === undefined) {
 			throw new Error('Required parameter publishedAsset was null or undefined when calling httpPublishedAssetsUpdateById.');
 		}

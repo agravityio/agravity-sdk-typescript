@@ -24,6 +24,16 @@ import { PermissionSetting } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpPermissionSettingsAddIdentitiesRequestParams {
+	/** This endpoint takes the AzureIdentity  and saves it to the allowed permissions in the cosmos db. */
+	azureIdentity: Array<AzureIdentity>;
+}
+
+export interface HttpPermissionSettingsPutRequestParams {
+	/** This endpoint overwrites the permission setting ID and adds the information to the database. */
+	permissionSetting: PermissionSetting;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -86,34 +96,35 @@ export class PermissionsManagementService {
 
 	/**
 	 * This endpoint creates one permission setting entry in the database.
-	 * @param azureIdentity This endpoint takes the AzureIdentity  and saves it to the allowed permissions in the cosmos db.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPermissionSettingsAddIdentities(
-		azureIdentity: Array<AzureIdentity>,
+		requestParameters: HttpPermissionSettingsAddIdentitiesRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AgravityInfoResponse>;
 	public httpPermissionSettingsAddIdentities(
-		azureIdentity: Array<AzureIdentity>,
+		requestParameters: HttpPermissionSettingsAddIdentitiesRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpPermissionSettingsAddIdentities(
-		azureIdentity: Array<AzureIdentity>,
+		requestParameters: HttpPermissionSettingsAddIdentitiesRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpPermissionSettingsAddIdentities(
-		azureIdentity: Array<AzureIdentity>,
+		requestParameters: HttpPermissionSettingsAddIdentitiesRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const azureIdentity = requestParameters.azureIdentity;
 		if (azureIdentity === null || azureIdentity === undefined) {
 			throw new Error('Required parameter azureIdentity was null or undefined when calling httpPermissionSettingsAddIdentities.');
 		}
@@ -202,34 +213,35 @@ export class PermissionsManagementService {
 
 	/**
 	 * This endpoint creates one permission setting entry in the database.
-	 * @param permissionSetting This endpoint overwrites the permission setting ID and adds the information to the database.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPermissionSettingsPut(
-		permissionSetting: PermissionSetting,
+		requestParameters: HttpPermissionSettingsPutRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<PermissionSetting>;
 	public httpPermissionSettingsPut(
-		permissionSetting: PermissionSetting,
+		requestParameters: HttpPermissionSettingsPutRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<PermissionSetting>>;
 	public httpPermissionSettingsPut(
-		permissionSetting: PermissionSetting,
+		requestParameters: HttpPermissionSettingsPutRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<PermissionSetting>>;
 	public httpPermissionSettingsPut(
-		permissionSetting: PermissionSetting,
+		requestParameters: HttpPermissionSettingsPutRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const permissionSetting = requestParameters.permissionSetting;
 		if (permissionSetting === null || permissionSetting === undefined) {
 			throw new Error('Required parameter permissionSetting was null or undefined when calling httpPermissionSettingsPut.');
 		}

@@ -22,6 +22,30 @@ import { Comment } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpCommentsCreateRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The comment to create. */
+	comment: Comment;
+}
+
+export interface HttpCommentsDeleteByIdRequestParams {
+	/** The ID of the comment. */
+	id: string;
+}
+
+export interface HttpCommentsGetAllForAssetRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpCommentsUpdateByIdRequestParams {
+	/** The ID of the comment. */
+	id: string;
+	/** Body has to be a valid comment item. */
+	comment: Comment;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,18 +108,34 @@ export class CommentsManagementService {
 
 	/**
 	 * This endpoint creates a comment for an asset and adds the information to the database.
-	 * @param id The ID of the asset.
-	 * @param comment The comment to create.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCommentsCreate(id: string, comment: Comment, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Comment>;
-	public httpCommentsCreate(id: string, comment: Comment, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Comment>>;
-	public httpCommentsCreate(id: string, comment: Comment, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Comment>>;
-	public httpCommentsCreate(id: string, comment: Comment, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCommentsCreate(requestParameters: HttpCommentsCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Comment>;
+	public httpCommentsCreate(
+		requestParameters: HttpCommentsCreateRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Comment>>;
+	public httpCommentsCreate(
+		requestParameters: HttpCommentsCreateRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Comment>>;
+	public httpCommentsCreate(
+		requestParameters: HttpCommentsCreateRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCommentsCreate.');
 		}
+		const comment = requestParameters.comment;
 		if (comment === null || comment === undefined) {
 			throw new Error('Required parameter comment was null or undefined when calling httpCommentsCreate.');
 		}
@@ -142,14 +182,35 @@ export class CommentsManagementService {
 
 	/**
 	 * This endpoint deletes a single comment.
-	 * @param id The ID of the comment.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCommentsDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpCommentsDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpCommentsDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpCommentsDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCommentsDeleteById(
+		requestParameters: HttpCommentsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpCommentsDeleteById(
+		requestParameters: HttpCommentsDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpCommentsDeleteById(
+		requestParameters: HttpCommentsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpCommentsDeleteById(
+		requestParameters: HttpCommentsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCommentsDeleteById.');
 		}
@@ -189,14 +250,35 @@ export class CommentsManagementService {
 
 	/**
 	 * This endpoint lists all comments for an asset in database.
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCommentsGetAllForAsset(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<Comment>>;
-	public httpCommentsGetAllForAsset(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<Comment>>>;
-	public httpCommentsGetAllForAsset(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<Comment>>>;
-	public httpCommentsGetAllForAsset(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCommentsGetAllForAsset(
+		requestParameters: HttpCommentsGetAllForAssetRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<Comment>>;
+	public httpCommentsGetAllForAsset(
+		requestParameters: HttpCommentsGetAllForAssetRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<Comment>>>;
+	public httpCommentsGetAllForAsset(
+		requestParameters: HttpCommentsGetAllForAssetRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<Comment>>>;
+	public httpCommentsGetAllForAsset(
+		requestParameters: HttpCommentsGetAllForAssetRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCommentsGetAllForAsset.');
 		}
@@ -236,18 +318,39 @@ export class CommentsManagementService {
 
 	/**
 	 * Updates a comment in database.
-	 * @param id The ID of the comment.
-	 * @param comment Body has to be a valid comment item.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpCommentsUpdateById(id: string, comment: Comment, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Comment>;
-	public httpCommentsUpdateById(id: string, comment: Comment, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Comment>>;
-	public httpCommentsUpdateById(id: string, comment: Comment, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Comment>>;
-	public httpCommentsUpdateById(id: string, comment: Comment, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpCommentsUpdateById(
+		requestParameters: HttpCommentsUpdateByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Comment>;
+	public httpCommentsUpdateById(
+		requestParameters: HttpCommentsUpdateByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Comment>>;
+	public httpCommentsUpdateById(
+		requestParameters: HttpCommentsUpdateByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Comment>>;
+	public httpCommentsUpdateById(
+		requestParameters: HttpCommentsUpdateByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCommentsUpdateById.');
 		}
+		const comment = requestParameters.comment;
 		if (comment === null || comment === undefined) {
 			throw new Error('Required parameter comment was null or undefined when calling httpCommentsUpdateById.');
 		}

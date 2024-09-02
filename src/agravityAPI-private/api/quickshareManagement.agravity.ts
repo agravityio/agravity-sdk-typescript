@@ -23,6 +23,37 @@ import { QuickShareFull } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpQuickShareGetByIdRequestParams {
+	/** The ID of the quick share. */
+	id: string;
+	/** Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!) */
+	continuationToken?: string;
+	/** This number limits the page result of assets. */
+	limit?: number;
+	/** How the return assets are sorted. Default is property: created_date (newest first). */
+	orderby?: string;
+}
+
+export interface HttpQuickSharesCreateRequestParams {
+	/** This creates / adds an unique quick share ID and adds the information to the collection (in DB). */
+	quickShare: QuickShare;
+}
+
+export interface HttpQuickSharesDeleteRequestParams {
+	/** (Optional): The ID of the user. Only admins can query other users quick shares. */
+	userid?: string;
+}
+
+export interface HttpQuickSharesDeleteByIdRequestParams {
+	/** The ID of the quick share. */
+	id: string;
+}
+
+export interface HttpQuickSharesGetRequestParams {
+	/** (Optional): The ID of the user. Only admins can query other users quick shares. */
+	userid?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -85,52 +116,41 @@ export class QuickshareManagementService {
 
 	/**
 	 * Returns one single quick share (from ID)
-	 * @param id The ID of the quick share.
-	 * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
-	 * @param limit This number limits the page result of assets.
-	 * @param orderby How the return assets are sorted. Default is property: created_date (newest first).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpQuickShareGetById(
-		id: string,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
+		requestParameters: HttpQuickShareGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<QuickShareFull>;
 	public httpQuickShareGetById(
-		id: string,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
+		requestParameters: HttpQuickShareGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<QuickShareFull>>;
 	public httpQuickShareGetById(
-		id: string,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
+		requestParameters: HttpQuickShareGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<QuickShareFull>>;
 	public httpQuickShareGetById(
-		id: string,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
+		requestParameters: HttpQuickShareGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpQuickShareGetById.');
 		}
+		const continuationToken = requestParameters.continuationToken;
+		const limit = requestParameters.limit;
+		const orderby = requestParameters.orderby;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (continuationToken !== undefined && continuationToken !== null) {
@@ -179,14 +199,35 @@ export class QuickshareManagementService {
 
 	/**
 	 * Creates an additional quick share
-	 * @param quickShare This creates / adds an unique quick share ID and adds the information to the collection (in DB).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpQuickSharesCreate(quickShare: QuickShare, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<QuickShare>;
-	public httpQuickSharesCreate(quickShare: QuickShare, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<QuickShare>>;
-	public httpQuickSharesCreate(quickShare: QuickShare, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<QuickShare>>;
-	public httpQuickSharesCreate(quickShare: QuickShare, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpQuickSharesCreate(
+		requestParameters: HttpQuickSharesCreateRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<QuickShare>;
+	public httpQuickSharesCreate(
+		requestParameters: HttpQuickSharesCreateRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<QuickShare>>;
+	public httpQuickSharesCreate(
+		requestParameters: HttpQuickSharesCreateRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<QuickShare>>;
+	public httpQuickSharesCreate(
+		requestParameters: HttpQuickSharesCreateRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const quickShare = requestParameters.quickShare;
 		if (quickShare === null || quickShare === undefined) {
 			throw new Error('Required parameter quickShare was null or undefined when calling httpQuickSharesCreate.');
 		}
@@ -233,14 +274,36 @@ export class QuickshareManagementService {
 
 	/**
 	 * Dele tes all the quick shares of a specific user. If no userid is added, the user from the OAuth2 token is used.
-	 * @param userid (Optional): The ID of the user. Only admins can query other users quick shares.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpQuickSharesDelete(userid?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpQuickSharesDelete(userid?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpQuickSharesDelete(userid?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpQuickSharesDelete(userid?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpQuickSharesDelete(
+		requestParameters: HttpQuickSharesDeleteRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpQuickSharesDelete(
+		requestParameters: HttpQuickSharesDeleteRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpQuickSharesDelete(
+		requestParameters: HttpQuickSharesDeleteRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpQuickSharesDelete(
+		requestParameters: HttpQuickSharesDeleteRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const userid = requestParameters.userid;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (userid !== undefined && userid !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>userid, 'userid');
@@ -282,14 +345,35 @@ export class QuickshareManagementService {
 
 	/**
 	 * Deletes the quick share with the given ID.
-	 * @param id The ID of the quick share.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpQuickSharesDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpQuickSharesDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpQuickSharesDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpQuickSharesDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpQuickSharesDeleteById(
+		requestParameters: HttpQuickSharesDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpQuickSharesDeleteById(
+		requestParameters: HttpQuickSharesDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpQuickSharesDeleteById(
+		requestParameters: HttpQuickSharesDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpQuickSharesDeleteById(
+		requestParameters: HttpQuickSharesDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpQuickSharesDeleteById.');
 		}
@@ -329,14 +413,36 @@ export class QuickshareManagementService {
 
 	/**
 	 * This lists all the quick shares which are stored in the database for a specific user.
-	 * @param userid (Optional): The ID of the user. Only admins can query other users quick shares.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpQuickSharesGet(userid?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<QuickShare>>;
-	public httpQuickSharesGet(userid?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<QuickShare>>>;
-	public httpQuickSharesGet(userid?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<QuickShare>>>;
-	public httpQuickSharesGet(userid?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpQuickSharesGet(
+		requestParameters: HttpQuickSharesGetRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<QuickShare>>;
+	public httpQuickSharesGet(
+		requestParameters: HttpQuickSharesGetRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<QuickShare>>>;
+	public httpQuickSharesGet(
+		requestParameters: HttpQuickSharesGetRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<QuickShare>>>;
+	public httpQuickSharesGet(
+		requestParameters: HttpQuickSharesGetRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const userid = requestParameters.userid;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (userid !== undefined && userid !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>userid, 'userid');

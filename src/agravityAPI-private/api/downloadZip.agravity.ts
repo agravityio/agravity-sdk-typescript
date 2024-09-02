@@ -23,6 +23,11 @@ import { DownloadZipRequest } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpDownloadZipRequestParams {
+	/** This endpoint queues assets in a defined download format for ZIP generation. Queues will deliver an email with a download link. */
+	downloadZipRequest: DownloadZipRequest;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -85,24 +90,35 @@ export class DownloadZipService {
 
 	/**
 	 * This endpoint queues assets in a defined download format for ZIP generation. Queues will deliver an email with a download link.
-	 * @param downloadZipRequest This endpoint queues assets in a defined download format for ZIP generation. Queues will deliver an email with a download link.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDownloadZip(downloadZipRequest: DownloadZipRequest, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<DownloadObject>;
 	public httpDownloadZip(
-		downloadZipRequest: DownloadZipRequest,
+		requestParameters: HttpDownloadZipRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<DownloadObject>;
+	public httpDownloadZip(
+		requestParameters: HttpDownloadZipRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<DownloadObject>>;
 	public httpDownloadZip(
-		downloadZipRequest: DownloadZipRequest,
+		requestParameters: HttpDownloadZipRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<DownloadObject>>;
-	public httpDownloadZip(downloadZipRequest: DownloadZipRequest, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDownloadZip(
+		requestParameters: HttpDownloadZipRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const downloadZipRequest = requestParameters.downloadZipRequest;
 		if (downloadZipRequest === null || downloadZipRequest === undefined) {
 			throw new Error('Required parameter downloadZipRequest was null or undefined when calling httpDownloadZip.');
 		}

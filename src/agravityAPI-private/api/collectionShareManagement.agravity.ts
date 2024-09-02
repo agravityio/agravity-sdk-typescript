@@ -23,6 +23,32 @@ import { SharedCollectionFull } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpSharedCollectionsCreateRequestParams {
+	/** This creates / adds an unique shared collection ID and adds the information to the collection (in DB). */
+	sharedCollection: SharedCollection;
+}
+
+export interface HttpSharedCollectionsDeleteByIdRequestParams {
+	/** The ID of the shared collection. */
+	id: string;
+}
+
+export interface HttpSharedCollectionsGetRequestParams {
+	/** Filter all shared collections with given ID. */
+	collectionid?: string;
+}
+
+export interface HttpSharedCollectionsGetByIdRequestParams {
+	/** The ID of the shared collection. */
+	id: string;
+	/** Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!) */
+	continuationToken?: string;
+	/** This number limits the page result of assets. */
+	limit?: number;
+	/** How the return assets are sorted. Default is property: created_date (newest first). */
+	orderby?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -85,34 +111,35 @@ export class CollectionShareManagementService {
 
 	/**
 	 * Creates an additional shared collection
-	 * @param sharedCollection This creates / adds an unique shared collection ID and adds the information to the collection (in DB).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSharedCollectionsCreate(
-		sharedCollection: SharedCollection,
+		requestParameters: HttpSharedCollectionsCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<SharedCollection>;
 	public httpSharedCollectionsCreate(
-		sharedCollection: SharedCollection,
+		requestParameters: HttpSharedCollectionsCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SharedCollection>>;
 	public httpSharedCollectionsCreate(
-		sharedCollection: SharedCollection,
+		requestParameters: HttpSharedCollectionsCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<SharedCollection>>;
 	public httpSharedCollectionsCreate(
-		sharedCollection: SharedCollection,
+		requestParameters: HttpSharedCollectionsCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const sharedCollection = requestParameters.sharedCollection;
 		if (sharedCollection === null || sharedCollection === undefined) {
 			throw new Error('Required parameter sharedCollection was null or undefined when calling httpSharedCollectionsCreate.');
 		}
@@ -159,14 +186,35 @@ export class CollectionShareManagementService {
 
 	/**
 	 * Deletes the shared collection with the given ID.
-	 * @param id The ID of the shared collection.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpSharedCollectionsDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpSharedCollectionsDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpSharedCollectionsDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpSharedCollectionsDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSharedCollectionsDeleteById(
+		requestParameters: HttpSharedCollectionsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpSharedCollectionsDeleteById(
+		requestParameters: HttpSharedCollectionsDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpSharedCollectionsDeleteById(
+		requestParameters: HttpSharedCollectionsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpSharedCollectionsDeleteById(
+		requestParameters: HttpSharedCollectionsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpSharedCollectionsDeleteById.');
 		}
@@ -206,24 +254,36 @@ export class CollectionShareManagementService {
 
 	/**
 	 * This lists all the shared collections which are stored in the database for a specific user.
-	 * @param collectionid Filter all shared collections with given ID.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpSharedCollectionsGet(collectionid?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<SharedCollection>>;
 	public httpSharedCollectionsGet(
-		collectionid?: string,
+		requestParameters: HttpSharedCollectionsGetRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<SharedCollection>>;
+	public httpSharedCollectionsGet(
+		requestParameters: HttpSharedCollectionsGetRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<SharedCollection>>>;
 	public httpSharedCollectionsGet(
-		collectionid?: string,
+		requestParameters: HttpSharedCollectionsGetRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<SharedCollection>>>;
-	public httpSharedCollectionsGet(collectionid?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSharedCollectionsGet(
+		requestParameters: HttpSharedCollectionsGetRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const collectionid = requestParameters.collectionid;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (collectionid !== undefined && collectionid !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>collectionid, 'collectionid');
@@ -265,52 +325,41 @@ export class CollectionShareManagementService {
 
 	/**
 	 * Returns one single shared collection (from ID)
-	 * @param id The ID of the shared collection.
-	 * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
-	 * @param limit This number limits the page result of assets.
-	 * @param orderby How the return assets are sorted. Default is property: created_date (newest first).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSharedCollectionsGetById(
-		id: string,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
+		requestParameters: HttpSharedCollectionsGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<SharedCollectionFull>;
 	public httpSharedCollectionsGetById(
-		id: string,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
+		requestParameters: HttpSharedCollectionsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SharedCollectionFull>>;
 	public httpSharedCollectionsGetById(
-		id: string,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
+		requestParameters: HttpSharedCollectionsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<SharedCollectionFull>>;
 	public httpSharedCollectionsGetById(
-		id: string,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
+		requestParameters: HttpSharedCollectionsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpSharedCollectionsGetById.');
 		}
+		const continuationToken = requestParameters.continuationToken;
+		const limit = requestParameters.limit;
+		const orderby = requestParameters.orderby;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (continuationToken !== undefined && continuationToken !== null) {

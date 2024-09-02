@@ -22,6 +22,47 @@ import { DownloadFormat } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpDownloadFormatsCreateRequestParams {
+	/** This endpoint creates an unique download format ID and adds the information to the database. */
+	downloadFormat: DownloadFormat;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpDownloadFormatsDeleteByIdRequestParams {
+	/** The ID of the download format. */
+	id: string;
+}
+
+export interface HttpDownloadFormatsGetAllRequestParams {
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpDownloadFormatsGetByIdRequestParams {
+	/** The ID of the download format. */
+	id: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpDownloadFormatsUpdateWithIdRequestParams {
+	/** The ID of the download format. */
+	id: string;
+	/** This endpoint updates a download format with ID and adds the information to the database. */
+	downloadFormat: DownloadFormat;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,47 +125,40 @@ export class DownloadFormatManagementService {
 
 	/**
 	 * This endpoint creates one download format entry in the database.
-	 * @param downloadFormat This endpoint creates an unique download format ID and adds the information to the database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDownloadFormatsCreate(
-		downloadFormat: DownloadFormat,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<DownloadFormat>;
 	public httpDownloadFormatsCreate(
-		downloadFormat: DownloadFormat,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<DownloadFormat>>;
 	public httpDownloadFormatsCreate(
-		downloadFormat: DownloadFormat,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<DownloadFormat>>;
 	public httpDownloadFormatsCreate(
-		downloadFormat: DownloadFormat,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const downloadFormat = requestParameters.downloadFormat;
 		if (downloadFormat === null || downloadFormat === undefined) {
 			throw new Error('Required parameter downloadFormat was null or undefined when calling httpDownloadFormatsCreate.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -177,14 +211,35 @@ export class DownloadFormatManagementService {
 
 	/**
 	 * This endpoint deletes a single download format.
-	 * @param id The ID of the download format.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDownloadFormatsDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpDownloadFormatsDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpDownloadFormatsDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpDownloadFormatsDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDownloadFormatsDeleteById(
+		requestParameters: HttpDownloadFormatsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpDownloadFormatsDeleteById(
+		requestParameters: HttpDownloadFormatsDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpDownloadFormatsDeleteById(
+		requestParameters: HttpDownloadFormatsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpDownloadFormatsDeleteById(
+		requestParameters: HttpDownloadFormatsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDownloadFormatsDeleteById.');
 		}
@@ -224,39 +279,37 @@ export class DownloadFormatManagementService {
 
 	/**
 	 * This endpoint lists all download formats in database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDownloadFormatsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsGetAllRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<DownloadFormat>>;
 	public httpDownloadFormatsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsGetAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<DownloadFormat>>>;
 	public httpDownloadFormatsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsGetAllRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<DownloadFormat>>>;
 	public httpDownloadFormatsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsGetAllRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
@@ -301,47 +354,40 @@ export class DownloadFormatManagementService {
 
 	/**
 	 * This endpoint get a single download format.
-	 * @param id The ID of the download format.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDownloadFormatsGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any>;
 	public httpDownloadFormatsGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<any>>;
 	public httpDownloadFormatsGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<any>>;
 	public httpDownloadFormatsGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDownloadFormatsGetById.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -387,55 +433,44 @@ export class DownloadFormatManagementService {
 
 	/**
 	 * This endpoint updates a download format entry in the database.
-	 * @param id The ID of the download format.
-	 * @param downloadFormat This endpoint updates a download format with ID and adds the information to the database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDownloadFormatsUpdateWithId(
-		id: string,
-		downloadFormat: DownloadFormat,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsUpdateWithIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<DownloadFormat>;
 	public httpDownloadFormatsUpdateWithId(
-		id: string,
-		downloadFormat: DownloadFormat,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsUpdateWithIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<DownloadFormat>>;
 	public httpDownloadFormatsUpdateWithId(
-		id: string,
-		downloadFormat: DownloadFormat,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsUpdateWithIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<DownloadFormat>>;
 	public httpDownloadFormatsUpdateWithId(
-		id: string,
-		downloadFormat: DownloadFormat,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDownloadFormatsUpdateWithIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDownloadFormatsUpdateWithId.');
 		}
+		const downloadFormat = requestParameters.downloadFormat;
 		if (downloadFormat === null || downloadFormat === undefined) {
 			throw new Error('Required parameter downloadFormat was null or undefined when calling httpDownloadFormatsUpdateWithId.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {

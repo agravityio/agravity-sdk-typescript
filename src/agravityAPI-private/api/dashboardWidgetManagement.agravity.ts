@@ -22,6 +22,41 @@ import { DashboardWidget } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpDashboardWidgetsCreateRequestParams {
+	/** The dashboard widget to create. */
+	dashboardWidget: DashboardWidget;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpDashboardWidgetsDeleteByIdRequestParams {
+	/** The ID of the dashboard widget. */
+	id: string;
+}
+
+export interface HttpDashboardWidgetsGetAllRequestParams {
+	/** If widgetdata should be populated. */
+	populate?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpDashboardWidgetsGetByIdRequestParams {
+	/** The ID of the dashboard widget. */
+	id: string;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpDashboardWidgetsUpdateByIdRequestParams {
+	/** The ID of the dashboard widget. */
+	id: string;
+	/** Body has to be a valid dashboard widget item. */
+	dashboardWidget: DashboardWidget;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,42 +119,39 @@ export class DashboardWidgetManagementService {
 
 	/**
 	 * This endpoint creates a dashboard widget in database.
-	 * @param dashboardWidget The dashboard widget to create.
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDashboardWidgetsCreate(
-		dashboardWidget: DashboardWidget,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<DashboardWidget>;
 	public httpDashboardWidgetsCreate(
-		dashboardWidget: DashboardWidget,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<DashboardWidget>>;
 	public httpDashboardWidgetsCreate(
-		dashboardWidget: DashboardWidget,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<DashboardWidget>>;
 	public httpDashboardWidgetsCreate(
-		dashboardWidget: DashboardWidget,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const dashboardWidget = requestParameters.dashboardWidget;
 		if (dashboardWidget === null || dashboardWidget === undefined) {
 			throw new Error('Required parameter dashboardWidget was null or undefined when calling httpDashboardWidgetsCreate.');
 		}
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let headers = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -166,14 +198,35 @@ export class DashboardWidgetManagementService {
 
 	/**
 	 * This endpoint deletes a single dashboard widget.
-	 * @param id The ID of the dashboard widget.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDashboardWidgetsDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpDashboardWidgetsDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpDashboardWidgetsDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpDashboardWidgetsDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDashboardWidgetsDeleteById(
+		requestParameters: HttpDashboardWidgetsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpDashboardWidgetsDeleteById(
+		requestParameters: HttpDashboardWidgetsDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpDashboardWidgetsDeleteById(
+		requestParameters: HttpDashboardWidgetsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpDashboardWidgetsDeleteById(
+		requestParameters: HttpDashboardWidgetsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDashboardWidgetsDeleteById.');
 		}
@@ -213,39 +266,37 @@ export class DashboardWidgetManagementService {
 
 	/**
 	 * This endpoint lists all dashboard widgets in database.
-	 * @param populate If widgetdata should be populated.
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDashboardWidgetsGetAll(
-		populate?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsGetAllRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<DashboardWidget>>;
 	public httpDashboardWidgetsGetAll(
-		populate?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsGetAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<DashboardWidget>>>;
 	public httpDashboardWidgetsGetAll(
-		populate?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsGetAllRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<DashboardWidget>>>;
 	public httpDashboardWidgetsGetAll(
-		populate?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsGetAllRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const populate = requestParameters.populate;
+		const acceptLanguage = requestParameters.acceptLanguage;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (populate !== undefined && populate !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>populate, 'populate');
@@ -290,42 +341,39 @@ export class DashboardWidgetManagementService {
 
 	/**
 	 * This endpoint gets a dashboard widget from database.
-	 * @param id The ID of the dashboard widget.
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDashboardWidgetsGetById(
-		id: string,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<DashboardWidget>;
 	public httpDashboardWidgetsGetById(
-		id: string,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<DashboardWidget>>;
 	public httpDashboardWidgetsGetById(
-		id: string,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<DashboardWidget>>;
 	public httpDashboardWidgetsGetById(
-		id: string,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDashboardWidgetsGetById.');
 		}
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let headers = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -365,50 +413,43 @@ export class DashboardWidgetManagementService {
 
 	/**
 	 * Updates a dashboard widget in database.
-	 * @param id The ID of the dashboard widget.
-	 * @param dashboardWidget Body has to be a valid dashboard widget item.
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDashboardWidgetsUpdateById(
-		id: string,
-		dashboardWidget: DashboardWidget,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<DashboardWidget>;
 	public httpDashboardWidgetsUpdateById(
-		id: string,
-		dashboardWidget: DashboardWidget,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<DashboardWidget>>;
 	public httpDashboardWidgetsUpdateById(
-		id: string,
-		dashboardWidget: DashboardWidget,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<DashboardWidget>>;
 	public httpDashboardWidgetsUpdateById(
-		id: string,
-		dashboardWidget: DashboardWidget,
-		acceptLanguage?: string,
+		requestParameters: HttpDashboardWidgetsUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDashboardWidgetsUpdateById.');
 		}
+		const dashboardWidget = requestParameters.dashboardWidget;
 		if (dashboardWidget === null || dashboardWidget === undefined) {
 			throw new Error('Required parameter dashboardWidget was null or undefined when calling httpDashboardWidgetsUpdateById.');
 		}
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let headers = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {

@@ -22,6 +22,49 @@ import { StaticDefinedList } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpStaticDefinedListsCreateRequestParams {
+	/** This endpoint creates an unique static defined list ID and adds the information to the database. */
+	staticDefinedList: StaticDefinedList;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpStaticDefinedListsDeleteByIdRequestParams {
+	/** The ID of the static defined list. */
+	id: string;
+}
+
+export interface HttpStaticDefinedListsGetAllRequestParams {
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpStaticDefinedListsGetByIdRequestParams {
+	/** The ID of the static defined list. */
+	id: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpStaticDefinedListsUpdateByIdRequestParams {
+	/** The ID of the static defined list. */
+	id: string;
+	/** The mode how the list should be updated. Available values are: add, delete and replace. */
+	updatemode: string;
+	/** Body has to be a valid static defined list item. */
+	staticDefinedList: StaticDefinedList;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,47 +127,40 @@ export class StaticDefinedListManagementService {
 
 	/**
 	 * This endpoint creates one static defined list entry in the database.
-	 * @param staticDefinedList This endpoint creates an unique static defined list ID and adds the information to the database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStaticDefinedListsCreate(
-		staticDefinedList: StaticDefinedList,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<StaticDefinedList>;
 	public httpStaticDefinedListsCreate(
-		staticDefinedList: StaticDefinedList,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<StaticDefinedList>>;
 	public httpStaticDefinedListsCreate(
-		staticDefinedList: StaticDefinedList,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<StaticDefinedList>>;
 	public httpStaticDefinedListsCreate(
-		staticDefinedList: StaticDefinedList,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const staticDefinedList = requestParameters.staticDefinedList;
 		if (staticDefinedList === null || staticDefinedList === undefined) {
 			throw new Error('Required parameter staticDefinedList was null or undefined when calling httpStaticDefinedListsCreate.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -177,14 +213,35 @@ export class StaticDefinedListManagementService {
 
 	/**
 	 * This endpoint deletes a single static defined list.
-	 * @param id The ID of the static defined list.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpStaticDefinedListsDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpStaticDefinedListsDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpStaticDefinedListsDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpStaticDefinedListsDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpStaticDefinedListsDeleteById(
+		requestParameters: HttpStaticDefinedListsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpStaticDefinedListsDeleteById(
+		requestParameters: HttpStaticDefinedListsDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpStaticDefinedListsDeleteById(
+		requestParameters: HttpStaticDefinedListsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpStaticDefinedListsDeleteById(
+		requestParameters: HttpStaticDefinedListsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpStaticDefinedListsDeleteById.');
 		}
@@ -224,39 +281,37 @@ export class StaticDefinedListManagementService {
 
 	/**
 	 * This endpoint lists all static defined lists in database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStaticDefinedListsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsGetAllRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<StaticDefinedList>>;
 	public httpStaticDefinedListsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsGetAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<StaticDefinedList>>>;
 	public httpStaticDefinedListsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsGetAllRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<StaticDefinedList>>>;
 	public httpStaticDefinedListsGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsGetAllRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
@@ -301,47 +356,40 @@ export class StaticDefinedListManagementService {
 
 	/**
 	 * This endpoint gets a static defined list from database.
-	 * @param id The ID of the static defined list.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStaticDefinedListsGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<StaticDefinedList>;
 	public httpStaticDefinedListsGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<StaticDefinedList>>;
 	public httpStaticDefinedListsGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<StaticDefinedList>>;
 	public httpStaticDefinedListsGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpStaticDefinedListsGetById.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -387,63 +435,48 @@ export class StaticDefinedListManagementService {
 
 	/**
 	 * Updates a static defined list in database.
-	 * @param id The ID of the static defined list.
-	 * @param updatemode The mode how the list should be updated. Available values are: add, delete and replace.
-	 * @param staticDefinedList Body has to be a valid static defined list item.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStaticDefinedListsUpdateById(
-		id: string,
-		updatemode: string,
-		staticDefinedList: StaticDefinedList,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<StaticDefinedList>;
 	public httpStaticDefinedListsUpdateById(
-		id: string,
-		updatemode: string,
-		staticDefinedList: StaticDefinedList,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<StaticDefinedList>>;
 	public httpStaticDefinedListsUpdateById(
-		id: string,
-		updatemode: string,
-		staticDefinedList: StaticDefinedList,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<StaticDefinedList>>;
 	public httpStaticDefinedListsUpdateById(
-		id: string,
-		updatemode: string,
-		staticDefinedList: StaticDefinedList,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpStaticDefinedListsUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpStaticDefinedListsUpdateById.');
 		}
+		const updatemode = requestParameters.updatemode;
 		if (updatemode === null || updatemode === undefined) {
 			throw new Error('Required parameter updatemode was null or undefined when calling httpStaticDefinedListsUpdateById.');
 		}
+		const staticDefinedList = requestParameters.staticDefinedList;
 		if (staticDefinedList === null || staticDefinedList === undefined) {
 			throw new Error('Required parameter staticDefinedList was null or undefined when calling httpStaticDefinedListsUpdateById.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (updatemode !== undefined && updatemode !== null) {

@@ -24,6 +24,26 @@ import { GroupAllAppData } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpGetDataCollectionTypeRequestParams {
+	/** The ID of the collection type for which this web data should be prepared. */
+	id: string;
+}
+
+export interface HttpGetWebAppDataRequestParams {
+	/** The ID of the collection for which this web data should be prepared. */
+	id: string;
+}
+
+export interface HttpPostDataCollectionTypeRequestParams {
+	/** The ID of the collection type for which this web data should be prepared. */
+	id: string;
+}
+
+export interface HttpPostWebAppDataRequestParams {
+	/** The ID of the collection for which this web data should be prepared. */
+	id: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -86,14 +106,35 @@ export class WebAppDataService {
 
 	/**
 	 * This returns all collections and assets from the given collection type.
-	 * @param id The ID of the collection type for which this web data should be prepared.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetDataCollectionType(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<GroupAllAppData>;
-	public httpGetDataCollectionType(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<GroupAllAppData>>;
-	public httpGetDataCollectionType(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<GroupAllAppData>>;
-	public httpGetDataCollectionType(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetDataCollectionType(
+		requestParameters: HttpGetDataCollectionTypeRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<GroupAllAppData>;
+	public httpGetDataCollectionType(
+		requestParameters: HttpGetDataCollectionTypeRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<GroupAllAppData>>;
+	public httpGetDataCollectionType(
+		requestParameters: HttpGetDataCollectionTypeRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<GroupAllAppData>>;
+	public httpGetDataCollectionType(
+		requestParameters: HttpGetDataCollectionTypeRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetDataCollectionType.');
 		}
@@ -133,14 +174,35 @@ export class WebAppDataService {
 
 	/**
 	 * This lists all elements of a given collection which can be used by the web frontend. It includes structure and all assets. All coming live from database.
-	 * @param id The ID of the collection for which this web data should be prepared.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetWebAppData(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AllWebAppData>;
-	public httpGetWebAppData(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AllWebAppData>>;
-	public httpGetWebAppData(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AllWebAppData>>;
-	public httpGetWebAppData(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetWebAppData(
+		requestParameters: HttpGetWebAppDataRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AllWebAppData>;
+	public httpGetWebAppData(
+		requestParameters: HttpGetWebAppDataRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AllWebAppData>>;
+	public httpGetWebAppData(
+		requestParameters: HttpGetWebAppDataRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AllWebAppData>>;
+	public httpGetWebAppData(
+		requestParameters: HttpGetWebAppDataRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetWebAppData.');
 		}
@@ -180,14 +242,35 @@ export class WebAppDataService {
 
 	/**
 	 * This triggers an async action to publish the whole structure and puts it to public blob storage with collection type id with extension json.
-	 * @param id The ID of the collection type for which this web data should be prepared.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPostDataCollectionType(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpPostDataCollectionType(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpPostDataCollectionType(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPostDataCollectionType(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPostDataCollectionType(
+		requestParameters: HttpPostDataCollectionTypeRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPostDataCollectionType(
+		requestParameters: HttpPostDataCollectionTypeRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpPostDataCollectionType(
+		requestParameters: HttpPostDataCollectionTypeRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpPostDataCollectionType(
+		requestParameters: HttpPostDataCollectionTypeRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPostDataCollectionType.');
 		}
@@ -227,14 +310,35 @@ export class WebAppDataService {
 
 	/**
 	 * Takes whole structure and puts it to public blob storage with collection id with extension json.
-	 * @param id The ID of the collection for which this web data should be prepared.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPostWebAppData(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpPostWebAppData(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpPostWebAppData(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPostWebAppData(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPostWebAppData(
+		requestParameters: HttpPostWebAppDataRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPostWebAppData(
+		requestParameters: HttpPostWebAppDataRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpPostWebAppData(
+		requestParameters: HttpPostWebAppDataRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpPostWebAppData(
+		requestParameters: HttpPostWebAppDataRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPostWebAppData.');
 		}

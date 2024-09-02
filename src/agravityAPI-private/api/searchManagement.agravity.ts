@@ -25,6 +25,81 @@ import { SearchResult } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpAzureDeleteSearchCompletelyRequestParams {
+	/** If the search should be redirected to a specific portal. */
+	portalId?: string;
+}
+
+export interface HttpAzureRecreateGlobalIndexRequestParams {
+	/** If the search should be redirected to a specific portal. */
+	portalId?: string;
+}
+
+export interface HttpGetSearchFacetteByNameRequestParams {
+	/** The name of the facette. */
+	name: string;
+	/** The search string which should be found. */
+	s: string;
+	/** Limits the result on all collections from the given collectiontypeid parameter. */
+	collectiontypeid?: string;
+	/** Limits the result on collection id (and siblings). Will be overwritten by collectiontypeid parameter. */
+	collectionid?: string;
+	/** Two modes supported: \&quot;any\&quot; or \&quot;all\&quot; search terms should be applied. (Only if Azure Search is enabled) */
+	mode?: string;
+	/** Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled) */
+	filter?: string;
+	/** Comma separated values list with all ids which should be returned. */
+	ids?: string;
+	/** If the search should be redirected to a specific portal. */
+	portalId?: string;
+}
+
+export interface HttpGlobalSearchRequestParams {
+	/** The search string which should be found. */
+	s: string;
+	/** How many results should be returend. 0 is backend configuration limit. */
+	limit?: number;
+	/** (default: 0) - Used for paging - how many items should be skipped before next limit results will be fetched. */
+	skip?: number;
+	/** Limits the result on all collections from the given collectiontypeid parameter. */
+	collectiontypeid?: string;
+	/** Limits the result on collection id (and siblings). Will be overwritten by collectiontypeid parameter. */
+	collectionid?: string;
+	/** Two modes supported: \&quot;any\&quot; or \&quot;all\&quot; search terms should be applied. (Only if Azure Search is enabled) */
+	mode?: string;
+	/** This will expose the thumbnail asset blob incl. URL with SAS Token. */
+	expose?: boolean;
+	/** Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled) */
+	filter?: string;
+	/** Sortable fields can be used. For descendant sorting use leading \&quot;!\&quot;. (Only if Azure Search is enabled) */
+	orderby?: string;
+	/** Comma separated values list with all ids which should be returned. */
+	ids?: string;
+	/** If the search should be redirected to a specific portal. */
+	portalId?: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpPatchCleanSearchFromDeletedAssetsRequestParams {
+	/** If the search should be redirected to a specific portal. */
+	portalId?: string;
+}
+
+export interface HttpPatchReIndexAssetsRequestParams {
+	/** The ID of the entity (collection type, collection or asset). */
+	id: string;
+}
+
+export interface HttpSearchAdminGetStatusRequestParams {
+	/** If the search should be redirected to a specific portal. */
+	portalId?: string;
+	/** If all information is needed (incl. datasource, etc.). */
+	full?: boolean;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -87,24 +162,36 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint deletes the index, indexes and data source connection. Has to be recreated with recreate endpoint.
-	 * @param portalId If the search should be redirected to a specific portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAzureDeleteSearchCompletely(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpAzureDeleteSearchCompletely(
-		portalId?: string,
+		requestParameters: HttpAzureDeleteSearchCompletelyRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpAzureDeleteSearchCompletely(
+		requestParameters: HttpAzureDeleteSearchCompletelyRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpAzureDeleteSearchCompletely(
-		portalId?: string,
+		requestParameters: HttpAzureDeleteSearchCompletelyRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpAzureDeleteSearchCompletely(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAzureDeleteSearchCompletely(
+		requestParameters: HttpAzureDeleteSearchCompletelyRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const portalId = requestParameters.portalId;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (portalId !== undefined && portalId !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
@@ -146,24 +233,36 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint recreates the index and creates the indexes, skillset and data source connection if not existing
-	 * @param portalId If the search should be redirected to a specific portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAzureRecreateGlobalIndex(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpAzureRecreateGlobalIndex(
-		portalId?: string,
+		requestParameters: HttpAzureRecreateGlobalIndexRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpAzureRecreateGlobalIndex(
+		requestParameters: HttpAzureRecreateGlobalIndexRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpAzureRecreateGlobalIndex(
-		portalId?: string,
+		requestParameters: HttpAzureRecreateGlobalIndexRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpAzureRecreateGlobalIndex(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAzureRecreateGlobalIndex(
+		requestParameters: HttpAzureRecreateGlobalIndexRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const portalId = requestParameters.portalId;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (portalId !== undefined && portalId !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
@@ -205,75 +304,48 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint returns one facette based on the search parameters.
-	 * @param name The name of the facette.
-	 * @param s The search string which should be found.
-	 * @param collectiontypeid Limits the result on all collections from the given collectiontypeid parameter.
-	 * @param collectionid Limits the result on collection id (and siblings). Will be overwritten by collectiontypeid parameter.
-	 * @param mode Two modes supported: \&quot;any\&quot; or \&quot;all\&quot; search terms should be applied. (Only if Azure Search is enabled)
-	 * @param filter Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled)
-	 * @param ids Comma separated values list with all ids which should be returned.
-	 * @param portalId If the search should be redirected to a specific portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGetSearchFacetteByName(
-		name: string,
-		s: string,
-		collectiontypeid?: string,
-		collectionid?: string,
-		mode?: string,
-		filter?: string,
-		ids?: string,
-		portalId?: string,
+		requestParameters: HttpGetSearchFacetteByNameRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<SearchFacet>;
 	public httpGetSearchFacetteByName(
-		name: string,
-		s: string,
-		collectiontypeid?: string,
-		collectionid?: string,
-		mode?: string,
-		filter?: string,
-		ids?: string,
-		portalId?: string,
+		requestParameters: HttpGetSearchFacetteByNameRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SearchFacet>>;
 	public httpGetSearchFacetteByName(
-		name: string,
-		s: string,
-		collectiontypeid?: string,
-		collectionid?: string,
-		mode?: string,
-		filter?: string,
-		ids?: string,
-		portalId?: string,
+		requestParameters: HttpGetSearchFacetteByNameRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<SearchFacet>>;
 	public httpGetSearchFacetteByName(
-		name: string,
-		s: string,
-		collectiontypeid?: string,
-		collectionid?: string,
-		mode?: string,
-		filter?: string,
-		ids?: string,
-		portalId?: string,
+		requestParameters: HttpGetSearchFacetteByNameRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const name = requestParameters.name;
 		if (name === null || name === undefined) {
 			throw new Error('Required parameter name was null or undefined when calling httpGetSearchFacetteByName.');
 		}
+		const s = requestParameters.s;
 		if (s === null || s === undefined) {
 			throw new Error('Required parameter s was null or undefined when calling httpGetSearchFacetteByName.');
 		}
+		const collectiontypeid = requestParameters.collectiontypeid;
+		const collectionid = requestParameters.collectionid;
+		const mode = requestParameters.mode;
+		const filter = requestParameters.filter;
+		const ids = requestParameters.ids;
+		const portalId = requestParameters.portalId;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (name !== undefined && name !== null) {
@@ -337,97 +409,50 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint returns a configured max amount of results for search terms.
-	 * @param s The search string which should be found.
-	 * @param limit How many results should be returend. 0 is backend configuration limit.
-	 * @param skip (default: 0) - Used for paging - how many items should be skipped before next limit results will be fetched.
-	 * @param collectiontypeid Limits the result on all collections from the given collectiontypeid parameter.
-	 * @param collectionid Limits the result on collection id (and siblings). Will be overwritten by collectiontypeid parameter.
-	 * @param mode Two modes supported: \&quot;any\&quot; or \&quot;all\&quot; search terms should be applied. (Only if Azure Search is enabled)
-	 * @param expose This will expose the thumbnail asset blob incl. URL with SAS Token.
-	 * @param filter Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled)
-	 * @param orderby Sortable fields can be used. For descendant sorting use leading \&quot;!\&quot;. (Only if Azure Search is enabled)
-	 * @param ids Comma separated values list with all ids which should be returned.
-	 * @param portalId If the search should be redirected to a specific portal.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGlobalSearch(
-		s: string,
-		limit?: number,
-		skip?: number,
-		collectiontypeid?: string,
-		collectionid?: string,
-		mode?: string,
-		expose?: boolean,
-		filter?: string,
-		orderby?: string,
-		ids?: string,
-		portalId?: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGlobalSearchRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<SearchResult>;
 	public httpGlobalSearch(
-		s: string,
-		limit?: number,
-		skip?: number,
-		collectiontypeid?: string,
-		collectionid?: string,
-		mode?: string,
-		expose?: boolean,
-		filter?: string,
-		orderby?: string,
-		ids?: string,
-		portalId?: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGlobalSearchRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SearchResult>>;
 	public httpGlobalSearch(
-		s: string,
-		limit?: number,
-		skip?: number,
-		collectiontypeid?: string,
-		collectionid?: string,
-		mode?: string,
-		expose?: boolean,
-		filter?: string,
-		orderby?: string,
-		ids?: string,
-		portalId?: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGlobalSearchRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<SearchResult>>;
 	public httpGlobalSearch(
-		s: string,
-		limit?: number,
-		skip?: number,
-		collectiontypeid?: string,
-		collectionid?: string,
-		mode?: string,
-		expose?: boolean,
-		filter?: string,
-		orderby?: string,
-		ids?: string,
-		portalId?: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGlobalSearchRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const s = requestParameters.s;
 		if (s === null || s === undefined) {
 			throw new Error('Required parameter s was null or undefined when calling httpGlobalSearch.');
 		}
+		const limit = requestParameters.limit;
+		const skip = requestParameters.skip;
+		const collectiontypeid = requestParameters.collectiontypeid;
+		const collectionid = requestParameters.collectionid;
+		const mode = requestParameters.mode;
+		const expose = requestParameters.expose;
+		const filter = requestParameters.filter;
+		const orderby = requestParameters.orderby;
+		const ids = requestParameters.ids;
+		const portalId = requestParameters.portalId;
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (s !== undefined && s !== null) {
@@ -506,24 +531,36 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint removes all assets which are not longer available in the database from the search index.
-	 * @param portalId If the search should be redirected to a specific portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPatchCleanSearchFromDeletedAssets(portalId?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpPatchCleanSearchFromDeletedAssets(
-		portalId?: string,
+		requestParameters: HttpPatchCleanSearchFromDeletedAssetsRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPatchCleanSearchFromDeletedAssets(
+		requestParameters: HttpPatchCleanSearchFromDeletedAssetsRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpPatchCleanSearchFromDeletedAssets(
-		portalId?: string,
+		requestParameters: HttpPatchCleanSearchFromDeletedAssetsRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPatchCleanSearchFromDeletedAssets(portalId?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPatchCleanSearchFromDeletedAssets(
+		requestParameters: HttpPatchCleanSearchFromDeletedAssetsRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const portalId = requestParameters.portalId;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (portalId !== undefined && portalId !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');
@@ -565,14 +602,35 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint takes the ID and check if it is a collection type, collection or asset and re-index it in search.
-	 * @param id The ID of the entity (collection type, collection or asset).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPatchReIndexAssets(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpPatchReIndexAssets(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpPatchReIndexAssets(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPatchReIndexAssets(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPatchReIndexAssets(
+		requestParameters: HttpPatchReIndexAssetsRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPatchReIndexAssets(
+		requestParameters: HttpPatchReIndexAssetsRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpPatchReIndexAssets(
+		requestParameters: HttpPatchReIndexAssetsRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpPatchReIndexAssets(
+		requestParameters: HttpPatchReIndexAssetsRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPatchReIndexAssets.');
 		}
@@ -612,27 +670,37 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint gives the status about the index and indexer. Skill and data source connection only when \&#39;full\&#39; is set to true.
-	 * @param portalId If the search should be redirected to a specific portal.
-	 * @param full If all information is needed (incl. datasource, etc.).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpSearchAdminGetStatus(portalId?: string, full?: boolean, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<SearchAdminStatus>;
 	public httpSearchAdminGetStatus(
-		portalId?: string,
-		full?: boolean,
+		requestParameters: HttpSearchAdminGetStatusRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<SearchAdminStatus>;
+	public httpSearchAdminGetStatus(
+		requestParameters: HttpSearchAdminGetStatusRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<SearchAdminStatus>>;
 	public httpSearchAdminGetStatus(
-		portalId?: string,
-		full?: boolean,
+		requestParameters: HttpSearchAdminGetStatusRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<SearchAdminStatus>>;
-	public httpSearchAdminGetStatus(portalId?: string, full?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpSearchAdminGetStatus(
+		requestParameters: HttpSearchAdminGetStatusRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const portalId = requestParameters.portalId;
+		const full = requestParameters.full;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (portalId !== undefined && portalId !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>portalId, 'portal_id');

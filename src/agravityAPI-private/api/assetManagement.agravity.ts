@@ -25,6 +25,109 @@ import { AssetPageResult } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpAssetUploadFileRequestParams {
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+	name?: string;
+	collectionId?: string;
+	file?: Blob;
+	filename?: string;
+	previewof?: string;
+}
+
+export interface HttpAssetsBulkDeleteUpdateRequestParams {
+	/** The body has to be valid json which contains the reference asset, which for which collection (reference for collection type items) and which assets are to update. The containing keywords (tags) will be removed. Only custom values are replaces if they are part of the given collection id. */
+	assetBulkUpdate: AssetBulkUpdate;
+}
+
+export interface HttpAssetsBulkPostUpdateRequestParams {
+	/** The body has to be valid json which contains the reference asset, which for which collection (reference for collection type items) and which assets are to update. The containing keywords (tags) will be distinctly added (no removal). Only custom values are replaces if they are part of the given collection id. */
+	assetBulkUpdate: AssetBulkUpdate;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpAssetsBulkPutUpdateRequestParams {
+	/** The body has to be valid json which contains the reference asset, a collection (used as reference for collection type items) and which asset ids are to update. The containing keywords (tags) will be fully replaced. ONLY custom items are replaced which are in body (others in same collection will be ignored)!Only custom values are replaces if they are part of the given collection id. */
+	assetBulkUpdate: AssetBulkUpdate;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpAssetsCreateRequestParams {
+	/** The ID of the collection where this assets should be assigned. */
+	collectionid: string;
+	/** This endpoint creates an unique asset ID and adds the information to the database. */
+	asset: Asset;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpAssetsDeleteAllRequestParams {
+	/** The filter of assets */
+	filter: string;
+	/** The ID of the collection. */
+	collectionId: string;
+}
+
+export interface HttpAssetsDeleteByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpAssetsGetRequestParams {
+	/** The ID of the collection where these assets should come from. (Is not required when \&#39;collectiontypeid\&#39; is set.) */
+	collectionid?: string;
+	/** The ID of the collection type where these assets should come from. (Is not required when \&#39;collectionid\&#39; is set.) CAUTION: The assets returned are not distinct &#x3D;&gt; Duplicates are possible if assets are in multiple collections in this collection type! */
+	collectiontypeid?: string;
+	/** This limits the fields which are returned, separated by comma (\&#39;,\&#39;). Blobs can be limited with \&#39;.\&#39; on their container. (i.e. fields&#x3D;blobs.thumbnails). Only if \&#39;thumbnails\&#39; is set, the placeholder of this asset type are returned if no thumbnail blob is found. */
+	fields?: string;
+	/** This indicates if the given blobs should have URLs where these can be requested. (If not limited through \&#39;fields\&#39; parameter it will expose all URLs of all blobs.) */
+	expose?: boolean;
+	/** Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!) */
+	continuationToken?: string;
+	/** This number limits the page result of assets. */
+	limit?: number;
+	/** How the return assets are sorted. Default is property: modified_date (newest first). */
+	orderby?: string;
+	/** This will limit the output on specific parameters which are separated by \&#39;:\&#39;, \&#39;!:\&#39;, \&#39;&gt;\&#39;, \&#39;&gt;&#x3D;\&#39;, \&#39;&lt;\&#39;, \&#39;&lt;&#x3D;\&#39; */
+	filter?: string;
+	/** The items can be extended to fully filled items. */
+	items?: boolean;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpAssetsGetByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** Which fields are need to be filled out with comma separated. If one is set all non mandatory fields are left out. No validation if field exist. */
+	fields?: string;
+	/** This indicates if the given blobs should have URLs where these can be requested. It will expose placeholder blobs if no \&#39;thumbnail\&#39; is found.) */
+	expose?: boolean;
+	/** The items can be extended to fully filled items. */
+	items?: boolean;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpAssetsUpdateByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The body has to contain one of the mentioned elements and a valid json. Not fitting properties are ignored. */
+	asset: Asset;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -101,59 +204,36 @@ export class AssetManagementService {
 
 	/**
 	 * This endpoint allows to upload one asset which is put onto the storage (INBOX). Collection ID is mandatory on asset upload. Previewof can be used alone.
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
-	 * @param name
-	 * @param collectionId
-	 * @param file
-	 * @param filename
-	 * @param previewof
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
+	public httpAssetUploadFile(requestParameters: HttpAssetUploadFileRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Asset>;
 	public httpAssetUploadFile(
-		acceptLanguage?: string,
-		name?: string,
-		collectionId?: string,
-		file?: Blob,
-		filename?: string,
-		previewof?: string,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<Asset>;
-	public httpAssetUploadFile(
-		acceptLanguage?: string,
-		name?: string,
-		collectionId?: string,
-		file?: Blob,
-		filename?: string,
-		previewof?: string,
+		requestParameters: HttpAssetUploadFileRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Asset>>;
 	public httpAssetUploadFile(
-		acceptLanguage?: string,
-		name?: string,
-		collectionId?: string,
-		file?: Blob,
-		filename?: string,
-		previewof?: string,
+		requestParameters: HttpAssetUploadFileRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Asset>>;
 	public httpAssetUploadFile(
-		acceptLanguage?: string,
-		name?: string,
-		collectionId?: string,
-		file?: Blob,
-		filename?: string,
-		previewof?: string,
+		requestParameters: HttpAssetUploadFileRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const acceptLanguage = requestParameters.acceptLanguage;
+		const name = requestParameters.name;
+		const collectionId = requestParameters.collectionId;
+		const file = requestParameters.file;
+		const filename = requestParameters.filename;
+		const previewof = requestParameters.previewof;
+
 		let headers = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
 			headers = headers.set('Accept-Language', String(acceptLanguage));
@@ -217,29 +297,35 @@ export class AssetManagementService {
 	}
 
 	/**
-	 * @param assetBulkUpdate The body has to be valid json which contains the reference asset, which for which collection (reference for collection type items) and which assets are to update. The containing keywords (tags) will be removed. Only custom values are replaces if they are part of the given collection id.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetsBulkDeleteUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
+		requestParameters: HttpAssetsBulkDeleteUpdateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AgravityInfoResponse>;
 	public httpAssetsBulkDeleteUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
+		requestParameters: HttpAssetsBulkDeleteUpdateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpAssetsBulkDeleteUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
+		requestParameters: HttpAssetsBulkDeleteUpdateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpAssetsBulkDeleteUpdate(assetBulkUpdate: AssetBulkUpdate, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAssetsBulkDeleteUpdate(
+		requestParameters: HttpAssetsBulkDeleteUpdateRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const assetBulkUpdate = requestParameters.assetBulkUpdate;
 		if (assetBulkUpdate === null || assetBulkUpdate === undefined) {
 			throw new Error('Required parameter assetBulkUpdate was null or undefined when calling httpAssetsBulkDeleteUpdate.');
 		}
@@ -286,42 +372,39 @@ export class AssetManagementService {
 	}
 
 	/**
-	 * @param assetBulkUpdate The body has to be valid json which contains the reference asset, which for which collection (reference for collection type items) and which assets are to update. The containing keywords (tags) will be distinctly added (no removal). Only custom values are replaces if they are part of the given collection id.
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetsBulkPostUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsBulkPostUpdateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AgravityInfoResponse>;
 	public httpAssetsBulkPostUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsBulkPostUpdateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpAssetsBulkPostUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsBulkPostUpdateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpAssetsBulkPostUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsBulkPostUpdateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const assetBulkUpdate = requestParameters.assetBulkUpdate;
 		if (assetBulkUpdate === null || assetBulkUpdate === undefined) {
 			throw new Error('Required parameter assetBulkUpdate was null or undefined when calling httpAssetsBulkPostUpdate.');
 		}
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let headers = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -367,42 +450,39 @@ export class AssetManagementService {
 	}
 
 	/**
-	 * @param assetBulkUpdate The body has to be valid json which contains the reference asset, a collection (used as reference for collection type items) and which asset ids are to update. The containing keywords (tags) will be fully replaced. ONLY custom items are replaced which are in body (others in same collection will be ignored)!Only custom values are replaces if they are part of the given collection id.
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetsBulkPutUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsBulkPutUpdateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AgravityInfoResponse>;
 	public httpAssetsBulkPutUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsBulkPutUpdateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpAssetsBulkPutUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsBulkPutUpdateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpAssetsBulkPutUpdate(
-		assetBulkUpdate: AssetBulkUpdate,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsBulkPutUpdateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const assetBulkUpdate = requestParameters.assetBulkUpdate;
 		if (assetBulkUpdate === null || assetBulkUpdate === undefined) {
 			throw new Error('Required parameter assetBulkUpdate was null or undefined when calling httpAssetsBulkPutUpdate.');
 		}
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let headers = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -449,55 +529,39 @@ export class AssetManagementService {
 
 	/**
 	 * This endpoint creates one asset entry in the database.
-	 * @param collectionid The ID of the collection where this assets should be assigned.
-	 * @param asset This endpoint creates an unique asset ID and adds the information to the database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
+	public httpAssetsCreate(requestParameters: HttpAssetsCreateRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Asset>;
 	public httpAssetsCreate(
-		collectionid: string,
-		asset: Asset,
-		translations?: boolean,
-		acceptLanguage?: string,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<Asset>;
-	public httpAssetsCreate(
-		collectionid: string,
-		asset: Asset,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Asset>>;
 	public httpAssetsCreate(
-		collectionid: string,
-		asset: Asset,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Asset>>;
 	public httpAssetsCreate(
-		collectionid: string,
-		asset: Asset,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const collectionid = requestParameters.collectionid;
 		if (collectionid === null || collectionid === undefined) {
 			throw new Error('Required parameter collectionid was null or undefined when calling httpAssetsCreate.');
 		}
+		const asset = requestParameters.asset;
 		if (asset === null || asset === undefined) {
 			throw new Error('Required parameter asset was null or undefined when calling httpAssetsCreate.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (collectionid !== undefined && collectionid !== null) {
@@ -552,24 +616,34 @@ export class AssetManagementService {
 	}
 
 	/**
-	 * @param filter The filter of assets
-	 * @param collectionId The ID of the collection.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetsDeleteAll(filter: string, collectionId: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
+	public httpAssetsDeleteAll(requestParameters: HttpAssetsDeleteAllRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
 	public httpAssetsDeleteAll(
-		filter: string,
-		collectionId: string,
+		requestParameters: HttpAssetsDeleteAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<any>>;
-	public httpAssetsDeleteAll(filter: string, collectionId: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpAssetsDeleteAll(filter: string, collectionId: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAssetsDeleteAll(
+		requestParameters: HttpAssetsDeleteAllRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpAssetsDeleteAll(
+		requestParameters: HttpAssetsDeleteAllRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const filter = requestParameters.filter;
 		if (filter === null || filter === undefined) {
 			throw new Error('Required parameter filter was null or undefined when calling httpAssetsDeleteAll.');
 		}
+		const collectionId = requestParameters.collectionId;
 		if (collectionId === null || collectionId === undefined) {
 			throw new Error('Required parameter collectionId was null or undefined when calling httpAssetsDeleteAll.');
 		}
@@ -608,14 +682,30 @@ export class AssetManagementService {
 	}
 
 	/**
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetsDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpAssetsDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpAssetsDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpAssetsDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAssetsDeleteById(requestParameters: HttpAssetsDeleteByIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
+	public httpAssetsDeleteById(
+		requestParameters: HttpAssetsDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpAssetsDeleteById(
+		requestParameters: HttpAssetsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpAssetsDeleteById(
+		requestParameters: HttpAssetsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetsDeleteById.');
 		}
@@ -654,84 +744,36 @@ export class AssetManagementService {
 	}
 
 	/**
-	 * @param collectionid The ID of the collection where these assets should come from. (Is not required when \&#39;collectiontypeid\&#39; is set.)
-	 * @param collectiontypeid The ID of the collection type where these assets should come from. (Is not required when \&#39;collectionid\&#39; is set.) CAUTION: The assets returned are not distinct &#x3D;&gt; Duplicates are possible if assets are in multiple collections in this collection type!
-	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;). Blobs can be limited with \&#39;.\&#39; on their container. (i.e. fields&#x3D;blobs.thumbnails). Only if \&#39;thumbnails\&#39; is set, the placeholder of this asset type are returned if no thumbnail blob is found.
-	 * @param expose This indicates if the given blobs should have URLs where these can be requested. (If not limited through \&#39;fields\&#39; parameter it will expose all URLs of all blobs.)
-	 * @param continuationToken Each result returns the continous token if more results are available than requested. With this token, the next page could be fetched. (URL encoded!)
-	 * @param limit This number limits the page result of assets.
-	 * @param orderby How the return assets are sorted. Default is property: modified_date (newest first).
-	 * @param filter This will limit the output on specific parameters which are separated by \&#39;:\&#39;, \&#39;!:\&#39;, \&#39;&gt;\&#39;, \&#39;&gt;&#x3D;\&#39;, \&#39;&lt;\&#39;, \&#39;&lt;&#x3D;\&#39;
-	 * @param items The items can be extended to fully filled items.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
+	public httpAssetsGet(requestParameters: HttpAssetsGetRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetPageResult>;
 	public httpAssetsGet(
-		collectionid?: string,
-		collectiontypeid?: string,
-		fields?: string,
-		expose?: boolean,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
-		filter?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<AssetPageResult>;
-	public httpAssetsGet(
-		collectionid?: string,
-		collectiontypeid?: string,
-		fields?: string,
-		expose?: boolean,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
-		filter?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsGetRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AssetPageResult>>;
 	public httpAssetsGet(
-		collectionid?: string,
-		collectiontypeid?: string,
-		fields?: string,
-		expose?: boolean,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
-		filter?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsGetRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AssetPageResult>>;
-	public httpAssetsGet(
-		collectionid?: string,
-		collectiontypeid?: string,
-		fields?: string,
-		expose?: boolean,
-		continuationToken?: string,
-		limit?: number,
-		orderby?: string,
-		filter?: string,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
-		observe: any = 'body',
-		reportProgress: boolean = false,
-		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<any> {
+	public httpAssetsGet(requestParameters: HttpAssetsGetRequestParams, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+		const collectionid = requestParameters.collectionid;
+		const collectiontypeid = requestParameters.collectiontypeid;
+		const fields = requestParameters.fields;
+		const expose = requestParameters.expose;
+		const continuationToken = requestParameters.continuationToken;
+		const limit = requestParameters.limit;
+		const orderby = requestParameters.orderby;
+		const filter = requestParameters.filter;
+		const items = requestParameters.items;
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (collectionid !== undefined && collectionid !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>collectionid, 'collectionid');
@@ -803,62 +845,38 @@ export class AssetManagementService {
 
 	/**
 	 * This endpoint returns one single asset (from ID). If the returned asset is from a special asset type (e.g. \&quot;AssetImage\&quot;) it returns the full entity.
-	 * @param id The ID of the asset.
-	 * @param fields Which fields are need to be filled out with comma separated. If one is set all non mandatory fields are left out. No validation if field exist.
-	 * @param expose This indicates if the given blobs should have URLs where these can be requested. It will expose placeholder blobs if no \&#39;thumbnail\&#39; is found.)
-	 * @param items The items can be extended to fully filled items.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
+	public httpAssetsGetById(requestParameters: HttpAssetsGetByIdRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Asset>;
 	public httpAssetsGetById(
-		id: string,
-		fields?: string,
-		expose?: boolean,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json' }
-	): Observable<Asset>;
-	public httpAssetsGetById(
-		id: string,
-		fields?: string,
-		expose?: boolean,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Asset>>;
 	public httpAssetsGetById(
-		id: string,
-		fields?: string,
-		expose?: boolean,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Asset>>;
 	public httpAssetsGetById(
-		id: string,
-		fields?: string,
-		expose?: boolean,
-		items?: boolean,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetsGetById.');
 		}
+		const fields = requestParameters.fields;
+		const expose = requestParameters.expose;
+		const items = requestParameters.items;
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (fields !== undefined && fields !== null) {
@@ -913,55 +931,44 @@ export class AssetManagementService {
 
 	/**
 	 * This endpoint updates one single asset (from ID)
-	 * @param id The ID of the asset.
-	 * @param asset The body has to contain one of the mentioned elements and a valid json. Not fitting properties are ignored.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetsUpdateById(
-		id: string,
-		asset: Asset,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Asset>;
 	public httpAssetsUpdateById(
-		id: string,
-		asset: Asset,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Asset>>;
 	public httpAssetsUpdateById(
-		id: string,
-		asset: Asset,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Asset>>;
 	public httpAssetsUpdateById(
-		id: string,
-		asset: Asset,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetsUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetsUpdateById.');
 		}
+		const asset = requestParameters.asset;
 		if (asset === null || asset === undefined) {
 			throw new Error('Required parameter asset was null or undefined when calling httpAssetsUpdateById.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {

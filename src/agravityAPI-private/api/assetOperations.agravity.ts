@@ -31,6 +31,171 @@ import { MoveCollectionBody } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpAssetImageEditRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The width of the final image. */
+	width?: number;
+	/** The height of the final image. */
+	height?: number;
+	/** The supported modes: contain (default), cover, fill, crop, none */
+	mode?: string;
+	/** The file type which the image should be (i.e. webp, png, jpg, gif) */
+	target?: string;
+	/** The color of the background color if background is visible (crop outside, png). RGB(A) in hex code (i.e. 00FFAA or with alpha channel: 44AABB77) and color names (i.e. lightgray) supported - default: transparent */
+	bgcolor?: string;
+	/** The density (counts for X and Y) of the target image. */
+	dpi?: number;
+	/** The bit depth of the target image. */
+	depth?: number;
+	/** The quality of the target image (1-100). */
+	quality?: number;
+	/** The color space of the image (Default: sRGB). */
+	colorspace?: string;
+	/** If mode is crop: The x coordinate of the point (if image is extended (outside) it is negative) */
+	cropX?: number;
+	/** If mode is crop: The y coordinate of the point (if image is extended (outside) it is negative) */
+	cropY?: number;
+	/** If mode&#x3D;crop: The width of the cropping rectangle (from original pixel) */
+	cropWidth?: number;
+	/** If mode&#x3D;crop: The height of the cropping rectangle (from original pixel) */
+	cropHeight?: number;
+	/** Which filter should be applied. To get all filters available use: /api/helper/imageeditfilters */
+	filter?: string;
+	/** If set to true the internal image is used instead of the default original */
+	original?: boolean;
+}
+
+export interface HttpAssetImageRotateClockwiseRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpAssetResizeRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpAssetToCollectionRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** Contains information about this operation. */
+	moveCollectionBody: MoveCollectionBody;
+}
+
+export interface HttpAssetsToCollectionRequestParams {
+	/** Contains information which assets should be assigned to collection. */
+	assetsOperationBody: AssetsOperationBody;
+}
+
+export interface HttpDeleteAlternativeThumbRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpDeleteSpecificBlobRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The name of the container where this blob is. */
+	name: string;
+}
+
+export interface HttpGetAllAssetsCheckOnCriteriaRequestParams {
+	/** Give the plain md5 string as parameter to be checked on all assets. */
+	md5: string;
+}
+
+export interface HttpGetAssetBlobRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original. */
+	c?: string;
+}
+
+export interface HttpGetAssetCollectionsByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** This limits the fields which are returned, separated by comma (\&#39;,\&#39;). */
+	fields?: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpGetAssetDownloadRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original. */
+	c?: string;
+	/** (optional) provide the id of any valid download format. */
+	f?: string;
+	/** If the request comes from portal this is the indicator. It will be checked if the requested blob is valid for the portal. */
+	portalId?: string;
+}
+
+export interface HttpGetAssetTechDataByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpGetAssetTextContentByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpImageDynamicEditRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** Operations to be performed on the image directly mapped to c# imagemagick sdk */
+	dynamicImageOperation: Array<DynamicImageOperation>;
+}
+
+export interface HttpImageDynamicGetFromDownloadIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The ID of the download format. */
+	downloadFormatId: string;
+}
+
+export interface HttpPatchAssetPurgeCdnRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpPatchAssetReindexRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpPatchAssetRenewRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpPatchAssetRepairRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
+export interface HttpPatchAssetRunQueueRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The name of the queue(s) which should be executed. (Comma separated) */
+	queueInput: string;
+}
+
+export interface HttpPutAssetAvailabilityRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** The values are validated and put directly on the asset. */
+	assetAvailability: AssetAvailability;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -93,112 +258,53 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint lets you resize/modify the image asset according to the given parameter(s).
-	 * @param id The ID of the asset.
-	 * @param width The width of the final image.
-	 * @param height The height of the final image.
-	 * @param mode The supported modes: contain (default), cover, fill, crop, none
-	 * @param target The file type which the image should be (i.e. webp, png, jpg, gif)
-	 * @param bgcolor The color of the background color if background is visible (crop outside, png). RGB(A) in hex code (i.e. 00FFAA or with alpha channel: 44AABB77) and color names (i.e. lightgray) supported - default: transparent
-	 * @param dpi The density (counts for X and Y) of the target image.
-	 * @param depth The bit depth of the target image.
-	 * @param quality The quality of the target image (1-100).
-	 * @param colorspace The color space of the image (Default: sRGB).
-	 * @param cropX If mode is crop: The x coordinate of the point (if image is extended (outside) it is negative)
-	 * @param cropY If mode is crop: The y coordinate of the point (if image is extended (outside) it is negative)
-	 * @param cropWidth If mode&#x3D;crop: The width of the cropping rectangle (from original pixel)
-	 * @param cropHeight If mode&#x3D;crop: The height of the cropping rectangle (from original pixel)
-	 * @param filter Which filter should be applied. To get all filters available use: /api/helper/imageeditfilters
-	 * @param original If set to true the internal image is used instead of the default original
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetImageEdit(
-		id: string,
-		width?: number,
-		height?: number,
-		mode?: string,
-		target?: string,
-		bgcolor?: string,
-		dpi?: number,
-		depth?: number,
-		quality?: number,
-		colorspace?: string,
-		cropX?: number,
-		cropY?: number,
-		cropWidth?: number,
-		cropHeight?: number,
-		filter?: string,
-		original?: boolean,
+		requestParameters: HttpAssetImageEditRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<Blob>;
 	public httpAssetImageEdit(
-		id: string,
-		width?: number,
-		height?: number,
-		mode?: string,
-		target?: string,
-		bgcolor?: string,
-		dpi?: number,
-		depth?: number,
-		quality?: number,
-		colorspace?: string,
-		cropX?: number,
-		cropY?: number,
-		cropWidth?: number,
-		cropHeight?: number,
-		filter?: string,
-		original?: boolean,
+		requestParameters: HttpAssetImageEditRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<HttpResponse<Blob>>;
 	public httpAssetImageEdit(
-		id: string,
-		width?: number,
-		height?: number,
-		mode?: string,
-		target?: string,
-		bgcolor?: string,
-		dpi?: number,
-		depth?: number,
-		quality?: number,
-		colorspace?: string,
-		cropX?: number,
-		cropY?: number,
-		cropWidth?: number,
-		cropHeight?: number,
-		filter?: string,
-		original?: boolean,
+		requestParameters: HttpAssetImageEditRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<HttpEvent<Blob>>;
 	public httpAssetImageEdit(
-		id: string,
-		width?: number,
-		height?: number,
-		mode?: string,
-		target?: string,
-		bgcolor?: string,
-		dpi?: number,
-		depth?: number,
-		quality?: number,
-		colorspace?: string,
-		cropX?: number,
-		cropY?: number,
-		cropWidth?: number,
-		cropHeight?: number,
-		filter?: string,
-		original?: boolean,
+		requestParameters: HttpAssetImageEditRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetImageEdit.');
 		}
+		const width = requestParameters.width;
+		const height = requestParameters.height;
+		const mode = requestParameters.mode;
+		const target = requestParameters.target;
+		const bgcolor = requestParameters.bgcolor;
+		const dpi = requestParameters.dpi;
+		const depth = requestParameters.depth;
+		const quality = requestParameters.quality;
+		const colorspace = requestParameters.colorspace;
+		const cropX = requestParameters.cropX;
+		const cropY = requestParameters.cropY;
+		const cropWidth = requestParameters.cropWidth;
+		const cropHeight = requestParameters.cropHeight;
+		const filter = requestParameters.filter;
+		const original = requestParameters.original;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (width !== undefined && width !== null) {
@@ -278,47 +384,40 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint lets you rotate an image clockwise in 90 degree steps.
-	 * @param id The ID of the asset.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetImageRotateClockwise(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetImageRotateClockwiseRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Asset>;
 	public httpAssetImageRotateClockwise(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetImageRotateClockwiseRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Asset>>;
 	public httpAssetImageRotateClockwise(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetImageRotateClockwiseRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Asset>>;
 	public httpAssetImageRotateClockwise(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetImageRotateClockwiseRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetImageRotateClockwise.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -364,14 +463,35 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint lets you resize/modify the image asset according to the given parameter(s).
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetResize(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }): Observable<Blob>;
-	public httpAssetResize(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }): Observable<HttpResponse<Blob>>;
-	public httpAssetResize(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }): Observable<HttpEvent<Blob>>;
-	public httpAssetResize(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }): Observable<any> {
+	public httpAssetResize(
+		requestParameters: HttpAssetResizeRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<Blob>;
+	public httpAssetResize(
+		requestParameters: HttpAssetResizeRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<HttpResponse<Blob>>;
+	public httpAssetResize(
+		requestParameters: HttpAssetResizeRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<HttpEvent<Blob>>;
+	public httpAssetResize(
+		requestParameters: HttpAssetResizeRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetResize.');
 		}
@@ -406,36 +526,39 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint allows to move/assign from/to another collection with the given operation parameter.
-	 * @param id The ID of the asset.
-	 * @param moveCollectionBody Contains information about this operation.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetToCollection(id: string, moveCollectionBody: MoveCollectionBody, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
 	public httpAssetToCollection(
-		id: string,
-		moveCollectionBody: MoveCollectionBody,
+		requestParameters: HttpAssetToCollectionRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpAssetToCollection(
+		requestParameters: HttpAssetToCollectionRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<any>>;
 	public httpAssetToCollection(
-		id: string,
-		moveCollectionBody: MoveCollectionBody,
+		requestParameters: HttpAssetToCollectionRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<any>>;
 	public httpAssetToCollection(
-		id: string,
-		moveCollectionBody: MoveCollectionBody,
+		requestParameters: HttpAssetToCollectionRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetToCollection.');
 		}
+		const moveCollectionBody = requestParameters.moveCollectionBody;
 		if (moveCollectionBody === null || moveCollectionBody === undefined) {
 			throw new Error('Required parameter moveCollectionBody was null or undefined when calling httpAssetToCollection.');
 		}
@@ -482,29 +605,35 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint allows to move/assign multiple assets from/to another collection with the given operation parameter.
-	 * @param assetsOperationBody Contains information which assets should be assigned to collection.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetsToCollection(assetsOperationBody: AssetsOperationBody, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
 	public httpAssetsToCollection(
-		assetsOperationBody: AssetsOperationBody,
+		requestParameters: HttpAssetsToCollectionRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpAssetsToCollection(
+		requestParameters: HttpAssetsToCollectionRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<any>>;
 	public httpAssetsToCollection(
-		assetsOperationBody: AssetsOperationBody,
+		requestParameters: HttpAssetsToCollectionRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<any>>;
 	public httpAssetsToCollection(
-		assetsOperationBody: AssetsOperationBody,
+		requestParameters: HttpAssetsToCollectionRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const assetsOperationBody = requestParameters.assetsOperationBody;
 		if (assetsOperationBody === null || assetsOperationBody === undefined) {
 			throw new Error('Required parameter assetsOperationBody was null or undefined when calling httpAssetsToCollection.');
 		}
@@ -551,14 +680,35 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint deletes the alternative thumbnail blob of an asset and renews it
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDeleteAlternativeThumb(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpDeleteAlternativeThumb(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpDeleteAlternativeThumb(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpDeleteAlternativeThumb(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDeleteAlternativeThumb(
+		requestParameters: HttpDeleteAlternativeThumbRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpDeleteAlternativeThumb(
+		requestParameters: HttpDeleteAlternativeThumbRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpDeleteAlternativeThumb(
+		requestParameters: HttpDeleteAlternativeThumbRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpDeleteAlternativeThumb(
+		requestParameters: HttpDeleteAlternativeThumbRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDeleteAlternativeThumb.');
 		}
@@ -598,30 +748,39 @@ export class AssetOperationsService {
 
 	/**
 	 *  This endpoint deletes a specific blob from the asset (if exists)
-	 * @param id The ID of the asset.
-	 * @param name The name of the container where this blob is.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpDeleteSpecificBlob(id: string, name: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpDeleteSpecificBlob(
-		id: string,
-		name: string,
+		requestParameters: HttpDeleteSpecificBlobRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpDeleteSpecificBlob(
+		requestParameters: HttpDeleteSpecificBlobRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpDeleteSpecificBlob(
-		id: string,
-		name: string,
+		requestParameters: HttpDeleteSpecificBlobRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpDeleteSpecificBlob(id: string, name: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpDeleteSpecificBlob(
+		requestParameters: HttpDeleteSpecificBlobRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpDeleteSpecificBlob.');
 		}
+		const name = requestParameters.name;
 		if (name === null || name === undefined) {
 			throw new Error('Required parameter name was null or undefined when calling httpDeleteSpecificBlob.');
 		}
@@ -661,14 +820,35 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint allows to check all assets in system elements with the given criteria are already in the system. Currently supported field: md5
-	 * @param md5 Give the plain md5 string as parameter to be checked on all assets.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAllAssetsCheckOnCriteria(md5: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<Asset>>;
-	public httpGetAllAssetsCheckOnCriteria(md5: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<Asset>>>;
-	public httpGetAllAssetsCheckOnCriteria(md5: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<Asset>>>;
-	public httpGetAllAssetsCheckOnCriteria(md5: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAllAssetsCheckOnCriteria(
+		requestParameters: HttpGetAllAssetsCheckOnCriteriaRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<Asset>>;
+	public httpGetAllAssetsCheckOnCriteria(
+		requestParameters: HttpGetAllAssetsCheckOnCriteriaRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<Asset>>>;
+	public httpGetAllAssetsCheckOnCriteria(
+		requestParameters: HttpGetAllAssetsCheckOnCriteriaRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<Asset>>>;
+	public httpGetAllAssetsCheckOnCriteria(
+		requestParameters: HttpGetAllAssetsCheckOnCriteriaRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const md5 = requestParameters.md5;
 		if (md5 === null || md5 === undefined) {
 			throw new Error('Required parameter md5 was null or undefined when calling httpGetAllAssetsCheckOnCriteria.');
 		}
@@ -714,18 +894,34 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint checks, if an asset exists and returns the url for the requested blob.
-	 * @param id The ID of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAssetBlob(id: string, c?: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
-	public httpGetAssetBlob(id: string, c?: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetBlob>>;
-	public httpGetAssetBlob(id: string, c?: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetBlob>>;
-	public httpGetAssetBlob(id: string, c?: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAssetBlob(requestParameters: HttpGetAssetBlobRequestParams, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetBlob>;
+	public httpGetAssetBlob(
+		requestParameters: HttpGetAssetBlobRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AssetBlob>>;
+	public httpGetAssetBlob(
+		requestParameters: HttpGetAssetBlobRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AssetBlob>>;
+	public httpGetAssetBlob(
+		requestParameters: HttpGetAssetBlobRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetBlob.');
 		}
+		const c = requestParameters.c;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (c !== undefined && c !== null) {
@@ -768,52 +964,41 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint returns all collections of a specific asset.
-	 * @param id The ID of the asset.
-	 * @param fields This limits the fields which are returned, separated by comma (\&#39;,\&#39;).
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGetAssetCollectionsById(
-		id: string,
-		fields?: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGetAssetCollectionsByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<Collection>>;
 	public httpGetAssetCollectionsById(
-		id: string,
-		fields?: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGetAssetCollectionsByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<Collection>>>;
 	public httpGetAssetCollectionsById(
-		id: string,
-		fields?: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGetAssetCollectionsByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<Collection>>>;
 	public httpGetAssetCollectionsById(
-		id: string,
-		fields?: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpGetAssetCollectionsByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetCollectionsById.');
 		}
+		const fields = requestParameters.fields;
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (fields !== undefined && fields !== null) {
@@ -862,52 +1047,41 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
-	 * @param id The ID of the asset.
-	 * @param c \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original.
-	 * @param f (optional) provide the id of any valid download format.
-	 * @param portalId If the request comes from portal this is the indicator. It will be checked if the requested blob is valid for the portal.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGetAssetDownload(
-		id: string,
-		c?: string,
-		f?: string,
-		portalId?: string,
+		requestParameters: HttpGetAssetDownloadRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AssetBlob>;
 	public httpGetAssetDownload(
-		id: string,
-		c?: string,
-		f?: string,
-		portalId?: string,
+		requestParameters: HttpGetAssetDownloadRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AssetBlob>>;
 	public httpGetAssetDownload(
-		id: string,
-		c?: string,
-		f?: string,
-		portalId?: string,
+		requestParameters: HttpGetAssetDownloadRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AssetBlob>>;
 	public httpGetAssetDownload(
-		id: string,
-		c?: string,
-		f?: string,
-		portalId?: string,
+		requestParameters: HttpGetAssetDownloadRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetDownload.');
 		}
+		const c = requestParameters.c;
+		const f = requestParameters.f;
+		const portalId = requestParameters.portalId;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (c !== undefined && c !== null) {
@@ -956,14 +1130,35 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint returns all technical metadata of an asset.
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAssetTechDataById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<Array<Metadata>>;
-	public httpGetAssetTechDataById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<Array<Metadata>>>;
-	public httpGetAssetTechDataById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<Array<Metadata>>>;
-	public httpGetAssetTechDataById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAssetTechDataById(
+		requestParameters: HttpGetAssetTechDataByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<Array<Metadata>>;
+	public httpGetAssetTechDataById(
+		requestParameters: HttpGetAssetTechDataByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<Array<Metadata>>>;
+	public httpGetAssetTechDataById(
+		requestParameters: HttpGetAssetTechDataByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<Array<Metadata>>>;
+	public httpGetAssetTechDataById(
+		requestParameters: HttpGetAssetTechDataByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetTechDataById.');
 		}
@@ -1003,14 +1198,35 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint returns all textual content of an asset (i.e. text of PDF)
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpGetAssetTextContentById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AssetTextContent>;
-	public httpGetAssetTextContentById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AssetTextContent>>;
-	public httpGetAssetTextContentById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AssetTextContent>>;
-	public httpGetAssetTextContentById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpGetAssetTextContentById(
+		requestParameters: HttpGetAssetTextContentByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AssetTextContent>;
+	public httpGetAssetTextContentById(
+		requestParameters: HttpGetAssetTextContentByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AssetTextContent>>;
+	public httpGetAssetTextContentById(
+		requestParameters: HttpGetAssetTextContentByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AssetTextContent>>;
+	public httpGetAssetTextContentById(
+		requestParameters: HttpGetAssetTextContentByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpGetAssetTextContentById.');
 		}
@@ -1050,42 +1266,39 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint lets you use the entire api of Imagemagick to edit the image.
-	 * @param id The ID of the asset.
-	 * @param dynamicImageOperation Operations to be performed on the image directly mapped to c# imagemagick sdk
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpImageDynamicEdit(
-		id: string,
-		dynamicImageOperation: Array<DynamicImageOperation>,
+		requestParameters: HttpImageDynamicEditRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<Blob>;
 	public httpImageDynamicEdit(
-		id: string,
-		dynamicImageOperation: Array<DynamicImageOperation>,
+		requestParameters: HttpImageDynamicEditRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<HttpResponse<Blob>>;
 	public httpImageDynamicEdit(
-		id: string,
-		dynamicImageOperation: Array<DynamicImageOperation>,
+		requestParameters: HttpImageDynamicEditRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<HttpEvent<Blob>>;
 	public httpImageDynamicEdit(
-		id: string,
-		dynamicImageOperation: Array<DynamicImageOperation>,
+		requestParameters: HttpImageDynamicEditRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpImageDynamicEdit.');
 		}
+		const dynamicImageOperation = requestParameters.dynamicImageOperation;
 		if (dynamicImageOperation === null || dynamicImageOperation === undefined) {
 			throw new Error('Required parameter dynamicImageOperation was null or undefined when calling httpImageDynamicEdit.');
 		}
@@ -1127,42 +1340,39 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint returns an image with the requested download format applied.
-	 * @param id The ID of the asset.
-	 * @param downloadFormatId The ID of the download format.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpImageDynamicGetFromDownloadId(
-		id: string,
-		downloadFormatId: string,
+		requestParameters: HttpImageDynamicGetFromDownloadIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<Blob>;
 	public httpImageDynamicGetFromDownloadId(
-		id: string,
-		downloadFormatId: string,
+		requestParameters: HttpImageDynamicGetFromDownloadIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<HttpResponse<Blob>>;
 	public httpImageDynamicGetFromDownloadId(
-		id: string,
-		downloadFormatId: string,
+		requestParameters: HttpImageDynamicGetFromDownloadIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<HttpEvent<Blob>>;
 	public httpImageDynamicGetFromDownloadId(
-		id: string,
-		downloadFormatId: string,
+		requestParameters: HttpImageDynamicGetFromDownloadIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpImageDynamicGetFromDownloadId.');
 		}
+		const downloadFormatId = requestParameters.downloadFormatId;
 		if (downloadFormatId === null || downloadFormatId === undefined) {
 			throw new Error('Required parameter downloadFormatId was null or undefined when calling httpImageDynamicGetFromDownloadId.');
 		}
@@ -1197,14 +1407,35 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint purges all published assets of this asset when CDN is enabled
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPatchAssetPurgeCdn(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpPatchAssetPurgeCdn(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpPatchAssetPurgeCdn(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPatchAssetPurgeCdn(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPatchAssetPurgeCdn(
+		requestParameters: HttpPatchAssetPurgeCdnRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPatchAssetPurgeCdn(
+		requestParameters: HttpPatchAssetPurgeCdnRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpPatchAssetPurgeCdn(
+		requestParameters: HttpPatchAssetPurgeCdnRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpPatchAssetPurgeCdn(
+		requestParameters: HttpPatchAssetPurgeCdnRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPatchAssetPurgeCdn.');
 		}
@@ -1244,14 +1475,35 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint marks a asset as \&quot;dirty\&quot; (starts a queue to do that) - to trigger search index to re-index the asset
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPatchAssetReindex(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpPatchAssetReindex(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpPatchAssetReindex(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPatchAssetReindex(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPatchAssetReindex(
+		requestParameters: HttpPatchAssetReindexRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPatchAssetReindex(
+		requestParameters: HttpPatchAssetReindexRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpPatchAssetReindex(
+		requestParameters: HttpPatchAssetReindexRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpPatchAssetReindex(
+		requestParameters: HttpPatchAssetReindexRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPatchAssetReindex.');
 		}
@@ -1291,14 +1543,35 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint runs all configured queues of the asset again (requeue ID at beginning of queues). E.g. Recreation of previews, AI recognition, hash values, ...
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPatchAssetRenew(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpPatchAssetRenew(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpPatchAssetRenew(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPatchAssetRenew(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPatchAssetRenew(
+		requestParameters: HttpPatchAssetRenewRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPatchAssetRenew(
+		requestParameters: HttpPatchAssetRenewRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpPatchAssetRenew(
+		requestParameters: HttpPatchAssetRenewRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpPatchAssetRenew(
+		requestParameters: HttpPatchAssetRenewRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPatchAssetRenew.');
 		}
@@ -1338,14 +1611,35 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint repairs the asset, it\&#39;s items, custom fields and collections. It also checks the original blob and the blobs of the asset.
-	 * @param id The ID of the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPatchAssetRepair(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
-	public httpPatchAssetRepair(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<AgravityInfoResponse>>;
-	public httpPatchAssetRepair(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPatchAssetRepair(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPatchAssetRepair(
+		requestParameters: HttpPatchAssetRepairRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPatchAssetRepair(
+		requestParameters: HttpPatchAssetRepairRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpPatchAssetRepair(
+		requestParameters: HttpPatchAssetRepairRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpPatchAssetRepair(
+		requestParameters: HttpPatchAssetRepairRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPatchAssetRepair.');
 		}
@@ -1385,30 +1679,39 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint execute a specific queues of the asset. E.g. Recreation of previews, AI recognition, hash values, ...
-	 * @param id The ID of the asset.
-	 * @param queueInput The name of the queue(s) which should be executed. (Comma separated)
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPatchAssetRunQueue(id: string, queueInput: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<AgravityInfoResponse>;
 	public httpPatchAssetRunQueue(
-		id: string,
-		queueInput: string,
+		requestParameters: HttpPatchAssetRunQueueRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<AgravityInfoResponse>;
+	public httpPatchAssetRunQueue(
+		requestParameters: HttpPatchAssetRunQueueRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpPatchAssetRunQueue(
-		id: string,
-		queueInput: string,
+		requestParameters: HttpPatchAssetRunQueueRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
-	public httpPatchAssetRunQueue(id: string, queueInput: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpPatchAssetRunQueue(
+		requestParameters: HttpPatchAssetRunQueueRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPatchAssetRunQueue.');
 		}
+		const queueInput = requestParameters.queueInput;
 		if (queueInput === null || queueInput === undefined) {
 			throw new Error('Required parameter queueInput was null or undefined when calling httpPatchAssetRunQueue.');
 		}
@@ -1490,42 +1793,39 @@ export class AssetOperationsService {
 
 	/**
 	 * This endpoint sets the availability of the asset. All properties are put on the asset and replace previous values.To make an asset unavailable set the &#x60;availability&#x60; property to \&#39;locked\&#39; or set the &#x60;available_from&#x60; property below the current date. To make it available set empty string to &#x60;availability&#x60; property or &#x60;available_to&#x60; property into past.
-	 * @param id The ID of the asset.
-	 * @param assetAvailability The values are validated and put directly on the asset.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPutAssetAvailability(
-		id: string,
-		assetAvailability: AssetAvailability,
+		requestParameters: HttpPutAssetAvailabilityRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AssetAvailability>;
 	public httpPutAssetAvailability(
-		id: string,
-		assetAvailability: AssetAvailability,
+		requestParameters: HttpPutAssetAvailabilityRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AssetAvailability>>;
 	public httpPutAssetAvailability(
-		id: string,
-		assetAvailability: AssetAvailability,
+		requestParameters: HttpPutAssetAvailabilityRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AssetAvailability>>;
 	public httpPutAssetAvailability(
-		id: string,
-		assetAvailability: AssetAvailability,
+		requestParameters: HttpPutAssetAvailabilityRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPutAssetAvailability.');
 		}
+		const assetAvailability = requestParameters.assetAvailability;
 		if (assetAvailability === null || assetAvailability === undefined) {
 			throw new Error('Required parameter assetAvailability was null or undefined when calling httpPutAssetAvailability.');
 		}

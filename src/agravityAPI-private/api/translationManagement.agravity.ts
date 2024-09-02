@@ -24,6 +24,48 @@ import { TranslationRequest } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpBulkTranslationsRequestParams {
+	/** A list of entity IDs (can be assets, collections, collection types, download formats, etc. */
+	requestBody: Array<string>;
+	/** If given the only translations of this property are returned. */
+	property?: string;
+}
+
+export interface HttpCognitiveTranslateTextRequestParams {
+	/** This endpoint creates translations for the provided text */
+	translationRequest: TranslationRequest;
+}
+
+export interface HttpTranslationsByIdRequestParams {
+	/** The ID of any translateable entity (Asset, Collection, Collection Type, Download Format). */
+	id: string;
+	/** If the items should be included (only for entity type Collection and Asset). */
+	items?: boolean;
+}
+
+export interface HttpTranslationsByIdFilterByCustomFieldRequestParams {
+	/** The ID of only translateable entities with custom fields (Asset, Collection). */
+	id: string;
+	/** Limit the output to a specific custom field key. */
+	customField: string;
+}
+
+export interface HttpTranslationsByIdFilterByPropertyRequestParams {
+	/** The ID of any translateable entity (Asset, Collection, Collection Type, Download Format). */
+	id: string;
+	/** Limit to one specific property (key) */
+	property: string;
+	/** If the items should be included (only for entity type Collection and Asset). */
+	items?: boolean;
+}
+
+export interface HttpUpdateTranslationsByIdRequestParams {
+	/** The ID of any translateable entity (Asset, Collection, Collection Type, Download Format). */
+	id: string;
+	/** The body has to contain the dictionary of the dictionaries with all translations. Not fitting properties are ignored. */
+	requestBody: { [key: string]: { [key: string]: object } };
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -86,42 +128,39 @@ export class TranslationManagementService {
 
 	/**
 	 * Get all the translations of a whole list of translatable entities.
-	 * @param requestBody A list of entity IDs (can be assets, collections, collection types, download formats, etc.
-	 * @param property If given the only translations of this property are returned.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpBulkTranslations(
-		requestBody: Array<string>,
-		property?: string,
+		requestParameters: HttpBulkTranslationsRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<EntityTranslations>>;
 	public httpBulkTranslations(
-		requestBody: Array<string>,
-		property?: string,
+		requestParameters: HttpBulkTranslationsRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<EntityTranslations>>>;
 	public httpBulkTranslations(
-		requestBody: Array<string>,
-		property?: string,
+		requestParameters: HttpBulkTranslationsRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<EntityTranslations>>>;
 	public httpBulkTranslations(
-		requestBody: Array<string>,
-		property?: string,
+		requestParameters: HttpBulkTranslationsRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const requestBody = requestParameters.requestBody;
 		if (requestBody === null || requestBody === undefined) {
 			throw new Error('Required parameter requestBody was null or undefined when calling httpBulkTranslations.');
 		}
+		const property = requestParameters.property;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (property !== undefined && property !== null) {
@@ -171,34 +210,35 @@ export class TranslationManagementService {
 
 	/**
 	 * Translates the given text into the requested languages by the Microsoft AI Translator. (only when enabled in settings)
-	 * @param translationRequest This endpoint creates translations for the provided text
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpCognitiveTranslateText(
-		translationRequest: TranslationRequest,
+		requestParameters: HttpCognitiveTranslateTextRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<Translation>>;
 	public httpCognitiveTranslateText(
-		translationRequest: TranslationRequest,
+		requestParameters: HttpCognitiveTranslateTextRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<Translation>>>;
 	public httpCognitiveTranslateText(
-		translationRequest: TranslationRequest,
+		requestParameters: HttpCognitiveTranslateTextRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<Translation>>>;
 	public httpCognitiveTranslateText(
-		translationRequest: TranslationRequest,
+		requestParameters: HttpCognitiveTranslateTextRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const translationRequest = requestParameters.translationRequest;
 		if (translationRequest === null || translationRequest === undefined) {
 			throw new Error('Required parameter translationRequest was null or undefined when calling httpCognitiveTranslateText.');
 		}
@@ -245,36 +285,39 @@ export class TranslationManagementService {
 
 	/**
 	 * Get all the translations of a whole entity (Asset, Collection, Collection Type, Download Format)
-	 * @param id The ID of any translateable entity (Asset, Collection, Collection Type, Download Format).
-	 * @param items If the items should be included (only for entity type Collection and Asset).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpTranslationsById(
-		id: string,
-		items?: boolean,
+		requestParameters: HttpTranslationsByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<{ [key: string]: { [key: string]: object } }>;
 	public httpTranslationsById(
-		id: string,
-		items?: boolean,
+		requestParameters: HttpTranslationsByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<{ [key: string]: { [key: string]: object } }>>;
 	public httpTranslationsById(
-		id: string,
-		items?: boolean,
+		requestParameters: HttpTranslationsByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<{ [key: string]: { [key: string]: object } }>>;
-	public httpTranslationsById(id: string, items?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpTranslationsById(
+		requestParameters: HttpTranslationsByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpTranslationsById.');
 		}
+		const items = requestParameters.items;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (items !== undefined && items !== null) {
@@ -317,42 +360,39 @@ export class TranslationManagementService {
 
 	/**
 	 * Get the translation of custom field on the entity (Asset, Collection)
-	 * @param id The ID of only translateable entities with custom fields (Asset, Collection).
-	 * @param customField Limit the output to a specific custom field key.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpTranslationsByIdFilterByCustomField(
-		id: string,
-		customField: string,
+		requestParameters: HttpTranslationsByIdFilterByCustomFieldRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<{ [key: string]: { [key: string]: object } }>;
 	public httpTranslationsByIdFilterByCustomField(
-		id: string,
-		customField: string,
+		requestParameters: HttpTranslationsByIdFilterByCustomFieldRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<{ [key: string]: { [key: string]: object } }>>;
 	public httpTranslationsByIdFilterByCustomField(
-		id: string,
-		customField: string,
+		requestParameters: HttpTranslationsByIdFilterByCustomFieldRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<{ [key: string]: { [key: string]: object } }>>;
 	public httpTranslationsByIdFilterByCustomField(
-		id: string,
-		customField: string,
+		requestParameters: HttpTranslationsByIdFilterByCustomFieldRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpTranslationsByIdFilterByCustomField.');
 		}
+		const customField = requestParameters.customField;
 		if (customField === null || customField === undefined) {
 			throw new Error('Required parameter customField was null or undefined when calling httpTranslationsByIdFilterByCustomField.');
 		}
@@ -395,50 +435,43 @@ export class TranslationManagementService {
 
 	/**
 	 * Get the translations of a specific field on the entity (Asset, Collection, Collection Type, Download Format)
-	 * @param id The ID of any translateable entity (Asset, Collection, Collection Type, Download Format).
-	 * @param property Limit to one specific property (key)
-	 * @param items If the items should be included (only for entity type Collection and Asset).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpTranslationsByIdFilterByProperty(
-		id: string,
-		property: string,
-		items?: boolean,
+		requestParameters: HttpTranslationsByIdFilterByPropertyRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<{ [key: string]: { [key: string]: object } }>;
 	public httpTranslationsByIdFilterByProperty(
-		id: string,
-		property: string,
-		items?: boolean,
+		requestParameters: HttpTranslationsByIdFilterByPropertyRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<{ [key: string]: { [key: string]: object } }>>;
 	public httpTranslationsByIdFilterByProperty(
-		id: string,
-		property: string,
-		items?: boolean,
+		requestParameters: HttpTranslationsByIdFilterByPropertyRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<{ [key: string]: { [key: string]: object } }>>;
 	public httpTranslationsByIdFilterByProperty(
-		id: string,
-		property: string,
-		items?: boolean,
+		requestParameters: HttpTranslationsByIdFilterByPropertyRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpTranslationsByIdFilterByProperty.');
 		}
+		const property = requestParameters.property;
 		if (property === null || property === undefined) {
 			throw new Error('Required parameter property was null or undefined when calling httpTranslationsByIdFilterByProperty.');
 		}
+		const items = requestParameters.items;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (items !== undefined && items !== null) {
@@ -484,42 +517,39 @@ export class TranslationManagementService {
 
 	/**
 	 * Updates the translations of a whole entity (Asset, Collection, Collection Type, Download Format)
-	 * @param id The ID of any translateable entity (Asset, Collection, Collection Type, Download Format).
-	 * @param requestBody The body has to contain the dictionary of the dictionaries with all translations. Not fitting properties are ignored.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpUpdateTranslationsById(
-		id: string,
-		requestBody: { [key: string]: { [key: string]: object } },
+		requestParameters: HttpUpdateTranslationsByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<{ [key: string]: { [key: string]: object } }>;
 	public httpUpdateTranslationsById(
-		id: string,
-		requestBody: { [key: string]: { [key: string]: object } },
+		requestParameters: HttpUpdateTranslationsByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<{ [key: string]: { [key: string]: object } }>>;
 	public httpUpdateTranslationsById(
-		id: string,
-		requestBody: { [key: string]: { [key: string]: object } },
+		requestParameters: HttpUpdateTranslationsByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<{ [key: string]: { [key: string]: object } }>>;
 	public httpUpdateTranslationsById(
-		id: string,
-		requestBody: { [key: string]: { [key: string]: object } },
+		requestParameters: HttpUpdateTranslationsByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpUpdateTranslationsById.');
 		}
+		const requestBody = requestParameters.requestBody;
 		if (requestBody === null || requestBody === undefined) {
 			throw new Error('Required parameter requestBody was null or undefined when calling httpUpdateTranslationsById.');
 		}

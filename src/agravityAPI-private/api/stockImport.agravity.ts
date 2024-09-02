@@ -22,6 +22,22 @@ import { GroupAllAppData } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpStockImportPixabayRequestParams {
+	/** The query term which should be found on Pixabay. */
+	q: string;
+	/** The maximum count of images which should be imported (Default 10). */
+	count?: number;
+	/** This optional parameter indicates if it should be video (default: image) */
+	mediaType?: string;
+}
+
+export interface HttpStockImportUnsplashRequestParams {
+	/** The query term which should be found on Unsplash. */
+	q: string;
+	/** The maximum count of images which should be imported (Default 10). */
+	count?: number;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,47 +100,40 @@ export class StockImportService {
 
 	/**
 	 * This imports 10 images from Pixabay into new collection type with specific id: t111111111111
-	 * @param q The query term which should be found on Pixabay.
-	 * @param count The maximum count of images which should be imported (Default 10).
-	 * @param mediaType This optional parameter indicates if it should be video (default: image)
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStockImportPixabay(
-		q: string,
-		count?: number,
-		mediaType?: string,
+		requestParameters: HttpStockImportPixabayRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<GroupAllAppData>;
 	public httpStockImportPixabay(
-		q: string,
-		count?: number,
-		mediaType?: string,
+		requestParameters: HttpStockImportPixabayRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<GroupAllAppData>>;
 	public httpStockImportPixabay(
-		q: string,
-		count?: number,
-		mediaType?: string,
+		requestParameters: HttpStockImportPixabayRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<GroupAllAppData>>;
 	public httpStockImportPixabay(
-		q: string,
-		count?: number,
-		mediaType?: string,
+		requestParameters: HttpStockImportPixabayRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const q = requestParameters.q;
 		if (q === null || q === undefined) {
 			throw new Error('Required parameter q was null or undefined when calling httpStockImportPixabay.');
 		}
+		const count = requestParameters.count;
+		const mediaType = requestParameters.mediaType;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (q !== undefined && q !== null) {
@@ -173,30 +182,39 @@ export class StockImportService {
 
 	/**
 	 * This imports 10 images from Unsplash into new collection type with specific id: t10000000-0000-0000-0000-000000000000
-	 * @param q The query term which should be found on Unsplash.
-	 * @param count The maximum count of images which should be imported (Default 10).
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpStockImportUnsplash(q: string, count?: number, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<GroupAllAppData>;
 	public httpStockImportUnsplash(
-		q: string,
-		count?: number,
+		requestParameters: HttpStockImportUnsplashRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<GroupAllAppData>;
+	public httpStockImportUnsplash(
+		requestParameters: HttpStockImportUnsplashRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<GroupAllAppData>>;
 	public httpStockImportUnsplash(
-		q: string,
-		count?: number,
+		requestParameters: HttpStockImportUnsplashRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<GroupAllAppData>>;
-	public httpStockImportUnsplash(q: string, count?: number, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpStockImportUnsplash(
+		requestParameters: HttpStockImportUnsplashRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const q = requestParameters.q;
 		if (q === null || q === undefined) {
 			throw new Error('Required parameter q was null or undefined when calling httpStockImportUnsplash.');
 		}
+		const count = requestParameters.count;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (q !== undefined && q !== null) {

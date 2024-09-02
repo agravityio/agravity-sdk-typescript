@@ -21,6 +21,13 @@ import { PublishEntity } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpPublishedAssetsGetAllRequestParams {
+	/** Filter response for collection */
+	cid?: string;
+	/** Include collections further down in hierarchy */
+	incldescendants?: boolean;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -83,39 +90,37 @@ export class PublishingService {
 
 	/**
 	 * This endpoint lists all the published assets which are stored in the database
-	 * @param cid Filter response for collection
-	 * @param incldescendants Include collections further down in hierarchy
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPublishedAssetsGetAll(
-		cid?: string,
-		incldescendants?: boolean,
+		requestParameters: HttpPublishedAssetsGetAllRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<PublishEntity>;
 	public httpPublishedAssetsGetAll(
-		cid?: string,
-		incldescendants?: boolean,
+		requestParameters: HttpPublishedAssetsGetAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<PublishEntity>>;
 	public httpPublishedAssetsGetAll(
-		cid?: string,
-		incldescendants?: boolean,
+		requestParameters: HttpPublishedAssetsGetAllRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<PublishEntity>>;
 	public httpPublishedAssetsGetAll(
-		cid?: string,
-		incldescendants?: boolean,
+		requestParameters: HttpPublishedAssetsGetAllRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const cid = requestParameters.cid;
+		const incldescendants = requestParameters.incldescendants;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (cid !== undefined && cid !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>cid, 'cid');

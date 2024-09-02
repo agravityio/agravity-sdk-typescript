@@ -22,6 +22,47 @@ import { AssetIconRule } from '../model/models';
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpAssetIconRuleCreateRequestParams {
+	/** This endpoint creates an asset icon rule ID and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39; */
+	assetIconRule: AssetIconRule;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpAssetIconRuleDeleteByIdRequestParams {
+	/** The ID of the asset icon rule. */
+	id: string;
+}
+
+export interface HttpAssetIconRuleUpdateByIdRequestParams {
+	/** The ID of the asset icon rule. */
+	id: string;
+	/** This endpoint updates an asset icon rule and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39; */
+	assetIconRule: AssetIconRule;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpAssetIconRulesGetAllRequestParams {
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpAssetIconRulesGetByIdRequestParams {
+	/** The ID of the asset icon rule. */
+	id: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -84,47 +125,40 @@ export class AssetIconRuleManagementService {
 
 	/**
 	 * This endpoint creates one asset icon rule entry in the database.
-	 * @param assetIconRule This endpoint creates an asset icon rule ID and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetIconRuleCreate(
-		assetIconRule: AssetIconRule,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRuleCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AssetIconRule>;
 	public httpAssetIconRuleCreate(
-		assetIconRule: AssetIconRule,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRuleCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AssetIconRule>>;
 	public httpAssetIconRuleCreate(
-		assetIconRule: AssetIconRule,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRuleCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AssetIconRule>>;
 	public httpAssetIconRuleCreate(
-		assetIconRule: AssetIconRule,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRuleCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const assetIconRule = requestParameters.assetIconRule;
 		if (assetIconRule === null || assetIconRule === undefined) {
 			throw new Error('Required parameter assetIconRule was null or undefined when calling httpAssetIconRuleCreate.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -177,14 +211,35 @@ export class AssetIconRuleManagementService {
 
 	/**
 	 * This endpoint deletes a single asset icon rule.
-	 * @param id The ID of the asset icon rule.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAssetIconRuleDeleteById(id: string, observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<any>;
-	public httpAssetIconRuleDeleteById(id: string, observe?: 'response', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpResponse<any>>;
-	public httpAssetIconRuleDeleteById(id: string, observe?: 'events', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json' }): Observable<HttpEvent<any>>;
-	public httpAssetIconRuleDeleteById(id: string, observe: any = 'body', reportProgress: boolean = false, options?: { httpHeaderAccept?: 'application/json' }): Observable<any> {
+	public httpAssetIconRuleDeleteById(
+		requestParameters: HttpAssetIconRuleDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any>;
+	public httpAssetIconRuleDeleteById(
+		requestParameters: HttpAssetIconRuleDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpResponse<any>>;
+	public httpAssetIconRuleDeleteById(
+		requestParameters: HttpAssetIconRuleDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<HttpEvent<any>>;
+	public httpAssetIconRuleDeleteById(
+		requestParameters: HttpAssetIconRuleDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json' }
+	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetIconRuleDeleteById.');
 		}
@@ -224,55 +279,44 @@ export class AssetIconRuleManagementService {
 
 	/**
 	 * This endpoint updates a single asset icon rule. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
-	 * @param id The ID of the asset icon rule.
-	 * @param assetIconRule This endpoint updates an asset icon rule and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetIconRuleUpdateById(
-		id: string,
-		assetIconRule: AssetIconRule,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRuleUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AssetIconRule>;
 	public httpAssetIconRuleUpdateById(
-		id: string,
-		assetIconRule: AssetIconRule,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRuleUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AssetIconRule>>;
 	public httpAssetIconRuleUpdateById(
-		id: string,
-		assetIconRule: AssetIconRule,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRuleUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AssetIconRule>>;
 	public httpAssetIconRuleUpdateById(
-		id: string,
-		assetIconRule: AssetIconRule,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRuleUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetIconRuleUpdateById.');
 		}
+		const assetIconRule = requestParameters.assetIconRule;
 		if (assetIconRule === null || assetIconRule === undefined) {
 			throw new Error('Required parameter assetIconRule was null or undefined when calling httpAssetIconRuleUpdateById.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
@@ -325,39 +369,37 @@ export class AssetIconRuleManagementService {
 
 	/**
 	 * This endpoint lists all asset icon rules in database.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetIconRulesGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRulesGetAllRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<Array<AssetIconRule>>;
 	public httpAssetIconRulesGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRulesGetAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<Array<AssetIconRule>>>;
 	public httpAssetIconRulesGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRulesGetAllRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<Array<AssetIconRule>>>;
 	public httpAssetIconRulesGetAll(
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRulesGetAllRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
+
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			queryParameters = this.addToHttpParams(queryParameters, <any>translations, 'translations');
@@ -402,47 +444,40 @@ export class AssetIconRuleManagementService {
 
 	/**
 	 * This endpoint gets a single asset icon rule from the database.
-	 * @param id The ID of the asset icon rule.
-	 * @param translations When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header)
-	 * @param acceptLanguage The requested language of the response. If not matching it falls back to default language.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetIconRulesGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRulesGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<AssetIconRule>;
 	public httpAssetIconRulesGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRulesGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpResponse<AssetIconRule>>;
 	public httpAssetIconRulesGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRulesGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<HttpEvent<AssetIconRule>>;
 	public httpAssetIconRulesGetById(
-		id: string,
-		translations?: boolean,
-		acceptLanguage?: string,
+		requestParameters: HttpAssetIconRulesGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json' }
 	): Observable<any> {
+		const id = requestParameters.id;
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetIconRulesGetById.');
 		}
+		const translations = requestParameters.translations;
+		const acceptLanguage = requestParameters.acceptLanguage;
 
 		let queryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
