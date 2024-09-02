@@ -141,5 +141,6 @@ model/widgetProperties.agravity.ts
 model/workspace.agravity.ts
 ng-package.json
 package.json
+param.ts
 tsconfig.json
 variables.ts

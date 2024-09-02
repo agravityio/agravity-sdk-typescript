@@ -1,4 +1,5 @@
 import { HttpParameterCodec } from '@angular/common/http';
+import { Param } from './param';
 
 export interface AgravityConfigurationParameters {
 	/**
@@ -13,7 +14,18 @@ export interface AgravityConfigurationParameters {
 	accessToken?: string | (() => string);
 	basePath?: string;
 	withCredentials?: boolean;
+	/**
+	 * Takes care of encoding query- and form-parameters.
+	 */
 	encoder?: HttpParameterCodec;
+	/**
+	 * Override the default method for encoding path parameters in various
+	 * <a href="https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#style-values">styles</a>.
+	 * <p>
+	 * See {@link README.md} for more details
+	 * </p>
+	 */
+	encodeParam?: (param: Param) => string;
 	/**
 	 * The keys are the names in the securitySchemes section of the OpenAPI
 	 * document. They should map to the value used for authentication
@@ -35,7 +47,18 @@ export class AgravityConfiguration {
 	accessToken?: string | (() => string);
 	basePath?: string;
 	withCredentials?: boolean;
+	/**
+	 * Takes care of encoding query- and form-parameters.
+	 */
 	encoder?: HttpParameterCodec;
+	/**
+	 * Encoding of various path parameter
+	 * <a href="https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#style-values">styles</a>.
+	 * <p>
+	 * See {@link README.md} for more details
+	 * </p>
+	 */
+	encodeParam: (param: Param) => string;
 	/**
 	 * The keys are the names in the securitySchemes section of the OpenAPI
 	 * document. They should map to the value used for authentication
@@ -51,6 +74,11 @@ export class AgravityConfiguration {
 		this.basePath = configurationParameters.basePath;
 		this.withCredentials = configurationParameters.withCredentials;
 		this.encoder = configurationParameters.encoder;
+		if (configurationParameters.encodeParam) {
+			this.encodeParam = configurationParameters.encodeParam;
+		} else {
+			this.encodeParam = (param) => this.defaultEncodeParam(param);
+		}
 		if (configurationParameters.credentials) {
 			this.credentials = configurationParameters.credentials;
 		} else {
@@ -121,5 +149,19 @@ export class AgravityConfiguration {
 	public lookupCredential(key: string): string | undefined {
 		const value = this.credentials[key];
 		return typeof value === 'function' ? value() : value;
+	}
+
+	private defaultEncodeParam(param: Param): string {
+		// This implementation exists as fallback for missing configuration
+		// and for backwards compatibility to older typescript-angular generator versions.
+		// It only works for the 'simple' parameter style.
+		// Date-handling only works for the 'date-time' format.
+		// All other styles and Date-formats are probably handled incorrectly.
+		//
+		// But: if that's all you need (i.e.: the most common use-case): no need for customization!
+
+		const value = param.dataFormat === 'date-time' && param.value instanceof Date ? (param.value as Date).toISOString() : param.value;
+
+		return encodeURIComponent(String(value));
 	}
 }

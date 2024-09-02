@@ -11,6 +11,14 @@ if ($null -eq $env:AGRAVITY_OAUTH2_TOKEN) {
     exit
 }
 
+# check if $env:OPENAPI_GENERATOR is set, if not: exit
+if ($null -eq $env:OPENAPI_GENERATOR) {
+    Write-Host "Please set OPENAPI_GENERATOR path to the openapi-generator-cli.jar"
+    # wait for user input
+    Write-Host "Press any key to continue ..."
+    exit
+}
+
 # check REST API endpoint /version if backend is running with API key $env:API_KEY as "x-functions-key" header, catch it and if it is not running: exit
 $version = (Invoke-RestMethod -Uri http://localhost:7072/api/version -Method Get -ContentType "application/json" -Headers @{"x-functions-key" = $env:AGRAVITY_API_KEY} -ErrorAction SilentlyContinue).version
 
@@ -52,8 +60,9 @@ if (!(Test-Path "openapi.json") -or (Get-Content "openapi.json" -Raw) -eq "") {
 }
 
 #$params="apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=14.0.0,npmName=agravityAPI-private,npmVersion=$version"
-$params = "apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=16.1.2,npmName=@agravity/private,supportsES6=true,npmRepository=https://registry.npmjs.org/,useSingleRequestParameter=true"
-npx @openapitools/openapi-generator-cli generate -i openapi.json -g typescript-angular -o src/agravityAPI-private/ --additional-properties=$params
+$params = "apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=17.3.5,npmName=@agravity/private,supportsES6=true,npmRepository=https://registry.npmjs.org/,useSingleRequestParameter=true"
+#npx @openapitools/openapi-generator-cli generate -i openapi.json -g typescript-angular -o src/agravityAPI-private/ --additional-properties=$params
+java -jar $env:OPENAPI_GENERATOR generate -i openapi.json -g typescript-angular -o src/agravityAPI-private/ --additional-properties=$params
 
 # delete openapi.json
 Remove-Item -Path .\openapi.json -Force
@@ -67,8 +76,9 @@ if (!(Test-Path "openapi.json") -or (Get-Content "openapi.json" -Raw) -eq "") {
     exit
 }
 
-$params = "apiModulePrefix=AgravityPublic,configurationPrefix=AgravityPublic,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=16.1.2,npmName=@agravity/public,supportsES6=true,npmRepository=https://registry.npmjs.org/"
-npx @openapitools/openapi-generator-cli generate -i openapi.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
+$params = "apiModulePrefix=AgravityPublic,configurationPrefix=AgravityPublic,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=17.3.5,npmName=@agravity/public,supportsES6=true,npmRepository=https://registry.npmjs.org/,useSingleRequestParameter=true"
+#npx @openapitools/openapi-generator-cli generate -i openapi.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
+java -jar $env:OPENAPI_GENERATOR generate -i openapi.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
 
 # delete openapi.json
 Remove-Item -Path .\openapi.json -Force
@@ -109,16 +119,16 @@ ReplaceStringInFiles -FolderPath "src" -SearchString "ai\?: object;" -ReplaceStr
 Write-Host "Replace ai complete"
 
 # add line in file src\agravityAPI-private\api\assetManagement.agravity.ts after line 482
-$fileContent = Get-Content "src\agravityAPI-private\api\assetManagement.agravity.ts"
-$fileContent[348] = $fileContent[348] + ",`n" + "                body: assetBulkUpdate"
+#$fileContent = Get-Content "src\agravityAPI-private\api\assetManagement.agravity.ts"
+#$fileContent[348] = $fileContent[348] + ",`n" + "                body: assetBulkUpdate"
 # write file
-$fileContent | Set-Content "src\agravityAPI-private\api\assetManagement.agravity.ts"
+#$fileContent | Set-Content "src\agravityAPI-private\api\assetManagement.agravity.ts"
 
-Write-Host "Add line in file src\agravityAPI-private\api\assetManagement.agravity.ts after line 482 complete"
+#Write-Host "Add line in file src\agravityAPI-private\api\assetManagement.agravity.ts after line 482 complete"
 
 
 $fileContent = Get-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
-$fileContent[213] = "            // headers = headers.set('Content-Type', httpContentTypeSelected);"
+$fileContent[233] = "            // headers = headers.set('Content-Type', httpContentTypeSelected);"
 # write file
 $fileContent | Set-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
 
@@ -126,7 +136,7 @@ Write-Host "Remove line in file src\agravityAPI-private\api\assetVersioning.agra
 
 
 $fileContent = Get-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
-$fileContent[207] = "            // headers = headers.set('Content-Type', httpContentTypeSelected);"
+$fileContent[263] = "            // headers = headers.set('Content-Type', httpContentTypeSelected);"
 # write file
 $fileContent | Set-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
 
@@ -152,7 +162,8 @@ ReplaceStringInFiles -FolderPath "src" -SearchString "`r`n" -ReplaceString "`n"
 $author = (git config user.name)
 $licence = "MIT License"
 $description = "The Agravity GlobalDAM API which allowes authenticated user to access the Agravity GlobalDAM Backend"
-$repoUrl =   '"repository": { "type": "git","url": "git+https://github.com/agravityio/agravity-sdk-typescript"},'
+$repoUrl =   '    "url": "git+https://github.com/agravityio/agravity-sdk-typescript"'
+#$repoUrl =   '"repository": { "type": "git","url": "git+https://github.com/agravityio/agravity-sdk-typescript"},'
 $access =   '"access": "public",'
 
 #set array of keywords: agravity, dam, globaldam
@@ -174,8 +185,8 @@ $json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-private/pa
 
 # add $repoUrl to package.json in line 20
 $fileContent = Get-Content "src\agravityAPI-private\package.json"
-$fileContent[15] = $fileContent[15] + "`n" + $repoUrl
-$fileContent[36] = $fileContent[36] + "`n" + $access
+$fileContent[7] =  $repoUrl
+$fileContent[39] = $fileContent[39] + "`n  " + $access
 # write file
 $fileContent | Set-Content "src\agravityAPI-private\package.json"
 
@@ -199,8 +210,8 @@ $json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-public/pac
 
 # add $repoUrl to package.json in line 12
 $fileContent = Get-Content "src\agravityAPI-public\package.json"
-$fileContent[15] = $fileContent[15] + "`n" + $repoUrl
-$fileContent[36] = $fileContent[36] + "`n" + $access
+$fileContent[7] =  $repoUrl
+$fileContent[39] = $fileContent[39] + "`n  " + $access
 # write file
 $fileContent | Set-Content "src\agravityAPI-public\package.json"
 

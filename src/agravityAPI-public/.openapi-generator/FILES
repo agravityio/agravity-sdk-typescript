@@ -94,5 +94,6 @@ model/whereParam.pub.agravity.ts
 model/workspace.pub.agravity.ts
 ng-package.json
 package.json
+param.ts
 tsconfig.json
 variables.ts
