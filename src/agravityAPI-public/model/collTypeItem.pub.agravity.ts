@@ -16,7 +16,7 @@ export interface CollTypeItem {
 	item_type?: string | null;
 	format?: string | null;
 	label?: string | null;
-	default_value?: object | null;
+	default_value?: any | null;
 	mandatory?: boolean | null;
 	searchable?: boolean | null;
 	onlyasset?: boolean | null;

@@ -28,12 +28,12 @@ export interface Asset {
 	availability?: string | null;
 	available_from?: string | null;
 	available_to?: string | null;
-	custom?: { [key: string]: object } | null;
+	custom?: any | null;
 	items?: Array<CollTypeItem> | null;
 	translations?: { [key: string]: { [key: string]: object } } | null;
 	role?: Asset.RoleEnum;
 	description?: string | null;
-	add_properties?: { [key: string]: object } | null;
+	add_properties?: { [key: string]: any } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

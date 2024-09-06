@@ -16,7 +16,7 @@ export interface InfoEntitySkillEnhanced {
 	udl_coll_ids?: Array<string> | null;
 	translation_values?: Array<string> | null;
 	collectiontypeids?: Array<string> | null;
-	allcustom?: { [key: string]: object } | null;
+	allcustom?: any | null;
 	custom_values?: Array<string> | null;
 	search_terms?: string | null;
 	perm_groups?: Array<PermissionEntity> | null;

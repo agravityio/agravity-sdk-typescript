@@ -36,7 +36,7 @@ export interface PortalConfiguration {
 	limit_ids?: Array<string> | null;
 	name?: string | null;
 	description?: string | null;
-	add_properties?: { [key: string]: object } | null;
+	add_properties?: { [key: string]: any } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

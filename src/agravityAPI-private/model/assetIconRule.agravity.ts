@@ -21,7 +21,7 @@ export interface AssetIconRule {
 	translations?: { [key: string]: { [key: string]: object } } | null;
 	name?: string | null;
 	description?: string | null;
-	add_properties?: { [key: string]: object } | null;
+	add_properties?: { [key: string]: any } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

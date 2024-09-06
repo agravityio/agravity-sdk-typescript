@@ -20,7 +20,7 @@ export interface Workspace {
 	order?: number | null;
 	permissions?: Array<PermissionEntity> | null;
 	description?: string | null;
-	add_properties?: { [key: string]: object } | null;
+	add_properties?: { [key: string]: any } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;
