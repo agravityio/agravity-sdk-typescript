@@ -1,10 +1,3 @@
-
-# check if $env:API_KEY is set, if not: exit
-if ($null -eq $env:AGRAVITY_OPEN_API_KEY) {
-    Write-Host "Please set API_KEY environment variable"
-    exit
-}
-
 # check if $env:OAUTH2_TOKEN is set, if not: exit
 if ($null -eq $env:AGRAVITY_OAUTH2_TOKEN) {
     Write-Host "Please set OAUTH2_TOKEN environment variable"
@@ -20,7 +13,7 @@ if ($null -eq $env:OPENAPI_GENERATOR) {
 }
 
 # check REST API endpoint /version if backend is running with API key $env:API_KEY as "x-functions-key" header, catch it and if it is not running: exit
-$version = (Invoke-RestMethod -Uri http://localhost:7072/api/version -Method Get -ContentType "application/json" -Headers @{"x-functions-key" = $env:AGRAVITY_OPEN_API_KEY} -ErrorAction SilentlyContinue).version
+$version = (Invoke-RestMethod -Uri http://localhost:7072/api/version -Method Get -ContentType "application/json" -ErrorAction SilentlyContinue).version
 
 if ($null -eq $version) {
     Write-Host "Please start backend before generating API"
@@ -68,7 +61,7 @@ java -jar $env:OPENAPI_GENERATOR generate -i openapi.json -g typescript-angular 
 Remove-Item -Path .\openapi.json -Force
 
 Write-Host "Calling public API"
-Invoke-WebRequest -Uri "http://localhost:7072/api/openapi/v3.json" -Headers @{"x-functions-key" = $env:AGRAVITY_OPEN_API_KEY} -OutFile "openapi.json"
+Invoke-WebRequest -Uri "http://localhost:7072/api/openapi/v3.json" -OutFile "openapi.json"
 
 # check if openapi.json exists and is not empty; if not: exit
 if (!(Test-Path "openapi.json") -or (Get-Content "openapi.json" -Raw) -eq "") {
