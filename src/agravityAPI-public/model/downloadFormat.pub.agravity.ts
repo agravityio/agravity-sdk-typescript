@@ -9,6 +9,7 @@
  * Do not edit the class manually.
  */
 import { DynamicImageOperation } from './dynamicImageOperation.pub.agravity';
+import { PermissionEntity } from './permissionEntity.pub.agravity';
 
 export interface DownloadFormat {
 	id?: string | null;
@@ -19,6 +20,7 @@ export interface DownloadFormat {
 	origin?: string | null;
 	fallback_thumb?: boolean | null;
 	translations?: { [key: string]: { [key: string]: object } } | null;
+	permissions?: Array<PermissionEntity> | null;
 	name?: string | null;
 	description?: string | null;
 	add_properties?: { [key: string]: any } | null;
