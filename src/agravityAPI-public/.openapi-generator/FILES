@@ -31,6 +31,7 @@ encoder.ts
 git_push.sh
 index.ts
 model/agravityErrorResponse.pub.agravity.ts
+model/agravityInfoResponse.pub.agravity.ts
 model/agravityVersion.pub.agravity.ts
 model/allWebAppData.pub.agravity.ts
 model/artificialIntelligenceGroup.pub.agravity.ts
@@ -40,7 +41,6 @@ model/assetBlob.pub.agravity.ts
 model/assetIdFormat.pub.agravity.ts
 model/assetPageResult.pub.agravity.ts
 model/azSearchOptions.pub.agravity.ts
-model/badRequestResult.pub.agravity.ts
 model/collTypeItem.pub.agravity.ts
 model/collection.pub.agravity.ts
 model/collectionType.pub.agravity.ts
@@ -57,7 +57,6 @@ model/frontendAppConfig.pub.agravity.ts
 model/groupAllAppData.pub.agravity.ts
 model/models.ts
 model/moveCollectionBody.pub.agravity.ts
-model/okResult.pub.agravity.ts
 model/permissionEntity.pub.agravity.ts
 model/portal.pub.agravity.ts
 model/portalConfiguration.pub.agravity.ts

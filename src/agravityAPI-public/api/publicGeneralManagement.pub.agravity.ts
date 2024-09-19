@@ -18,13 +18,11 @@ import { Observable } from 'rxjs';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
 // @ts-ignore
+import { AgravityInfoResponse } from '../model/agravityInfoResponse.pub.agravity';
+// @ts-ignore
 import { AgravityVersion } from '../model/agravityVersion.pub.agravity';
 // @ts-ignore
-import { BadRequestResult } from '../model/badRequestResult.pub.agravity';
-// @ts-ignore
 import { DeletedEntities } from '../model/deletedEntities.pub.agravity';
-// @ts-ignore
-import { OkResult } from '../model/okResult.pub.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -300,19 +298,19 @@ export class PublicGeneralManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<OkResult>;
+	): Observable<AgravityInfoResponse>;
 	public httpTriggerDurableContinue(
 		requestParameters?: HttpTriggerDurableContinueRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<OkResult>>;
+	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpTriggerDurableContinue(
 		requestParameters?: HttpTriggerDurableContinueRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<OkResult>>;
+	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpTriggerDurableContinue(
 		requestParameters?: HttpTriggerDurableContinueRequestParams,
 		observe: any = 'body',
@@ -358,7 +356,7 @@ export class PublicGeneralManagementService {
 		}
 
 		let localVarPath = `/durable/${this.configuration.encodeParam({ name: 'instanceId', value: instanceId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<OkResult>('get', `${this.configuration.basePath}${localVarPath}`, {
+		return this.httpClient.request<AgravityInfoResponse>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
@@ -380,19 +378,19 @@ export class PublicGeneralManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<OkResult>;
+	): Observable<AgravityInfoResponse>;
 	public httpTriggerDurableScchTrainingDone(
 		requestParameters?: HttpTriggerDurableScchTrainingDoneRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<OkResult>>;
+	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpTriggerDurableScchTrainingDone(
 		requestParameters?: HttpTriggerDurableScchTrainingDoneRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<OkResult>>;
+	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpTriggerDurableScchTrainingDone(
 		requestParameters?: HttpTriggerDurableScchTrainingDoneRequestParams,
 		observe: any = 'body',
@@ -438,7 +436,7 @@ export class PublicGeneralManagementService {
 		}
 
 		let localVarPath = `/durable/scch/${this.configuration.encodeParam({ name: 'instanceId', value: instanceId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<OkResult>('get', `${this.configuration.basePath}${localVarPath}`, {
+		return this.httpClient.request<AgravityInfoResponse>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
