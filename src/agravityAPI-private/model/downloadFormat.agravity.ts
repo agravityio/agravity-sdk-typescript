@@ -19,6 +19,7 @@ export interface DownloadFormat {
 	asset_type?: string | null;
 	origin?: string | null;
 	fallback_thumb?: boolean | null;
+	target_filename?: string | null;
 	translations?: { [key: string]: { [key: string]: object } } | null;
 	permissions?: Array<PermissionEntity> | null;
 	name?: string | null;
