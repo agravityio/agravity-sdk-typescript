@@ -13,6 +13,7 @@ export interface ExcelExportTableEntity {
 	url?: string | null;
 	status?: string;
 	filters?: string | null;
+	exclude?: string | null;
 	ids?: string | null;
 	language?: string | null;
 	orchestrationId?: string;

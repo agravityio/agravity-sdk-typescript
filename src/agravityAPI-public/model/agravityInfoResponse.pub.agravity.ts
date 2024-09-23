@@ -9,6 +9,8 @@
  * Do not edit the class manually.
  */
 
-export interface BadRequestResult {
-	statusCode?: number;
+export interface AgravityInfoResponse {
+	info_id?: string | null;
+	info_message?: string | null;
+	info_object?: object | null;
 }

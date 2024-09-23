@@ -75,6 +75,8 @@ export interface HttpAssetImageEditRequestParams {
 	filter?: string;
 	/** If set to true the internal image is used instead of the default original */
 	original?: boolean;
+	/** The origin image which should be used for the conversion. */
+	origin?: string;
 }
 
 export interface HttpAssetImageRotateClockwiseRequestParams {
@@ -322,6 +324,7 @@ export class AssetOperationsService {
 		const cropHeight = requestParameters?.cropHeight;
 		const filter = requestParameters?.filter;
 		const original = requestParameters?.original;
+		const origin = requestParameters?.origin;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
 		if (width !== undefined && width !== null) {
@@ -368,6 +371,9 @@ export class AssetOperationsService {
 		}
 		if (original !== undefined && original !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>original, 'original');
+		}
+		if (origin !== undefined && origin !== null) {
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>origin, 'origin');
 		}
 
 		let localVarHeaders = this.defaultHeaders;

@@ -16,6 +16,8 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 // @ts-ignore
+import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
+// @ts-ignore
 import { SignalRConnectionInfo } from '../model/signalRConnectionInfo.pub.agravity';
 
 // @ts-ignore
