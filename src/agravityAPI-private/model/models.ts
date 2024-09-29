@@ -52,7 +52,6 @@ export * from './permissionChange.agravity';
 export * from './permissionEntity.agravity';
 export * from './permissionSetting.agravity';
 export * from './portal.agravity';
-export * from './portalLanguages.agravity';
 export * from './portalLinks.agravity';
 export * from './portalTheme.agravity';
 export * from './portalZipRequest.agravity';

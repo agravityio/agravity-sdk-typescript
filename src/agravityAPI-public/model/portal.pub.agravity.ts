@@ -10,14 +10,13 @@
  */
 import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
 import { PortalLinks } from './portalLinks.pub.agravity';
-import { PortalLanguages } from './portalLanguages.pub.agravity';
 import { PortalTheme } from './portalTheme.pub.agravity';
 
 export interface Portal {
 	id?: string | null;
 	entity_type?: string | null;
 	filter?: string | null;
-	languages?: PortalLanguages | null;
+	languages?: string | null;
 	theme?: PortalTheme | null;
 	links?: PortalLinks | null;
 	metadata?: Array<string> | null;

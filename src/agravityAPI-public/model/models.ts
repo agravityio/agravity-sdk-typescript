@@ -27,7 +27,6 @@ export * from './moveCollectionBody.pub.agravity';
 export * from './permissionEntity.pub.agravity';
 export * from './portal.pub.agravity';
 export * from './portalConfiguration.pub.agravity';
-export * from './portalLanguages.pub.agravity';
 export * from './portalLinks.pub.agravity';
 export * from './portalTheme.pub.agravity';
 export * from './portalZipRequest.pub.agravity';

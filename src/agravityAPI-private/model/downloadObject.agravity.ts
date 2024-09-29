@@ -20,6 +20,7 @@ export interface DownloadObject {
 	simple_assets?: Array<SimpleAsset> | null;
 	valid_for?: string | null;
 	watermarked?: boolean | null;
+	lang?: string | null;
 	zipname?: string | null;
 	assets?: Array<AssetIdFormat> | null;
 	valid_from?: string | null;
