@@ -10,10 +10,26 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="8.0.0"/> [8.0.0](https://www.npmjs.com/package/@agravity/private/v/8.0.0) (2024-09-30)
+
+-   Changed all requests to have one parameter instead of multiple
+-   Use new openapi-generator (7.8.0) and use ngVersion 17.3.5
+-   Target now net8.0
+-   Add Accepted-Languages as HTTP header parameter
+-   Portal now have simple `languages` property (comma separated strings)
+-   #845 Copy image directly to clipboard: Allow image edit to set `origin` (i.e. optimized) which image is the base of the conversion
+-   #1228 Export Translation: Add ability to exclude IDs from export: Add `exclude` filter to translation excel export
+-   #1023 Download formats - Permissions on download formats
+-   Correcting the return parameter of GeneralManagement Version to `AgravityInfoResponse` and remove badResult
+-   #1114 Upgrade .NET 6 to .NET 8 (incl. switch to isolated model)
+
+---
+
 ## AgravityAPI <a name="7.3.1"/> [7.3.1](https://www.npmjs.com/package/@agravity/private/v/7.3.1) (2024-08-18)
 
-- 1196 Download Format: Add optional parameter for fallback to thumbnails
-- Correct status of search status (from "201 Created" to "200 OK")
+-   1196 Download Format: Add optional parameter for fallback to thumbnails
+-   Correct status of search status (from "201 Created" to "200 OK")
+
 ---
 
 ## AgravityAPI <a name="7.3.0"/> [7.3.0](https://www.npmjs.com/package/@agravity/private/v/7.3.0) (2024-08-02)

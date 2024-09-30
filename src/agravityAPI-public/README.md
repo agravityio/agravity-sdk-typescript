@@ -1,6 +1,6 @@
-## @agravity/public@8.0.0-preview.1
+## @agravity/public@8.0.0
 
-The version of the OpenAPI document: 8.0.0-preview.1
+The version of the OpenAPI document: 8.0.0
 
 ### Building
 
@@ -21,7 +21,7 @@ Navigate to the folder of your consuming project and run one of next commands.
 _published:_
 
 ```
-npm install @agravity/public@8.0.0-preview.1 --save
+npm install @agravity/public@8.0.0 --save
 ```
 
 _without publishing (not recommended):_
