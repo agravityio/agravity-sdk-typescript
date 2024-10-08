@@ -64,6 +64,11 @@ export interface HttpAuthGetContainerReadSasTokenRequestParams {
 	containerName: string;
 }
 
+export interface HttpAuthGetContainerWriteSasTokenRequestParams {
+	/** The name of the blob container */
+	containerName: string;
+}
+
 export interface HttpAuthPatchImpersonateUserRequestParams {
 	/** The ID of the user which should be impersonated. */
 	id: string;
@@ -911,30 +916,40 @@ export class AuthenticationManagementService {
 	}
 
 	/**
-	 * This endpoint creates and returns a SAS-Token with write access for the inbox container
+	 * This endpoint creates and returns a SAS-Token with write access for the requested container
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAuthGetInboxContainerWriteSasToken(
+	public httpAuthGetContainerWriteSasToken(
+		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<SasToken>;
-	public httpAuthGetInboxContainerWriteSasToken(
+	public httpAuthGetContainerWriteSasToken(
+		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<SasToken>>;
-	public httpAuthGetInboxContainerWriteSasToken(
+	public httpAuthGetContainerWriteSasToken(
+		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<SasToken>>;
-	public httpAuthGetInboxContainerWriteSasToken(
+	public httpAuthGetContainerWriteSasToken(
+		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
+		const containerName = requestParameters?.containerName;
+		if (containerName === null || containerName === undefined) {
+			throw new Error('Required parameter containerName was null or undefined when calling httpAuthGetContainerWriteSasToken.');
+		}
+
 		let localVarHeaders = this.defaultHeaders;
 
 		let localVarCredential: string | undefined;
@@ -975,7 +990,7 @@ export class AuthenticationManagementService {
 			}
 		}
 
-		let localVarPath = `/auth/inbox`;
+		let localVarPath = `/auth/containerwrite/${this.configuration.encodeParam({ name: 'containerName', value: containerName, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		return this.httpClient.request<SasToken>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,

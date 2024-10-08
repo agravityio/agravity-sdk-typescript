@@ -6,6 +6,7 @@ export * from './artificialIntelligenceGroup.pub.agravity';
 export * from './asset.pub.agravity';
 export * from './assetAvailability.pub.agravity';
 export * from './assetBlob.pub.agravity';
+export * from './assetIconRule.pub.agravity';
 export * from './assetIdFormat.pub.agravity';
 export * from './assetPageResult.pub.agravity';
 export * from './azSearchOptions.pub.agravity';
