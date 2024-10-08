@@ -8,23 +8,17 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
-import { AssetIconRule } from './assetIconRule.pub.agravity';
-import { PortalLinks } from './portalLinks.pub.agravity';
-import { PortalTheme } from './portalTheme.pub.agravity';
 
-export interface Portal {
+export interface AssetIconRule {
 	id?: string | null;
 	entity_type?: string | null;
-	filter?: string | null;
-	languages?: string | null;
-	theme?: PortalTheme | null;
-	links?: PortalLinks | null;
-	metadata?: Array<string> | null;
-	facettes?: Array<string> | null;
-	asset_icon_rules?: Array<AssetIconRule> | null;
-	allowed_formats?: Array<SharedAllowedFormat> | null;
-	limit_ids?: Array<string> | null;
+	type?: string | null;
+	path?: string | null;
+	color?: string | null;
+	value?: string | null;
+	icon?: string | null;
+	operator?: string | null;
+	translations?: { [key: string]: { [key: string]: object } } | null;
 	name?: string | null;
 	description?: string | null;
 	add_properties?: { [key: string]: any } | null;

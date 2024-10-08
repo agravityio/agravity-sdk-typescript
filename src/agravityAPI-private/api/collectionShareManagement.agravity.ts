@@ -50,6 +50,8 @@ export interface HttpSharedCollectionsGetByIdRequestParams {
 	limit?: number;
 	/** How the return assets are sorted. Default is property: created_date (newest first). */
 	orderby?: string;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
 }
 
 @Injectable({
@@ -427,6 +429,7 @@ export class CollectionShareManagementService {
 		const continuationToken = requestParameters?.continuationToken;
 		const limit = requestParameters?.limit;
 		const orderby = requestParameters?.orderby;
+		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
 		if (continuationToken !== undefined && continuationToken !== null) {
@@ -440,6 +443,9 @@ export class CollectionShareManagementService {
 		}
 
 		let localVarHeaders = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required

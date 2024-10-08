@@ -9,6 +9,7 @@
  * Do not edit the class manually.
  */
 import { SharedAllowedFormat } from './sharedAllowedFormat.agravity';
+import { AssetIconRule } from './assetIconRule.agravity';
 import { PortalLinks } from './portalLinks.agravity';
 import { PortalTheme } from './portalTheme.agravity';
 
@@ -21,6 +22,7 @@ export interface Portal {
 	links?: PortalLinks | null;
 	metadata?: Array<string> | null;
 	facettes?: Array<string> | null;
+	asset_icon_rules?: Array<AssetIconRule> | null;
 	allowed_formats?: Array<SharedAllowedFormat> | null;
 	limit_ids?: Array<string> | null;
 	name?: string | null;

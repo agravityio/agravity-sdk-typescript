@@ -11,6 +11,7 @@
 import { DownloadFormat } from './downloadFormat.pub.agravity';
 import { CollTypeItem } from './collTypeItem.pub.agravity';
 import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
+import { AssetIconRule } from './assetIconRule.pub.agravity';
 import { FrontendAppConfig } from './frontendAppConfig.pub.agravity';
 import { CollectionUDL } from './collectionUDL.pub.agravity';
 import { PortalLinks } from './portalLinks.pub.agravity';
@@ -31,6 +32,7 @@ export interface PortalConfiguration {
 	links?: PortalLinks | null;
 	metadata?: Array<string> | null;
 	facettes?: Array<string> | null;
+	asset_icon_rules?: Array<AssetIconRule> | null;
 	allowed_formats?: Array<SharedAllowedFormat> | null;
 	limit_ids?: Array<string> | null;
 	name?: string | null;

@@ -38,6 +38,7 @@ model/artificialIntelligenceGroup.pub.agravity.ts
 model/asset.pub.agravity.ts
 model/assetAvailability.pub.agravity.ts
 model/assetBlob.pub.agravity.ts
+model/assetIconRule.pub.agravity.ts
 model/assetIdFormat.pub.agravity.ts
 model/assetPageResult.pub.agravity.ts
 model/azSearchOptions.pub.agravity.ts
