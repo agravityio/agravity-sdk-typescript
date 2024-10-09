@@ -885,7 +885,7 @@ export class PublicAssetOperationsService {
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
 		if (shareId !== undefined && shareId !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>shareId, 'share-id');
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>shareId, 'share_id');
 		}
 		if (format !== undefined && format !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>format, 'format');

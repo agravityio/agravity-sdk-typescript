@@ -228,7 +228,7 @@ export class PublicDownloadFormatManagementService {
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
 		if (shareId !== undefined && shareId !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>shareId, 'share-id');
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>shareId, 'share_id');
 		}
 
 		let localVarHeaders = this.defaultHeaders;
