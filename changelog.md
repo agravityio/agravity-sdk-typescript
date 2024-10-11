@@ -10,7 +10,13 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
-## AgravityAPI <a name="8.1.1"/> [8.1.1](https://www.npmjs.com/package/@agravity/private/v/8.1.1) (2024-10-08)
+## AgravityAPI <a name="8.1.2"/> [8.1.2](https://www.npmjs.com/package/@agravity/private/v/8.1.2) (2024-10-11)
+
+-   Just version upgrade to match backend
+
+---
+
+## AgravityAPI <a name="8.1.1"/> [8.1.1](https://www.npmjs.com/package/@agravity/private/v/8.1.1) (2024-10-10)
 
 -   Change `collectionid` to be lowercase (now it is working with SDK again)
 -   Change the `share_id` to be separated by underscore
