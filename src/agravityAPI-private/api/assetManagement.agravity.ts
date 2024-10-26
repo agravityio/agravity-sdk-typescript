@@ -34,7 +34,7 @@ export interface HttpAssetUploadFileRequestParams {
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
 	name?: string;
-	collectionId?: string;
+	collectionid?: string;
 	file?: Blob;
 	filename?: string;
 	previewof?: string;
@@ -245,7 +245,7 @@ export class AssetManagementService {
 	): Observable<any> {
 		const acceptLanguage = requestParameters?.acceptLanguage;
 		const name = requestParameters?.name;
-		const collectionId = requestParameters?.collectionId;
+		const collectionid = requestParameters?.collectionid;
 		const file = requestParameters?.file;
 		const filename = requestParameters?.filename;
 		const previewof = requestParameters?.previewof;
@@ -295,8 +295,8 @@ export class AssetManagementService {
 		if (name !== undefined) {
 			localVarFormParams = (localVarFormParams.append('name', <any>name) as any) || localVarFormParams;
 		}
-		if (collectionId !== undefined) {
-			localVarFormParams = (localVarFormParams.append('collectionId', <any>collectionId) as any) || localVarFormParams;
+		if (collectionid !== undefined) {
+			localVarFormParams = (localVarFormParams.append('collectionid', <any>collectionid) as any) || localVarFormParams;
 		}
 		if (file !== undefined) {
 			localVarFormParams = (localVarFormParams.append('file', <any>file) as any) || localVarFormParams;

@@ -1003,6 +1003,92 @@ export class AuthenticationManagementService {
 	}
 
 	/**
+	 * This endpoint creates and returns a SAS-Token with write access for the inbox container. Do not use this any longer. Use HttpAuthGetContainerWriteSasToken with inbox as container name.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 * @deprecated
+	 */
+	public httpAuthGetInboxContainerWriteSasToken(
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<SasToken>;
+	public httpAuthGetContainerWriteSasToken(
+		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<SasToken>>;
+	public httpAuthGetContainerWriteSasToken(
+		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<SasToken>>;
+	public httpAuthGetContainerWriteSasToken(
+		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const containerName = requestParameters?.containerName;
+		if (containerName === null || containerName === undefined) {
+			throw new Error('Required parameter containerName was null or undefined when calling httpAuthGetContainerWriteSasToken.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (msal_auth) required
+		localVarCredential = this.configuration.lookupCredential('msal_auth');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/auth/containerwrite/${this.configuration.encodeParam({ name: 'containerName', value: containerName, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		return this.httpClient.request<SasToken>('get', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint gets the ID of the user.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.

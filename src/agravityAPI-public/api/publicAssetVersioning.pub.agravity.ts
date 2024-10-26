@@ -32,7 +32,7 @@ export interface HttpAssetCreateUploadVersionRequestParams {
 	/** The ID of the asset. */
 	id: string;
 	name?: string;
-	collectionId?: string;
+	collectionid?: string;
 	file?: Blob;
 	filename?: string;
 	previewof?: string;
@@ -197,7 +197,7 @@ export class PublicAssetVersioningService {
 			throw new Error('Required parameter id was null or undefined when calling httpAssetCreateUploadVersion.');
 		}
 		const name = requestParameters?.name;
-		const collectionId = requestParameters?.collectionId;
+		const collectionid = requestParameters?.collectionid;
 		const file = requestParameters?.file;
 		const filename = requestParameters?.filename;
 		const previewof = requestParameters?.previewof;
@@ -251,8 +251,8 @@ export class PublicAssetVersioningService {
 		if (name !== undefined) {
 			localVarFormParams = (localVarFormParams.append('name', <any>name) as any) || localVarFormParams;
 		}
-		if (collectionId !== undefined) {
-			localVarFormParams = (localVarFormParams.append('collectionId', <any>collectionId) as any) || localVarFormParams;
+		if (collectionid !== undefined) {
+			localVarFormParams = (localVarFormParams.append('collectionid', <any>collectionid) as any) || localVarFormParams;
 		}
 		if (file !== undefined) {
 			localVarFormParams = (localVarFormParams.append('file', <any>file) as any) || localVarFormParams;
