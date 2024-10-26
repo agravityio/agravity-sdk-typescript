@@ -1060,7 +1060,7 @@ export class HelperToolsService {
 			}
 		}
 
-		let localVarPath = `/helper/clearconfigcache`;
+		let localVarPath = `/helper/clearcache`;
 		return this.httpClient.request<AgravityInfoResponse>('patch', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
