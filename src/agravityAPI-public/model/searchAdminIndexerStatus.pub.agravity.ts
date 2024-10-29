@@ -14,5 +14,6 @@ export interface SearchAdminIndexerStatus {
 	name?: string | null;
 	status?: string | null;
 	error?: string | null;
-	lastrun?: SearchAdminIndexerLastRun | null;
+	lastrun?: SearchAdminIndexerLastRun;
+	history?: Array<SearchAdminIndexerLastRun> | null;
 }
