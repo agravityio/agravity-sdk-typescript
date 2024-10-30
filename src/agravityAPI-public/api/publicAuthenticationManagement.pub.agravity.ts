@@ -203,38 +203,21 @@ export class PublicAuthenticationManagementService {
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<SasToken>;
-	public httpAuthGetContainerWriteSasToken(
-		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
+	public httpAuthGetInboxContainerWriteSasToken(
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<SasToken>>;
-	public httpAuthGetContainerWriteSasToken(
-		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
+	public httpAuthGetInboxContainerWriteSasToken(
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<SasToken>>;
-	public httpAuthGetContainerWriteSasToken(
-		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
+	public httpAuthGetInboxContainerWriteSasToken(
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
-		const containerName = requestParameters?.containerName;
-		if (containerName === null || containerName === undefined) {
-			throw new Error('Required parameter containerName was null or undefined when calling httpAuthGetContainerWriteSasToken.');
-		}
-		const code = requestParameters?.code;
-		if (code === null || code === undefined) {
-			throw new Error('Required parameter code was null or undefined when calling httpAuthGetContainerWriteSasToken.');
-		}
-
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (code !== undefined && code !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>code, 'code');
-		}
-
 		let localVarHeaders = this.defaultHeaders;
 
 		let localVarCredential: string | undefined;
@@ -275,10 +258,9 @@ export class PublicAuthenticationManagementService {
 			}
 		}
 
-		let localVarPath = `/auth/containerwrite/${this.configuration.encodeParam({ name: 'containerName', value: containerName, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		let localVarPath = `/auth/inbox`;
 		return this.httpClient.request<SasToken>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,

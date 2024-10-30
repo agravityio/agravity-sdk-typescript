@@ -2,7 +2,7 @@
 	"name": "@agravity/private",
 	"version": "8.1.2",
 	"description": "The Agravity GlobalDAM API which allowes authenticated user to access the Agravity GlobalDAM Backend",
-	"author": "Julian Richtsfeld",
+	"author": "Philipp Losbichler",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/agravityio/agravity-sdk-typescript"
