@@ -20,6 +20,8 @@ import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravi
 // @ts-ignore
 import { CollectionUDL } from '../model/collectionUDL.pub.agravity';
 // @ts-ignore
+import { CollectionUDLListEntity } from '../model/collectionUDLListEntity.pub.agravity';
+// @ts-ignore
 import { SearchableItem } from '../model/searchableItem.pub.agravity';
 
 // @ts-ignore
@@ -469,6 +471,83 @@ export class PublicHelperToolsService {
 		return this.httpClient.request<Array<SearchableItem>>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This updates the cached user defined lists and store it in the system.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPatchUpdateCachedUserDefinedLists(
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<CollectionUDLListEntity>;
+	public httpPatchUpdateCachedUserDefinedLists(
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<CollectionUDLListEntity>>;
+	public httpPatchUpdateCachedUserDefinedLists(
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<CollectionUDLListEntity>>;
+	public httpPatchUpdateCachedUserDefinedLists(
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (function_key) required
+		localVarCredential = this.configuration.lookupCredential('function_key');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/helper/userdefinedlists`;
+		return this.httpClient.request<CollectionUDLListEntity>('patch', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,

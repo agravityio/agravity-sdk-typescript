@@ -46,6 +46,8 @@ model/collTypeItem.pub.agravity.ts
 model/collection.pub.agravity.ts
 model/collectionType.pub.agravity.ts
 model/collectionUDL.pub.agravity.ts
+model/collectionUDLListEntity.pub.agravity.ts
+model/collectionUDLReference.pub.agravity.ts
 model/createSftpUserResult.pub.agravity.ts
 model/dataResult.pub.agravity.ts
 model/deletedEntities.pub.agravity.ts

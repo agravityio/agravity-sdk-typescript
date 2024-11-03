@@ -14,6 +14,8 @@ export * from './collTypeItem.pub.agravity';
 export * from './collection.pub.agravity';
 export * from './collectionType.pub.agravity';
 export * from './collectionUDL.pub.agravity';
+export * from './collectionUDLListEntity.pub.agravity';
+export * from './collectionUDLReference.pub.agravity';
 export * from './createSftpUserResult.pub.agravity';
 export * from './dataResult.pub.agravity';
 export * from './deletedEntities.pub.agravity';
