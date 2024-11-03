@@ -20,4 +20,5 @@ export interface AzSearchOptions {
 	mode?: string | null;
 	ids?: string | null;
 	portal_id?: string | null;
+	scopefilter?: string | null;
 }
