@@ -10,6 +10,18 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="8.2.0"/> [8.2.0](https://www.npmjs.com/package/@agravity/private/v/8.2.0) (2024-11-13)
+
+-   Add PATCH `/searchadmin/run` search admin endpoint
+-   Add `portal_id` parameter to Search Indexer Run endpoint
+-   Refactor endpoint `/clearconfigcache` to `/clearcache` (private and public)
+-   Add endpoint to patch the UDL cache on demand (with admin API key)
+-   Add GET `/auth/containerwrite/{container}` - This endpoint creates and returns a SAS-Token with write access for the requested container
+-   Deprecate GET `/auth/inbox` but have alternative. (use `/auth/containerwrite/inbox` instead)
+-   Add POST `/secureupload/{id}` endpoint which updates a secure upload entity
+
+---
+
 ## AgravityAPI <a name="8.1.2"/> [8.1.2](https://www.npmjs.com/package/@agravity/private/v/8.1.2) (2024-10-11)
 
 -   Just version upgrade to match backend
