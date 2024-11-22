@@ -14,6 +14,7 @@ import { AgravityErrorResponse } from './agravityErrorResponse.pub.agravity';
 export interface PortalZipRequest {
 	zip_type?: string | null;
 	portal_id?: string | null;
+	language?: string | null;
 	asset_ids?: Array<string> | null;
 	id?: string | null;
 	entity_type?: string | null;

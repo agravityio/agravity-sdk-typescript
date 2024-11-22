@@ -14,6 +14,7 @@ import { AgravityErrorResponse } from './agravityErrorResponse.pub.agravity';
 export interface SharedCollectionZipRequest {
 	sharedcoll_id?: string | null;
 	password?: string | null;
+	language?: string | null;
 	id?: string | null;
 	entity_type?: string | null;
 	zip_type?: string | null;
