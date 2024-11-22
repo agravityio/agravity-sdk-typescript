@@ -10,6 +10,10 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="8.2.1"/> [8.2.1](https://www.npmjs.com/package/@agravity/private/v/8.2.1) (2024-11-22)
+
+-   Add `language` to asset download object (to respect the requested language)
+
 ## AgravityAPI <a name="8.2.0"/> [8.2.0](https://www.npmjs.com/package/@agravity/private/v/8.2.0) (2024-11-13)
 
 -   Add PATCH `/searchadmin/run` search admin endpoint
