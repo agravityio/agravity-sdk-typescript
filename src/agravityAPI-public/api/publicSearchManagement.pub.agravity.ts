@@ -41,6 +41,8 @@ export interface HttpGetSearchFacetteByNameRequestParams {
 	mode?: string;
 	/** Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled) */
 	filter?: string;
+	/** Colon separated key value filter for additional scopes. It applies the same conventions as for filter parameter. */
+	scopefilter?: string;
 	/** Comma separated values list with all ids which should be returned. */
 	ids?: string;
 	/** If the search should be redirected to a specific portal. */
@@ -64,6 +66,8 @@ export interface HttpGlobalSearchRequestParams {
 	expose?: boolean;
 	/** Colon separated key value filter for filterable strings and string collections. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled) */
 	filter?: string;
+	/** Colon separated key value filter for additional scopes. It applies the same conventions as for filter parameter. */
+	scopefilter?: string;
 	/** Sortable fields can be used. For descendant sorting use leading \&quot;!\&quot;. (Only if Azure Search is enabled) */
 	orderby?: string;
 	/** Comma separated values list with all ids which should be returned. */
@@ -189,6 +193,7 @@ export class PublicSearchManagementService {
 		const collectionid = requestParameters?.collectionid;
 		const mode = requestParameters?.mode;
 		const filter = requestParameters?.filter;
+		const scopefilter = requestParameters?.scopefilter;
 		const ids = requestParameters?.ids;
 		const portalId = requestParameters?.portalId;
 
@@ -210,6 +215,9 @@ export class PublicSearchManagementService {
 		}
 		if (filter !== undefined && filter !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
+		}
+		if (scopefilter !== undefined && scopefilter !== null) {
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>scopefilter, 'scopefilter');
 		}
 		if (ids !== undefined && ids !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>ids, 'ids');
@@ -312,6 +320,7 @@ export class PublicSearchManagementService {
 		const mode = requestParameters?.mode;
 		const expose = requestParameters?.expose;
 		const filter = requestParameters?.filter;
+		const scopefilter = requestParameters?.scopefilter;
 		const orderby = requestParameters?.orderby;
 		const ids = requestParameters?.ids;
 		const portalId = requestParameters?.portalId;
@@ -342,6 +351,9 @@ export class PublicSearchManagementService {
 		}
 		if (filter !== undefined && filter !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
+		}
+		if (scopefilter !== undefined && scopefilter !== null) {
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>scopefilter, 'scopefilter');
 		}
 		if (orderby !== undefined && orderby !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>orderby, 'orderby');

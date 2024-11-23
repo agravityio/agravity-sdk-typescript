@@ -8,35 +8,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SharedAllowedFormat } from './sharedAllowedFormat.agravity';
-import { AssetIconRule } from './assetIconRule.agravity';
-import { PortalAuthentication } from './portalAuthentication.agravity';
-import { PortalFields } from './portalFields.agravity';
-import { PortalLinks } from './portalLinks.agravity';
-import { PortalTheme } from './portalTheme.agravity';
 
-export interface Portal {
-	id?: string | null;
-	entity_type?: string | null;
-	filter?: string | null;
-	languages?: string | null;
-	theme?: PortalTheme | null;
-	links?: PortalLinks | null;
-	metadata?: Array<string> | null;
-	facettes?: Array<string> | null;
-	fields?: Array<PortalFields> | null;
-	asset_icon_rules?: Array<AssetIconRule> | null;
-	allowed_formats?: Array<SharedAllowedFormat> | null;
-	limit_ids?: Array<string> | null;
-	authentication?: PortalAuthentication | null;
-	name?: string | null;
-	description?: string | null;
-	add_properties?: { [key: string]: any } | null;
-	status?: string | null;
-	created_date?: string | null;
-	created_by?: string | null;
-	modified_date?: string | null;
-	modified_by?: string | null;
-	pk?: string | null;
-	_etag?: string | null;
+export interface PortalUserContext {
+	key?: string | null;
+	mandatory?: boolean | null;
+	mapping?: { [key: string]: string } | null;
 }

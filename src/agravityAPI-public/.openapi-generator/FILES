@@ -49,6 +49,12 @@ model/collectionUDL.pub.agravity.ts
 model/collectionUDLListEntity.pub.agravity.ts
 model/collectionUDLReference.pub.agravity.ts
 model/createSftpUserResult.pub.agravity.ts
+model/customClaimsProviderResponseAction.pub.agravity.ts
+model/customClaimsProviderResponseAuthenticationContext.pub.agravity.ts
+model/customClaimsProviderResponseClaims.pub.agravity.ts
+model/customClaimsProviderResponseContent.pub.agravity.ts
+model/customClaimsProviderResponseData.pub.agravity.ts
+model/customClaimsProviderResponseUser.pub.agravity.ts
 model/dataResult.pub.agravity.ts
 model/deletedEntities.pub.agravity.ts
 model/distZipResponse.pub.agravity.ts
@@ -62,9 +68,12 @@ model/models.ts
 model/moveCollectionBody.pub.agravity.ts
 model/permissionEntity.pub.agravity.ts
 model/portal.pub.agravity.ts
+model/portalAuthentication.pub.agravity.ts
 model/portalConfiguration.pub.agravity.ts
+model/portalFields.pub.agravity.ts
 model/portalLinks.pub.agravity.ts
 model/portalTheme.pub.agravity.ts
+model/portalUserContext.pub.agravity.ts
 model/portalZipRequest.pub.agravity.ts
 model/publishEntity.pub.agravity.ts
 model/publishedAsset.pub.agravity.ts

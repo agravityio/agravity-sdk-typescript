@@ -8,35 +8,20 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
-import { AssetIconRule } from './assetIconRule.pub.agravity';
-import { PortalAuthentication } from './portalAuthentication.pub.agravity';
-import { PortalFields } from './portalFields.pub.agravity';
-import { PortalLinks } from './portalLinks.pub.agravity';
-import { PortalTheme } from './portalTheme.pub.agravity';
 
-export interface Portal {
-	id?: string | null;
-	entity_type?: string | null;
-	filter?: string | null;
-	languages?: string | null;
-	theme?: PortalTheme | null;
-	links?: PortalLinks | null;
-	metadata?: Array<string> | null;
-	facettes?: Array<string> | null;
-	fields?: Array<PortalFields> | null;
-	asset_icon_rules?: Array<AssetIconRule> | null;
-	allowed_formats?: Array<SharedAllowedFormat> | null;
-	limit_ids?: Array<string> | null;
-	authentication?: PortalAuthentication | null;
-	name?: string | null;
-	description?: string | null;
-	add_properties?: { [key: string]: any } | null;
-	status?: string | null;
-	created_date?: string | null;
-	created_by?: string | null;
-	modified_date?: string | null;
-	modified_by?: string | null;
-	pk?: string | null;
-	_etag?: string | null;
+export interface PortalAuthentication {
+	method?: PortalAuthentication.MethodEnum;
+	issuer?: string | null;
+	client_id?: string | null;
+	tenant_id?: string | null;
+	password?: string | null;
+}
+export namespace PortalAuthentication {
+	export type MethodEnum = 'NONE' | 'PASSWORD' | 'EEID' | 'AUTH0';
+	export const MethodEnum = {
+		None: 'NONE' as MethodEnum,
+		Password: 'PASSWORD' as MethodEnum,
+		Eeid: 'EEID' as MethodEnum,
+		Auth0: 'AUTH0' as MethodEnum
+	};
 }

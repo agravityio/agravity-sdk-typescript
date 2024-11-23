@@ -53,6 +53,8 @@ export interface HttpGetSearchFacetteByNameRequestParams {
 	mode?: string;
 	/** Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled) */
 	filter?: string;
+	/** Colon separated key value filter for additional scopes. It applies the same conventions as for filter parameter. */
+	scopefilter?: string;
 	/** Comma separated values list with all ids which should be returned. */
 	ids?: string;
 	/** If the search should be redirected to a specific portal. */
@@ -76,6 +78,8 @@ export interface HttpGlobalSearchRequestParams {
 	expose?: boolean;
 	/** Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled) */
 	filter?: string;
+	/** Colon separated key value filter for additional scopes. It applies the same conventions as for filter parameter. */
+	scopefilter?: string;
 	/** Sortable fields can be used. For descendant sorting use leading \&quot;!\&quot;. (Only if Azure Search is enabled) */
 	orderby?: string;
 	/** Comma separated values list with all ids which should be returned. */
@@ -103,6 +107,11 @@ export interface HttpSearchAdminGetStatusRequestParams {
 	portalId?: string;
 	/** If all information is needed (incl. datasource, etc.). */
 	full?: boolean;
+}
+
+export interface HttpSearchAdminRunRequestParams {
+	/** If the a specific portal should be run. */
+	portalId?: string;
 }
 
 @Injectable({
@@ -393,6 +402,7 @@ export class SearchManagementService {
 		const collectionid = requestParameters?.collectionid;
 		const mode = requestParameters?.mode;
 		const filter = requestParameters?.filter;
+		const scopefilter = requestParameters?.scopefilter;
 		const ids = requestParameters?.ids;
 		const portalId = requestParameters?.portalId;
 
@@ -414,6 +424,9 @@ export class SearchManagementService {
 		}
 		if (filter !== undefined && filter !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
+		}
+		if (scopefilter !== undefined && scopefilter !== null) {
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>scopefilter, 'scopefilter');
 		}
 		if (ids !== undefined && ids !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>ids, 'ids');
@@ -516,6 +529,7 @@ export class SearchManagementService {
 		const mode = requestParameters?.mode;
 		const expose = requestParameters?.expose;
 		const filter = requestParameters?.filter;
+		const scopefilter = requestParameters?.scopefilter;
 		const orderby = requestParameters?.orderby;
 		const ids = requestParameters?.ids;
 		const portalId = requestParameters?.portalId;
@@ -546,6 +560,9 @@ export class SearchManagementService {
 		}
 		if (filter !== undefined && filter !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
+		}
+		if (scopefilter !== undefined && scopefilter !== null) {
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>scopefilter, 'scopefilter');
 		}
 		if (orderby !== undefined && orderby !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>orderby, 'orderby');
@@ -889,29 +906,41 @@ export class SearchManagementService {
 
 	/**
 	 * This endpoint runs the search indexer
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSearchAdminRun(
+		requestParameters?: HttpSearchAdminRunRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AgravityInfoResponse>;
 	public httpSearchAdminRun(
+		requestParameters?: HttpSearchAdminRunRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpSearchAdminRun(
+		requestParameters?: HttpSearchAdminRunRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpSearchAdminRun(
+		requestParameters?: HttpSearchAdminRunRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
+		const portalId = requestParameters?.portalId;
+
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		if (portalId !== undefined && portalId !== null) {
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
+		}
+
 		let localVarHeaders = this.defaultHeaders;
 
 		let localVarCredential: string | undefined;
@@ -955,6 +984,7 @@ export class SearchManagementService {
 		let localVarPath = `/searchadmin/run`;
 		return this.httpClient.request<AgravityInfoResponse>('patch', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,
