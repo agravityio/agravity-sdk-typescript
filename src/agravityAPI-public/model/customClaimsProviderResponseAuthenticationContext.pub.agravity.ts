@@ -9,7 +9,14 @@
  * Do not edit the class manually.
  */
 import { CustomClaimsProviderResponseUser } from './customClaimsProviderResponseUser.pub.agravity';
+import { CustomClaimsProviderResponseClient } from './customClaimsProviderResponseClient.pub.agravity';
+import { CustomClaimsProviderResponseServicePrincipal } from './customClaimsProviderResponseServicePrincipal.pub.agravity';
 
 export interface CustomClaimsProviderResponseAuthenticationContext {
 	user?: CustomClaimsProviderResponseUser;
+	correlationId?: string;
+	client?: CustomClaimsProviderResponseClient;
+	protocol?: string;
+	clientServicePrincipal?: CustomClaimsProviderResponseServicePrincipal;
+	resourceServicePrincipal?: CustomClaimsProviderResponseServicePrincipal;
 }

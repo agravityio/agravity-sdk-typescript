@@ -9,7 +9,8 @@
  * Do not edit the class manually.
  */
 
-export interface CustomClaimsProviderResponseClaims {
-	userContext?: Array<string>;
-	role?: string;
+export interface CustomClaimsProviderResponseClient {
+	ip?: string;
+	locale?: string;
+	market?: string;
 }

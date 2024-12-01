@@ -52,8 +52,10 @@ model/createSftpUserResult.pub.agravity.ts
 model/customClaimsProviderResponseAction.pub.agravity.ts
 model/customClaimsProviderResponseAuthenticationContext.pub.agravity.ts
 model/customClaimsProviderResponseClaims.pub.agravity.ts
+model/customClaimsProviderResponseClient.pub.agravity.ts
 model/customClaimsProviderResponseContent.pub.agravity.ts
 model/customClaimsProviderResponseData.pub.agravity.ts
+model/customClaimsProviderResponseServicePrincipal.pub.agravity.ts
 model/customClaimsProviderResponseUser.pub.agravity.ts
 model/dataResult.pub.agravity.ts
 model/deletedEntities.pub.agravity.ts
