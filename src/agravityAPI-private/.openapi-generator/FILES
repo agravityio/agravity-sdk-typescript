@@ -48,6 +48,7 @@ git_push.sh
 index.ts
 model/agravityErrorResponse.agravity.ts
 model/agravityInfoResponse.agravity.ts
+model/agravityPortalUser.agravity.ts
 model/agravityUser.agravity.ts
 model/agravityUserDto.agravity.ts
 model/agravityVersion.agravity.ts

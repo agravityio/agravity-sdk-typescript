@@ -1,5 +1,6 @@
 export * from './agravityErrorResponse.agravity';
 export * from './agravityInfoResponse.agravity';
+export * from './agravityPortalUser.agravity';
 export * from './agravityUser.agravity';
 export * from './agravityUserDto.agravity';
 export * from './agravityVersion.agravity';
