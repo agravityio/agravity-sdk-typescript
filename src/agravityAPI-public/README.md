@@ -1,6 +1,6 @@
-## @agravity/public@8.2.1
+## @agravity/public@8.3.0-usercontext.2
 
-The version of the OpenAPI document: 8.2.1
+The version of the OpenAPI document: 8.3.0-usercontext.2
 
 ### Building
 
@@ -21,7 +21,7 @@ Navigate to the folder of your consuming project and run one of next commands.
 _published:_
 
 ```
-npm install @agravity/public@8.2.1 --save
+npm install @agravity/public@8.3.0-usercontext.2 --save
 ```
 
 _without publishing (not recommended):_
