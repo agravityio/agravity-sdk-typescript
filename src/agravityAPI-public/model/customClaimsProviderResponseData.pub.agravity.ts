@@ -13,6 +13,6 @@ import { CustomClaimsProviderResponseAction } from './customClaimsProviderRespon
 
 export interface CustomClaimsProviderResponseData {
 	odata_type?: string | null;
-	actions?: Array<CustomClaimsProviderResponseAction>;
-	authenticationContext?: CustomClaimsProviderResponseAuthenticationContext;
+	actions?: Array<CustomClaimsProviderResponseAction> | null;
+	authenticationContext?: CustomClaimsProviderResponseAuthenticationContext | null;
 }

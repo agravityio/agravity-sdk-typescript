@@ -18,61 +18,38 @@ import { Observable } from 'rxjs';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
 // @ts-ignore
-import { Portal } from '../model/portal.agravity';
-// @ts-ignore
-import { PortalZipRequest } from '../model/portalZipRequest.agravity';
+import { AgravityPortalUser } from '../model/agravityPortalUser.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
-export interface HttpPortalGetAllAssetIdsByIdRequestParams {
-	/** The ID of the portal. */
+export interface HttpPortalsCreatePortalsUserRequestParams {
+	/** The created Agravity Portals User. */
+	agravityPortalUser: AgravityPortalUser;
+}
+
+export interface HttpPortalsDeletePortalUserRequestParams {
+	/** The ID of the portal user which should be deleted */
 	id: string;
 }
 
-export interface HttpPortalGetStatusZipByIdRequestParams {
-	/** The ID of the zip request collection. */
-	id: string;
-	/** The ID of the requested zip. */
-	zipId: string;
-	/** If portal has a password, this header is mandatory. Otherwise StatusCode 401 (Unauthorized) is returned. */
-	ayPassword?: string;
-}
-
-export interface HttpPortalRequestZipByIdRequestParams {
-	/** The ID of the portal. */
-	id: string;
-	/** The allowed formats are the input which could be added. */
-	portalZipRequest: PortalZipRequest;
-	/** The password is a XOR combination of all asset MD5 hashes. Otherwise StatusCode 403 (Forbidden) is returned. */
-	ayPassword?: string;
-}
-
-export interface HttpPortalsConfigurationGetByIdRequestParams {
-	/** The ID of the portal. */
+export interface HttpPortalsGetPortalUserByIdRequestParams {
+	/** The ID of the portals user. */
 	id: string;
 }
 
-export interface HttpPortalsCreateRequestParams {
-	/** This endpoint creates an unique portal ID and adds the information to the database. */
-	portal: Portal;
-}
-
-export interface HttpPortalsDeleteByIdRequestParams {
-	/** The ID of the portal. */
+export interface HttpPortalsUpdatePortalUserByIdRequestParams {
+	/** The ID of the portals user. */
 	id: string;
-}
-
-export interface HttpPortalsGetByIdRequestParams {
-	/** The ID of the portal. */
-	id: string;
+	/** The created Agravity Portals User. */
+	agravityPortalUser: AgravityPortalUser;
 }
 
 @Injectable({
 	providedIn: 'root'
 })
-export class PortalManagementService {
+export class PortalsUsersManagementService {
 	protected basePath = 'http://localhost:7071/api';
 	public defaultHeaders = new HttpHeaders();
 	public configuration = new AgravityConfiguration();
@@ -136,410 +113,38 @@ export class PortalManagementService {
 	}
 
 	/**
-	 * This endpoint gets all Asset IDs in portal scope.
+	 * This endpoint creates a portals user.
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPortalGetAllAssetIdsById(
-		requestParameters?: HttpPortalGetAllAssetIdsByIdRequestParams,
+	public httpPortalsCreatePortalsUser(
+		requestParameters?: HttpPortalsCreatePortalsUserRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Array<string>>;
-	public httpPortalGetAllAssetIdsById(
-		requestParameters?: HttpPortalGetAllAssetIdsByIdRequestParams,
+	): Observable<AgravityPortalUser>;
+	public httpPortalsCreatePortalsUser(
+		requestParameters?: HttpPortalsCreatePortalsUserRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Array<string>>>;
-	public httpPortalGetAllAssetIdsById(
-		requestParameters?: HttpPortalGetAllAssetIdsByIdRequestParams,
+	): Observable<HttpResponse<AgravityPortalUser>>;
+	public httpPortalsCreatePortalsUser(
+		requestParameters?: HttpPortalsCreatePortalsUserRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Array<string>>>;
-	public httpPortalGetAllAssetIdsById(
-		requestParameters?: HttpPortalGetAllAssetIdsByIdRequestParams,
+	): Observable<HttpEvent<AgravityPortalUser>>;
+	public httpPortalsCreatePortalsUser(
+		requestParameters?: HttpPortalsCreatePortalsUserRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
-		const id = requestParameters?.id;
-		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpPortalGetAllAssetIdsById.');
-		}
-
-		let localVarHeaders = this.defaultHeaders;
-
-		let localVarCredential: string | undefined;
-		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
-
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
-		if (localVarHttpHeaderAcceptSelected !== undefined) {
-			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-		}
-
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
-
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
-
-		let responseType_: 'text' | 'json' | 'blob' = 'json';
-		if (localVarHttpHeaderAcceptSelected) {
-			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-				responseType_ = 'text';
-			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-				responseType_ = 'json';
-			} else {
-				responseType_ = 'blob';
-			}
-		}
-
-		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/assetids`;
-		return this.httpClient.request<Array<string>>('get', `${this.configuration.basePath}${localVarPath}`, {
-			context: localVarHttpContext,
-			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
-			headers: localVarHeaders,
-			observe: observe,
-			transferCache: localVarTransferCache,
-			reportProgress: reportProgress
-		});
-	}
-
-	/**
-	 * This endpoint gets the progress/status of the ZIP creation of a portal.
-	 * @param requestParameters
-	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-	 * @param reportProgress flag to report request and response progress.
-	 */
-	public httpPortalGetStatusZipById(
-		requestParameters?: HttpPortalGetStatusZipByIdRequestParams,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<PortalZipRequest>;
-	public httpPortalGetStatusZipById(
-		requestParameters?: HttpPortalGetStatusZipByIdRequestParams,
-		observe?: 'response',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<PortalZipRequest>>;
-	public httpPortalGetStatusZipById(
-		requestParameters?: HttpPortalGetStatusZipByIdRequestParams,
-		observe?: 'events',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<PortalZipRequest>>;
-	public httpPortalGetStatusZipById(
-		requestParameters?: HttpPortalGetStatusZipByIdRequestParams,
-		observe: any = 'body',
-		reportProgress: boolean = false,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<any> {
-		const id = requestParameters?.id;
-		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpPortalGetStatusZipById.');
-		}
-		const zipId = requestParameters?.zipId;
-		if (zipId === null || zipId === undefined) {
-			throw new Error('Required parameter zipId was null or undefined when calling httpPortalGetStatusZipById.');
-		}
-		const ayPassword = requestParameters?.ayPassword;
-
-		let localVarHeaders = this.defaultHeaders;
-		if (ayPassword !== undefined && ayPassword !== null) {
-			localVarHeaders = localVarHeaders.set('ay-password', String(ayPassword));
-		}
-
-		let localVarCredential: string | undefined;
-		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
-
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
-		if (localVarHttpHeaderAcceptSelected !== undefined) {
-			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-		}
-
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
-
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
-
-		let responseType_: 'text' | 'json' | 'blob' = 'json';
-		if (localVarHttpHeaderAcceptSelected) {
-			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-				responseType_ = 'text';
-			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-				responseType_ = 'json';
-			} else {
-				responseType_ = 'blob';
-			}
-		}
-
-		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/zip/${this.configuration.encodeParam({ name: 'zipId', value: zipId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<PortalZipRequest>('get', `${this.configuration.basePath}${localVarPath}`, {
-			context: localVarHttpContext,
-			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
-			headers: localVarHeaders,
-			observe: observe,
-			transferCache: localVarTransferCache,
-			reportProgress: reportProgress
-		});
-	}
-
-	/**
-	 * Initiates the ZIP creation of an asset basket from an portal.
-	 * @param requestParameters
-	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-	 * @param reportProgress flag to report request and response progress.
-	 */
-	public httpPortalRequestZipById(
-		requestParameters?: HttpPortalRequestZipByIdRequestParams,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<PortalZipRequest>;
-	public httpPortalRequestZipById(
-		requestParameters?: HttpPortalRequestZipByIdRequestParams,
-		observe?: 'response',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<PortalZipRequest>>;
-	public httpPortalRequestZipById(
-		requestParameters?: HttpPortalRequestZipByIdRequestParams,
-		observe?: 'events',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<PortalZipRequest>>;
-	public httpPortalRequestZipById(
-		requestParameters?: HttpPortalRequestZipByIdRequestParams,
-		observe: any = 'body',
-		reportProgress: boolean = false,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<any> {
-		const id = requestParameters?.id;
-		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpPortalRequestZipById.');
-		}
-		const portalZipRequest = requestParameters?.portalZipRequest;
-		if (portalZipRequest === null || portalZipRequest === undefined) {
-			throw new Error('Required parameter portalZipRequest was null or undefined when calling httpPortalRequestZipById.');
-		}
-		const ayPassword = requestParameters?.ayPassword;
-
-		let localVarHeaders = this.defaultHeaders;
-		if (ayPassword !== undefined && ayPassword !== null) {
-			localVarHeaders = localVarHeaders.set('ay-password', String(ayPassword));
-		}
-
-		let localVarCredential: string | undefined;
-		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
-
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
-		if (localVarHttpHeaderAcceptSelected !== undefined) {
-			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-		}
-
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
-
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
-
-		// to determine the Content-Type header
-		const consumes: string[] = ['application/json'];
-		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-		if (httpContentTypeSelected !== undefined) {
-			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
-		}
-
-		let responseType_: 'text' | 'json' | 'blob' = 'json';
-		if (localVarHttpHeaderAcceptSelected) {
-			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-				responseType_ = 'text';
-			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-				responseType_ = 'json';
-			} else {
-				responseType_ = 'blob';
-			}
-		}
-
-		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/zip`;
-		return this.httpClient.request<PortalZipRequest>('post', `${this.configuration.basePath}${localVarPath}`, {
-			context: localVarHttpContext,
-			body: portalZipRequest,
-			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
-			headers: localVarHeaders,
-			observe: observe,
-			transferCache: localVarTransferCache,
-			reportProgress: reportProgress
-		});
-	}
-
-	/**
-	 * This endpoint returns a full configuration of the portal. Incl. download formats, SDLs, UDLs, etc.
-	 * @param requestParameters
-	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-	 * @param reportProgress flag to report request and response progress.
-	 */
-	public httpPortalsConfigurationGetById(
-		requestParameters?: HttpPortalsConfigurationGetByIdRequestParams,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Portal>;
-	public httpPortalsConfigurationGetById(
-		requestParameters?: HttpPortalsConfigurationGetByIdRequestParams,
-		observe?: 'response',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Portal>>;
-	public httpPortalsConfigurationGetById(
-		requestParameters?: HttpPortalsConfigurationGetByIdRequestParams,
-		observe?: 'events',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Portal>>;
-	public httpPortalsConfigurationGetById(
-		requestParameters?: HttpPortalsConfigurationGetByIdRequestParams,
-		observe: any = 'body',
-		reportProgress: boolean = false,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<any> {
-		const id = requestParameters?.id;
-		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpPortalsConfigurationGetById.');
-		}
-
-		let localVarHeaders = this.defaultHeaders;
-
-		let localVarCredential: string | undefined;
-		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
-
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
-		if (localVarHttpHeaderAcceptSelected !== undefined) {
-			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-		}
-
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
-
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
-
-		let responseType_: 'text' | 'json' | 'blob' = 'json';
-		if (localVarHttpHeaderAcceptSelected) {
-			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-				responseType_ = 'text';
-			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-				responseType_ = 'json';
-			} else {
-				responseType_ = 'blob';
-			}
-		}
-
-		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/config`;
-		return this.httpClient.request<Portal>('get', `${this.configuration.basePath}${localVarPath}`, {
-			context: localVarHttpContext,
-			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
-			headers: localVarHeaders,
-			observe: observe,
-			transferCache: localVarTransferCache,
-			reportProgress: reportProgress
-		});
-	}
-
-	/**
-	 * This endpoint creates one portal entry in the database.
-	 * @param requestParameters
-	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-	 * @param reportProgress flag to report request and response progress.
-	 */
-	public httpPortalsCreate(
-		requestParameters?: HttpPortalsCreateRequestParams,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Portal>;
-	public httpPortalsCreate(
-		requestParameters?: HttpPortalsCreateRequestParams,
-		observe?: 'response',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Portal>>;
-	public httpPortalsCreate(
-		requestParameters?: HttpPortalsCreateRequestParams,
-		observe?: 'events',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Portal>>;
-	public httpPortalsCreate(
-		requestParameters?: HttpPortalsCreateRequestParams,
-		observe: any = 'body',
-		reportProgress: boolean = false,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<any> {
-		const portal = requestParameters?.portal;
-		if (portal === null || portal === undefined) {
-			throw new Error('Required parameter portal was null or undefined when calling httpPortalsCreate.');
+		const agravityPortalUser = requestParameters?.agravityPortalUser;
+		if (agravityPortalUser === null || agravityPortalUser === undefined) {
+			throw new Error('Required parameter agravityPortalUser was null or undefined when calling httpPortalsCreatePortalsUser.');
 		}
 
 		let localVarHeaders = this.defaultHeaders;
@@ -589,10 +194,10 @@ export class PortalManagementService {
 			}
 		}
 
-		let localVarPath = `/portals`;
-		return this.httpClient.request<Portal>('post', `${this.configuration.basePath}${localVarPath}`, {
+		let localVarPath = `/portalsusers`;
+		return this.httpClient.request<AgravityPortalUser>('post', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			body: portal,
+			body: agravityPortalUser,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,
@@ -603,38 +208,38 @@ export class PortalManagementService {
 	}
 
 	/**
-	 * This endpoint deletes a single portal.
+	 * This endpoint deletes a portal user.
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPortalsDeleteById(
-		requestParameters?: HttpPortalsDeleteByIdRequestParams,
+	public httpPortalsDeletePortalUser(
+		requestParameters?: HttpPortalsDeletePortalUserRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<any>;
-	public httpPortalsDeleteById(
-		requestParameters?: HttpPortalsDeleteByIdRequestParams,
+	): Observable<string>;
+	public httpPortalsDeletePortalUser(
+		requestParameters?: HttpPortalsDeletePortalUserRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<any>>;
-	public httpPortalsDeleteById(
-		requestParameters?: HttpPortalsDeleteByIdRequestParams,
+	): Observable<HttpResponse<string>>;
+	public httpPortalsDeletePortalUser(
+		requestParameters?: HttpPortalsDeletePortalUserRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<any>>;
-	public httpPortalsDeleteById(
-		requestParameters?: HttpPortalsDeleteByIdRequestParams,
+	): Observable<HttpEvent<string>>;
+	public httpPortalsDeletePortalUser(
+		requestParameters?: HttpPortalsDeletePortalUserRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const id = requestParameters?.id;
 		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpPortalsDeleteById.');
+			throw new Error('Required parameter id was null or undefined when calling httpPortalsDeletePortalUser.');
 		}
 
 		let localVarHeaders = this.defaultHeaders;
@@ -677,8 +282,8 @@ export class PortalManagementService {
 			}
 		}
 
-		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`, {
+		let localVarPath = `/portalsusers/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		return this.httpClient.request<string>('delete', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
@@ -690,26 +295,26 @@ export class PortalManagementService {
 	}
 
 	/**
-	 * This endpoint show the portal from database.
+	 * This endpoint returns all portal users.
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPortalsGetAll(
+	public httpPortalsGetAllPortalUser(
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Array<Portal>>;
-	public httpPortalsGetAll(
+	): Observable<Array<AgravityPortalUser>>;
+	public httpPortalsGetAllPortalUser(
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Array<Portal>>>;
-	public httpPortalsGetAll(
+	): Observable<HttpResponse<Array<AgravityPortalUser>>>;
+	public httpPortalsGetAllPortalUser(
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Array<Portal>>>;
-	public httpPortalsGetAll(
+	): Observable<HttpEvent<Array<AgravityPortalUser>>>;
+	public httpPortalsGetAllPortalUser(
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -754,8 +359,8 @@ export class PortalManagementService {
 			}
 		}
 
-		let localVarPath = `/portals`;
-		return this.httpClient.request<Array<Portal>>('get', `${this.configuration.basePath}${localVarPath}`, {
+		let localVarPath = `/portalsusers`;
+		return this.httpClient.request<Array<AgravityPortalUser>>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
@@ -767,38 +372,38 @@ export class PortalManagementService {
 	}
 
 	/**
-	 * This endpoint show the portal from database.
+	 * This endpoint returns single portals user.
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpPortalsGetById(
-		requestParameters?: HttpPortalsGetByIdRequestParams,
+	public httpPortalsGetPortalUserById(
+		requestParameters?: HttpPortalsGetPortalUserByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Portal>;
-	public httpPortalsGetById(
-		requestParameters?: HttpPortalsGetByIdRequestParams,
+	): Observable<Array<AgravityPortalUser>>;
+	public httpPortalsGetPortalUserById(
+		requestParameters?: HttpPortalsGetPortalUserByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Portal>>;
-	public httpPortalsGetById(
-		requestParameters?: HttpPortalsGetByIdRequestParams,
+	): Observable<HttpResponse<Array<AgravityPortalUser>>>;
+	public httpPortalsGetPortalUserById(
+		requestParameters?: HttpPortalsGetPortalUserByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Portal>>;
-	public httpPortalsGetById(
-		requestParameters?: HttpPortalsGetByIdRequestParams,
+	): Observable<HttpEvent<Array<AgravityPortalUser>>>;
+	public httpPortalsGetPortalUserById(
+		requestParameters?: HttpPortalsGetPortalUserByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const id = requestParameters?.id;
 		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpPortalsGetById.');
+			throw new Error('Required parameter id was null or undefined when calling httpPortalsGetPortalUserById.');
 		}
 
 		let localVarHeaders = this.defaultHeaders;
@@ -841,9 +446,108 @@ export class PortalManagementService {
 			}
 		}
 
-		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<Portal>('get', `${this.configuration.basePath}${localVarPath}`, {
+		let localVarPath = `/portalsusers/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		return this.httpClient.request<Array<AgravityPortalUser>>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint updates a portals user.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPortalsUpdatePortalUserById(
+		requestParameters?: HttpPortalsUpdatePortalUserByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AgravityPortalUser>;
+	public httpPortalsUpdatePortalUserById(
+		requestParameters?: HttpPortalsUpdatePortalUserByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AgravityPortalUser>>;
+	public httpPortalsUpdatePortalUserById(
+		requestParameters?: HttpPortalsUpdatePortalUserByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AgravityPortalUser>>;
+	public httpPortalsUpdatePortalUserById(
+		requestParameters?: HttpPortalsUpdatePortalUserByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpPortalsUpdatePortalUserById.');
+		}
+		const agravityPortalUser = requestParameters?.agravityPortalUser;
+		if (agravityPortalUser === null || agravityPortalUser === undefined) {
+			throw new Error('Required parameter agravityPortalUser was null or undefined when calling httpPortalsUpdatePortalUserById.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (msal_auth) required
+		localVarCredential = this.configuration.lookupCredential('msal_auth');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/portalsusers/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		return this.httpClient.request<AgravityPortalUser>('post', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: agravityPortalUser,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,

@@ -48,6 +48,8 @@ export * from './permissionsManagement.agravity';
 import { PermissionsManagementService } from './permissionsManagement.agravity';
 export * from './portalManagement.agravity';
 import { PortalManagementService } from './portalManagement.agravity';
+export * from './portalsUsersManagement.agravity';
+import { PortalsUsersManagementService } from './portalsUsersManagement.agravity';
 export * from './publishing.agravity';
 import { PublishingService } from './publishing.agravity';
 export * from './quickshareManagement.agravity';
@@ -102,6 +104,7 @@ export const APIS = [
 	ListTablesService,
 	PermissionsManagementService,
 	PortalManagementService,
+	PortalsUsersManagementService,
 	PublishingService,
 	QuickshareManagementService,
 	SavedSearchManagementService,

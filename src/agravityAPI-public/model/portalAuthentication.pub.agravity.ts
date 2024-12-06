@@ -17,8 +17,9 @@ export interface PortalAuthentication {
 	password?: string | null;
 }
 export namespace PortalAuthentication {
-	export type MethodEnum = 'NONE' | 'PASSWORD' | 'EEID' | 'AUTH0';
+	export type MethodEnum = 'UNDEFINED' | 'NONE' | 'PASSWORD' | 'EEID' | 'AUTH0';
 	export const MethodEnum = {
+		Undefined: 'UNDEFINED' as MethodEnum,
 		None: 'NONE' as MethodEnum,
 		Password: 'PASSWORD' as MethodEnum,
 		Eeid: 'EEID' as MethodEnum,

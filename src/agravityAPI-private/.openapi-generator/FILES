@@ -28,6 +28,7 @@ api/listQueues.agravity.ts
 api/listTables.agravity.ts
 api/permissionsManagement.agravity.ts
 api/portalManagement.agravity.ts
+api/portalsUsersManagement.agravity.ts
 api/publishing.agravity.ts
 api/quickshareManagement.agravity.ts
 api/savedSearchManagement.agravity.ts

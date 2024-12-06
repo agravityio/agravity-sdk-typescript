@@ -12,5 +12,5 @@ import { CustomClaimsProviderResponseClaims } from './customClaimsProviderRespon
 
 export interface CustomClaimsProviderResponseAction {
 	odata_type?: string | null;
-	claims?: CustomClaimsProviderResponseClaims;
+	claims?: CustomClaimsProviderResponseClaims | null;
 }

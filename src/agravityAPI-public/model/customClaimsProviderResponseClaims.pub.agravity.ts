@@ -10,6 +10,6 @@
  */
 
 export interface CustomClaimsProviderResponseClaims {
-	userContext?: Array<string>;
-	role?: string;
+	userContext?: Array<string> | null;
+	role?: string | null;
 }
