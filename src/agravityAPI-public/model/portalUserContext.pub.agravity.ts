@@ -13,4 +13,5 @@ export interface PortalUserContext {
 	key?: string | null;
 	mandatory?: boolean | null;
 	mapping?: { [key: string]: string } | null;
+	options?: Array<string> | null;
 }

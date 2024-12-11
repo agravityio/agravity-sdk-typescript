@@ -52,6 +52,10 @@ export interface HttpPortalRequestZipByIdRequestParams {
 export interface HttpPortalsConfigurationGetByIdRequestParams {
 	/** The ID of the portal. */
 	id: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
 }
 
 export interface HttpPortalsGetByIdRequestParams {
@@ -436,8 +440,18 @@ export class PublicPortalManagementService {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPortalsConfigurationGetById.');
 		}
+		const translations = requestParameters?.translations;
+		const acceptLanguage = requestParameters?.acceptLanguage;
+
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		if (translations !== undefined && translations !== null) {
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
+		}
 
 		let localVarHeaders = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
+		}
 
 		let localVarCredential: string | undefined;
 		// authentication (function_key) required
@@ -480,6 +494,7 @@ export class PublicPortalManagementService {
 		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/config`;
 		return this.httpClient.request<PortalConfiguration>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,

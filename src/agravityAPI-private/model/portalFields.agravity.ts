@@ -12,8 +12,8 @@ import { PortalUserContext } from './portalUserContext.agravity';
 
 export interface PortalFields {
 	name?: string | null;
-	in_details?: boolean | null;
-	in_facets?: boolean | null;
+	detail_order?: number | null;
+	facet_order?: number | null;
 	labels?: { [key: string]: string } | null;
 	user_context?: PortalUserContext | null;
 }
