@@ -10,6 +10,10 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="8.3.1"/> [8.3.1](https://www.npmjs.com/package/@agravity/private/v/8.3.1) (2024-12-12)
+
+- Add `add_properties` and `note` property to Portals User.
+
 ## AgravityAPI <a name="8.3.0"/> [8.3.0](https://www.npmjs.com/package/@agravity/private/v/8.3.0) (2024-12-11)
 
 - Create portals users management to own service
