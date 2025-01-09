@@ -8,11 +8,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { CustomClaimsProviderResponseAuthenticationContext } from './customClaimsProviderResponseAuthenticationContext.pub.agravity';
-import { CustomClaimsProviderResponseAction } from './customClaimsProviderResponseAction.pub.agravity';
+import { CustomClaimsProviderResponseDataAttributeCollectionSubmit } from './customClaimsProviderResponseDataAttributeCollectionSubmit.pub.agravity';
 
-export interface CustomClaimsProviderResponseData {
-	odata_type?: string | null;
-	actions?: Array<CustomClaimsProviderResponseAction> | null;
-	authenticationContext?: CustomClaimsProviderResponseAuthenticationContext | null;
+export interface CustomClaimsProviderResponseContentAttributeCollectionSubmit {
+	data?: CustomClaimsProviderResponseDataAttributeCollectionSubmit | null;
 }

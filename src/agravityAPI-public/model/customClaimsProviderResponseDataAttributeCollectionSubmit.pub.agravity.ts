@@ -8,9 +8,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { CustomClaimsProviderResponseActionAttributeCollectionSubmit } from './customClaimsProviderResponseActionAttributeCollectionSubmit.pub.agravity';
 
-export interface CustomClaimsProviderResponseClient {
-	ip?: string;
-	locale?: string;
-	market?: string;
+export interface CustomClaimsProviderResponseDataAttributeCollectionSubmit {
+	actions?: Array<CustomClaimsProviderResponseActionAttributeCollectionSubmit> | null;
+	odata_type?: string | null;
 }

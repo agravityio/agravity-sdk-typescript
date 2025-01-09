@@ -9,18 +9,6 @@
  * Do not edit the class manually.
  */
 
-export interface CustomClaimsProviderResponseUser {
-	companyName?: string;
-	createdDateTime?: string;
-	displayName?: string;
-	givenName?: string;
-	id?: string;
-	mail?: string;
-	onPremisesSamAccountName?: string;
-	onPremisesSecurityIdentifier?: string;
-	onPremisesUserPrincipalName?: string;
-	preferredLanguage?: string;
-	surname?: string;
-	userPrincipalName?: string;
-	userType?: string;
+export interface CustomClaimsProviderResponseActionAttributeCollectionSubmit {
+	odata_type?: string | null;
 }

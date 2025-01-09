@@ -8,10 +8,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { CustomClaimsProviderResponseClaims } from './customClaimsProviderResponseClaims.pub.agravity';
 
-export interface CustomClaimsProviderResponseServicePrincipal {
-	id?: string;
-	appId?: string;
-	appDisplayName?: string;
-	displayName?: string;
+export interface CustomClaimsProviderResponseActionTokenIssuanceStart {
+	claims?: CustomClaimsProviderResponseClaims | null;
+	odata_type?: string | null;
 }

@@ -18,7 +18,9 @@ import { Observable } from 'rxjs';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
 // @ts-ignore
-import { CustomClaimsProviderResponseContent } from '../model/customClaimsProviderResponseContent.pub.agravity';
+import { CustomClaimsProviderResponseContentAttributeCollectionSubmit } from '../model/customClaimsProviderResponseContentAttributeCollectionSubmit.pub.agravity';
+// @ts-ignore
+import { CustomClaimsProviderResponseContentTokenIssuanceStart } from '../model/customClaimsProviderResponseContentTokenIssuanceStart.pub.agravity';
 // @ts-ignore
 import { Portal } from '../model/portal.pub.agravity';
 // @ts-ignore
@@ -505,7 +507,7 @@ export class PublicPortalManagementService {
 	}
 
 	/**
-	 * This endpoint returns the portal user context.
+	 * This endpoint saves the portal user and returns CustomClaimsProviderResponseContentTokenIssuanceStart which is used to enhance the token with user context,...
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
@@ -513,17 +515,17 @@ export class PublicPortalManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<CustomClaimsProviderResponseContent>;
+	): Observable<CustomClaimsProviderResponseContentTokenIssuanceStart>;
 	public httpPortalsEnhanceToken(
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<CustomClaimsProviderResponseContent>>;
+	): Observable<HttpResponse<CustomClaimsProviderResponseContentTokenIssuanceStart>>;
 	public httpPortalsEnhanceToken(
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<CustomClaimsProviderResponseContent>>;
+	): Observable<HttpEvent<CustomClaimsProviderResponseContentTokenIssuanceStart>>;
 	public httpPortalsEnhanceToken(
 		observe: any = 'body',
 		reportProgress: boolean = false,
@@ -570,7 +572,7 @@ export class PublicPortalManagementService {
 		}
 
 		let localVarPath = `/portalsenhancetoken`;
-		return this.httpClient.request<CustomClaimsProviderResponseContent>('post', `${this.configuration.basePath}${localVarPath}`, {
+		return this.httpClient.request<CustomClaimsProviderResponseContentTokenIssuanceStart>('post', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
@@ -658,6 +660,83 @@ export class PublicPortalManagementService {
 
 		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		return this.httpClient.request<Portal>('get', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint saves the portal user attributes
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPortalsSavePortalUserAttributes(
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<CustomClaimsProviderResponseContentAttributeCollectionSubmit>;
+	public httpPortalsSavePortalUserAttributes(
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<CustomClaimsProviderResponseContentAttributeCollectionSubmit>>;
+	public httpPortalsSavePortalUserAttributes(
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<CustomClaimsProviderResponseContentAttributeCollectionSubmit>>;
+	public httpPortalsSavePortalUserAttributes(
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (function_key) required
+		localVarCredential = this.configuration.lookupCredential('function_key');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/portalssaveuserattributes`;
+		return this.httpClient.request<CustomClaimsProviderResponseContentAttributeCollectionSubmit>('post', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,

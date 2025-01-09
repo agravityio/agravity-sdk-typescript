@@ -15,8 +15,8 @@ export interface AgravityPortalUser {
 	name?: string | null;
 	user_context?: { [key: string]: Array<string> } | null;
 	email?: string | null;
-	add_properties?: { [key: string]: any } | null;
 	note?: string | null;
+	add_properties?: { [key: string]: any } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;
