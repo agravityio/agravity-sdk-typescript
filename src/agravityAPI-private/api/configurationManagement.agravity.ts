@@ -16,6 +16,8 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 // @ts-ignore
+import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
+// @ts-ignore
 import { AppConfigTableEntity } from '../model/appConfigTableEntity.agravity';
 // @ts-ignore
 import { FrontendAppConfig } from '../model/frontendAppConfig.agravity';
