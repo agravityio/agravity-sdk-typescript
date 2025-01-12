@@ -1,6 +1,6 @@
-## @agravity/private@8.3.1
+## @agravity/private@8.4.0
 
-The version of the OpenAPI document: 8.3.1
+The version of the OpenAPI document: 8.4.0
 
 ### Building
 
@@ -21,7 +21,7 @@ Navigate to the folder of your consuming project and run one of next commands.
 _published:_
 
 ```
-npm install @agravity/private@8.3.1 --save
+npm install @agravity/private@8.4.0 --save
 ```
 
 _without publishing (not recommended):_
