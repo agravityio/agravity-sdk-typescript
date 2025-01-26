@@ -10,6 +10,10 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="8.4.1"/> [8.4.1](https://www.npmjs.com/package/@agravity/private/v/8.4.1) (2025-01-26)
+
+-   Just version upgrade to match backend
+
 ## AgravityAPI <a name="8.4.0"/> [8.4.0](https://www.npmjs.com/package/@agravity/private/v/8.4.0) (2025-01-12)
 
 -   Add new `/portalssaveuserattributes` endpoint to save the portal user attributes
