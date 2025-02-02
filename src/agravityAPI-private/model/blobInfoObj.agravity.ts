@@ -17,4 +17,5 @@ export interface BlobInfoObj {
 	lastModified?: string | null;
 	size?: number;
 	url?: string;
+	metadata?: { [key: string]: string };
 }
