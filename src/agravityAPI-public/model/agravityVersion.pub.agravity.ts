@@ -13,6 +13,7 @@ export interface AgravityVersion {
 	name?: string | null;
 	company?: string | null;
 	customer?: string | null;
+	contact?: string | null;
 	updated?: string | null;
 	client_id?: string | null;
 	version?: string | null;
