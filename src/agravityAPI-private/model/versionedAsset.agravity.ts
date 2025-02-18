@@ -8,6 +8,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AssetBlob } from './assetBlob.agravity';
 
 export interface VersionedAsset {
 	version_nr?: number | null;
@@ -15,6 +16,7 @@ export interface VersionedAsset {
 	version_info?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;
+	blob_data?: AssetBlob;
 	blob_uploaded?: string | null;
 	mime_type?: string | null;
 }
