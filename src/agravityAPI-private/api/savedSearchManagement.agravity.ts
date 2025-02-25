@@ -31,6 +31,8 @@ export interface HttpSavedSearchesCreateRequestParams {
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
+	/** When set to true saved search will be visibile for everyone (requires editor or admin roles) */
+	isglobal?: boolean;
 }
 
 export interface HttpSavedSearchesDeleteByIdRequestParams {
@@ -149,10 +151,14 @@ export class SavedSearchManagementService {
 		}
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
+		const isglobal = requestParameters?.isglobal;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
 		if (translations !== undefined && translations !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
+		}
+		if (isglobal !== undefined && isglobal !== null) {
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>isglobal, 'isglobal');
 		}
 
 		let localVarHeaders = this.defaultHeaders;

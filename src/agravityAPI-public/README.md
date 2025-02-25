@@ -1,6 +1,6 @@
-## @agravity/public@8.4.2
+## @agravity/public@8.4.2-HF1
 
-The version of the OpenAPI document: 8.4.2
+The version of the OpenAPI document: 8.4.2-HF1
 
 ### Building
 
@@ -21,7 +21,7 @@ Navigate to the folder of your consuming project and run one of next commands.
 _published:_
 
 ```
-npm install @agravity/public@8.4.2 --save
+npm install @agravity/public@8.4.2-HF1 --save
 ```
 
 _without publishing (not recommended):_
