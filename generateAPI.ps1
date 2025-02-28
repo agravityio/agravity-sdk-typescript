@@ -53,7 +53,7 @@ if (!(Test-Path "openapi.json") -or (Get-Content "openapi.json" -Raw) -eq "") {
 }
 
 #$params="apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=14.0.0,npmName=agravityAPI-private,npmVersion=$version"
-$params = "apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=17.3.5,npmName=@agravity/private,supportsES6=true,npmRepository=https://registry.npmjs.org/,useSingleRequestParameter=true"
+$params = "apiModulePrefix=Agravity,configurationPrefix=Agravity,modelFileSuffix=.agravity,serviceFileSuffix=.agravity,ngVersion=19.0.0,npmName=@agravity/private,supportsES6=true,npmRepository=https://registry.npmjs.org/,useSingleRequestParameter=true"
 #npx @openapitools/openapi-generator-cli generate -i openapi.json -g typescript-angular -o src/agravityAPI-private/ --additional-properties=$params
 java -jar $env:OPENAPI_GENERATOR generate -i openapi.json -g typescript-angular -o src/agravityAPI-private/ --additional-properties=$params
 
@@ -69,7 +69,7 @@ if (!(Test-Path "openapi.json") -or (Get-Content "openapi.json" -Raw) -eq "") {
     exit
 }
 
-$params = "apiModulePrefix=AgravityPublic,configurationPrefix=AgravityPublic,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=17.3.5,npmName=@agravity/public,supportsES6=true,npmRepository=https://registry.npmjs.org/,useSingleRequestParameter=true"
+$params = "apiModulePrefix=AgravityPublic,configurationPrefix=AgravityPublic,modelFileSuffix=.pub.agravity,serviceFileSuffix=.pub.agravity,ngVersion=19.0.0,npmName=@agravity/public,supportsES6=true,npmRepository=https://registry.npmjs.org/,useSingleRequestParameter=true"
 #npx @openapitools/openapi-generator-cli generate -i openapi.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
 java -jar $env:OPENAPI_GENERATOR generate -i openapi.json -g typescript-angular -o src/agravityAPI-public/ --additional-properties=$params
 
