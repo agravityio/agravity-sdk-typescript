@@ -10,6 +10,30 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="9.0.0"/> [9.0.0](https://www.npmjs.com/package/@agravity/private/v/9.0.0) (2025-02-28)
+
+- #1343 Add contact person to environment (AppConfig)
+
+- #1340 Version: Completely update orig blob and store old orig blob information on version
+Fully store last orig-blob to version to get full information about this asset.
+
+- #1222 Implement backup strategy
+Add endpoint POST `/backup`- This endpoint triggers a backup via a docker container.
+
+- #1353 SavedSearch per User (User Context)
+  Add isglobal query param for saved searches
+
+- #1346 Allow multiple download formats in ZIP download
+  ZIP Upgrades (unify / simplify process and reduce endpoints)
+  - Add DELETE `/downloadzip/{zipId}` - This endpoint removes the ZIP request and all related data from the database and storage.
+  - Add GET `/downloadzip/{zipId}` - This endpoint gets the progress/status of the ZIP creation.
+  - Removed `downloads` array from AgravityUser object;
+  - Change models: DownloadObject to DownloadZipRequest
+
+- #1326 Restore assets from history
+  - Add POST `/assets/{assetId}/restore` -  This endpoint lets you restore an asset to a certain point in time.
+  - Add POST `/collections/{collectionId}/restore` - Restore a collection to a certain point in time
+
 ## AgravityAPI <a name="8.4.2"/> [8.4.2](https://www.npmjs.com/package/@agravity/private/v/8.4.2) (2025-02-02)
 
 - Add endpoint GET `/helper/imageoperations` - Returns all operations which could be applied to images.
