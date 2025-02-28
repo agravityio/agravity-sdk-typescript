@@ -121,7 +121,8 @@ Write-Host "Replace ai complete"
 
 
 $fileContent = Get-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
-$fileContent[233] = "            // headers = headers.set('Content-Type', httpContentTypeSelected);"
+$fileContent[232] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
+    
 # write file
 $fileContent | Set-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
 
@@ -129,7 +130,7 @@ Write-Host "Remove line in file src\agravityAPI-private\api\assetVersioning.agra
 
 
 $fileContent = Get-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
-$fileContent[263] = "            // headers = headers.set('Content-Type', httpContentTypeSelected);"
+$fileContent[262] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
 # write file
 $fileContent | Set-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
 
