@@ -84,10 +84,9 @@ model/dataResult.agravity.ts
 model/deletedEntities.agravity.ts
 model/distZipResponse.agravity.ts
 model/downloadFormat.agravity.ts
-model/downloadObject.agravity.ts
 model/downloadZipRequest.agravity.ts
+model/downloadZipStatus.agravity.ts
 model/dynamicImageOperation.agravity.ts
-model/emailAddress.agravity.ts
 model/entityId.agravity.ts
 model/entityIdName.agravity.ts
 model/entityTranslations.agravity.ts
@@ -108,7 +107,6 @@ model/portalFields.agravity.ts
 model/portalLinks.agravity.ts
 model/portalTheme.agravity.ts
 model/portalUserContext.agravity.ts
-model/portalZipRequest.agravity.ts
 model/publishEntity.agravity.ts
 model/publishedAsset.agravity.ts
 model/quickShare.agravity.ts
@@ -132,7 +130,6 @@ model/sharedAsset.agravity.ts
 model/sharedCollection.agravity.ts
 model/sharedCollectionFull.agravity.ts
 model/signalRConnectionInfo.agravity.ts
-model/simpleAsset.agravity.ts
 model/staticDefinedList.agravity.ts
 model/translation.agravity.ts
 model/translationRequest.agravity.ts

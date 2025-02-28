@@ -60,6 +60,8 @@ model/dataResult.pub.agravity.ts
 model/deletedEntities.pub.agravity.ts
 model/distZipResponse.pub.agravity.ts
 model/downloadFormat.pub.agravity.ts
+model/downloadZipRequest.pub.agravity.ts
+model/downloadZipStatus.pub.agravity.ts
 model/dynamicImageOperation.pub.agravity.ts
 model/entityId.pub.agravity.ts
 model/entityIdName.pub.agravity.ts
@@ -75,7 +77,6 @@ model/portalFields.pub.agravity.ts
 model/portalLinks.pub.agravity.ts
 model/portalTheme.pub.agravity.ts
 model/portalUserContext.pub.agravity.ts
-model/portalZipRequest.pub.agravity.ts
 model/publishEntity.pub.agravity.ts
 model/publishedAsset.pub.agravity.ts
 model/quickShareFull.pub.agravity.ts
@@ -96,7 +97,6 @@ model/secureUploadEntity.pub.agravity.ts
 model/sharedAllowedFormat.pub.agravity.ts
 model/sharedAsset.pub.agravity.ts
 model/sharedCollectionFull.pub.agravity.ts
-model/sharedCollectionZipRequest.pub.agravity.ts
 model/signalRConnectionInfo.pub.agravity.ts
 model/staticDefinedList.pub.agravity.ts
 model/versionEntity.pub.agravity.ts

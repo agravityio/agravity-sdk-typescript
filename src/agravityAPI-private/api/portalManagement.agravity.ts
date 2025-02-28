@@ -17,9 +17,11 @@ import { Observable } from 'rxjs';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
 // @ts-ignore
-import { Portal } from '../model/portal.agravity';
+import { DownloadZipRequest } from '../model/downloadZipRequest.agravity';
 // @ts-ignore
-import { PortalZipRequest } from '../model/portalZipRequest.agravity';
+import { DownloadZipStatus } from '../model/downloadZipStatus.agravity';
+// @ts-ignore
+import { Portal } from '../model/portal.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -43,7 +45,7 @@ export interface HttpPortalRequestZipByIdRequestParams {
 	/** The ID of the portal. */
 	id: string;
 	/** The allowed formats are the input which could be added. */
-	portalZipRequest: PortalZipRequest;
+	downloadZipRequest: DownloadZipRequest;
 	/** The password is a XOR combination of all asset MD5 hashes. Otherwise StatusCode 403 (Forbidden) is returned. */
 	ayPassword?: string;
 }
@@ -232,19 +234,19 @@ export class PortalManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<PortalZipRequest>;
+	): Observable<DownloadZipStatus>;
 	public httpPortalGetStatusZipById(
 		requestParameters?: HttpPortalGetStatusZipByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<PortalZipRequest>>;
+	): Observable<HttpResponse<DownloadZipStatus>>;
 	public httpPortalGetStatusZipById(
 		requestParameters?: HttpPortalGetStatusZipByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<PortalZipRequest>>;
+	): Observable<HttpEvent<DownloadZipStatus>>;
 	public httpPortalGetStatusZipById(
 		requestParameters?: HttpPortalGetStatusZipByIdRequestParams,
 		observe: any = 'body',
@@ -305,7 +307,7 @@ export class PortalManagementService {
 		}
 
 		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/zip/${this.configuration.encodeParam({ name: 'zipId', value: zipId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<PortalZipRequest>('get', `${this.configuration.basePath}${localVarPath}`, {
+		return this.httpClient.request<DownloadZipStatus>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
@@ -327,19 +329,19 @@ export class PortalManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<PortalZipRequest>;
+	): Observable<DownloadZipRequest>;
 	public httpPortalRequestZipById(
 		requestParameters?: HttpPortalRequestZipByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<PortalZipRequest>>;
+	): Observable<HttpResponse<DownloadZipRequest>>;
 	public httpPortalRequestZipById(
 		requestParameters?: HttpPortalRequestZipByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<PortalZipRequest>>;
+	): Observable<HttpEvent<DownloadZipRequest>>;
 	public httpPortalRequestZipById(
 		requestParameters?: HttpPortalRequestZipByIdRequestParams,
 		observe: any = 'body',
@@ -350,9 +352,9 @@ export class PortalManagementService {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPortalRequestZipById.');
 		}
-		const portalZipRequest = requestParameters?.portalZipRequest;
-		if (portalZipRequest === null || portalZipRequest === undefined) {
-			throw new Error('Required parameter portalZipRequest was null or undefined when calling httpPortalRequestZipById.');
+		const downloadZipRequest = requestParameters?.downloadZipRequest;
+		if (downloadZipRequest === null || downloadZipRequest === undefined) {
+			throw new Error('Required parameter downloadZipRequest was null or undefined when calling httpPortalRequestZipById.');
 		}
 		const ayPassword = requestParameters?.ayPassword;
 
@@ -407,9 +409,9 @@ export class PortalManagementService {
 		}
 
 		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/zip`;
-		return this.httpClient.request<PortalZipRequest>('post', `${this.configuration.basePath}${localVarPath}`, {
+		return this.httpClient.request<DownloadZipRequest>('post', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			body: portalZipRequest,
+			body: downloadZipRequest,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,

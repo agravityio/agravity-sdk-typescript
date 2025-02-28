@@ -17,11 +17,13 @@ import { Observable } from 'rxjs';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
 // @ts-ignore
+import { DownloadZipRequest } from '../model/downloadZipRequest.pub.agravity';
+// @ts-ignore
+import { DownloadZipStatus } from '../model/downloadZipStatus.pub.agravity';
+// @ts-ignore
 import { QuickShareFull } from '../model/quickShareFull.pub.agravity';
 // @ts-ignore
 import { SharedCollectionFull } from '../model/sharedCollectionFull.pub.agravity';
-// @ts-ignore
-import { SharedCollectionZipRequest } from '../model/sharedCollectionZipRequest.pub.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -54,7 +56,7 @@ export interface HttpSharedCollectionsGetByIdRequestParams {
 }
 
 export interface HttpSharedCollectionsGetStatusZipByIdRequestParams {
-	/** The ID of the zip request collection. */
+	/** The ID of the zip request. */
 	id: string;
 	/** The ID of the requested zip. */
 	zipId: string;
@@ -67,8 +69,8 @@ export interface HttpSharedCollectionsRequestZipByIdRequestParams {
 	id: string;
 	/** If shared collection has a password, this header is mandatory. Otherwise StatusCode 403 (Forbidden) is returned. */
 	ayPassword?: string;
-	/** The allowed formats are the input which could be optionally added. */
-	sharedCollectionZipRequest?: SharedCollectionZipRequest;
+	/** The request of which assets or download formats should be used.. */
+	downloadZipRequest?: DownloadZipRequest;
 }
 
 @Injectable({
@@ -346,19 +348,19 @@ export class PublicSharingManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<SharedCollectionZipRequest>;
+	): Observable<DownloadZipStatus>;
 	public httpSharedCollectionsGetStatusZipById(
 		requestParameters?: HttpSharedCollectionsGetStatusZipByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<SharedCollectionZipRequest>>;
+	): Observable<HttpResponse<DownloadZipStatus>>;
 	public httpSharedCollectionsGetStatusZipById(
 		requestParameters?: HttpSharedCollectionsGetStatusZipByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<SharedCollectionZipRequest>>;
+	): Observable<HttpEvent<DownloadZipStatus>>;
 	public httpSharedCollectionsGetStatusZipById(
 		requestParameters?: HttpSharedCollectionsGetStatusZipByIdRequestParams,
 		observe: any = 'body',
@@ -412,7 +414,7 @@ export class PublicSharingManagementService {
 		}
 
 		let localVarPath = `/shared/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/zip/${this.configuration.encodeParam({ name: 'zipId', value: zipId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<SharedCollectionZipRequest>('get', `${this.configuration.basePath}${localVarPath}`, {
+		return this.httpClient.request<DownloadZipStatus>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
@@ -434,19 +436,19 @@ export class PublicSharingManagementService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<SharedCollectionZipRequest>;
+	): Observable<DownloadZipRequest>;
 	public httpSharedCollectionsRequestZipById(
 		requestParameters?: HttpSharedCollectionsRequestZipByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<SharedCollectionZipRequest>>;
+	): Observable<HttpResponse<DownloadZipRequest>>;
 	public httpSharedCollectionsRequestZipById(
 		requestParameters?: HttpSharedCollectionsRequestZipByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<SharedCollectionZipRequest>>;
+	): Observable<HttpEvent<DownloadZipRequest>>;
 	public httpSharedCollectionsRequestZipById(
 		requestParameters?: HttpSharedCollectionsRequestZipByIdRequestParams,
 		observe: any = 'body',
@@ -458,7 +460,7 @@ export class PublicSharingManagementService {
 			throw new Error('Required parameter id was null or undefined when calling httpSharedCollectionsRequestZipById.');
 		}
 		const ayPassword = requestParameters?.ayPassword;
-		const sharedCollectionZipRequest = requestParameters?.sharedCollectionZipRequest;
+		const downloadZipRequest = requestParameters?.downloadZipRequest;
 
 		let localVarHeaders = this.defaultHeaders;
 		if (ayPassword !== undefined && ayPassword !== null) {
@@ -504,9 +506,9 @@ export class PublicSharingManagementService {
 		}
 
 		let localVarPath = `/shared/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/zip`;
-		return this.httpClient.request<SharedCollectionZipRequest>('post', `${this.configuration.basePath}${localVarPath}`, {
+		return this.httpClient.request<DownloadZipRequest>('post', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			body: sharedCollectionZipRequest,
+			body: downloadZipRequest,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,

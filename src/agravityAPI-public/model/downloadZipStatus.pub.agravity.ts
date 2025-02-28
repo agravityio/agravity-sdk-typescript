@@ -1,5 +1,5 @@
 /**
- * Agravity OpenAPI Documentation - Private Functions
+ * Agravity OpenAPI Documentation - Public Functions
  *
  * Contact: office@agravity.io
  *
@@ -7,19 +7,21 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SharedAllowedFormat } from './sharedAllowedFormat.agravity';
 
-export interface DownloadZipRequest {
+export interface DownloadZipStatus {
 	id?: string | null;
-	zip_type?: DownloadZipRequest.ZipTypeEnum;
-	asset_ids?: Array<string> | null;
-	allowed_formats?: Array<SharedAllowedFormat> | null;
-	zipname?: string | null;
-	email_to?: Array<string> | null;
+	user?: string | null;
+	percent?: number | null;
+	part?: number | null;
+	count?: number | null;
 	message?: string | null;
-	valid_until?: string | null;
+	status?: string | null;
+	zip_type?: DownloadZipStatus.ZipTypeEnum;
+	zipname?: string | null;
+	size?: string | null;
+	url?: string | null;
 }
-export namespace DownloadZipRequest {
+export namespace DownloadZipStatus {
 	export type ZipTypeEnum = 'DOWNLOAD' | 'SHARED' | 'QUICKSHARE' | 'PORTAL';
 	export const ZipTypeEnum = {
 		Download: 'DOWNLOAD' as ZipTypeEnum,

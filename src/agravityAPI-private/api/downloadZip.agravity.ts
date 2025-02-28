@@ -17,17 +17,27 @@ import { Observable } from 'rxjs';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
 // @ts-ignore
-import { DownloadObject } from '../model/downloadObject.agravity';
-// @ts-ignore
 import { DownloadZipRequest } from '../model/downloadZipRequest.agravity';
+// @ts-ignore
+import { DownloadZipStatus } from '../model/downloadZipStatus.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
+export interface HttpDeleteZipByIdRequestParams {
+	/** The ID of the requested zip. */
+	zipId: string;
+}
+
 export interface HttpDownloadZipRequestParams {
 	/** This endpoint queues assets in a defined download format for ZIP generation. Queues will deliver an email with a download link. */
 	downloadZipRequest: DownloadZipRequest;
+}
+
+export interface HttpGetStatusZipByIdRequestParams {
+	/** The ID of the requested zip. */
+	zipId: string;
 }
 
 @Injectable({
@@ -97,6 +107,93 @@ export class DownloadZipService {
 	}
 
 	/**
+	 * This endpoint removes the ZIP request and all related data from the database and storage.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpDeleteZipById(
+		requestParameters?: HttpDeleteZipByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any>;
+	public httpDeleteZipById(
+		requestParameters?: HttpDeleteZipByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<any>>;
+	public httpDeleteZipById(
+		requestParameters?: HttpDeleteZipByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<any>>;
+	public httpDeleteZipById(
+		requestParameters?: HttpDeleteZipByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const zipId = requestParameters?.zipId;
+		if (zipId === null || zipId === undefined) {
+			throw new Error('Required parameter zipId was null or undefined when calling httpDeleteZipById.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (msal_auth) required
+		localVarCredential = this.configuration.lookupCredential('msal_auth');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/downloadzip/${this.configuration.encodeParam({ name: 'zipId', value: zipId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint queues assets in a defined download format for ZIP generation. Queues will deliver an email with a download link.
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -107,19 +204,19 @@ export class DownloadZipService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<DownloadObject>;
+	): Observable<DownloadZipRequest>;
 	public httpDownloadZip(
 		requestParameters?: HttpDownloadZipRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<DownloadObject>>;
+	): Observable<HttpResponse<DownloadZipRequest>>;
 	public httpDownloadZip(
 		requestParameters?: HttpDownloadZipRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<DownloadObject>>;
+	): Observable<HttpEvent<DownloadZipRequest>>;
 	public httpDownloadZip(
 		requestParameters?: HttpDownloadZipRequestParams,
 		observe: any = 'body',
@@ -179,9 +276,96 @@ export class DownloadZipService {
 		}
 
 		let localVarPath = `/downloadzip`;
-		return this.httpClient.request<DownloadObject>('post', `${this.configuration.basePath}${localVarPath}`, {
+		return this.httpClient.request<DownloadZipRequest>('post', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: downloadZipRequest,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint gets the progress/status of the ZIP creation.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetStatusZipById(
+		requestParameters?: HttpGetStatusZipByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<DownloadZipStatus>;
+	public httpGetStatusZipById(
+		requestParameters?: HttpGetStatusZipByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<DownloadZipStatus>>;
+	public httpGetStatusZipById(
+		requestParameters?: HttpGetStatusZipByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<DownloadZipStatus>>;
+	public httpGetStatusZipById(
+		requestParameters?: HttpGetStatusZipByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const zipId = requestParameters?.zipId;
+		if (zipId === null || zipId === undefined) {
+			throw new Error('Required parameter zipId was null or undefined when calling httpGetStatusZipById.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (msal_auth) required
+		localVarCredential = this.configuration.lookupCredential('msal_auth');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/downloadzip/${this.configuration.encodeParam({ name: 'zipId', value: zipId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		return this.httpClient.request<DownloadZipStatus>('get', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,

@@ -23,7 +23,21 @@ export interface HistoryEntry {
 	_etag?: string | null;
 }
 export namespace HistoryEntry {
-	export type NameEnum = 'Created' | 'Updated' | 'Deleted' | 'Removed' | 'Published' | 'Unpublished' | 'Locked' | 'Unlocked' | 'Renewed' | 'Versioned' | 'DirtyMarked' | 'SystemUpgrade';
+	export type NameEnum =
+		| 'Created'
+		| 'Updated'
+		| 'Deleted'
+		| 'Removed'
+		| 'Published'
+		| 'Unpublished'
+		| 'Locked'
+		| 'Unlocked'
+		| 'Renewed'
+		| 'Versioned'
+		| 'DirtyMarked'
+		| 'SystemUpgrade'
+		| 'Untracked'
+		| 'Restored';
 	export const NameEnum = {
 		Created: 'Created' as NameEnum,
 		Updated: 'Updated' as NameEnum,
@@ -36,6 +50,8 @@ export namespace HistoryEntry {
 		Renewed: 'Renewed' as NameEnum,
 		Versioned: 'Versioned' as NameEnum,
 		DirtyMarked: 'DirtyMarked' as NameEnum,
-		SystemUpgrade: 'SystemUpgrade' as NameEnum
+		SystemUpgrade: 'SystemUpgrade' as NameEnum,
+		Untracked: 'Untracked' as NameEnum,
+		Restored: 'Restored' as NameEnum
 	};
 }

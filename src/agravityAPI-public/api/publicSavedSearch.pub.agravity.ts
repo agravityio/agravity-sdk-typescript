@@ -22,7 +22,7 @@ import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
 
 export interface HttpSavedSearchesGetAllRequestParams {
-	/** This parameter filters out all saved searches on basis this boolean. */
+	/** This parameter filters out all saved searches on basis this boolean. Only admins can request the external saved searches. */
 	external?: boolean;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;

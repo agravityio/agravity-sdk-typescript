@@ -1,5 +1,5 @@
 /**
- * Agravity OpenAPI Documentation - Private Functions
+ * Agravity OpenAPI Documentation - Public Functions
  *
  * Contact: office@agravity.io
  *
@@ -7,7 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SharedAllowedFormat } from './sharedAllowedFormat.agravity';
+import { SharedAllowedFormat } from './sharedAllowedFormat.pub.agravity';
 
 export interface DownloadZipRequest {
 	id?: string | null;

@@ -8,13 +8,11 @@
  * Do not edit the class manually.
  */
 import { UiTutorials } from './uiTutorials.agravity';
-import { DownloadObject } from './downloadObject.agravity';
 import { SecureUploadEntity } from './secureUploadEntity.agravity';
 
 export interface AgravityUser {
 	id?: string | null;
 	entity_type?: string | null;
-	downloads?: Array<DownloadObject> | null;
 	secureuploads?: Array<SecureUploadEntity> | null;
 	name?: string | null;
 	email?: string | null;
