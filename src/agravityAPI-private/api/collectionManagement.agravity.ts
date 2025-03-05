@@ -20,6 +20,10 @@ import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
 import { AgravityInfoResponse } from '../model/agravityInfoResponse.agravity';
 // @ts-ignore
 import { Collection } from '../model/collection.agravity';
+// @ts-ignore
+import { EntityListResult } from '../model/entityListResult.agravity';
+// @ts-ignore
+import { EntityNamesRequest } from '../model/entityNamesRequest.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -110,6 +114,11 @@ export interface HttpGetCollectionPreviewsByIdRequestParams {
 export interface HttpPatchCollectionRepairRequestParams {
 	/** The ID of the collection. */
 	id: string;
+}
+
+export interface HttpPostCollectionsGetByNamesRequestParams {
+	/** An object with the array of strings with names of the collections to fetch. */
+	entityNamesRequest: EntityNamesRequest;
 }
 
 export interface HttpRestoreCollectionRequestParams {
@@ -1083,6 +1092,101 @@ export class CollectionManagementService {
 		let localVarPath = `/collections/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/repair`;
 		return this.httpClient.request<AgravityInfoResponse>('patch', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint fetches all collections based on names which comes from an array inside the POST request body and return another list of EntityIdName objects and an array of strings with the names which could not be found.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPostCollectionsGetByNames(
+		requestParameters?: HttpPostCollectionsGetByNamesRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<EntityListResult>;
+	public httpPostCollectionsGetByNames(
+		requestParameters?: HttpPostCollectionsGetByNamesRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<EntityListResult>>;
+	public httpPostCollectionsGetByNames(
+		requestParameters?: HttpPostCollectionsGetByNamesRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<EntityListResult>>;
+	public httpPostCollectionsGetByNames(
+		requestParameters?: HttpPostCollectionsGetByNamesRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const entityNamesRequest = requestParameters?.entityNamesRequest;
+		if (entityNamesRequest === null || entityNamesRequest === undefined) {
+			throw new Error('Required parameter entityNamesRequest was null or undefined when calling httpPostCollectionsGetByNames.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (msal_auth) required
+		localVarCredential = this.configuration.lookupCredential('msal_auth');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/collectionsbynames`;
+		return this.httpClient.request<EntityListResult>('post', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: entityNamesRequest,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,

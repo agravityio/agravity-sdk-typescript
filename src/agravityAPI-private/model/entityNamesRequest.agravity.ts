@@ -8,9 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface EntityIdName {
-	name?: string | null;
-	entity_type?: string | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
-	id?: string | null;
+export interface EntityNamesRequest {
+	names?: Array<string> | null;
+	filter?: string | null;
 }

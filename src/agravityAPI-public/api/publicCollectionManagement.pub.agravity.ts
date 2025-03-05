@@ -18,6 +18,10 @@ import { Observable } from 'rxjs';
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
 // @ts-ignore
 import { Collection } from '../model/collection.pub.agravity';
+// @ts-ignore
+import { EntityListResult } from '../model/entityListResult.pub.agravity';
+// @ts-ignore
+import { EntityNamesRequest } from '../model/entityNamesRequest.pub.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -99,6 +103,11 @@ export interface HttpPublicCollectionsUpdateByIdRequestParams {
 	collection: Collection;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
+}
+
+export interface HttpPublicPostCollectionsGetByNamesRequestParams {
+	/** An object with the array of strings with names of the collections to fetch. */
+	entityNamesRequest: EntityNamesRequest;
 }
 
 @Injectable({
@@ -970,6 +979,101 @@ export class PublicCollectionManagementService {
 		return this.httpClient.request<Collection>('post', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: collection,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint fetches all collections based on names which comes from an array inside the POST request body and return another list of EntityIdName objects and an array of strings with the names which could not be found.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpPublicPostCollectionsGetByNames(
+		requestParameters?: HttpPublicPostCollectionsGetByNamesRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<EntityListResult>;
+	public httpPublicPostCollectionsGetByNames(
+		requestParameters?: HttpPublicPostCollectionsGetByNamesRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<EntityListResult>>;
+	public httpPublicPostCollectionsGetByNames(
+		requestParameters?: HttpPublicPostCollectionsGetByNamesRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<EntityListResult>>;
+	public httpPublicPostCollectionsGetByNames(
+		requestParameters?: HttpPublicPostCollectionsGetByNamesRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const entityNamesRequest = requestParameters?.entityNamesRequest;
+		if (entityNamesRequest === null || entityNamesRequest === undefined) {
+			throw new Error('Required parameter entityNamesRequest was null or undefined when calling httpPublicPostCollectionsGetByNames.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (function_key) required
+		localVarCredential = this.configuration.lookupCredential('function_key');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/collectionsbynames`;
+		return this.httpClient.request<EntityListResult>('post', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: entityNamesRequest,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,

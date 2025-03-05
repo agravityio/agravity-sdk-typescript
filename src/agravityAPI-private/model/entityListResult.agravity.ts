@@ -7,10 +7,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { EntityIdName } from './entityIdName.agravity';
 
-export interface EntityIdName {
-	name?: string | null;
-	entity_type?: string | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
-	id?: string | null;
+export interface EntityListResult {
+	entities?: Array<EntityIdName> | null;
+	notfounds?: Array<string> | null;
 }

@@ -89,6 +89,8 @@ model/downloadZipStatus.agravity.ts
 model/dynamicImageOperation.agravity.ts
 model/entityId.agravity.ts
 model/entityIdName.agravity.ts
+model/entityListResult.agravity.ts
+model/entityNamesRequest.agravity.ts
 model/entityTranslations.agravity.ts
 model/excelExportTableEntity.agravity.ts
 model/frontendAppConfig.agravity.ts

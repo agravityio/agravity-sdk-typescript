@@ -33,6 +33,8 @@ export * from './downloadZipStatus.pub.agravity';
 export * from './dynamicImageOperation.pub.agravity';
 export * from './entityId.pub.agravity';
 export * from './entityIdName.pub.agravity';
+export * from './entityListResult.pub.agravity';
+export * from './entityNamesRequest.pub.agravity';
 export * from './frontendAppConfig.pub.agravity';
 export * from './groupAllAppData.pub.agravity';
 export * from './moveCollectionBody.pub.agravity';

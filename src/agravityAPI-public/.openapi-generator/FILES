@@ -65,6 +65,8 @@ model/downloadZipStatus.pub.agravity.ts
 model/dynamicImageOperation.pub.agravity.ts
 model/entityId.pub.agravity.ts
 model/entityIdName.pub.agravity.ts
+model/entityListResult.pub.agravity.ts
+model/entityNamesRequest.pub.agravity.ts
 model/frontendAppConfig.pub.agravity.ts
 model/groupAllAppData.pub.agravity.ts
 model/models.ts
