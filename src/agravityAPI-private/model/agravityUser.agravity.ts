@@ -18,6 +18,7 @@ export interface AgravityUser {
 	email?: string | null;
 	impersonation?: string | null;
 	apikey?: string | null;
+	last_login?: string | null;
 	roles?: Array<string> | null;
 	groups?: Array<string> | null;
 	tutorials?: Array<UiTutorials> | null;
