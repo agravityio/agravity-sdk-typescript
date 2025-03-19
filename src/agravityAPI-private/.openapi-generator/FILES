@@ -52,6 +52,7 @@ model/agravityInfoResponse.agravity.ts
 model/agravityPortalUser.agravity.ts
 model/agravityUser.agravity.ts
 model/agravityUserDto.agravity.ts
+model/agravityUserOnlineStatus.agravity.ts
 model/agravityVersion.agravity.ts
 model/allWebAppData.agravity.ts
 model/apiKeyResponse.agravity.ts

@@ -9,6 +9,7 @@
  */
 import { UiTutorials } from './uiTutorials.agravity';
 import { SecureUploadEntity } from './secureUploadEntity.agravity';
+import { AgravityUserOnlineStatus } from './agravityUserOnlineStatus.agravity';
 
 export interface AgravityUser {
 	id?: string | null;
@@ -18,7 +19,7 @@ export interface AgravityUser {
 	email?: string | null;
 	impersonation?: string | null;
 	apikey?: string | null;
-	last_login?: string | null;
+	online_status?: AgravityUserOnlineStatus | null;
 	roles?: Array<string> | null;
 	groups?: Array<string> | null;
 	tutorials?: Array<UiTutorials> | null;

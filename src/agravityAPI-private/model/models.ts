@@ -3,6 +3,7 @@ export * from './agravityInfoResponse.agravity';
 export * from './agravityPortalUser.agravity';
 export * from './agravityUser.agravity';
 export * from './agravityUserDto.agravity';
+export * from './agravityUserOnlineStatus.agravity';
 export * from './agravityVersion.agravity';
 export * from './allWebAppData.agravity';
 export * from './apiKeyResponse.agravity';
