@@ -10,6 +10,10 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="9.0.3"/> [9.0.3](https://www.npmjs.com/package/@agravity/private/v/9.0.3) (2025-04-08)
+
+-   Just version upgrade to match backend
+
 ## AgravityAPI <a name="9.0.2"/> [9.0.2](https://www.npmjs.com/package/@agravity/private/v/9.0.2) (2025-04-02)
 
 -   Just version upgrade to match backend
