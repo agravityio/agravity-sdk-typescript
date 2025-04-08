@@ -17,6 +17,7 @@ export interface AzSearchOptions {
 	filter?: string | null;
 	orderby?: string | null;
 	mode?: string | null;
+	broadness?: number | null;
 	ids?: string | null;
 	portal_id?: string | null;
 	scopefilter?: string | null;

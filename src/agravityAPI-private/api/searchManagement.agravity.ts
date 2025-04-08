@@ -77,6 +77,8 @@ export interface HttpGlobalSearchRequestParams {
 	expose?: boolean;
 	/** Key value filter for filterable strings and string collections separated by special \&#39;,,,\&#39;. For date or numbers \&quot;&lt;\&quot;, \&quot;&#x3D;\&quot; and \&quot;&gt;\&quot; are possible. Mode influences AND (all) and OR (any) of all filters. Multiple filters are separated by semicolons. (Only if Azure Search is enabled) */
 	filter?: string;
+	/** Search Broadness: Can be 0, 1 or 2. (0 is the most exact search, 2 is the broadest search) (1, 2 is with AI) */
+	broadness?: number;
 	/** Colon separated key value filter for additional scopes. It applies the same conventions as for filter parameter. */
 	scopefilter?: string;
 	/** Sortable fields can be used. For descendant sorting use leading \&quot;!\&quot;. (Only if Azure Search is enabled) */
@@ -528,6 +530,7 @@ export class SearchManagementService {
 		const mode = requestParameters?.mode;
 		const expose = requestParameters?.expose;
 		const filter = requestParameters?.filter;
+		const broadness = requestParameters?.broadness;
 		const scopefilter = requestParameters?.scopefilter;
 		const orderby = requestParameters?.orderby;
 		const ids = requestParameters?.ids;
@@ -559,6 +562,9 @@ export class SearchManagementService {
 		}
 		if (filter !== undefined && filter !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
+		}
+		if (broadness !== undefined && broadness !== null) {
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>broadness, 'broadness');
 		}
 		if (scopefilter !== undefined && scopefilter !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>scopefilter, 'scopefilter');
