@@ -9,7 +9,6 @@
  */
 import { CollTypeItem } from './collTypeItem.pub.agravity';
 import { AssetBlob } from './assetBlob.pub.agravity';
-import { ArtificialIntelligenceGroup } from './artificialIntelligenceGroup.pub.agravity';
 
 export interface Asset {
 	id?: string | null;
@@ -17,7 +16,6 @@ export interface Asset {
 	name?: string | null;
 	asset_type?: string | null;
 	duplicates?: Array<string> | null;
-	ai_groups?: Array<ArtificialIntelligenceGroup> | null;
 	keywords?: Array<string> | null;
 	orig_blob?: AssetBlob;
 	blobs?: Array<AssetBlob> | null;

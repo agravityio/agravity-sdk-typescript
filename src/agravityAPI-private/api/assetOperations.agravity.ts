@@ -19,6 +19,8 @@ import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
 // @ts-ignore
 import { AgravityInfoResponse } from '../model/agravityInfoResponse.agravity';
 // @ts-ignore
+import { AiGroupEntity } from '../model/aiGroupEntity.agravity';
+// @ts-ignore
 import { Asset } from '../model/asset.agravity';
 // @ts-ignore
 import { AssetAvailability } from '../model/assetAvailability.agravity';
@@ -116,6 +118,11 @@ export interface HttpDeleteSpecificBlobRequestParams {
 	name: string;
 }
 
+export interface HttpGetAiGroupEntityByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
+}
+
 export interface HttpGetAllAssetsCheckOnCriteriaRequestParams {
 	/** Give the plain md5 string as parameter to be checked on all assets. */
 	md5: string;
@@ -126,6 +133,11 @@ export interface HttpGetAssetBlobRequestParams {
 	id: string;
 	/** \&quot;t\&quot; for thumbnail (default); \&quot;op\&quot; for optimized; \&quot;os\&quot; for original size; \&quot;o\&quot; for original. */
 	c?: string;
+}
+
+export interface HttpGetAssetCaptionByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
 }
 
 export interface HttpGetAssetCollectionsByIdRequestParams {
@@ -973,6 +985,93 @@ export class AssetOperationsService {
 	}
 
 	/**
+	 * This endpoint returns the asset ai group entity
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAiGroupEntityById(
+		requestParameters?: HttpGetAiGroupEntityByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AiGroupEntity>;
+	public httpGetAiGroupEntityById(
+		requestParameters?: HttpGetAiGroupEntityByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AiGroupEntity>>;
+	public httpGetAiGroupEntityById(
+		requestParameters?: HttpGetAiGroupEntityByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AiGroupEntity>>;
+	public httpGetAiGroupEntityById(
+		requestParameters?: HttpGetAiGroupEntityByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetAiGroupEntityById.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (msal_auth) required
+		localVarCredential = this.configuration.lookupCredential('msal_auth');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/aigroup`;
+		return this.httpClient.request<AiGroupEntity>('get', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint allows to check all assets in system elements with the given criteria are already in the system. Currently supported field: md5
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -1150,6 +1249,93 @@ export class AssetOperationsService {
 		return this.httpClient.request<AssetBlob>('get', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns the asset caption
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAssetCaptionById(
+		requestParameters?: HttpGetAssetCaptionByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<string>;
+	public httpGetAssetCaptionById(
+		requestParameters?: HttpGetAssetCaptionByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<string>>;
+	public httpGetAssetCaptionById(
+		requestParameters?: HttpGetAssetCaptionByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<string>>;
+	public httpGetAssetCaptionById(
+		requestParameters?: HttpGetAssetCaptionByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetAssetCaptionById.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (msal_auth) required
+		localVarCredential = this.configuration.lookupCredential('msal_auth');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/caption`;
+		return this.httpClient.request<string>('get', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,

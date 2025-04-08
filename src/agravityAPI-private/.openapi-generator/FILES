@@ -54,10 +54,11 @@ model/agravityUser.agravity.ts
 model/agravityUserDto.agravity.ts
 model/agravityUserOnlineStatus.agravity.ts
 model/agravityVersion.agravity.ts
+model/aiGroup.agravity.ts
+model/aiGroupEntity.agravity.ts
 model/allWebAppData.agravity.ts
 model/apiKeyResponse.agravity.ts
 model/appConfigTableEntity.agravity.ts
-model/artificialIntelligenceGroup.agravity.ts
 model/asset.agravity.ts
 model/assetAvailability.agravity.ts
 model/assetBlob.agravity.ts

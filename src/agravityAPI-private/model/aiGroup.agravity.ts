@@ -8,7 +8,7 @@
  * Do not edit the class manually.
  */
 
-export interface ArtificialIntelligenceGroup {
+export interface AiGroup {
 	origin?: string | null;
 	url?: string | null;
 	min_confidence?: number | null;
