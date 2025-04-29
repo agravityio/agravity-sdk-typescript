@@ -6,6 +6,10 @@ export * from './assetOperations.agravity';
 import { AssetOperationsService } from './assetOperations.agravity';
 export * from './assetPublishing.agravity';
 import { AssetPublishingService } from './assetPublishing.agravity';
+export * from './assetRelationManagement.agravity';
+import { AssetRelationManagementService } from './assetRelationManagement.agravity';
+export * from './assetRelationTypeManagement.agravity';
+import { AssetRelationTypeManagementService } from './assetRelationTypeManagement.agravity';
 export * from './assetVersioning.agravity';
 import { AssetVersioningService } from './assetVersioning.agravity';
 export * from './authenticationManagement.agravity';
@@ -83,6 +87,8 @@ export const APIS = [
 	AssetManagementService,
 	AssetOperationsService,
 	AssetPublishingService,
+	AssetRelationManagementService,
+	AssetRelationTypeManagementService,
 	AssetVersioningService,
 	AuthenticationManagementService,
 	CollectionManagementService,

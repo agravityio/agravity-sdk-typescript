@@ -7,6 +7,8 @@ api/assetIconRuleManagement.agravity.ts
 api/assetManagement.agravity.ts
 api/assetOperations.agravity.ts
 api/assetPublishing.agravity.ts
+api/assetRelationManagement.agravity.ts
+api/assetRelationTypeManagement.agravity.ts
 api/assetVersioning.agravity.ts
 api/authenticationManagement.agravity.ts
 api/collectionManagement.agravity.ts
@@ -67,6 +69,8 @@ model/assetCollectionLink.agravity.ts
 model/assetIconRule.agravity.ts
 model/assetIdFormat.agravity.ts
 model/assetPageResult.agravity.ts
+model/assetRelation.agravity.ts
+model/assetRelationType.agravity.ts
 model/assetTextContent.agravity.ts
 model/assetsOperationBody.agravity.ts
 model/azSearchOptions.agravity.ts
@@ -115,6 +119,7 @@ model/publishEntity.agravity.ts
 model/publishedAsset.agravity.ts
 model/quickShare.agravity.ts
 model/quickShareFull.agravity.ts
+model/relatedAsset.agravity.ts
 model/sasToken.agravity.ts
 model/savedSearch.agravity.ts
 model/searchAdminDataSourceStatus.agravity.ts
