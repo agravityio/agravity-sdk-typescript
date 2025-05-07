@@ -20,4 +20,5 @@ export interface InfoEntitySkillEnhanced {
 	search_terms?: string | null;
 	perm_groups?: Array<PermissionEntity> | null;
 	fulltext?: string | null;
+	relations?: Array<string> | null;
 }
