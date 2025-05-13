@@ -626,7 +626,7 @@ export class AssetRelationTypeManagementService {
 	}
 
 	/**
-	 * This endpoint updates an asset relation type entry in the database.
+	 * This endpoint updates an asset relation type entry in the database. Changes to hierarchical, sequential and unique per asset are not allowed if there are already asset relations using this type.
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.

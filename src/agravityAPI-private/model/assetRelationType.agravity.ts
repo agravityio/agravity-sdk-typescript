@@ -12,9 +12,9 @@ import { PermissionEntity } from './permissionEntity.agravity';
 export interface AssetRelationType {
 	id?: string | null;
 	entity_type?: string | null;
-	is_hierarchical?: boolean | null;
-	is_sequential?: boolean | null;
-	requires_unique_assets?: boolean | null;
+	hierarchical?: boolean | null;
+	sequential?: boolean | null;
+	unique_per_asset?: boolean | null;
 	translations?: { [key: string]: { [key: string]: object } } | null;
 	permissions?: Array<PermissionEntity> | null;
 	name?: string | null;
