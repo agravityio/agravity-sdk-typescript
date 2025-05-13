@@ -67,6 +67,8 @@ export interface HttpGlobalSearchRequestParams {
 	filter?: string;
 	/** Search Broadness: Can be 0, 1 or 2. (0 is the most exact search, 2 is the broadest search) (1, 2 is with AI) */
 	broadness?: number;
+	/** The ID of the relation which this search is limited to. (Only the assets in this relation are returend) */
+	relId?: string;
 	/** Colon separated key value filter for additional scopes. It applies the same conventions as for filter parameter. */
 	scopefilter?: string;
 	/** Sortable fields can be used. For descendant sorting use leading \&quot;!\&quot;. (Only if Azure Search is enabled) */
@@ -322,6 +324,7 @@ export class PublicSearchManagementService {
 		const expose = requestParameters?.expose;
 		const filter = requestParameters?.filter;
 		const broadness = requestParameters?.broadness;
+		const relId = requestParameters?.relId;
 		const scopefilter = requestParameters?.scopefilter;
 		const orderby = requestParameters?.orderby;
 		const ids = requestParameters?.ids;
@@ -356,6 +359,9 @@ export class PublicSearchManagementService {
 		}
 		if (broadness !== undefined && broadness !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>broadness, 'broadness');
+		}
+		if (relId !== undefined && relId !== null) {
+			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>relId, 'rel_id');
 		}
 		if (scopefilter !== undefined && scopefilter !== null) {
 			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>scopefilter, 'scopefilter');
