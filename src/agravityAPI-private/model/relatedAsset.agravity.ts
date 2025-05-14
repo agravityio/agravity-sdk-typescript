@@ -10,5 +10,5 @@
 
 export interface RelatedAsset {
 	id?: string | null;
-	is_parent?: boolean | null;
+	parent?: boolean | null;
 }
