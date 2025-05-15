@@ -15,7 +15,9 @@ export interface AgravityVersion {
 	contact?: string | null;
 	updated?: string | null;
 	client_id?: string | null;
+	tenant_id?: string | null;
+	base?: string | null;
 	version?: string | null;
-	permission_enabled?: boolean | null;
+	vector_search_enabled?: boolean | null;
 	region?: string | null;
 }
