@@ -6,6 +6,7 @@ api/api.ts
 api/publicAssetManagement.pub.agravity.ts
 api/publicAssetOperations.pub.agravity.ts
 api/publicAssetPublishing.pub.agravity.ts
+api/publicAssetRelationManagement.pub.agravity.ts
 api/publicAssetVersioning.pub.agravity.ts
 api/publicAuthenticationManagement.pub.agravity.ts
 api/publicCollectionManagement.pub.agravity.ts
@@ -40,6 +41,7 @@ model/assetBlob.pub.agravity.ts
 model/assetIconRule.pub.agravity.ts
 model/assetIdFormat.pub.agravity.ts
 model/assetPageResult.pub.agravity.ts
+model/assetRelation.pub.agravity.ts
 model/azSearchOptions.pub.agravity.ts
 model/collTypeItem.pub.agravity.ts
 model/collection.pub.agravity.ts
@@ -81,6 +83,7 @@ model/portalUserContext.pub.agravity.ts
 model/publishEntity.pub.agravity.ts
 model/publishedAsset.pub.agravity.ts
 model/quickShareFull.pub.agravity.ts
+model/relatedAsset.pub.agravity.ts
 model/sasToken.pub.agravity.ts
 model/savedSearch.pub.agravity.ts
 model/searchAdminDataSourceStatus.pub.agravity.ts
