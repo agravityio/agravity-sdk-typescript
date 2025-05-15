@@ -303,7 +303,7 @@ export class AssetOperationsService {
 	}
 
 	/**
-	 * This endpoint lets you resize/modify the image asset according to the given parameter(s).
+	 * This endpoint lets you resize/modify the image asset according to the given GET parameter(s) - Only exception is for target: If this is a download format no other parameter is used.
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
