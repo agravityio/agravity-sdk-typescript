@@ -13,6 +13,7 @@ import { AssetIdFormat } from './assetIdFormat.agravity';
 export interface QuickShare {
 	id?: string | null;
 	entity_type?: string | null;
+	name?: string | null;
 	assets?: Array<AssetIdFormat> | null;
 	users?: Array<EntityId> | null;
 	expires?: string | null;

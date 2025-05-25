@@ -18,6 +18,7 @@ export interface QuickShareFull {
 	continuation_token?: string | null;
 	id?: string | null;
 	entity_type?: string | null;
+	name?: string | null;
 	assets?: Array<AssetIdFormat> | null;
 	users?: Array<EntityId> | null;
 	expires?: string | null;
