@@ -10,6 +10,21 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="9.1.0"/> [9.1.0](https://www.npmjs.com/package/@agravity/private/v/9.1.0)(2025-05-25)
+
+-   #1395 Quick Share - Allow to name the quickshare
+    -   Add property `name` to quickshare
+    -   Add endpoint POST `/quickshares/{id}` - Updates an existing quick share
+-   #1377 Asset Relations
+    -   Add private and public endpoints for managing asset relations
+    -   Add `rel_id` (relation id) as search parameter (to filter out all ids in search of this relation)
+-   #1309 Implement AI Vector Search
+    -   Add optional `broadness` parameter to search query (default 0)
+-   #1304 Create OpenAI (ChatGPT) image tagging queue
+    -   Rework AI Grouping and put it to separate entity
+-   Add vector_search_enabled, base name and tenant_id properties to agravity version
+-   Add endpoint GET `/helper/skillenhancer/openaienhancement` - This is a helper method to see the result when an Asset is enhanced with the OpenAI skill-enhancer (for search indexer). (unused)
+
 ## AgravityAPI <a name="9.0.3"/> [9.0.3](https://www.npmjs.com/package/@agravity/private/v/9.0.3) (2025-04-08)
 
 -   Just version upgrade to match backend
