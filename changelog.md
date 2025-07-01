@@ -10,6 +10,11 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="9.2.0"/> [9.2.0](https://www.npmjs.com/package/@agravity/private/v/9.2.0) (2025-07-01)
+
+- 1416 Optimize Vector Search (SkillVectorizedFieldsEnhancment )
+  - Add endpoint helper/vectorsearchenabled - This endpoint fetches the vector search enabled values from the configuration and returns them as a dictionary. [admin only]
+
 ## AgravityAPI <a name="9.1.2"/> [9.1.2](https://www.npmjs.com/package/@agravity/private/v/9.1.2) (2025-06-22)
 
 -   Just version upgrade to match backend
