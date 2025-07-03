@@ -9,6 +9,9 @@ and this project does not adheres to [Semantic Versioning](https://semver.org/sp
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
 ---
+## AgravityAPI <a name="9.2.1"/> [9.2.1](https://www.npmjs.com/package/@agravity/private/v/9.2.1) (2025-07-03)
+
+-   Just version upgrade to match backend
 
 ## AgravityAPI <a name="9.2.0"/> [9.2.0](https://www.npmjs.com/package/@agravity/private/v/9.2.0) (2025-07-01)
 
