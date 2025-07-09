@@ -9,14 +9,23 @@ and this project does not adheres to [Semantic Versioning](https://semver.org/sp
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
 ---
+
+## AgravityAPI <a name="9.2.3"/> [9.2.3](https://www.npmjs.com/package/@agravity/private/v/9.2.3) (2025-07-09)
+
+-   Just version upgrade to match backend
+
+## AgravityAPI <a name="9.2.2"/> [9.2.2](https://www.npmjs.com/package/@agravity/private/v/9.2.2) (2025-07-09)
+
+-   Just version upgrade to match backend
+
 ## AgravityAPI <a name="9.2.1"/> [9.2.1](https://www.npmjs.com/package/@agravity/private/v/9.2.1) (2025-07-03)
 
 -   Just version upgrade to match backend
 
 ## AgravityAPI <a name="9.2.0"/> [9.2.0](https://www.npmjs.com/package/@agravity/private/v/9.2.0) (2025-07-01)
 
-- 1416 Optimize Vector Search (SkillVectorizedFieldsEnhancment )
-  - Add endpoint helper/vectorsearchenabled - This endpoint fetches the vector search enabled values from the configuration and returns them as a dictionary. [admin only]
+-   1416 Optimize Vector Search (SkillVectorizedFieldsEnhancment )
+    -   Add endpoint helper/vectorsearchenabled - This endpoint fetches the vector search enabled values from the configuration and returns them as a dictionary. [admin only]
 
 ## AgravityAPI <a name="9.1.2"/> [9.1.2](https://www.npmjs.com/package/@agravity/private/v/9.1.2) (2025-06-22)
 
