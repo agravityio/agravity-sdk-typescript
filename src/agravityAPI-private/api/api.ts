@@ -1,3 +1,5 @@
+export * from './aISettingsManagement.agravity';
+import { AISettingsManagementService } from './aISettingsManagement.agravity';
 export * from './assetIconRuleManagement.agravity';
 import { AssetIconRuleManagementService } from './assetIconRuleManagement.agravity';
 export * from './assetManagement.agravity';
@@ -83,6 +85,7 @@ import { WordpressManagementService } from './wordpressManagement.agravity';
 export * from './workspaceManagement.agravity';
 import { WorkspaceManagementService } from './workspaceManagement.agravity';
 export const APIS = [
+	AISettingsManagementService,
 	AssetIconRuleManagementService,
 	AssetManagementService,
 	AssetOperationsService,

@@ -2,6 +2,7 @@
 .openapi-generator-ignore
 README.md
 api.module.ts
+api/aISettingsManagement.agravity.ts
 api/api.ts
 api/assetIconRuleManagement.agravity.ts
 api/assetManagement.agravity.ts
@@ -56,8 +57,10 @@ model/agravityUser.agravity.ts
 model/agravityUserDto.agravity.ts
 model/agravityUserOnlineStatus.agravity.ts
 model/agravityVersion.agravity.ts
+model/aiFieldGeneration.agravity.ts
 model/aiGroup.agravity.ts
 model/aiGroupEntity.agravity.ts
+model/aiSettings.agravity.ts
 model/allWebAppData.agravity.ts
 model/apiKeyResponse.agravity.ts
 model/appConfigTableEntity.agravity.ts
