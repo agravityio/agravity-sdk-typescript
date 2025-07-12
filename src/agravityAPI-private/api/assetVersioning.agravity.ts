@@ -79,6 +79,8 @@ export interface HttpUpdateVersionedAssetsByIdRequestParams {
 	id: string;
 	/** The version number of the asset. */
 	vNr: string;
+	/** The content which should be updated. */
+	versionedAsset: VersionedAsset;
 }
 
 export interface HttpVersionedAssetsDeleteAllRequestParams {
@@ -813,6 +815,10 @@ export class AssetVersioningService {
 		if (vNr === null || vNr === undefined) {
 			throw new Error('Required parameter vNr was null or undefined when calling httpUpdateVersionedAssetsById.');
 		}
+		const versionedAsset = requestParameters?.versionedAsset;
+		if (versionedAsset === null || versionedAsset === undefined) {
+			throw new Error('Required parameter versionedAsset was null or undefined when calling httpUpdateVersionedAssetsById.');
+		}
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -843,6 +849,13 @@ export class AssetVersioningService {
 			localVarTransferCache = true;
 		}
 
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
 			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
@@ -857,6 +870,7 @@ export class AssetVersioningService {
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/versions/${this.configuration.encodeParam({ name: 'vNr', value: vNr, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		return this.httpClient.request<VersionedAsset>('post', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			body: versionedAsset,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,
