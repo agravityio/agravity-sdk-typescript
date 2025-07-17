@@ -121,7 +121,7 @@ Write-Host "Replace ai complete"
 
 
 $fileContent = Get-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
-$fileContent[234] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
+$fileContent[235] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
     
 # write file
 $fileContent | Set-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
