@@ -130,7 +130,7 @@ Write-Host "Remove line in file src\agravityAPI-private\api\assetVersioning.agra
 
 
 $fileContent = Get-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
-$fileContent[262] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
+$fileContent[263] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
 # write file
 $fileContent | Set-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
 
