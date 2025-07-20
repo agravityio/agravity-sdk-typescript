@@ -119,9 +119,11 @@ Write-Host "Replace ai complete"
 
 #Write-Host "Add line in file src\agravityAPI-private\api\assetManagement.agravity.ts after line 482 complete"
 
+# pretty print whole project using prettier
+npx prettier --write src/**
 
 $fileContent = Get-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
-$fileContent[235] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
+$fileContent[247] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
     
 # write file
 $fileContent | Set-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
@@ -130,7 +132,7 @@ Write-Host "Remove line in file src\agravityAPI-private\api\assetVersioning.agra
 
 
 $fileContent = Get-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
-$fileContent[263] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
+$fileContent[287] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
 # write file
 $fileContent | Set-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
 

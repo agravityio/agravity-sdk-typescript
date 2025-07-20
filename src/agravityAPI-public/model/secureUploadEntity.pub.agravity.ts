@@ -11,9 +11,8 @@ import { CreateSftpUserResult } from './createSftpUserResult.pub.agravity';
 
 export interface SecureUploadEntity {
 	id?: string | null;
+	entity_type?: string | null;
 	collection_id?: string | null;
-	created_date?: string | null;
-	created_by?: string | null;
 	url?: string | null;
 	valid_until?: string | null;
 	password?: string | null;
@@ -21,4 +20,11 @@ export interface SecureUploadEntity {
 	message?: string | null;
 	sftp_connection?: CreateSftpUserResult | null;
 	check_name_for_version?: boolean | null;
+	status?: string | null;
+	created_date?: string | null;
+	created_by?: string | null;
+	modified_date?: string | null;
+	modified_by?: string | null;
+	pk?: string | null;
+	_etag?: string | null;
 }

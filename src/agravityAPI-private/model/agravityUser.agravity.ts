@@ -14,10 +14,10 @@ import { AgravityUserOnlineStatus } from './agravityUserOnlineStatus.agravity';
 export interface AgravityUser {
 	id?: string | null;
 	entity_type?: string | null;
-	secureuploads?: Array<SecureUploadEntity> | null;
 	name?: string | null;
 	email?: string | null;
 	impersonation?: string | null;
+	secureuploads?: Array<SecureUploadEntity> | null;
 	apikey?: string | null;
 	online_status?: AgravityUserOnlineStatus | null;
 	roles?: Array<string> | null;
