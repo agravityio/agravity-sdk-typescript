@@ -1,6 +1,9 @@
 # check if $env:OAUTH2_TOKEN is set, if not: exit
 if ($null -eq $env:AGRAVITY_OAUTH2_TOKEN) {
-    Write-Host "Please set OAUTH2_TOKEN environment variable"
+    Write-Host "Please set AGRAVITY_OAUTH2_TOKEN environment variable"
+    # wait for user input
+    Write-Host "Press any key to continue ..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     exit
 }
 
@@ -9,6 +12,7 @@ if ($null -eq $env:OPENAPI_GENERATOR) {
     Write-Host "Please set OPENAPI_GENERATOR path to the openapi-generator-cli.jar"
     # wait for user input
     Write-Host "Press any key to continue ..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     exit
 }
 
@@ -17,6 +21,9 @@ $version = (Invoke-RestMethod -Uri http://localhost:7072/api/version -Method Get
 
 if ($null -eq $version) {
     Write-Host "Please start backend before generating API"
+    # wait for user input
+    Write-Host "Press any key to continue ..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     exit
 }
 
@@ -49,6 +56,10 @@ Invoke-WebRequest -Uri "http://localhost:7071/api/openapi/v3.json" -Headers @{"A
 # check if openapi.json exists and is not empty; if not: exit
 if (!(Test-Path "openapi.json") -or (Get-Content "openapi.json" -Raw) -eq "") {
     Write-Host "openapi.json is empty or does not exist"
+    Write-Host "Please start backend before generating API"
+    # wait for user input
+    Write-Host "Press any key to continue ..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     exit
 }
 
@@ -66,6 +77,10 @@ Invoke-WebRequest -Uri "http://localhost:7072/api/openapi/v3.json" -OutFile "ope
 # check if openapi.json exists and is not empty; if not: exit
 if (!(Test-Path "openapi.json") -or (Get-Content "openapi.json" -Raw) -eq "") {
     Write-Host "openapi.json is empty or does not exist"
+    Write-Host "Please start backend before generating API"
+    # wait for user input
+    Write-Host "Press any key to continue ..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
     exit
 }
 
