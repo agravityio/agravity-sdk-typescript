@@ -10,6 +10,10 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="9.4.0"/> [9.4.0](https://www.npmjs.com/package/@agravity/private/v/9.4.0) (2025-08-12)
+
+- #1441 Asset Comments: Allow annotations on images
+
 ## AgravityAPI <a name="9.3.0"/> [9.3.0](https://www.npmjs.com/package/@agravity/private/v/9.3.0) (2025-07-20)
 
 -   #1434 Remove secure upload entity from user - now secure upload is own entity
