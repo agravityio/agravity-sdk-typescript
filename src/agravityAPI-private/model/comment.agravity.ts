@@ -13,6 +13,7 @@ export interface Comment {
 	entity_type?: string | null;
 	content?: string | null;
 	mentioned?: Array<string> | null;
+	add_properties?: { [key: string]: any } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;
