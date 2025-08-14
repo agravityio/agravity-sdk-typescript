@@ -2,7 +2,7 @@
 .openapi-generator-ignore
 README.md
 api.module.ts
-api/aISettingsManagement.agravity.ts
+api/aIOperations.agravity.ts
 api/api.ts
 api/assetIconRuleManagement.agravity.ts
 api/assetManagement.agravity.ts
@@ -29,6 +29,7 @@ api/iccProfileManagement.agravity.ts
 api/listBlobs.agravity.ts
 api/listQueues.agravity.ts
 api/listTables.agravity.ts
+api/notificationManagement.agravity.ts
 api/permissionsManagement.agravity.ts
 api/portalManagement.agravity.ts
 api/portalsUsersManagement.agravity.ts
@@ -36,6 +37,7 @@ api/publishing.agravity.ts
 api/quickshareManagement.agravity.ts
 api/savedSearchManagement.agravity.ts
 api/searchManagement.agravity.ts
+api/searchSettingsOperations.agravity.ts
 api/secureUpload.agravity.ts
 api/signalRConnectionManagement.agravity.ts
 api/staticDefinedListManagement.agravity.ts
@@ -57,10 +59,10 @@ model/agravityUser.agravity.ts
 model/agravityUserDto.agravity.ts
 model/agravityUserOnlineStatus.agravity.ts
 model/agravityVersion.agravity.ts
+model/aiAsset.agravity.ts
 model/aiFieldGeneration.agravity.ts
-model/aiGroup.agravity.ts
-model/aiGroupEntity.agravity.ts
 model/aiSettings.agravity.ts
+model/aiTypeSettings.agravity.ts
 model/allWebAppData.agravity.ts
 model/apiKeyResponse.agravity.ts
 model/appConfigTableEntity.agravity.ts
@@ -109,6 +111,7 @@ model/infoEntitySkillEnhanced.agravity.ts
 model/metadata.agravity.ts
 model/models.ts
 model/moveCollectionBody.agravity.ts
+model/notificationSettingDto.agravity.ts
 model/permissionChange.agravity.ts
 model/permissionEntity.agravity.ts
 model/permissionSetting.agravity.ts
@@ -135,6 +138,7 @@ model/searchAdminStatus.agravity.ts
 model/searchFacet.agravity.ts
 model/searchFacetEntity.agravity.ts
 model/searchResult.agravity.ts
+model/searchSettings.agravity.ts
 model/searchableItem.agravity.ts
 model/secureUploadEntity.agravity.ts
 model/sharedAllowedFormat.agravity.ts

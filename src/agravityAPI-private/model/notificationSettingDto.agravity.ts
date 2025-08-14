@@ -8,9 +8,11 @@
  * Do not edit the class manually.
  */
 
-export interface AiGroup {
-	origin?: string | null;
-	url?: string | null;
-	min_confidence?: number | null;
-	values?: Array<{ [key: string]: object }> | null;
+export interface NotificationSettingDto {
+	id?: string | null;
+	event_types?: Array<string> | null;
+	frequency?: string | null;
+	coll_id?: string | null;
+	include_sub_collections?: boolean | null;
+	pk?: string | null;
 }

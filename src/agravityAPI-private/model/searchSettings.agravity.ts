@@ -7,15 +7,15 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AiTypeSettings } from './aiTypeSettings.agravity';
 
-export interface AiSettings {
+export interface SearchSettings {
 	id?: string | null;
 	entity_type?: string | null;
-	system_prompt?: string | null;
-	field_types?: Array<string> | null;
-	image?: AiTypeSettings | null;
-	document?: AiTypeSettings | null;
+	vectorizable_ai_field_types?: Array<string> | null;
+	similar_asset_search_ai_field_type_vector?: string | null;
+	similar_asset_search_limit?: number | null;
+	reverse_asset_search_ai_field?: string | null;
+	broadness?: { [key: string]: Array<string> } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

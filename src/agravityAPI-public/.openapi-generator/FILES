@@ -3,6 +3,7 @@
 README.md
 api.module.ts
 api/api.ts
+api/publicAIOperations.pub.agravity.ts
 api/publicAssetManagement.pub.agravity.ts
 api/publicAssetOperations.pub.agravity.ts
 api/publicAssetPublishing.pub.agravity.ts

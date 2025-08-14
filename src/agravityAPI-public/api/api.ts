@@ -1,3 +1,5 @@
+export * from './publicAIOperations.pub.agravity';
+import { PublicAIOperationsService } from './publicAIOperations.pub.agravity';
 export * from './publicAssetManagement.pub.agravity';
 import { PublicAssetManagementService } from './publicAssetManagement.pub.agravity';
 export * from './publicAssetOperations.pub.agravity';
@@ -47,6 +49,7 @@ import { PublicWebAppDataService } from './publicWebAppData.pub.agravity';
 export * from './publicWorkspaceManagement.pub.agravity';
 import { PublicWorkspaceManagementService } from './publicWorkspaceManagement.pub.agravity';
 export const APIS = [
+	PublicAIOperationsService,
 	PublicAssetManagementService,
 	PublicAssetOperationsService,
 	PublicAssetPublishingService,

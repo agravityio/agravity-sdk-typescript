@@ -7,8 +7,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { AiFieldGeneration } from './aiFieldGeneration.agravity';
 
-export interface AiFieldGeneration {
-	prompt?: string | null;
-	field_type?: string | null;
+export interface AiTypeSettings {
+	type_prompt?: string | null;
+	deployment_name?: string | null;
+	temperature?: number | null;
+	fields?: { [key: string]: AiFieldGeneration } | null;
 }

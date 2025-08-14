@@ -7,12 +7,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AiGroup } from './aiGroup.agravity';
 
-export interface AiGroupEntity {
+export interface AiAsset {
 	id?: string | null;
 	entity_type?: string | null;
-	ai_groups?: Array<AiGroup> | null;
+	fields?: { [key: string]: object } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

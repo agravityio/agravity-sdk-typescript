@@ -1,5 +1,5 @@
-export * from './aISettingsManagement.agravity';
-import { AISettingsManagementService } from './aISettingsManagement.agravity';
+export * from './aIOperations.agravity';
+import { AIOperationsService } from './aIOperations.agravity';
 export * from './assetIconRuleManagement.agravity';
 import { AssetIconRuleManagementService } from './assetIconRuleManagement.agravity';
 export * from './assetManagement.agravity';
@@ -50,6 +50,8 @@ export * from './listQueues.agravity';
 import { ListQueuesService } from './listQueues.agravity';
 export * from './listTables.agravity';
 import { ListTablesService } from './listTables.agravity';
+export * from './notificationManagement.agravity';
+import { NotificationManagementService } from './notificationManagement.agravity';
 export * from './permissionsManagement.agravity';
 import { PermissionsManagementService } from './permissionsManagement.agravity';
 export * from './portalManagement.agravity';
@@ -64,6 +66,8 @@ export * from './savedSearchManagement.agravity';
 import { SavedSearchManagementService } from './savedSearchManagement.agravity';
 export * from './searchManagement.agravity';
 import { SearchManagementService } from './searchManagement.agravity';
+export * from './searchSettingsOperations.agravity';
+import { SearchSettingsOperationsService } from './searchSettingsOperations.agravity';
 export * from './secureUpload.agravity';
 import { SecureUploadService } from './secureUpload.agravity';
 export * from './signalRConnectionManagement.agravity';
@@ -85,7 +89,7 @@ import { WordpressManagementService } from './wordpressManagement.agravity';
 export * from './workspaceManagement.agravity';
 import { WorkspaceManagementService } from './workspaceManagement.agravity';
 export const APIS = [
-	AISettingsManagementService,
+	AIOperationsService,
 	AssetIconRuleManagementService,
 	AssetManagementService,
 	AssetOperationsService,
@@ -111,6 +115,7 @@ export const APIS = [
 	ListBlobsService,
 	ListQueuesService,
 	ListTablesService,
+	NotificationManagementService,
 	PermissionsManagementService,
 	PortalManagementService,
 	PortalsUsersManagementService,
@@ -118,6 +123,7 @@ export const APIS = [
 	QuickshareManagementService,
 	SavedSearchManagementService,
 	SearchManagementService,
+	SearchSettingsOperationsService,
 	SecureUploadService,
 	SignalRConnectionManagementService,
 	StaticDefinedListManagementService,

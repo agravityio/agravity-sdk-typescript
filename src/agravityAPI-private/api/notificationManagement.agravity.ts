@@ -17,21 +17,28 @@ import { Observable } from 'rxjs';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
 // @ts-ignore
-import { AiSettings } from '../model/aiSettings.agravity';
+import { Comment } from '../model/comment.agravity';
+// @ts-ignore
+import { NotificationSettingDto } from '../model/notificationSettingDto.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 
-export interface HttpAISettingsPutRequestParams {
-	/** This endpoint overwrites the AI setting. */
-	aiSettings: AiSettings;
+export interface HttpNotificationSettingDeleteByIdRequestParams {
+	/** The ID of the notification setting. */
+	id: string;
+}
+
+export interface HttpNotificationSettingsCreateOrUpdateRequestParams {
+	/** The notification setting to create */
+	notificationSettingDto: NotificationSettingDto;
 }
 
 @Injectable({
 	providedIn: 'root'
 })
-export class AISettingsManagementService {
+export class NotificationManagementService {
 	protected basePath = 'http://localhost:7071/api';
 	public defaultHeaders = new HttpHeaders();
 	public configuration = new AgravityConfiguration();
@@ -95,26 +102,40 @@ export class AISettingsManagementService {
 	}
 
 	/**
-	 * This endpoint lists all AI settings in database.
+	 * This endpoint deletes a single notification setting.
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAISettingsGet(observe?: 'body', reportProgress?: boolean, options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }): Observable<AiSettings>;
-	public httpAISettingsGet(
+	public httpNotificationSettingDeleteById(
+		requestParameters?: HttpNotificationSettingDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any>;
+	public httpNotificationSettingDeleteById(
+		requestParameters?: HttpNotificationSettingDeleteByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<AiSettings>>;
-	public httpAISettingsGet(
+	): Observable<HttpResponse<any>>;
+	public httpNotificationSettingDeleteById(
+		requestParameters?: HttpNotificationSettingDeleteByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<AiSettings>>;
-	public httpAISettingsGet(
+	): Observable<HttpEvent<any>>;
+	public httpNotificationSettingDeleteById(
+		requestParameters?: HttpNotificationSettingDeleteByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpNotificationSettingDeleteById.');
+		}
+
 		let localVarHeaders = this.defaultHeaders;
 
 		let localVarCredential: string | undefined;
@@ -155,8 +176,8 @@ export class AISettingsManagementService {
 			}
 		}
 
-		let localVarPath = `/aisettings`;
-		return this.httpClient.request<AiSettings>('get', `${this.configuration.basePath}${localVarPath}`, {
+		let localVarPath = `/notificationsettings/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
@@ -168,38 +189,38 @@ export class AISettingsManagementService {
 	}
 
 	/**
-	 * This endpoint creates one AI settings entry in the database.
+	 * This endpoint creates a notification setting for a user and adds the information to the table storage.
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
-	public httpAISettingsPut(
-		requestParameters?: HttpAISettingsPutRequestParams,
+	public httpNotificationSettingsCreateOrUpdate(
+		requestParameters?: HttpNotificationSettingsCreateOrUpdateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<AiSettings>;
-	public httpAISettingsPut(
-		requestParameters?: HttpAISettingsPutRequestParams,
+	): Observable<Comment>;
+	public httpNotificationSettingsCreateOrUpdate(
+		requestParameters?: HttpNotificationSettingsCreateOrUpdateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<AiSettings>>;
-	public httpAISettingsPut(
-		requestParameters?: HttpAISettingsPutRequestParams,
+	): Observable<HttpResponse<Comment>>;
+	public httpNotificationSettingsCreateOrUpdate(
+		requestParameters?: HttpNotificationSettingsCreateOrUpdateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<AiSettings>>;
-	public httpAISettingsPut(
-		requestParameters?: HttpAISettingsPutRequestParams,
+	): Observable<HttpEvent<Comment>>;
+	public httpNotificationSettingsCreateOrUpdate(
+		requestParameters?: HttpNotificationSettingsCreateOrUpdateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
-		const aiSettings = requestParameters?.aiSettings;
-		if (aiSettings === null || aiSettings === undefined) {
-			throw new Error('Required parameter aiSettings was null or undefined when calling httpAISettingsPut.');
+		const notificationSettingDto = requestParameters?.notificationSettingDto;
+		if (notificationSettingDto === null || notificationSettingDto === undefined) {
+			throw new Error('Required parameter notificationSettingDto was null or undefined when calling httpNotificationSettingsCreateOrUpdate.');
 		}
 
 		let localVarHeaders = this.defaultHeaders;
@@ -249,10 +270,87 @@ export class AISettingsManagementService {
 			}
 		}
 
-		let localVarPath = `/aisettings`;
-		return this.httpClient.request<AiSettings>('put', `${this.configuration.basePath}${localVarPath}`, {
+		let localVarPath = `/notificationsettings`;
+		return this.httpClient.request<Comment>('post', `${this.configuration.basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			body: aiSettings,
+			body: notificationSettingDto,
+			responseType: <any>responseType_,
+			withCredentials: this.configuration.withCredentials,
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint lists all notification settings for a user in database.
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpNotificationSettingsGetAll(
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<Array<NotificationSettingDto>>;
+	public httpNotificationSettingsGetAll(
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<Array<NotificationSettingDto>>>;
+	public httpNotificationSettingsGetAll(
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<Array<NotificationSettingDto>>>;
+	public httpNotificationSettingsGetAll(
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		let localVarHeaders = this.defaultHeaders;
+
+		let localVarCredential: string | undefined;
+		// authentication (msal_auth) required
+		localVarCredential = this.configuration.lookupCredential('msal_auth');
+		if (localVarCredential) {
+			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+		}
+
+		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+		if (localVarHttpHeaderAcceptSelected === undefined) {
+			// to determine the Accept header
+			const httpHeaderAccepts: string[] = ['application/json'];
+			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+		}
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		let localVarHttpContext: HttpContext | undefined = options && options.context;
+		if (localVarHttpContext === undefined) {
+			localVarHttpContext = new HttpContext();
+		}
+
+		let localVarTransferCache: boolean | undefined = options && options.transferCache;
+		if (localVarTransferCache === undefined) {
+			localVarTransferCache = true;
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/notificationsettings`;
+		return this.httpClient.request<Array<NotificationSettingDto>>('get', `${this.configuration.basePath}${localVarPath}`, {
+			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			withCredentials: this.configuration.withCredentials,
 			headers: localVarHeaders,
