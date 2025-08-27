@@ -28,6 +28,7 @@ import { SasToken } from '../model/sasToken.agravity';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
+import { BaseService } from '../api.base.service';
 
 export interface HttpAuthCreatePublicApiKeyRequestParams {
 	/** The user to create. */
@@ -81,67 +82,13 @@ export interface HttpAuthPatchImpersonateUserRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class AuthenticationManagementService {
-	protected basePath = 'http://localhost:7071/api';
-	public defaultHeaders = new HttpHeaders();
-	public configuration = new AgravityConfiguration();
-	public encoder: HttpParameterCodec;
-
+export class AuthenticationManagementService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
-		@Optional() configuration: AgravityConfiguration
+		@Optional() configuration?: AgravityConfiguration
 	) {
-		if (configuration) {
-			this.configuration = configuration;
-		}
-		if (typeof this.configuration.basePath !== 'string') {
-			const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
-			if (firstBasePath != undefined) {
-				basePath = firstBasePath;
-			}
-
-			if (typeof basePath !== 'string') {
-				basePath = this.basePath;
-			}
-			this.configuration.basePath = basePath;
-		}
-		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-	}
-
-	// @ts-ignore
-	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-		if (typeof value === 'object' && value instanceof Date === false) {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value);
-		} else {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-		}
-		return httpParams;
-	}
-
-	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-		if (value == null) {
-			return httpParams;
-		}
-
-		if (typeof value === 'object') {
-			if (Array.isArray(value)) {
-				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
-			} else if (value instanceof Date) {
-				if (key != null) {
-					httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
-				} else {
-					throw Error('key may not be null if value is Date');
-				}
-			} else {
-				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
-			}
-		} else if (key != null) {
-			httpParams = httpParams.append(key, value);
-		} else {
-			throw Error('key may not be null if value is not object or array');
-		}
-		return httpParams;
+		super(basePath, configuration);
 	}
 
 	/**
@@ -151,25 +98,25 @@ export class AuthenticationManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAuthCreatePublicApiKey(
-		requestParameters?: HttpAuthCreatePublicApiKeyRequestParams,
+		requestParameters: HttpAuthCreatePublicApiKeyRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AgravityUser>;
 	public httpAuthCreatePublicApiKey(
-		requestParameters?: HttpAuthCreatePublicApiKeyRequestParams,
+		requestParameters: HttpAuthCreatePublicApiKeyRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AgravityUser>>;
 	public httpAuthCreatePublicApiKey(
-		requestParameters?: HttpAuthCreatePublicApiKeyRequestParams,
+		requestParameters: HttpAuthCreatePublicApiKeyRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AgravityUser>>;
 	public httpAuthCreatePublicApiKey(
-		requestParameters?: HttpAuthCreatePublicApiKeyRequestParams,
+		requestParameters: HttpAuthCreatePublicApiKeyRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -181,32 +128,17 @@ export class AuthenticationManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -227,11 +159,12 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/apikey`;
-		return this.httpClient.request<AgravityUser>('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityUser>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: agravityUserDto,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -246,25 +179,25 @@ export class AuthenticationManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAuthDeleteAgravityUser(
-		requestParameters?: HttpAuthDeleteAgravityUserRequestParams,
+		requestParameters: HttpAuthDeleteAgravityUserRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any>;
 	public httpAuthDeleteAgravityUser(
-		requestParameters?: HttpAuthDeleteAgravityUserRequestParams,
+		requestParameters: HttpAuthDeleteAgravityUserRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<any>>;
 	public httpAuthDeleteAgravityUser(
-		requestParameters?: HttpAuthDeleteAgravityUserRequestParams,
+		requestParameters: HttpAuthDeleteAgravityUserRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<any>>;
 	public httpAuthDeleteAgravityUser(
-		requestParameters?: HttpAuthDeleteAgravityUserRequestParams,
+		requestParameters: HttpAuthDeleteAgravityUserRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -276,32 +209,17 @@ export class AuthenticationManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -315,10 +233,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/user/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -353,32 +272,17 @@ export class AuthenticationManagementService {
 	): Observable<any> {
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -392,10 +296,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/impersonate`;
-		return this.httpClient.request<AgravityInfoResponse>('delete', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('delete', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -410,25 +315,25 @@ export class AuthenticationManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAuthDeletePublicApiKey(
-		requestParameters?: HttpAuthDeletePublicApiKeyRequestParams,
+		requestParameters: HttpAuthDeletePublicApiKeyRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any>;
 	public httpAuthDeletePublicApiKey(
-		requestParameters?: HttpAuthDeletePublicApiKeyRequestParams,
+		requestParameters: HttpAuthDeletePublicApiKeyRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<any>>;
 	public httpAuthDeletePublicApiKey(
-		requestParameters?: HttpAuthDeletePublicApiKeyRequestParams,
+		requestParameters: HttpAuthDeletePublicApiKeyRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<any>>;
 	public httpAuthDeletePublicApiKey(
-		requestParameters?: HttpAuthDeletePublicApiKeyRequestParams,
+		requestParameters: HttpAuthDeletePublicApiKeyRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -440,32 +345,17 @@ export class AuthenticationManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -479,10 +369,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/apikey/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -517,32 +408,17 @@ export class AuthenticationManagementService {
 	): Observable<any> {
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -556,10 +432,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/user`;
-		return this.httpClient.request<AgravityUser>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityUser>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -574,25 +451,25 @@ export class AuthenticationManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAuthGetAgravityUserById(
-		requestParameters?: HttpAuthGetAgravityUserByIdRequestParams,
+		requestParameters: HttpAuthGetAgravityUserByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AgravityUser>;
 	public httpAuthGetAgravityUserById(
-		requestParameters?: HttpAuthGetAgravityUserByIdRequestParams,
+		requestParameters: HttpAuthGetAgravityUserByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AgravityUser>>;
 	public httpAuthGetAgravityUserById(
-		requestParameters?: HttpAuthGetAgravityUserByIdRequestParams,
+		requestParameters: HttpAuthGetAgravityUserByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AgravityUser>>;
 	public httpAuthGetAgravityUserById(
-		requestParameters?: HttpAuthGetAgravityUserByIdRequestParams,
+		requestParameters: HttpAuthGetAgravityUserByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -604,38 +481,21 @@ export class AuthenticationManagementService {
 		const limit = requestParameters?.limit;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (limit !== undefined && limit !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -649,11 +509,12 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/users/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<AgravityUser>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityUser>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -695,41 +556,22 @@ export class AuthenticationManagementService {
 		const apikey = requestParameters?.apikey;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (limit !== undefined && limit !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
-		}
-		if (apikey !== undefined && apikey !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>apikey, 'apikey');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>apikey, 'apikey');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -743,11 +585,12 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/users`;
-		return this.httpClient.request<Array<AgravityUser>>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<AgravityUser>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -782,32 +625,17 @@ export class AuthenticationManagementService {
 	): Observable<any> {
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -821,10 +649,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/clientid`;
-		return this.httpClient.request<AgravityInfoResponse>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -839,25 +668,25 @@ export class AuthenticationManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAuthGetBlobReadSasToken(
-		requestParameters?: HttpAuthGetBlobReadSasTokenRequestParams,
+		requestParameters: HttpAuthGetBlobReadSasTokenRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<SasToken>;
 	public httpAuthGetBlobReadSasToken(
-		requestParameters?: HttpAuthGetBlobReadSasTokenRequestParams,
+		requestParameters: HttpAuthGetBlobReadSasTokenRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<SasToken>>;
 	public httpAuthGetBlobReadSasToken(
-		requestParameters?: HttpAuthGetBlobReadSasTokenRequestParams,
+		requestParameters: HttpAuthGetBlobReadSasTokenRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<SasToken>>;
 	public httpAuthGetBlobReadSasToken(
-		requestParameters?: HttpAuthGetBlobReadSasTokenRequestParams,
+		requestParameters: HttpAuthGetBlobReadSasTokenRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -869,32 +698,17 @@ export class AuthenticationManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -908,10 +722,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/blob/${this.configuration.encodeParam({ name: 'blobName', value: blobName, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<SasToken>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<SasToken>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -926,25 +741,25 @@ export class AuthenticationManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAuthGetContainerReadSasToken(
-		requestParameters?: HttpAuthGetContainerReadSasTokenRequestParams,
+		requestParameters: HttpAuthGetContainerReadSasTokenRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<SasToken>;
 	public httpAuthGetContainerReadSasToken(
-		requestParameters?: HttpAuthGetContainerReadSasTokenRequestParams,
+		requestParameters: HttpAuthGetContainerReadSasTokenRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<SasToken>>;
 	public httpAuthGetContainerReadSasToken(
-		requestParameters?: HttpAuthGetContainerReadSasTokenRequestParams,
+		requestParameters: HttpAuthGetContainerReadSasTokenRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<SasToken>>;
 	public httpAuthGetContainerReadSasToken(
-		requestParameters?: HttpAuthGetContainerReadSasTokenRequestParams,
+		requestParameters: HttpAuthGetContainerReadSasTokenRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -956,32 +771,17 @@ export class AuthenticationManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -995,10 +795,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/container/${this.configuration.encodeParam({ name: 'containerName', value: containerName, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<SasToken>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<SasToken>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -1013,25 +814,25 @@ export class AuthenticationManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAuthGetContainerWriteSasToken(
-		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
+		requestParameters: HttpAuthGetContainerWriteSasTokenRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<SasToken>;
 	public httpAuthGetContainerWriteSasToken(
-		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
+		requestParameters: HttpAuthGetContainerWriteSasTokenRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<SasToken>>;
 	public httpAuthGetContainerWriteSasToken(
-		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
+		requestParameters: HttpAuthGetContainerWriteSasTokenRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<SasToken>>;
 	public httpAuthGetContainerWriteSasToken(
-		requestParameters?: HttpAuthGetContainerWriteSasTokenRequestParams,
+		requestParameters: HttpAuthGetContainerWriteSasTokenRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -1043,32 +844,17 @@ export class AuthenticationManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -1082,10 +868,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/containerwrite/${this.configuration.encodeParam({ name: 'containerName', value: containerName, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<SasToken>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<SasToken>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -1121,32 +908,17 @@ export class AuthenticationManagementService {
 	): Observable<any> {
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -1160,10 +932,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/inbox`;
-		return this.httpClient.request<SasToken>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<SasToken>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -1198,32 +971,17 @@ export class AuthenticationManagementService {
 	): Observable<any> {
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -1237,10 +995,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/userid`;
-		return this.httpClient.request<AgravityInfoResponse>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -1255,25 +1014,25 @@ export class AuthenticationManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAuthPatchImpersonateUser(
-		requestParameters?: HttpAuthPatchImpersonateUserRequestParams,
+		requestParameters: HttpAuthPatchImpersonateUserRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AgravityInfoResponse>;
 	public httpAuthPatchImpersonateUser(
-		requestParameters?: HttpAuthPatchImpersonateUserRequestParams,
+		requestParameters: HttpAuthPatchImpersonateUserRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpAuthPatchImpersonateUser(
-		requestParameters?: HttpAuthPatchImpersonateUserRequestParams,
+		requestParameters: HttpAuthPatchImpersonateUserRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpAuthPatchImpersonateUser(
-		requestParameters?: HttpAuthPatchImpersonateUserRequestParams,
+		requestParameters: HttpAuthPatchImpersonateUserRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -1285,32 +1044,17 @@ export class AuthenticationManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -1324,10 +1068,11 @@ export class AuthenticationManagementService {
 		}
 
 		let localVarPath = `/auth/impersonate/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<AgravityInfoResponse>('patch', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('patch', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,

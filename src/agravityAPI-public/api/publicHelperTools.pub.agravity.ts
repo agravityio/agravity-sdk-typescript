@@ -26,6 +26,7 @@ import { SearchableItem } from '../model/searchableItem.pub.agravity';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
+import { BaseService } from '../api.base.service';
 
 export interface HttpGetAllUserDefinedListsRequestParams {
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
@@ -52,67 +53,13 @@ export interface HttpGetAllowedSearchableItemsRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class PublicHelperToolsService {
-	protected basePath = 'http://localhost:7072/api';
-	public defaultHeaders = new HttpHeaders();
-	public configuration = new AgravityPublicConfiguration();
-	public encoder: HttpParameterCodec;
-
+export class PublicHelperToolsService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
-		@Optional() configuration: AgravityPublicConfiguration
+		@Optional() configuration?: AgravityPublicConfiguration
 	) {
-		if (configuration) {
-			this.configuration = configuration;
-		}
-		if (typeof this.configuration.basePath !== 'string') {
-			const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
-			if (firstBasePath != undefined) {
-				basePath = firstBasePath;
-			}
-
-			if (typeof basePath !== 'string') {
-				basePath = this.basePath;
-			}
-			this.configuration.basePath = basePath;
-		}
-		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-	}
-
-	// @ts-ignore
-	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-		if (typeof value === 'object' && value instanceof Date === false) {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value);
-		} else {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-		}
-		return httpParams;
-	}
-
-	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-		if (value == null) {
-			return httpParams;
-		}
-
-		if (typeof value === 'object') {
-			if (Array.isArray(value)) {
-				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
-			} else if (value instanceof Date) {
-				if (key != null) {
-					httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
-				} else {
-					throw Error('key may not be null if value is Date');
-				}
-			} else {
-				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
-			}
-		} else if (key != null) {
-			httpParams = httpParams.append(key, value);
-		} else {
-			throw Error('key may not be null if value is not object or array');
-		}
-		return httpParams;
+		super(basePath, configuration);
 	}
 
 	/**
@@ -149,41 +96,24 @@ export class PublicHelperToolsService {
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (translations !== undefined && translations !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
 			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
 		}
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -197,11 +127,12 @@ export class PublicHelperToolsService {
 		}
 
 		let localVarPath = `/helper/userdefinedlists`;
-		return this.httpClient.request<Array<CollectionUDL>>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<CollectionUDL>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -242,38 +173,21 @@ export class PublicHelperToolsService {
 		const portalId = requestParameters?.portalId;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (portalId !== undefined && portalId !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -287,11 +201,12 @@ export class PublicHelperToolsService {
 		}
 
 		let localVarPath = `/helper/filterableitems`;
-		return this.httpClient.request<Array<string>>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<string>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -332,38 +247,21 @@ export class PublicHelperToolsService {
 		const portalId = requestParameters?.portalId;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (portalId !== undefined && portalId !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -377,11 +275,12 @@ export class PublicHelperToolsService {
 		}
 
 		let localVarPath = `/helper/searchableitemnames`;
-		return this.httpClient.request<Array<string>>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<string>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -422,38 +321,21 @@ export class PublicHelperToolsService {
 		const portalId = requestParameters?.portalId;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (portalId !== undefined && portalId !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -467,11 +349,12 @@ export class PublicHelperToolsService {
 		}
 
 		let localVarPath = `/helper/searchableitems`;
-		return this.httpClient.request<Array<SearchableItem>>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<SearchableItem>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -506,32 +389,17 @@ export class PublicHelperToolsService {
 	): Observable<any> {
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -545,10 +413,11 @@ export class PublicHelperToolsService {
 		}
 
 		let localVarPath = `/helper/userdefinedlists`;
-		return this.httpClient.request<CollectionUDLListEntity>('patch', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<CollectionUDLListEntity>('patch', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,

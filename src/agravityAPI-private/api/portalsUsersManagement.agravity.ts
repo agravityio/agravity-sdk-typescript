@@ -22,6 +22,7 @@ import { AgravityPortalUser } from '../model/agravityPortalUser.agravity';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
+import { BaseService } from '../api.base.service';
 
 export interface HttpPortalsCreatePortalsUserRequestParams {
 	/** The created Agravity Portals User. */
@@ -48,67 +49,13 @@ export interface HttpPortalsUpdatePortalUserByIdRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class PortalsUsersManagementService {
-	protected basePath = 'http://localhost:7071/api';
-	public defaultHeaders = new HttpHeaders();
-	public configuration = new AgravityConfiguration();
-	public encoder: HttpParameterCodec;
-
+export class PortalsUsersManagementService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
-		@Optional() configuration: AgravityConfiguration
+		@Optional() configuration?: AgravityConfiguration
 	) {
-		if (configuration) {
-			this.configuration = configuration;
-		}
-		if (typeof this.configuration.basePath !== 'string') {
-			const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
-			if (firstBasePath != undefined) {
-				basePath = firstBasePath;
-			}
-
-			if (typeof basePath !== 'string') {
-				basePath = this.basePath;
-			}
-			this.configuration.basePath = basePath;
-		}
-		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-	}
-
-	// @ts-ignore
-	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-		if (typeof value === 'object' && value instanceof Date === false) {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value);
-		} else {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-		}
-		return httpParams;
-	}
-
-	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-		if (value == null) {
-			return httpParams;
-		}
-
-		if (typeof value === 'object') {
-			if (Array.isArray(value)) {
-				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
-			} else if (value instanceof Date) {
-				if (key != null) {
-					httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
-				} else {
-					throw Error('key may not be null if value is Date');
-				}
-			} else {
-				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
-			}
-		} else if (key != null) {
-			httpParams = httpParams.append(key, value);
-		} else {
-			throw Error('key may not be null if value is not object or array');
-		}
-		return httpParams;
+		super(basePath, configuration);
 	}
 
 	/**
@@ -118,25 +65,25 @@ export class PortalsUsersManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPortalsCreatePortalsUser(
-		requestParameters?: HttpPortalsCreatePortalsUserRequestParams,
+		requestParameters: HttpPortalsCreatePortalsUserRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AgravityPortalUser>;
 	public httpPortalsCreatePortalsUser(
-		requestParameters?: HttpPortalsCreatePortalsUserRequestParams,
+		requestParameters: HttpPortalsCreatePortalsUserRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AgravityPortalUser>>;
 	public httpPortalsCreatePortalsUser(
-		requestParameters?: HttpPortalsCreatePortalsUserRequestParams,
+		requestParameters: HttpPortalsCreatePortalsUserRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AgravityPortalUser>>;
 	public httpPortalsCreatePortalsUser(
-		requestParameters?: HttpPortalsCreatePortalsUserRequestParams,
+		requestParameters: HttpPortalsCreatePortalsUserRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -148,32 +95,17 @@ export class PortalsUsersManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -194,11 +126,12 @@ export class PortalsUsersManagementService {
 		}
 
 		let localVarPath = `/portalsusers`;
-		return this.httpClient.request<AgravityPortalUser>('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityPortalUser>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: agravityPortalUser,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -213,25 +146,25 @@ export class PortalsUsersManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPortalsDeletePortalUser(
-		requestParameters?: HttpPortalsDeletePortalUserRequestParams,
+		requestParameters: HttpPortalsDeletePortalUserRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<string>;
 	public httpPortalsDeletePortalUser(
-		requestParameters?: HttpPortalsDeletePortalUserRequestParams,
+		requestParameters: HttpPortalsDeletePortalUserRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<string>>;
 	public httpPortalsDeletePortalUser(
-		requestParameters?: HttpPortalsDeletePortalUserRequestParams,
+		requestParameters: HttpPortalsDeletePortalUserRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<string>>;
 	public httpPortalsDeletePortalUser(
-		requestParameters?: HttpPortalsDeletePortalUserRequestParams,
+		requestParameters: HttpPortalsDeletePortalUserRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -243,32 +176,17 @@ export class PortalsUsersManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -282,10 +200,11 @@ export class PortalsUsersManagementService {
 		}
 
 		let localVarPath = `/portalsusers/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<string>('delete', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<string>('delete', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -320,32 +239,17 @@ export class PortalsUsersManagementService {
 	): Observable<any> {
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -359,10 +263,11 @@ export class PortalsUsersManagementService {
 		}
 
 		let localVarPath = `/portalsusers`;
-		return this.httpClient.request<Array<AgravityPortalUser>>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<AgravityPortalUser>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -377,25 +282,25 @@ export class PortalsUsersManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPortalsGetPortalUserById(
-		requestParameters?: HttpPortalsGetPortalUserByIdRequestParams,
+		requestParameters: HttpPortalsGetPortalUserByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<Array<AgravityPortalUser>>;
 	public httpPortalsGetPortalUserById(
-		requestParameters?: HttpPortalsGetPortalUserByIdRequestParams,
+		requestParameters: HttpPortalsGetPortalUserByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<Array<AgravityPortalUser>>>;
 	public httpPortalsGetPortalUserById(
-		requestParameters?: HttpPortalsGetPortalUserByIdRequestParams,
+		requestParameters: HttpPortalsGetPortalUserByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<Array<AgravityPortalUser>>>;
 	public httpPortalsGetPortalUserById(
-		requestParameters?: HttpPortalsGetPortalUserByIdRequestParams,
+		requestParameters: HttpPortalsGetPortalUserByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -407,32 +312,17 @@ export class PortalsUsersManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -446,10 +336,11 @@ export class PortalsUsersManagementService {
 		}
 
 		let localVarPath = `/portalsusers/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<Array<AgravityPortalUser>>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<AgravityPortalUser>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -464,25 +355,25 @@ export class PortalsUsersManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPortalsUpdatePortalUserById(
-		requestParameters?: HttpPortalsUpdatePortalUserByIdRequestParams,
+		requestParameters: HttpPortalsUpdatePortalUserByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AgravityPortalUser>;
 	public httpPortalsUpdatePortalUserById(
-		requestParameters?: HttpPortalsUpdatePortalUserByIdRequestParams,
+		requestParameters: HttpPortalsUpdatePortalUserByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AgravityPortalUser>>;
 	public httpPortalsUpdatePortalUserById(
-		requestParameters?: HttpPortalsUpdatePortalUserByIdRequestParams,
+		requestParameters: HttpPortalsUpdatePortalUserByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AgravityPortalUser>>;
 	public httpPortalsUpdatePortalUserById(
-		requestParameters?: HttpPortalsUpdatePortalUserByIdRequestParams,
+		requestParameters: HttpPortalsUpdatePortalUserByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -498,32 +389,17 @@ export class PortalsUsersManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -544,11 +420,12 @@ export class PortalsUsersManagementService {
 		}
 
 		let localVarPath = `/portalsusers/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<AgravityPortalUser>('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityPortalUser>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: agravityPortalUser,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,

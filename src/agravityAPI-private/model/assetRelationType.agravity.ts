@@ -15,7 +15,7 @@ export interface AssetRelationType {
 	hierarchical?: boolean | null;
 	sequential?: boolean | null;
 	unique_per_asset?: boolean | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	permissions?: Array<PermissionEntity> | null;
 	name?: string | null;
 	description?: string | null;

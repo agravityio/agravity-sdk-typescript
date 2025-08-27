@@ -14,7 +14,7 @@ export interface DashboardWidget {
 	title?: string | null;
 	widget_type?: string | null;
 	data?: object | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

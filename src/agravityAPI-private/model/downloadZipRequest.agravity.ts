@@ -20,11 +20,11 @@ export interface DownloadZipRequest {
 	valid_until?: string | null;
 }
 export namespace DownloadZipRequest {
-	export type ZipTypeEnum = 'DOWNLOAD' | 'SHARED' | 'QUICKSHARE' | 'PORTAL';
 	export const ZipTypeEnum = {
-		Download: 'DOWNLOAD' as ZipTypeEnum,
-		Shared: 'SHARED' as ZipTypeEnum,
-		Quickshare: 'QUICKSHARE' as ZipTypeEnum,
-		Portal: 'PORTAL' as ZipTypeEnum
-	};
+		Download: 'DOWNLOAD',
+		Shared: 'SHARED',
+		Quickshare: 'QUICKSHARE',
+		Portal: 'PORTAL'
+	} as const;
+	export type ZipTypeEnum = (typeof ZipTypeEnum)[keyof typeof ZipTypeEnum];
 }

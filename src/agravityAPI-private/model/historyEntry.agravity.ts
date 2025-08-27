@@ -23,35 +23,21 @@ export interface HistoryEntry {
 	_etag?: string | null;
 }
 export namespace HistoryEntry {
-	export type NameEnum =
-		| 'Created'
-		| 'Updated'
-		| 'Deleted'
-		| 'Removed'
-		| 'Published'
-		| 'Unpublished'
-		| 'Locked'
-		| 'Unlocked'
-		| 'Renewed'
-		| 'Versioned'
-		| 'DirtyMarked'
-		| 'SystemUpgrade'
-		| 'Untracked'
-		| 'Restored';
 	export const NameEnum = {
-		Created: 'Created' as NameEnum,
-		Updated: 'Updated' as NameEnum,
-		Deleted: 'Deleted' as NameEnum,
-		Removed: 'Removed' as NameEnum,
-		Published: 'Published' as NameEnum,
-		Unpublished: 'Unpublished' as NameEnum,
-		Locked: 'Locked' as NameEnum,
-		Unlocked: 'Unlocked' as NameEnum,
-		Renewed: 'Renewed' as NameEnum,
-		Versioned: 'Versioned' as NameEnum,
-		DirtyMarked: 'DirtyMarked' as NameEnum,
-		SystemUpgrade: 'SystemUpgrade' as NameEnum,
-		Untracked: 'Untracked' as NameEnum,
-		Restored: 'Restored' as NameEnum
-	};
+		Created: 'Created',
+		Updated: 'Updated',
+		Deleted: 'Deleted',
+		Removed: 'Removed',
+		Published: 'Published',
+		Unpublished: 'Unpublished',
+		Locked: 'Locked',
+		Unlocked: 'Unlocked',
+		Renewed: 'Renewed',
+		Versioned: 'Versioned',
+		DirtyMarked: 'DirtyMarked',
+		SystemUpgrade: 'SystemUpgrade',
+		Untracked: 'Untracked',
+		Restored: 'Restored'
+	} as const;
+	export type NameEnum = (typeof NameEnum)[keyof typeof NameEnum];
 }

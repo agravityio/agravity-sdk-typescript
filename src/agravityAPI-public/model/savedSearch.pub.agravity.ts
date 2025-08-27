@@ -13,7 +13,7 @@ export interface SavedSearch {
 	entity_type?: string | null;
 	searchstring?: string | null;
 	external?: boolean | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	name?: string | null;
 	description?: string | null;
 	add_properties?: { [key: string]: any } | null;

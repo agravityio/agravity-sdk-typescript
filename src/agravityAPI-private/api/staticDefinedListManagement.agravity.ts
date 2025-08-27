@@ -22,6 +22,7 @@ import { StaticDefinedList } from '../model/staticDefinedList.agravity';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
+import { BaseService } from '../api.base.service';
 
 export interface HttpStaticDefinedListsCreateRequestParams {
 	/** This endpoint creates an unique static defined list ID and adds the information to the database. */
@@ -69,67 +70,13 @@ export interface HttpStaticDefinedListsUpdateByIdRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class StaticDefinedListManagementService {
-	protected basePath = 'http://localhost:7071/api';
-	public defaultHeaders = new HttpHeaders();
-	public configuration = new AgravityConfiguration();
-	public encoder: HttpParameterCodec;
-
+export class StaticDefinedListManagementService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
-		@Optional() configuration: AgravityConfiguration
+		@Optional() configuration?: AgravityConfiguration
 	) {
-		if (configuration) {
-			this.configuration = configuration;
-		}
-		if (typeof this.configuration.basePath !== 'string') {
-			const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
-			if (firstBasePath != undefined) {
-				basePath = firstBasePath;
-			}
-
-			if (typeof basePath !== 'string') {
-				basePath = this.basePath;
-			}
-			this.configuration.basePath = basePath;
-		}
-		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-	}
-
-	// @ts-ignore
-	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-		if (typeof value === 'object' && value instanceof Date === false) {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value);
-		} else {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-		}
-		return httpParams;
-	}
-
-	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-		if (value == null) {
-			return httpParams;
-		}
-
-		if (typeof value === 'object') {
-			if (Array.isArray(value)) {
-				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
-			} else if (value instanceof Date) {
-				if (key != null) {
-					httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
-				} else {
-					throw Error('key may not be null if value is Date');
-				}
-			} else {
-				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
-			}
-		} else if (key != null) {
-			httpParams = httpParams.append(key, value);
-		} else {
-			throw Error('key may not be null if value is not object or array');
-		}
-		return httpParams;
+		super(basePath, configuration);
 	}
 
 	/**
@@ -139,25 +86,25 @@ export class StaticDefinedListManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStaticDefinedListsCreate(
-		requestParameters?: HttpStaticDefinedListsCreateRequestParams,
+		requestParameters: HttpStaticDefinedListsCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<StaticDefinedList>;
 	public httpStaticDefinedListsCreate(
-		requestParameters?: HttpStaticDefinedListsCreateRequestParams,
+		requestParameters: HttpStaticDefinedListsCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<StaticDefinedList>>;
 	public httpStaticDefinedListsCreate(
-		requestParameters?: HttpStaticDefinedListsCreateRequestParams,
+		requestParameters: HttpStaticDefinedListsCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<StaticDefinedList>>;
 	public httpStaticDefinedListsCreate(
-		requestParameters?: HttpStaticDefinedListsCreateRequestParams,
+		requestParameters: HttpStaticDefinedListsCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -170,41 +117,24 @@ export class StaticDefinedListManagementService {
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (translations !== undefined && translations !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
 			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
 		}
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -225,12 +155,13 @@ export class StaticDefinedListManagementService {
 		}
 
 		let localVarPath = `/staticdefinedlists`;
-		return this.httpClient.request<StaticDefinedList>('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<StaticDefinedList>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: staticDefinedList,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -245,25 +176,25 @@ export class StaticDefinedListManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStaticDefinedListsDeleteById(
-		requestParameters?: HttpStaticDefinedListsDeleteByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsDeleteByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any>;
 	public httpStaticDefinedListsDeleteById(
-		requestParameters?: HttpStaticDefinedListsDeleteByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsDeleteByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<any>>;
 	public httpStaticDefinedListsDeleteById(
-		requestParameters?: HttpStaticDefinedListsDeleteByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsDeleteByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<any>>;
 	public httpStaticDefinedListsDeleteById(
-		requestParameters?: HttpStaticDefinedListsDeleteByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsDeleteByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -275,32 +206,17 @@ export class StaticDefinedListManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -314,10 +230,11 @@ export class StaticDefinedListManagementService {
 		}
 
 		let localVarPath = `/staticdefinedlists/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -359,41 +276,24 @@ export class StaticDefinedListManagementService {
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (translations !== undefined && translations !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
 			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
 		}
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -407,11 +307,12 @@ export class StaticDefinedListManagementService {
 		}
 
 		let localVarPath = `/staticdefinedlists`;
-		return this.httpClient.request<Array<StaticDefinedList>>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<StaticDefinedList>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -426,25 +327,25 @@ export class StaticDefinedListManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStaticDefinedListsGetById(
-		requestParameters?: HttpStaticDefinedListsGetByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<StaticDefinedList>;
 	public httpStaticDefinedListsGetById(
-		requestParameters?: HttpStaticDefinedListsGetByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<StaticDefinedList>>;
 	public httpStaticDefinedListsGetById(
-		requestParameters?: HttpStaticDefinedListsGetByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<StaticDefinedList>>;
 	public httpStaticDefinedListsGetById(
-		requestParameters?: HttpStaticDefinedListsGetByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -457,41 +358,24 @@ export class StaticDefinedListManagementService {
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (translations !== undefined && translations !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
 			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
 		}
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -505,11 +389,12 @@ export class StaticDefinedListManagementService {
 		}
 
 		let localVarPath = `/staticdefinedlists/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<StaticDefinedList>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<StaticDefinedList>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -524,25 +409,25 @@ export class StaticDefinedListManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStaticDefinedListsUpdateById(
-		requestParameters?: HttpStaticDefinedListsUpdateByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<StaticDefinedList>;
 	public httpStaticDefinedListsUpdateById(
-		requestParameters?: HttpStaticDefinedListsUpdateByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<StaticDefinedList>>;
 	public httpStaticDefinedListsUpdateById(
-		requestParameters?: HttpStaticDefinedListsUpdateByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<StaticDefinedList>>;
 	public httpStaticDefinedListsUpdateById(
-		requestParameters?: HttpStaticDefinedListsUpdateByIdRequestParams,
+		requestParameters: HttpStaticDefinedListsUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -563,44 +448,25 @@ export class StaticDefinedListManagementService {
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (updatemode !== undefined && updatemode !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>updatemode, 'updatemode');
-		}
-		if (translations !== undefined && translations !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>updatemode, 'updatemode');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
 			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
 		}
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -621,12 +487,13 @@ export class StaticDefinedListManagementService {
 		}
 
 		let localVarPath = `/staticdefinedlists/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<StaticDefinedList>('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<StaticDefinedList>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: staticDefinedList,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,

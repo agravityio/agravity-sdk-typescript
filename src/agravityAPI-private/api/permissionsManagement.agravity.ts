@@ -26,6 +26,7 @@ import { PermissionSetting } from '../model/permissionSetting.agravity';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
+import { BaseService } from '../api.base.service';
 
 export interface HttpPermissionSettingsAddIdentitiesRequestParams {
 	/** This endpoint takes the AzureIdentity  and saves it to the allowed permissions in the cosmos db. */
@@ -47,67 +48,13 @@ export interface HttpPermissionSettingsUpdateIdentityRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class PermissionsManagementService {
-	protected basePath = 'http://localhost:7071/api';
-	public defaultHeaders = new HttpHeaders();
-	public configuration = new AgravityConfiguration();
-	public encoder: HttpParameterCodec;
-
+export class PermissionsManagementService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
-		@Optional() configuration: AgravityConfiguration
+		@Optional() configuration?: AgravityConfiguration
 	) {
-		if (configuration) {
-			this.configuration = configuration;
-		}
-		if (typeof this.configuration.basePath !== 'string') {
-			const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
-			if (firstBasePath != undefined) {
-				basePath = firstBasePath;
-			}
-
-			if (typeof basePath !== 'string') {
-				basePath = this.basePath;
-			}
-			this.configuration.basePath = basePath;
-		}
-		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-	}
-
-	// @ts-ignore
-	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-		if (typeof value === 'object' && value instanceof Date === false) {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value);
-		} else {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-		}
-		return httpParams;
-	}
-
-	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-		if (value == null) {
-			return httpParams;
-		}
-
-		if (typeof value === 'object') {
-			if (Array.isArray(value)) {
-				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
-			} else if (value instanceof Date) {
-				if (key != null) {
-					httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
-				} else {
-					throw Error('key may not be null if value is Date');
-				}
-			} else {
-				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
-			}
-		} else if (key != null) {
-			httpParams = httpParams.append(key, value);
-		} else {
-			throw Error('key may not be null if value is not object or array');
-		}
-		return httpParams;
+		super(basePath, configuration);
 	}
 
 	/**
@@ -117,25 +64,25 @@ export class PermissionsManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPermissionSettingsAddIdentities(
-		requestParameters?: HttpPermissionSettingsAddIdentitiesRequestParams,
+		requestParameters: HttpPermissionSettingsAddIdentitiesRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AgravityInfoResponse>;
 	public httpPermissionSettingsAddIdentities(
-		requestParameters?: HttpPermissionSettingsAddIdentitiesRequestParams,
+		requestParameters: HttpPermissionSettingsAddIdentitiesRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpPermissionSettingsAddIdentities(
-		requestParameters?: HttpPermissionSettingsAddIdentitiesRequestParams,
+		requestParameters: HttpPermissionSettingsAddIdentitiesRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpPermissionSettingsAddIdentities(
-		requestParameters?: HttpPermissionSettingsAddIdentitiesRequestParams,
+		requestParameters: HttpPermissionSettingsAddIdentitiesRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -147,32 +94,17 @@ export class PermissionsManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -193,11 +125,12 @@ export class PermissionsManagementService {
 		}
 
 		let localVarPath = `/permissions/settings/identities`;
-		return this.httpClient.request<AgravityInfoResponse>('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: azureIdentity,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -232,32 +165,17 @@ export class PermissionsManagementService {
 	): Observable<any> {
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -271,10 +189,11 @@ export class PermissionsManagementService {
 		}
 
 		let localVarPath = `/permissions/settings`;
-		return this.httpClient.request<PermissionSetting>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<PermissionSetting>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -289,25 +208,25 @@ export class PermissionsManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPermissionSettingsPut(
-		requestParameters?: HttpPermissionSettingsPutRequestParams,
+		requestParameters: HttpPermissionSettingsPutRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<PermissionSetting>;
 	public httpPermissionSettingsPut(
-		requestParameters?: HttpPermissionSettingsPutRequestParams,
+		requestParameters: HttpPermissionSettingsPutRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<PermissionSetting>>;
 	public httpPermissionSettingsPut(
-		requestParameters?: HttpPermissionSettingsPutRequestParams,
+		requestParameters: HttpPermissionSettingsPutRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<PermissionSetting>>;
 	public httpPermissionSettingsPut(
-		requestParameters?: HttpPermissionSettingsPutRequestParams,
+		requestParameters: HttpPermissionSettingsPutRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -319,32 +238,17 @@ export class PermissionsManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -365,11 +269,12 @@ export class PermissionsManagementService {
 		}
 
 		let localVarPath = `/permissions/settings`;
-		return this.httpClient.request<PermissionSetting>('put', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<PermissionSetting>('put', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: permissionSetting,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -384,25 +289,25 @@ export class PermissionsManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPermissionSettingsUpdateIdentity(
-		requestParameters?: HttpPermissionSettingsUpdateIdentityRequestParams,
+		requestParameters: HttpPermissionSettingsUpdateIdentityRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AgravityInfoResponse>;
 	public httpPermissionSettingsUpdateIdentity(
-		requestParameters?: HttpPermissionSettingsUpdateIdentityRequestParams,
+		requestParameters: HttpPermissionSettingsUpdateIdentityRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AgravityInfoResponse>>;
 	public httpPermissionSettingsUpdateIdentity(
-		requestParameters?: HttpPermissionSettingsUpdateIdentityRequestParams,
+		requestParameters: HttpPermissionSettingsUpdateIdentityRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AgravityInfoResponse>>;
 	public httpPermissionSettingsUpdateIdentity(
-		requestParameters?: HttpPermissionSettingsUpdateIdentityRequestParams,
+		requestParameters: HttpPermissionSettingsUpdateIdentityRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -418,32 +323,17 @@ export class PermissionsManagementService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -464,11 +354,12 @@ export class PermissionsManagementService {
 		}
 
 		let localVarPath = `/permissions/settings/identities/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<AgravityInfoResponse>('put', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('put', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: azureIdentity,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,

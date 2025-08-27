@@ -58,20 +58,20 @@ export interface AssetBlob {
 	uploaded_by?: string | null;
 }
 export namespace AssetBlob {
-	export type BlobTypeEnum = 'UNKNOWN' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT' | 'TEXT' | 'OTHER';
 	export const BlobTypeEnum = {
-		Unknown: 'UNKNOWN' as BlobTypeEnum,
-		Image: 'IMAGE' as BlobTypeEnum,
-		Video: 'VIDEO' as BlobTypeEnum,
-		Audio: 'AUDIO' as BlobTypeEnum,
-		Document: 'DOCUMENT' as BlobTypeEnum,
-		Text: 'TEXT' as BlobTypeEnum,
-		Other: 'OTHER' as BlobTypeEnum
-	};
-	export type OrientationEnum = 'PORTRAIT' | 'LANDSCAPE' | 'SQUARE';
+		Unknown: 'UNKNOWN',
+		Image: 'IMAGE',
+		Video: 'VIDEO',
+		Audio: 'AUDIO',
+		Document: 'DOCUMENT',
+		Text: 'TEXT',
+		Other: 'OTHER'
+	} as const;
+	export type BlobTypeEnum = (typeof BlobTypeEnum)[keyof typeof BlobTypeEnum];
 	export const OrientationEnum = {
-		Portrait: 'PORTRAIT' as OrientationEnum,
-		Landscape: 'LANDSCAPE' as OrientationEnum,
-		Square: 'SQUARE' as OrientationEnum
-	};
+		Portrait: 'PORTRAIT',
+		Landscape: 'LANDSCAPE',
+		Square: 'SQUARE'
+	} as const;
+	export type OrientationEnum = (typeof OrientationEnum)[keyof typeof OrientationEnum];
 }

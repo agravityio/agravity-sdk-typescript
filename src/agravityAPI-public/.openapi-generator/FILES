@@ -1,6 +1,7 @@
 .gitignore
 .openapi-generator-ignore
 README.md
+api.base.service.ts
 api.module.ts
 api/api.ts
 api/publicAIOperations.pub.agravity.ts
@@ -111,5 +112,6 @@ model/workspace.pub.agravity.ts
 ng-package.json
 package.json
 param.ts
+provide-api.ts
 tsconfig.json
 variables.ts

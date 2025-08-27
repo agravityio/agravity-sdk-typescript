@@ -122,6 +122,11 @@ function ReplaceStringInFiles {
 
 ReplaceStringInFiles -FolderPath "src" -SearchString "add_properties\?: \{ \[key: string\]: object; \} \| null;" -ReplaceString "add_properties?: { [key: string]: any; } | null;"
 Write-Host "Replace add_properties complete"
+# replace     "translations?: { [key: string]: { [key: string]: object } } | null;"   with     "translations?: { [key: string]: { [key: string]: any } } | null;"
+ReplaceStringInFiles -FolderPath "src" `
+  -SearchString "translations\?\s*:\s*\{\s*\[key:\s*string\]\s*:\s*\{\s*\[key:\s*string\]\s*:\s*object;?\s*\}\s*\}\s*\|\s*null;" `
+  -ReplaceString "translations?: { [key: string]: { [key: string]: any } } | null;"
+Write-Host "Replace translations complete"
 ReplaceStringInFiles -FolderPath "src" -SearchString "default_value\?: object \| null;" -ReplaceString "default_value?: any | null;"
 Write-Host "Replace default_value complete"
 ReplaceStringInFiles -FolderPath "src" -SearchString "custom\?: \{ \[key: string\]: object; \} \| null;" -ReplaceString "custom?: any | null;"
@@ -140,21 +145,21 @@ Write-Host "Replace ai complete"
 # pretty print whole project using prettier
 npx prettier --write src/**
 
-$fileContent = Get-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
-$fileContent[247] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
+# $fileContent = Get-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
+# $fileContent[247] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
     
-# write file
-$fileContent | Set-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
+# # write file
+# $fileContent | Set-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
 
-Write-Host "Remove line in file src\agravityAPI-private\api\assetVersioning.agravity.ts after line 150 complete"
+# Write-Host "Remove line in file src\agravityAPI-private\api\assetVersioning.agravity.ts after line 150 complete"
 
 
-$fileContent = Get-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
-$fileContent[287] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
-# write file
-$fileContent | Set-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
+# $fileContent = Get-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
+# $fileContent[287] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
+# # write file
+# $fileContent | Set-Content "src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts"
 
-Write-Host "Remove line in file src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts after line 150 complete"
+# Write-Host "Remove line in file src\agravityAPI-public\api\publicCollectionSecureUpload.pub.agravity.ts after line 150 complete"
 
 # add line "export * from './encoder';" at the end of index.ts in src\agravityAPI-private
 $fileContent = Get-Content "src\agravityAPI-private\index.ts"
@@ -197,11 +202,11 @@ $json.description = $description
 
 $json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-private/package.json
 
-# add $repoUrl to package.json in line 20
+# # add $repoUrl to package.json in line 20
 $fileContent = Get-Content "src\agravityAPI-private\package.json"
 $fileContent[7] =  $repoUrl
-$fileContent[39] = $fileContent[39] + "`n  " + $access
-# write file
+$fileContent[40] = $fileContent[40] + "`n  " + $access
+# # write file
 $fileContent | Set-Content "src\agravityAPI-private\package.json"
 
 ############### public ###############
@@ -222,11 +227,11 @@ $json.description = $description
 
 $json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-public/package.json
 
-# add $repoUrl to package.json in line 12
+# # add $repoUrl to package.json in line 12
 $fileContent = Get-Content "src\agravityAPI-public\package.json"
 $fileContent[7] =  $repoUrl
-$fileContent[39] = $fileContent[39] + "`n  " + $access
-# write file
+$fileContent[40] = $fileContent[40] + "`n  " + $access
+# # write file
 $fileContent | Set-Content "src\agravityAPI-public\package.json"
 
 # pretty print whole project using prettier

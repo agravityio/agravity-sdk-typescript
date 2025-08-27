@@ -1,34 +1,35 @@
-## @agravity/public@9.4.0
+# @agravity/public@10.0.0
 
 <h1>Agravity API Reference</h1>This is the public API description of Agravity GmbH.<br/><h2>Resources</h2><ul> <li>Collection type management</li> <li>Collections management</li> <li>Assets management</li> <li>Assets operations</li> <li>Assets publishing</li> <li>Collection Sharing (consume share)</li> <li>Secure Upload (validate + upload file)</li> <li>Download ZIP</li> <li>Search</li> <li>General management</li></ul><h2> Operations</h2>Agravity API performs the following operations:<ul> <li>List / get single collection types</li> <li>List / get single collections</li> <li>List / get single  assets</li> <li>Operations on assets like: blobs, rotate, resize, similar, collections, customfields, download</li> <li>List / get single published asset</li> <li>Search for assets or collections</li> <li>Get version of deployment</li></ul><br/><b>API key is needed to access these endpoints.</b><br/><br/>Copyright © Agravity GmbH 2025. All Rights Reserved
 
-The version of the OpenAPI document: 9.4.0
+The version of the OpenAPI document: 10.0.0
 
-### Building
+## Building
 
 To install the required dependencies and to build the typescript sources run:
-```
+
+```console
 npm install
 npm run build
 ```
 
-### publishing
+## Publishing
 
-First build the package then run ```npm publish dist``` (don't forget to specify the `dist` folder!)
+First build the package then run `npm publish dist` (don't forget to specify the `dist` folder!)
 
-### consuming
+## Consuming
 
 Navigate to the folder of your consuming project and run one of next commands.
 
 _published:_
 
-```
-npm install @agravity/public@9.4.0 --save
+```console
+npm install @agravity/public@10.0.0 --save
 ```
 
 _without publishing (not recommended):_
 
-```
+```console
 npm install PATH_TO_GENERATED_PACKAGE/dist.tgz --save
 ```
 
@@ -37,173 +38,126 @@ _It's important to take the tgz file, otherwise you'll get trouble with links on
 _using `npm link`:_
 
 In PATH_TO_GENERATED_PACKAGE/dist:
-```
+
+```console
 npm link
 ```
 
 In your project:
-```
+
+```console
 npm link @agravity/public
 ```
 
 __Note for Windows users:__ The Angular CLI has troubles to use linked npm packages.
-Please refer to this issue https://github.com/angular/angular-cli/issues/8284 for a solution / workaround.
+Please refer to this issue <https://github.com/angular/angular-cli/issues/8284> for a solution / workaround.
 Published packages are not effected by this issue.
 
-
-#### General usage
+### General usage
 
 In your Angular project:
 
+```typescript
 
-```
-// without configuring providers
-import { AgravityPublicApiModule } from '@agravity/public';
-import { HttpClientModule } from '@angular/common/http';
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideApi } from '@agravity/public';
 
-@NgModule({
-    imports: [
-        AgravityPublicApiModule,
-        // make sure to import the HttpClientModule in the AppModule only,
-        // see https://github.com/angular/angular/issues/20575
-        HttpClientModule
-    ],
-    declarations: [ AppComponent ],
-    providers: [],
-    bootstrap: [ AppComponent ]
-})
-export class AppModule {}
-```
-
-```
-// configuring providers
-import { AgravityPublicApiModule, AgravityPublicConfiguration, AgravityPublicConfigurationParameters } from '@agravity/public';
-
-export function apiConfigFactory (): AgravityPublicConfiguration {
-  const params: AgravityPublicConfigurationParameters = {
-    // set configuration parameters here.
-  }
-  return new AgravityPublicConfiguration(params);
-}
-
-@NgModule({
-    imports: [ AgravityPublicApiModule.forRoot(apiConfigFactory) ],
-    declarations: [ AppComponent ],
-    providers: [],
-    bootstrap: [ AppComponent ]
-})
-export class AppModule {}
-```
-
-```
-// configuring providers with an authentication service that manages your access tokens
-import { AgravityPublicApiModule, AgravityPublicConfiguration } from '@agravity/public';
-
-@NgModule({
-    imports: [ AgravityPublicApiModule ],
-    declarations: [ AppComponent ],
+export const appConfig: ApplicationConfig = {
     providers: [
-      {
-        provide: AgravityPublicConfiguration,
-        useFactory: (authService: AuthService) => new AgravityPublicConfiguration(
-          {
-            basePath: environment.apiUrl,
-            accessToken: authService.getAccessToken.bind(authService)
-          }
-        ),
-        deps: [AuthService],
-        multi: false
-      }
+        // ...
+        provideHttpClient(),
+        provideApi()
     ],
-    bootstrap: [ AppComponent ]
-})
-export class AppModule {}
-```
-
-```
-import { DefaultApi } from '@agravity/public';
-
-export class AppComponent {
-    constructor(private apiGateway: DefaultApi) { }
-}
-```
-
-Note: The AgravityPublicApiModule is restricted to being instantiated once app wide.
-This is to ensure that all services are treated as singletons.
-
-#### Using multiple OpenAPI files / APIs / AgravityPublicApiModules
-In order to use multiple `AgravityPublicApiModules` generated from different OpenAPI files,
-you can create an alias name when importing the modules
-in order to avoid naming conflicts:
-```
-import { AgravityPublicApiModule } from 'my-api-path';
-import { AgravityPublicApiModule as OtherApiModule } from 'my-other-api-path';
-import { HttpClientModule } from '@angular/common/http';
-
-@NgModule({
-  imports: [
-    AgravityPublicApiModule,
-    OtherApiModule,
-    // make sure to import the HttpClientModule in the AppModule only,
-    // see https://github.com/angular/angular/issues/20575
-    HttpClientModule
-  ]
-})
-export class AppModule {
-
-}
-```
-
-
-### Set service base path
-If different than the generated base path, during app bootstrap, you can provide the base path to your service.
-
-```
-import { BASE_PATH } from '@agravity/public';
-
-bootstrap(AppComponent, [
-    { provide: BASE_PATH, useValue: 'https://your-web-service.com' },
-]);
-```
-or
-
-```
-import { BASE_PATH } from '@agravity/public';
-
-@NgModule({
-    imports: [],
-    declarations: [ AppComponent ],
-    providers: [ provide: BASE_PATH, useValue: 'https://your-web-service.com' ],
-    bootstrap: [ AppComponent ]
-})
-export class AppModule {}
-```
-
-
-#### Using @angular/cli
-First extend your `src/environments/*.ts` files by adding the corresponding base path:
-
-```
-export const environment = {
-  production: false,
-  API_BASE_PATH: 'http://127.0.0.1:8080'
 };
 ```
 
-In the src/app/app.module.ts:
+**NOTE**
+If you're still using `AppModule` and haven't [migrated](https://angular.dev/reference/migrations/standalone) yet, you can still import an Angular module:
+```typescript
+import { AgravityPublicApiModule } from '@agravity/public';
 ```
-import { BASE_PATH } from '@agravity/public';
+
+If different from the generated base path, during app bootstrap, you can provide the base path to your service.
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideApi } from '@agravity/public';
+
+export const appConfig: ApplicationConfig = {
+    providers: [
+        // ...
+        provideHttpClient(),
+        provideApi('http://localhost:9999')
+    ],
+};
+```
+
+```typescript
+// with a custom configuration
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideApi } from '@agravity/public';
+
+export const appConfig: ApplicationConfig = {
+    providers: [
+        // ...
+        provideHttpClient(),
+        provideApi({
+            withCredentials: true,
+            username: 'user',
+            password: 'password'
+        })
+    ],
+};
+```
+
+```typescript
+// with factory building a custom configuration
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideApi, AgravityPublicConfiguration } from '@agravity/public';
+
+export const appConfig: ApplicationConfig = {
+    providers: [
+        // ...
+        provideHttpClient(),
+        {
+            provide: AgravityPublicConfiguration,
+            useFactory: (authService: AuthService) => new AgravityPublicConfiguration({
+                    basePath: 'http://localhost:9999',
+                    withCredentials: true,
+                    username: authService.getUsername(),
+                    password: authService.getPassword(),
+            }),
+            deps: [AuthService],
+            multi: false
+        }
+    ],
+};
+```
+
+### Using multiple OpenAPI files / APIs
+
+In order to use multiple APIs generated from different OpenAPI files,
+you can create an alias name when importing the modules
+in order to avoid naming conflicts:
+
+```typescript
+import { provideApi as provideUserApi } from 'my-user-api-path';
+import { provideApi as provideAdminApi } from 'my-admin-api-path';
+import { HttpClientModule } from '@angular/common/http';
 import { environment } from '../environments/environment';
 
-@NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [ ],
-  providers: [{ provide: BASE_PATH, useValue: environment.API_BASE_PATH }],
-  bootstrap: [ AppComponent ]
-})
-export class AppModule { }
+export const appConfig: ApplicationConfig = {
+    providers: [
+        // ...
+        provideHttpClient(),
+        provideUserApi(environment.basePath),
+        provideAdminApi(environment.basePath),
+    ],
+};
 ```
 
 ### Customizing path parameter encoding
@@ -219,6 +173,7 @@ pass an arrow-function or method-reference to the `encodeParam` property of the 
 (see [General Usage](#general-usage) above).
 
 Example value for use in your Configuration-Provider:
+
 ```typescript
 new Configuration({
     encodeParam: (param: Param) => myFancyParamEncoder(param),

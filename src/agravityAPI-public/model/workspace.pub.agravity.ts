@@ -15,7 +15,7 @@ export interface Workspace {
 	entity_type?: string | null;
 	name?: string | null;
 	collection_types?: Array<CollectionType> | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	order?: number | null;
 	permissions?: Array<PermissionEntity> | null;
 	description?: string | null;

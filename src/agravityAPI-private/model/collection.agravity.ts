@@ -17,7 +17,7 @@ export interface Collection {
 	level?: number | null;
 	custom?: any | null;
 	items?: Array<CollTypeItem> | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	role?: Collection.RoleEnum;
 	name?: string | null;
 	description?: string | null;
@@ -31,10 +31,10 @@ export interface Collection {
 	_etag?: string | null;
 }
 export namespace Collection {
-	export type RoleEnum = 'NONE' | 'VIEWER' | 'EDITOR';
 	export const RoleEnum = {
-		None: 'NONE' as RoleEnum,
-		Viewer: 'VIEWER' as RoleEnum,
-		Editor: 'EDITOR' as RoleEnum
-	};
+		None: 'NONE',
+		Viewer: 'VIEWER',
+		Editor: 'EDITOR'
+	} as const;
+	export type RoleEnum = (typeof RoleEnum)[keyof typeof RoleEnum];
 }

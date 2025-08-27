@@ -14,12 +14,12 @@ export interface PermissionChange {
 	modify?: PermissionChange.ModifyEnum;
 }
 export namespace PermissionChange {
-	export type ModifyEnum = 'CREATE' | 'ADD' | 'UPDATE' | 'REPLACE' | 'DELETE';
 	export const ModifyEnum = {
-		Create: 'CREATE' as ModifyEnum,
-		Add: 'ADD' as ModifyEnum,
-		Update: 'UPDATE' as ModifyEnum,
-		Replace: 'REPLACE' as ModifyEnum,
-		Delete: 'DELETE' as ModifyEnum
-	};
+		Create: 'CREATE',
+		Add: 'ADD',
+		Update: 'UPDATE',
+		Replace: 'REPLACE',
+		Delete: 'DELETE'
+	} as const;
+	export type ModifyEnum = (typeof ModifyEnum)[keyof typeof ModifyEnum];
 }

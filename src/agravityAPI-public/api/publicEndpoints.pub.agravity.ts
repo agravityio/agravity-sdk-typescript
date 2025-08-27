@@ -20,6 +20,7 @@ import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravi
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
+import { BaseService } from '../api.base.service';
 
 export interface HttpAssetGetViewForPortalRequestParams {
 	/** The ID of the asset. */
@@ -35,67 +36,13 @@ export interface HttpAssetGetViewForPortalRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class PublicEndpointsService {
-	protected basePath = 'http://localhost:7072/api';
-	public defaultHeaders = new HttpHeaders();
-	public configuration = new AgravityPublicConfiguration();
-	public encoder: HttpParameterCodec;
-
+export class PublicEndpointsService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
-		@Optional() configuration: AgravityPublicConfiguration
+		@Optional() configuration?: AgravityPublicConfiguration
 	) {
-		if (configuration) {
-			this.configuration = configuration;
-		}
-		if (typeof this.configuration.basePath !== 'string') {
-			const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
-			if (firstBasePath != undefined) {
-				basePath = firstBasePath;
-			}
-
-			if (typeof basePath !== 'string') {
-				basePath = this.basePath;
-			}
-			this.configuration.basePath = basePath;
-		}
-		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-	}
-
-	// @ts-ignore
-	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-		if (typeof value === 'object' && value instanceof Date === false) {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value);
-		} else {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-		}
-		return httpParams;
-	}
-
-	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-		if (value == null) {
-			return httpParams;
-		}
-
-		if (typeof value === 'object') {
-			if (Array.isArray(value)) {
-				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
-			} else if (value instanceof Date) {
-				if (key != null) {
-					httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
-				} else {
-					throw Error('key may not be null if value is Date');
-				}
-			} else {
-				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
-			}
-		} else if (key != null) {
-			httpParams = httpParams.append(key, value);
-		} else {
-			throw Error('key may not be null if value is not object or array');
-		}
-		return httpParams;
+		super(basePath, configuration);
 	}
 
 	/**
@@ -105,25 +52,25 @@ export class PublicEndpointsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetGetViewForPortal(
-		requestParameters?: HttpAssetGetViewForPortalRequestParams,
+		requestParameters: HttpAssetGetViewForPortalRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<Blob>;
 	public httpAssetGetViewForPortal(
-		requestParameters?: HttpAssetGetViewForPortalRequestParams,
+		requestParameters: HttpAssetGetViewForPortalRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<Blob>>;
 	public httpAssetGetViewForPortal(
-		requestParameters?: HttpAssetGetViewForPortalRequestParams,
+		requestParameters: HttpAssetGetViewForPortalRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<Blob>>;
 	public httpAssetGetViewForPortal(
-		requestParameters?: HttpAssetGetViewForPortalRequestParams,
+		requestParameters: HttpAssetGetViewForPortalRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -143,47 +90,29 @@ export class PublicEndpointsService {
 		const download = requestParameters?.download;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (assetId !== undefined && assetId !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>assetId, 'asset_id');
-		}
-		if (portalId !== undefined && portalId !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
-		}
-		if (format !== undefined && format !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>format, 'format');
-		}
-		if (download !== undefined && download !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>download, 'download');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>assetId, 'asset_id');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>format, 'format');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>download, 'download');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/octet-stream', 'application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/octet-stream', 'application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let localVarPath = `/public/view`;
-		return this.httpClient.request('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: 'blob',
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,

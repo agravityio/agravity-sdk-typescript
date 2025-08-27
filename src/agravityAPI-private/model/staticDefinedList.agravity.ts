@@ -11,7 +11,7 @@
 export interface StaticDefinedList {
 	id?: string | null;
 	entity_type?: string | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	values?: Array<string> | null;
 	name?: string | null;
 	description?: string | null;

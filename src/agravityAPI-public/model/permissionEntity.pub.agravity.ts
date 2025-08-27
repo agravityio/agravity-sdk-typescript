@@ -13,10 +13,10 @@ export interface PermissionEntity {
 	role?: PermissionEntity.RoleEnum;
 }
 export namespace PermissionEntity {
-	export type RoleEnum = 'NONE' | 'VIEWER' | 'EDITOR';
 	export const RoleEnum = {
-		None: 'NONE' as RoleEnum,
-		Viewer: 'VIEWER' as RoleEnum,
-		Editor: 'EDITOR' as RoleEnum
-	};
+		None: 'NONE',
+		Viewer: 'VIEWER',
+		Editor: 'EDITOR'
+	} as const;
+	export type RoleEnum = (typeof RoleEnum)[keyof typeof RoleEnum];
 }

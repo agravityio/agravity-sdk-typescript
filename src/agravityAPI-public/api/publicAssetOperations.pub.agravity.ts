@@ -30,6 +30,7 @@ import { MoveCollectionBody } from '../model/moveCollectionBody.pub.agravity';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
+import { BaseService } from '../api.base.service';
 
 export interface HttpAssetImageEditRequestParams {
 	/** The ID of the asset. */
@@ -148,67 +149,13 @@ export interface HttpPutAssetAvailabilityRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class PublicAssetOperationsService {
-	protected basePath = 'http://localhost:7072/api';
-	public defaultHeaders = new HttpHeaders();
-	public configuration = new AgravityPublicConfiguration();
-	public encoder: HttpParameterCodec;
-
+export class PublicAssetOperationsService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
-		@Optional() configuration: AgravityPublicConfiguration
+		@Optional() configuration?: AgravityPublicConfiguration
 	) {
-		if (configuration) {
-			this.configuration = configuration;
-		}
-		if (typeof this.configuration.basePath !== 'string') {
-			const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
-			if (firstBasePath != undefined) {
-				basePath = firstBasePath;
-			}
-
-			if (typeof basePath !== 'string') {
-				basePath = this.basePath;
-			}
-			this.configuration.basePath = basePath;
-		}
-		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-	}
-
-	// @ts-ignore
-	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-		if (typeof value === 'object' && value instanceof Date === false) {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value);
-		} else {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-		}
-		return httpParams;
-	}
-
-	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-		if (value == null) {
-			return httpParams;
-		}
-
-		if (typeof value === 'object') {
-			if (Array.isArray(value)) {
-				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
-			} else if (value instanceof Date) {
-				if (key != null) {
-					httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
-				} else {
-					throw Error('key may not be null if value is Date');
-				}
-			} else {
-				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
-			}
-		} else if (key != null) {
-			httpParams = httpParams.append(key, value);
-		} else {
-			throw Error('key may not be null if value is not object or array');
-		}
-		return httpParams;
+		super(basePath, configuration);
 	}
 
 	/**
@@ -218,25 +165,25 @@ export class PublicAssetOperationsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetImageEdit(
-		requestParameters?: HttpAssetImageEditRequestParams,
+		requestParameters: HttpAssetImageEditRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<Blob>;
 	public httpAssetImageEdit(
-		requestParameters?: HttpAssetImageEditRequestParams,
+		requestParameters: HttpAssetImageEditRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<Blob>>;
 	public httpAssetImageEdit(
-		requestParameters?: HttpAssetImageEditRequestParams,
+		requestParameters: HttpAssetImageEditRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<Blob>>;
 	public httpAssetImageEdit(
-		requestParameters?: HttpAssetImageEditRequestParams,
+		requestParameters: HttpAssetImageEditRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -262,87 +209,43 @@ export class PublicAssetOperationsService {
 		const original = requestParameters?.original;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (width !== undefined && width !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>width, 'width');
-		}
-		if (height !== undefined && height !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>height, 'height');
-		}
-		if (mode !== undefined && mode !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>mode, 'mode');
-		}
-		if (target !== undefined && target !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>target, 'target');
-		}
-		if (bgcolor !== undefined && bgcolor !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>bgcolor, 'bgcolor');
-		}
-		if (dpi !== undefined && dpi !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>dpi, 'dpi');
-		}
-		if (depth !== undefined && depth !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>depth, 'depth');
-		}
-		if (quality !== undefined && quality !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>quality, 'quality');
-		}
-		if (colorspace !== undefined && colorspace !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>colorspace, 'colorspace');
-		}
-		if (cropX !== undefined && cropX !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropX, 'crop_x');
-		}
-		if (cropY !== undefined && cropY !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropY, 'crop_y');
-		}
-		if (cropWidth !== undefined && cropWidth !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropWidth, 'crop_width');
-		}
-		if (cropHeight !== undefined && cropHeight !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropHeight, 'crop_height');
-		}
-		if (filter !== undefined && filter !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
-		}
-		if (original !== undefined && original !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>original, 'original');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>width, 'width');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>height, 'height');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>mode, 'mode');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>target, 'target');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>bgcolor, 'bgcolor');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>dpi, 'dpi');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>depth, 'depth');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>quality, 'quality');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>colorspace, 'colorspace');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropX, 'crop_x');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropY, 'crop_y');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropWidth, 'crop_width');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropHeight, 'crop_height');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>original, 'original');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['image/xyz', 'application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['image/xyz', 'application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/imageedit`;
-		return this.httpClient.request('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: 'blob',
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -357,25 +260,25 @@ export class PublicAssetOperationsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetResize(
-		requestParameters?: HttpAssetResizeRequestParams,
+		requestParameters: HttpAssetResizeRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<Blob>;
 	public httpAssetResize(
-		requestParameters?: HttpAssetResizeRequestParams,
+		requestParameters: HttpAssetResizeRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<Blob>>;
 	public httpAssetResize(
-		requestParameters?: HttpAssetResizeRequestParams,
+		requestParameters: HttpAssetResizeRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<Blob>>;
 	public httpAssetResize(
-		requestParameters?: HttpAssetResizeRequestParams,
+		requestParameters: HttpAssetResizeRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -387,38 +290,24 @@ export class PublicAssetOperationsService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['image/xyz', 'application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['image/xyz', 'application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/resize`;
-		return this.httpClient.request('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: 'blob',
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -433,25 +322,25 @@ export class PublicAssetOperationsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetToCollection(
-		requestParameters?: HttpAssetToCollectionRequestParams,
+		requestParameters: HttpAssetToCollectionRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any>;
 	public httpAssetToCollection(
-		requestParameters?: HttpAssetToCollectionRequestParams,
+		requestParameters: HttpAssetToCollectionRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<any>>;
 	public httpAssetToCollection(
-		requestParameters?: HttpAssetToCollectionRequestParams,
+		requestParameters: HttpAssetToCollectionRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<any>>;
 	public httpAssetToCollection(
-		requestParameters?: HttpAssetToCollectionRequestParams,
+		requestParameters: HttpAssetToCollectionRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -467,32 +356,17 @@ export class PublicAssetOperationsService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -513,11 +387,12 @@ export class PublicAssetOperationsService {
 		}
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/tocollection`;
-		return this.httpClient.request<any>('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<any>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: moveCollectionBody,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -532,25 +407,25 @@ export class PublicAssetOperationsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGetAssetBlob(
-		requestParameters?: HttpGetAssetBlobRequestParams,
+		requestParameters: HttpGetAssetBlobRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AssetBlob>;
 	public httpGetAssetBlob(
-		requestParameters?: HttpGetAssetBlobRequestParams,
+		requestParameters: HttpGetAssetBlobRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AssetBlob>>;
 	public httpGetAssetBlob(
-		requestParameters?: HttpGetAssetBlobRequestParams,
+		requestParameters: HttpGetAssetBlobRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AssetBlob>>;
 	public httpGetAssetBlob(
-		requestParameters?: HttpGetAssetBlobRequestParams,
+		requestParameters: HttpGetAssetBlobRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -567,44 +442,23 @@ export class PublicAssetOperationsService {
 		const key = requestParameters?.key;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (c !== undefined && c !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>c, 'c');
-		}
-		if (portalId !== undefined && portalId !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
-		}
-		if (key !== undefined && key !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>key, 'key');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>c, 'c');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>key, 'key');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -618,11 +472,12 @@ export class PublicAssetOperationsService {
 		}
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/blobs`;
-		return this.httpClient.request<AssetBlob>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -637,25 +492,25 @@ export class PublicAssetOperationsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGetAssetCollectionsById(
-		requestParameters?: HttpGetAssetCollectionsByIdRequestParams,
+		requestParameters: HttpGetAssetCollectionsByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<Array<Collection>>;
 	public httpGetAssetCollectionsById(
-		requestParameters?: HttpGetAssetCollectionsByIdRequestParams,
+		requestParameters: HttpGetAssetCollectionsByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<Array<Collection>>>;
 	public httpGetAssetCollectionsById(
-		requestParameters?: HttpGetAssetCollectionsByIdRequestParams,
+		requestParameters: HttpGetAssetCollectionsByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<Array<Collection>>>;
 	public httpGetAssetCollectionsById(
-		requestParameters?: HttpGetAssetCollectionsByIdRequestParams,
+		requestParameters: HttpGetAssetCollectionsByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -669,44 +524,25 @@ export class PublicAssetOperationsService {
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (fields !== undefined && fields !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fields, 'fields');
-		}
-		if (translations !== undefined && translations !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fields, 'fields');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
 			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
 		}
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -720,11 +556,12 @@ export class PublicAssetOperationsService {
 		}
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/collections`;
-		return this.httpClient.request<Array<Collection>>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<Collection>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -739,25 +576,25 @@ export class PublicAssetOperationsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGetAssetDownload(
-		requestParameters?: HttpGetAssetDownloadRequestParams,
+		requestParameters: HttpGetAssetDownloadRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AssetBlob>;
 	public httpGetAssetDownload(
-		requestParameters?: HttpGetAssetDownloadRequestParams,
+		requestParameters: HttpGetAssetDownloadRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AssetBlob>>;
 	public httpGetAssetDownload(
-		requestParameters?: HttpGetAssetDownloadRequestParams,
+		requestParameters: HttpGetAssetDownloadRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AssetBlob>>;
 	public httpGetAssetDownload(
-		requestParameters?: HttpGetAssetDownloadRequestParams,
+		requestParameters: HttpGetAssetDownloadRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -772,47 +609,24 @@ export class PublicAssetOperationsService {
 		const key = requestParameters?.key;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (c !== undefined && c !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>c, 'c');
-		}
-		if (f !== undefined && f !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>f, 'f');
-		}
-		if (portalId !== undefined && portalId !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
-		}
-		if (key !== undefined && key !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>key, 'key');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>c, 'c');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>f, 'f');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>key, 'key');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -826,11 +640,12 @@ export class PublicAssetOperationsService {
 		}
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/download`;
-		return this.httpClient.request<AssetBlob>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -845,25 +660,25 @@ export class PublicAssetOperationsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpGetSharedAssetBlob(
-		requestParameters?: HttpGetSharedAssetBlobRequestParams,
+		requestParameters: HttpGetSharedAssetBlobRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AssetBlob>;
 	public httpGetSharedAssetBlob(
-		requestParameters?: HttpGetSharedAssetBlobRequestParams,
+		requestParameters: HttpGetSharedAssetBlobRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AssetBlob>>;
 	public httpGetSharedAssetBlob(
-		requestParameters?: HttpGetSharedAssetBlobRequestParams,
+		requestParameters: HttpGetSharedAssetBlobRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AssetBlob>>;
 	public httpGetSharedAssetBlob(
-		requestParameters?: HttpGetSharedAssetBlobRequestParams,
+		requestParameters: HttpGetSharedAssetBlobRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -883,37 +698,22 @@ export class PublicAssetOperationsService {
 		const ayPassword = requestParameters?.ayPassword;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (shareId !== undefined && shareId !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>shareId, 'share_id');
-		}
-		if (format !== undefined && format !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>format, 'format');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>shareId, 'share_id');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>format, 'format');
 
 		let localVarHeaders = this.defaultHeaders;
 		if (ayPassword !== undefined && ayPassword !== null) {
 			localVarHeaders = localVarHeaders.set('ay-password', String(ayPassword));
 		}
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -927,11 +727,12 @@ export class PublicAssetOperationsService {
 		}
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/blob`;
-		return this.httpClient.request<AssetBlob>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -946,25 +747,25 @@ export class PublicAssetOperationsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpImageDynamicEdit(
-		requestParameters?: HttpImageDynamicEditRequestParams,
+		requestParameters: HttpImageDynamicEditRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<Blob>;
 	public httpImageDynamicEdit(
-		requestParameters?: HttpImageDynamicEditRequestParams,
+		requestParameters: HttpImageDynamicEditRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<Blob>>;
 	public httpImageDynamicEdit(
-		requestParameters?: HttpImageDynamicEditRequestParams,
+		requestParameters: HttpImageDynamicEditRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<Blob>>;
 	public httpImageDynamicEdit(
-		requestParameters?: HttpImageDynamicEditRequestParams,
+		requestParameters: HttpImageDynamicEditRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -980,32 +781,17 @@ export class PublicAssetOperationsService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['image/xyz', 'application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['image/xyz', 'application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -1015,11 +801,12 @@ export class PublicAssetOperationsService {
 		}
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/imageedit`;
-		return this.httpClient.request('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: dynamicImageOperation,
 			responseType: 'blob',
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -1034,25 +821,25 @@ export class PublicAssetOperationsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpImageDynamicGetFromDownloadId(
-		requestParameters?: HttpImageDynamicGetFromDownloadIdRequestParams,
+		requestParameters: HttpImageDynamicGetFromDownloadIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<Blob>;
 	public httpImageDynamicGetFromDownloadId(
-		requestParameters?: HttpImageDynamicGetFromDownloadIdRequestParams,
+		requestParameters: HttpImageDynamicGetFromDownloadIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<Blob>>;
 	public httpImageDynamicGetFromDownloadId(
-		requestParameters?: HttpImageDynamicGetFromDownloadIdRequestParams,
+		requestParameters: HttpImageDynamicGetFromDownloadIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<Blob>>;
 	public httpImageDynamicGetFromDownloadId(
-		requestParameters?: HttpImageDynamicGetFromDownloadIdRequestParams,
+		requestParameters: HttpImageDynamicGetFromDownloadIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'image/xyz' | 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -1068,38 +855,24 @@ export class PublicAssetOperationsService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['image/xyz', 'application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['image/xyz', 'application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/imageedit/${this.configuration.encodeParam({ name: 'downloadFormatId', value: downloadFormatId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: 'blob',
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -1114,25 +887,25 @@ export class PublicAssetOperationsService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpPutAssetAvailability(
-		requestParameters?: HttpPutAssetAvailabilityRequestParams,
+		requestParameters: HttpPutAssetAvailabilityRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AssetAvailability>;
 	public httpPutAssetAvailability(
-		requestParameters?: HttpPutAssetAvailabilityRequestParams,
+		requestParameters: HttpPutAssetAvailabilityRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AssetAvailability>>;
 	public httpPutAssetAvailability(
-		requestParameters?: HttpPutAssetAvailabilityRequestParams,
+		requestParameters: HttpPutAssetAvailabilityRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AssetAvailability>>;
 	public httpPutAssetAvailability(
-		requestParameters?: HttpPutAssetAvailabilityRequestParams,
+		requestParameters: HttpPutAssetAvailabilityRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -1148,32 +921,17 @@ export class PublicAssetOperationsService {
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (function_key) required
-		localVarCredential = this.configuration.lookupCredential('function_key');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('x-functions-key', localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -1194,11 +952,12 @@ export class PublicAssetOperationsService {
 		}
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/availability`;
-		return this.httpClient.request<AssetAvailability>('put', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AssetAvailability>('put', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: assetAvailability,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,

@@ -16,23 +16,23 @@ export interface WhereParam {
 	valueType?: WhereParam.ValueTypeEnum;
 }
 export namespace WhereParam {
-	export type OperatorEnum = 'Equals' | 'NotEquals' | 'GreaterThan' | 'LessThan' | 'GreaterThanOrEqual' | 'LessThanOrEqual' | 'Contains' | 'StartsWith' | 'ArrayContains' | 'ArrayContainsPartial';
 	export const OperatorEnum = {
-		Equals: 'Equals' as OperatorEnum,
-		NotEquals: 'NotEquals' as OperatorEnum,
-		GreaterThan: 'GreaterThan' as OperatorEnum,
-		LessThan: 'LessThan' as OperatorEnum,
-		GreaterThanOrEqual: 'GreaterThanOrEqual' as OperatorEnum,
-		LessThanOrEqual: 'LessThanOrEqual' as OperatorEnum,
-		Contains: 'Contains' as OperatorEnum,
-		StartsWith: 'StartsWith' as OperatorEnum,
-		ArrayContains: 'ArrayContains' as OperatorEnum,
-		ArrayContainsPartial: 'ArrayContainsPartial' as OperatorEnum
-	};
-	export type ValueTypeEnum = 'String' | 'Bool' | 'Number';
+		Equals: 'Equals',
+		NotEquals: 'NotEquals',
+		GreaterThan: 'GreaterThan',
+		LessThan: 'LessThan',
+		GreaterThanOrEqual: 'GreaterThanOrEqual',
+		LessThanOrEqual: 'LessThanOrEqual',
+		Contains: 'Contains',
+		StartsWith: 'StartsWith',
+		ArrayContains: 'ArrayContains',
+		ArrayContainsPartial: 'ArrayContainsPartial'
+	} as const;
+	export type OperatorEnum = (typeof OperatorEnum)[keyof typeof OperatorEnum];
 	export const ValueTypeEnum = {
-		String: 'String' as ValueTypeEnum,
-		Bool: 'Bool' as ValueTypeEnum,
-		Number: 'Number' as ValueTypeEnum
-	};
+		String: 'String',
+		Bool: 'Bool',
+		Number: 'Number'
+	} as const;
+	export type ValueTypeEnum = (typeof ValueTypeEnum)[keyof typeof ValueTypeEnum];
 }

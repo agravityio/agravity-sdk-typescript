@@ -10,5 +10,5 @@
 
 export interface EntityTranslations {
 	id?: string | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 }

@@ -13,9 +13,9 @@ export interface UiTutorials {
 	status?: UiTutorials.StatusEnum;
 }
 export namespace UiTutorials {
-	export type StatusEnum = 'P' | 'F';
 	export const StatusEnum = {
-		P: 'P' as StatusEnum,
-		F: 'F' as StatusEnum
-	};
+		P: 'P',
+		F: 'F'
+	} as const;
+	export type StatusEnum = (typeof StatusEnum)[keyof typeof StatusEnum];
 }

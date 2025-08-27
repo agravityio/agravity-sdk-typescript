@@ -28,6 +28,7 @@ import { SharedCollectionFull } from '../model/sharedCollectionFull.pub.agravity
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
+import { BaseService } from '../api.base.service';
 
 export interface HttpQuickShareGetByIdRequestParams {
 	/** The ID of the quick share. */
@@ -76,67 +77,13 @@ export interface HttpSharedCollectionsRequestZipByIdRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class PublicSharingManagementService {
-	protected basePath = 'http://localhost:7072/api';
-	public defaultHeaders = new HttpHeaders();
-	public configuration = new AgravityPublicConfiguration();
-	public encoder: HttpParameterCodec;
-
+export class PublicSharingManagementService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
-		@Optional() configuration: AgravityPublicConfiguration
+		@Optional() configuration?: AgravityPublicConfiguration
 	) {
-		if (configuration) {
-			this.configuration = configuration;
-		}
-		if (typeof this.configuration.basePath !== 'string') {
-			const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
-			if (firstBasePath != undefined) {
-				basePath = firstBasePath;
-			}
-
-			if (typeof basePath !== 'string') {
-				basePath = this.basePath;
-			}
-			this.configuration.basePath = basePath;
-		}
-		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-	}
-
-	// @ts-ignore
-	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-		if (typeof value === 'object' && value instanceof Date === false) {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value);
-		} else {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-		}
-		return httpParams;
-	}
-
-	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-		if (value == null) {
-			return httpParams;
-		}
-
-		if (typeof value === 'object') {
-			if (Array.isArray(value)) {
-				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
-			} else if (value instanceof Date) {
-				if (key != null) {
-					httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
-				} else {
-					throw Error('key may not be null if value is Date');
-				}
-			} else {
-				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
-			}
-		} else if (key != null) {
-			httpParams = httpParams.append(key, value);
-		} else {
-			throw Error('key may not be null if value is not object or array');
-		}
-		return httpParams;
+		super(basePath, configuration);
 	}
 
 	/**
@@ -146,25 +93,25 @@ export class PublicSharingManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpQuickShareGetById(
-		requestParameters?: HttpQuickShareGetByIdRequestParams,
+		requestParameters: HttpQuickShareGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<QuickShareFull>;
 	public httpQuickShareGetById(
-		requestParameters?: HttpQuickShareGetByIdRequestParams,
+		requestParameters: HttpQuickShareGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<QuickShareFull>>;
 	public httpQuickShareGetById(
-		requestParameters?: HttpQuickShareGetByIdRequestParams,
+		requestParameters: HttpQuickShareGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<QuickShareFull>>;
 	public httpQuickShareGetById(
-		requestParameters?: HttpQuickShareGetByIdRequestParams,
+		requestParameters: HttpQuickShareGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -178,37 +125,20 @@ export class PublicSharingManagementService {
 		const orderby = requestParameters?.orderby;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (continuationToken !== undefined && continuationToken !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>continuationToken, 'continuation_token');
-		}
-		if (limit !== undefined && limit !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
-		}
-		if (orderby !== undefined && orderby !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>orderby, 'orderby');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>continuationToken, 'continuation_token');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>orderby, 'orderby');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -222,11 +152,12 @@ export class PublicSharingManagementService {
 		}
 
 		let localVarPath = `/quickshares/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<QuickShareFull>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<QuickShareFull>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -241,25 +172,25 @@ export class PublicSharingManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSharedCollectionsGetById(
-		requestParameters?: HttpSharedCollectionsGetByIdRequestParams,
+		requestParameters: HttpSharedCollectionsGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<SharedCollectionFull>;
 	public httpSharedCollectionsGetById(
-		requestParameters?: HttpSharedCollectionsGetByIdRequestParams,
+		requestParameters: HttpSharedCollectionsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<SharedCollectionFull>>;
 	public httpSharedCollectionsGetById(
-		requestParameters?: HttpSharedCollectionsGetByIdRequestParams,
+		requestParameters: HttpSharedCollectionsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<SharedCollectionFull>>;
 	public httpSharedCollectionsGetById(
-		requestParameters?: HttpSharedCollectionsGetByIdRequestParams,
+		requestParameters: HttpSharedCollectionsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -275,15 +206,9 @@ export class PublicSharingManagementService {
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (continuationToken !== undefined && continuationToken !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>continuationToken, 'continuation_token');
-		}
-		if (limit !== undefined && limit !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
-		}
-		if (orderby !== undefined && orderby !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>orderby, 'orderby');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>continuationToken, 'continuation_token');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>orderby, 'orderby');
 
 		let localVarHeaders = this.defaultHeaders;
 		if (ayPassword !== undefined && ayPassword !== null) {
@@ -293,25 +218,14 @@ export class PublicSharingManagementService {
 			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
 		}
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -325,11 +239,12 @@ export class PublicSharingManagementService {
 		}
 
 		let localVarPath = `/shared/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<SharedCollectionFull>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<SharedCollectionFull>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -344,25 +259,25 @@ export class PublicSharingManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSharedCollectionsGetStatusZipById(
-		requestParameters?: HttpSharedCollectionsGetStatusZipByIdRequestParams,
+		requestParameters: HttpSharedCollectionsGetStatusZipByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<DownloadZipStatus>;
 	public httpSharedCollectionsGetStatusZipById(
-		requestParameters?: HttpSharedCollectionsGetStatusZipByIdRequestParams,
+		requestParameters: HttpSharedCollectionsGetStatusZipByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<DownloadZipStatus>>;
 	public httpSharedCollectionsGetStatusZipById(
-		requestParameters?: HttpSharedCollectionsGetStatusZipByIdRequestParams,
+		requestParameters: HttpSharedCollectionsGetStatusZipByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<DownloadZipStatus>>;
 	public httpSharedCollectionsGetStatusZipById(
-		requestParameters?: HttpSharedCollectionsGetStatusZipByIdRequestParams,
+		requestParameters: HttpSharedCollectionsGetStatusZipByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -382,25 +297,14 @@ export class PublicSharingManagementService {
 			localVarHeaders = localVarHeaders.set('ay-password', String(ayPassword));
 		}
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
@@ -414,10 +318,11 @@ export class PublicSharingManagementService {
 		}
 
 		let localVarPath = `/shared/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/zip/${this.configuration.encodeParam({ name: 'zipId', value: zipId, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		return this.httpClient.request<DownloadZipStatus>('get', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<DownloadZipStatus>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -432,25 +337,25 @@ export class PublicSharingManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpSharedCollectionsRequestZipById(
-		requestParameters?: HttpSharedCollectionsRequestZipByIdRequestParams,
+		requestParameters: HttpSharedCollectionsRequestZipByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<DownloadZipRequest>;
 	public httpSharedCollectionsRequestZipById(
-		requestParameters?: HttpSharedCollectionsRequestZipByIdRequestParams,
+		requestParameters: HttpSharedCollectionsRequestZipByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<DownloadZipRequest>>;
 	public httpSharedCollectionsRequestZipById(
-		requestParameters?: HttpSharedCollectionsRequestZipByIdRequestParams,
+		requestParameters: HttpSharedCollectionsRequestZipByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<DownloadZipRequest>>;
 	public httpSharedCollectionsRequestZipById(
-		requestParameters?: HttpSharedCollectionsRequestZipByIdRequestParams,
+		requestParameters: HttpSharedCollectionsRequestZipByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -467,25 +372,14 @@ export class PublicSharingManagementService {
 			localVarHeaders = localVarHeaders.set('ay-password', String(ayPassword));
 		}
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -506,11 +400,12 @@ export class PublicSharingManagementService {
 		}
 
 		let localVarPath = `/shared/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/zip`;
-		return this.httpClient.request<DownloadZipRequest>('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<DownloadZipRequest>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: downloadZipRequest,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,

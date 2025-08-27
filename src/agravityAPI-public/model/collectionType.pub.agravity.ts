@@ -15,7 +15,7 @@ export interface CollectionType {
 	entity_type?: string | null;
 	name?: string | null;
 	items?: Array<CollTypeItem> | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	order?: number | null;
 	permissions?: Array<PermissionEntity> | null;
 	permissionless?: boolean | null;
@@ -31,10 +31,10 @@ export interface CollectionType {
 	_etag?: string | null;
 }
 export namespace CollectionType {
-	export type RoleEnum = 'NONE' | 'VIEWER' | 'EDITOR';
 	export const RoleEnum = {
-		None: 'NONE' as RoleEnum,
-		Viewer: 'VIEWER' as RoleEnum,
-		Editor: 'EDITOR' as RoleEnum
-	};
+		None: 'NONE',
+		Viewer: 'VIEWER',
+		Editor: 'EDITOR'
+	} as const;
+	export type RoleEnum = (typeof RoleEnum)[keyof typeof RoleEnum];
 }

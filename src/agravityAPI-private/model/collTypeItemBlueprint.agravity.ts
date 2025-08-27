@@ -14,7 +14,7 @@ export interface CollTypeItemBlueprint {
 	entity_type?: string | null;
 	name?: string | null;
 	items?: Array<CollTypeItem> | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	description?: string | null;
 	add_properties?: { [key: string]: any } | null;
 	status?: string | null;

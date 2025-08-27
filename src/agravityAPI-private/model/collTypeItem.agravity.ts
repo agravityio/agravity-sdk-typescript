@@ -23,7 +23,7 @@ export interface CollTypeItem {
 	md5?: string | null;
 	group?: string | null;
 	order?: number | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

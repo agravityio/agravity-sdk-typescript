@@ -22,6 +22,7 @@ import { Asset } from '../model/asset.agravity';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
+import { BaseService } from '../api.base.service';
 
 export interface HttpWordpressPageRequestParams {
 	/** The title of the wordpress post. */
@@ -52,67 +53,13 @@ export interface HttpWordpressPostRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class WordpressManagementService {
-	protected basePath = 'http://localhost:7071/api';
-	public defaultHeaders = new HttpHeaders();
-	public configuration = new AgravityConfiguration();
-	public encoder: HttpParameterCodec;
-
+export class WordpressManagementService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
-		@Optional() configuration: AgravityConfiguration
+		@Optional() configuration?: AgravityConfiguration
 	) {
-		if (configuration) {
-			this.configuration = configuration;
-		}
-		if (typeof this.configuration.basePath !== 'string') {
-			const firstBasePath = Array.isArray(basePath) ? basePath[0] : undefined;
-			if (firstBasePath != undefined) {
-				basePath = firstBasePath;
-			}
-
-			if (typeof basePath !== 'string') {
-				basePath = this.basePath;
-			}
-			this.configuration.basePath = basePath;
-		}
-		this.encoder = this.configuration.encoder || new CustomHttpParameterCodec();
-	}
-
-	// @ts-ignore
-	private addToHttpParams(httpParams: HttpParams, value: any, key?: string): HttpParams {
-		if (typeof value === 'object' && value instanceof Date === false) {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value);
-		} else {
-			httpParams = this.addToHttpParamsRecursive(httpParams, value, key);
-		}
-		return httpParams;
-	}
-
-	private addToHttpParamsRecursive(httpParams: HttpParams, value?: any, key?: string): HttpParams {
-		if (value == null) {
-			return httpParams;
-		}
-
-		if (typeof value === 'object') {
-			if (Array.isArray(value)) {
-				(value as any[]).forEach((elem) => (httpParams = this.addToHttpParamsRecursive(httpParams, elem, key)));
-			} else if (value instanceof Date) {
-				if (key != null) {
-					httpParams = httpParams.append(key, (value as Date).toISOString().substring(0, 10));
-				} else {
-					throw Error('key may not be null if value is Date');
-				}
-			} else {
-				Object.keys(value).forEach((k) => (httpParams = this.addToHttpParamsRecursive(httpParams, value[k], key != null ? `${key}.${k}` : k)));
-			}
-		} else if (key != null) {
-			httpParams = httpParams.append(key, value);
-		} else {
-			throw Error('key may not be null if value is not object or array');
-		}
-		return httpParams;
+		super(basePath, configuration);
 	}
 
 	/**
@@ -122,25 +69,25 @@ export class WordpressManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpWordpressPage(
-		requestParameters?: HttpWordpressPageRequestParams,
+		requestParameters: HttpWordpressPageRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<number>;
 	public httpWordpressPage(
-		requestParameters?: HttpWordpressPageRequestParams,
+		requestParameters: HttpWordpressPageRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<number>>;
 	public httpWordpressPage(
-		requestParameters?: HttpWordpressPageRequestParams,
+		requestParameters: HttpWordpressPageRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<number>>;
 	public httpWordpressPage(
-		requestParameters?: HttpWordpressPageRequestParams,
+		requestParameters: HttpWordpressPageRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -167,47 +114,24 @@ export class WordpressManagementService {
 		}
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (pageTitle !== undefined && pageTitle !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageTitle, 'page_title');
-		}
-		if (pageContentBefore !== undefined && pageContentBefore !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageContentBefore, 'page_content_before');
-		}
-		if (pageImage !== undefined && pageImage !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageImage, 'page_image');
-		}
-		if (pageContentAfter !== undefined && pageContentAfter !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageContentAfter, 'page_content_after');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageTitle, 'page_title');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageContentBefore, 'page_content_before');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageImage, 'page_image');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageContentAfter, 'page_content_after');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -228,12 +152,13 @@ export class WordpressManagementService {
 		}
 
 		let localVarPath = `/wordpresspage`;
-		return this.httpClient.request<number>('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<number>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: asset,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,
@@ -248,25 +173,25 @@ export class WordpressManagementService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpWordpressPost(
-		requestParameters?: HttpWordpressPostRequestParams,
+		requestParameters: HttpWordpressPostRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<number>;
 	public httpWordpressPost(
-		requestParameters?: HttpWordpressPostRequestParams,
+		requestParameters: HttpWordpressPostRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<number>>;
 	public httpWordpressPost(
-		requestParameters?: HttpWordpressPostRequestParams,
+		requestParameters: HttpWordpressPostRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<number>>;
 	public httpWordpressPost(
-		requestParameters?: HttpWordpressPostRequestParams,
+		requestParameters: HttpWordpressPostRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -293,47 +218,24 @@ export class WordpressManagementService {
 		}
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		if (postTitle !== undefined && postTitle !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postTitle, 'post_title');
-		}
-		if (postContentBefore !== undefined && postContentBefore !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postContentBefore, 'post_content_before');
-		}
-		if (postImage !== undefined && postImage !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postImage, 'post_image');
-		}
-		if (postContentAfter !== undefined && postContentAfter !== null) {
-			localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postContentAfter, 'post_content_after');
-		}
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postTitle, 'post_title');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postContentBefore, 'post_content_before');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postImage, 'post_image');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postContentAfter, 'post_content_after');
 
 		let localVarHeaders = this.defaultHeaders;
 
-		let localVarCredential: string | undefined;
 		// authentication (msal_auth) required
-		localVarCredential = this.configuration.lookupCredential('msal_auth');
-		if (localVarCredential) {
-			localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
-		}
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
 
-		let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-		if (localVarHttpHeaderAcceptSelected === undefined) {
-			// to determine the Accept header
-			const httpHeaderAccepts: string[] = ['application/json'];
-			localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-		}
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
 		if (localVarHttpHeaderAcceptSelected !== undefined) {
 			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
 		}
 
-		let localVarHttpContext: HttpContext | undefined = options && options.context;
-		if (localVarHttpContext === undefined) {
-			localVarHttpContext = new HttpContext();
-		}
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
 
-		let localVarTransferCache: boolean | undefined = options && options.transferCache;
-		if (localVarTransferCache === undefined) {
-			localVarTransferCache = true;
-		}
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
 		// to determine the Content-Type header
 		const consumes: string[] = ['application/json'];
@@ -354,12 +256,13 @@ export class WordpressManagementService {
 		}
 
 		let localVarPath = `/wordpresspost`;
-		return this.httpClient.request<number>('post', `${this.configuration.basePath}${localVarPath}`, {
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<number>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: asset,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
-			withCredentials: this.configuration.withCredentials,
+			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
 			transferCache: localVarTransferCache,

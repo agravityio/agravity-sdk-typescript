@@ -27,7 +27,7 @@ export interface Asset {
 	available_to?: string | null;
 	custom?: any | null;
 	items?: Array<CollTypeItem> | null;
-	translations?: { [key: string]: { [key: string]: object } } | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	role?: Asset.RoleEnum;
 	description?: string | null;
 	add_properties?: { [key: string]: any } | null;
@@ -40,10 +40,10 @@ export interface Asset {
 	_etag?: string | null;
 }
 export namespace Asset {
-	export type RoleEnum = 'NONE' | 'VIEWER' | 'EDITOR';
 	export const RoleEnum = {
-		None: 'NONE' as RoleEnum,
-		Viewer: 'VIEWER' as RoleEnum,
-		Editor: 'EDITOR' as RoleEnum
-	};
+		None: 'NONE',
+		Viewer: 'VIEWER',
+		Editor: 'EDITOR'
+	} as const;
+	export type RoleEnum = (typeof RoleEnum)[keyof typeof RoleEnum];
 }
