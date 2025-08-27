@@ -10,6 +10,20 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ---
 
+## AgravityAPI <a name="10.0.0"/> [10.0.0](https://www.npmjs.com/package/@agravity/private/v/10.0.0) (2025-08-27)
+
+- #1466 Add endpoint GET `/ai/models`- This endpoint returns all deployed multimodal AI Models
+- #614 Subscribe to notifications on a collection
+- #1426 Queue: AI Field generation & Try out endpoint
+- #1439 Search Settings Entity
+- #1412 OpenAI - Use similarity search for "invers image recognition"
+- Replace all "[key: string]: object" with "[key: string]: any"
+- using new openAPI Generator (7.15.0)
+  - 20% less code
+  - Redo RoleEnum
+  - updated packages (typescript and zone.js)
+  - new way to use provideApi (old AppModule way still works)
+
 ## AgravityAPI <a name="9.4.0"/> [9.4.0](https://www.npmjs.com/package/@agravity/private/v/9.4.0) (2025-08-12)
 
 - #1441 Asset Comments: Allow annotations on images

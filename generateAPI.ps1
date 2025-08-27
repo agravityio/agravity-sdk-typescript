@@ -259,8 +259,10 @@ if ($answer -eq "y") {
     if ($answer -eq "y") {
         # publish private package to npm
         Set-Location src/agravityAPI-private
+        npm install
         npm publish --access public
         Set-Location ../agravityAPI-public
+        npm install
         npm publish --access public
         Set-Location ../..
         Write-Host "Publish complete"
