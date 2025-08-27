@@ -193,19 +193,19 @@ export class AssetPublishingService extends BaseService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<{ [key: string]: object }>;
+	): Observable<{ [key: string]: any }>;
 	public getPublishedAssetDetails(
 		requestParameters: GetPublishedAssetDetailsRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<{ [key: string]: object }>>;
+	): Observable<HttpResponse<{ [key: string]: any }>>;
 	public getPublishedAssetDetails(
 		requestParameters: GetPublishedAssetDetailsRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<{ [key: string]: object }>>;
+	): Observable<HttpEvent<{ [key: string]: any }>>;
 	public getPublishedAssetDetails(
 		requestParameters: GetPublishedAssetDetailsRequestParams,
 		observe: any = 'body',
@@ -248,7 +248,7 @@ export class AssetPublishingService extends BaseService {
 
 		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/publish/${this.configuration.encodeParam({ name: 'pid', value: pid, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/info`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<{ [key: string]: object }>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<{ [key: string]: any }>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),

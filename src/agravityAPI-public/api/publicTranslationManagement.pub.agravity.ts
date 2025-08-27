@@ -68,19 +68,19 @@ export class PublicTranslationManagementService extends BaseService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<{ [key: string]: { [key: string]: object } }>;
+	): Observable<{ [key: string]: { [key: string]: any } }>;
 	public httpTranslationsById(
 		requestParameters: HttpTranslationsByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<{ [key: string]: { [key: string]: object } }>>;
+	): Observable<HttpResponse<{ [key: string]: { [key: string]: any } }>>;
 	public httpTranslationsById(
 		requestParameters: HttpTranslationsByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<{ [key: string]: { [key: string]: object } }>>;
+	): Observable<HttpEvent<{ [key: string]: { [key: string]: any } }>>;
 	public httpTranslationsById(
 		requestParameters: HttpTranslationsByIdRequestParams,
 		observe: any = 'body',
@@ -123,7 +123,7 @@ export class PublicTranslationManagementService extends BaseService {
 
 		let localVarPath = `/translations/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<{ [key: string]: { [key: string]: object } }>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<{ [key: string]: { [key: string]: any } }>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
@@ -146,19 +146,19 @@ export class PublicTranslationManagementService extends BaseService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<{ [key: string]: { [key: string]: object } }>;
+	): Observable<{ [key: string]: { [key: string]: any } }>;
 	public httpTranslationsByIdFilterByCustomField(
 		requestParameters: HttpTranslationsByIdFilterByCustomFieldRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<{ [key: string]: { [key: string]: object } }>>;
+	): Observable<HttpResponse<{ [key: string]: { [key: string]: any } }>>;
 	public httpTranslationsByIdFilterByCustomField(
 		requestParameters: HttpTranslationsByIdFilterByCustomFieldRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<{ [key: string]: { [key: string]: object } }>>;
+	): Observable<HttpEvent<{ [key: string]: { [key: string]: any } }>>;
 	public httpTranslationsByIdFilterByCustomField(
 		requestParameters: HttpTranslationsByIdFilterByCustomFieldRequestParams,
 		observe: any = 'body',
@@ -201,7 +201,7 @@ export class PublicTranslationManagementService extends BaseService {
 
 		let localVarPath = `/translations/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/custom/${this.configuration.encodeParam({ name: 'customField', value: customField, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<{ [key: string]: { [key: string]: object } }>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<{ [key: string]: { [key: string]: any } }>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
@@ -223,19 +223,19 @@ export class PublicTranslationManagementService extends BaseService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<{ [key: string]: { [key: string]: object } }>;
+	): Observable<{ [key: string]: { [key: string]: any } }>;
 	public httpTranslationsByIdFilterByProperty(
 		requestParameters: HttpTranslationsByIdFilterByPropertyRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<{ [key: string]: { [key: string]: object } }>>;
+	): Observable<HttpResponse<{ [key: string]: { [key: string]: any } }>>;
 	public httpTranslationsByIdFilterByProperty(
 		requestParameters: HttpTranslationsByIdFilterByPropertyRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<{ [key: string]: { [key: string]: object } }>>;
+	): Observable<HttpEvent<{ [key: string]: { [key: string]: any } }>>;
 	public httpTranslationsByIdFilterByProperty(
 		requestParameters: HttpTranslationsByIdFilterByPropertyRequestParams,
 		observe: any = 'body',
@@ -282,7 +282,7 @@ export class PublicTranslationManagementService extends BaseService {
 
 		let localVarPath = `/translations/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/${this.configuration.encodeParam({ name: 'property', value: property, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<{ [key: string]: { [key: string]: object } }>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<{ [key: string]: { [key: string]: any } }>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,

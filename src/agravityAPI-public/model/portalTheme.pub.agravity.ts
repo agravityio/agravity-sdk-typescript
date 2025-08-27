@@ -15,5 +15,5 @@ export interface PortalTheme {
 	fav_icon?: string | null;
 	icon_empty?: string | null;
 	icon_active?: string | null;
-	colors?: { [key: string]: object } | null;
+	colors?: { [key: string]: any } | null;
 }

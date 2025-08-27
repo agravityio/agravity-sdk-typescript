@@ -17,6 +17,6 @@ export interface GroupAllAppData {
 	collections?: Array<Collection> | null;
 	assets?: Array<Asset> | null;
 	created_date?: string | null;
-	add_info?: Array<{ [key: string]: object }> | null;
+	add_info?: Array<{ [key: string]: any }> | null;
 	dist?: DistZipResponse | null;
 }

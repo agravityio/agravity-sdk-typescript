@@ -99,21 +99,23 @@ Write-Host "Start replacements"
 function ReplaceStringInFiles {
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory = $true, Position = 0)]
-        [string]$FolderPath,
-        [Parameter(Mandatory = $true, Position = 1)]
-        [string]$SearchString,
-        [Parameter(Mandatory = $true, Position = 2)]
-        [string]$ReplaceString
+        [Parameter(Mandatory = $true, Position = 0)][string]$FolderPath,
+        [Parameter(Mandatory = $true, Position = 1)][string]$SearchString,
+        [Parameter(Mandatory = $true, Position = 2)][string]$ReplaceString,
+        [switch]$Literal
     )
 
-    Get-ChildItem -Path $FolderPath -Recurse |
-    ForEach-Object {
-        if (-not $_.PSIsContainer) {
-            $content = Get-Content $_.FullName -Raw
+    Get-ChildItem -Path $FolderPath -Recurse -File | ForEach-Object {
+        $content = Get-Content $_.FullName -Raw
+        if ($Literal) {
+            if ($content.Contains($SearchString)) {
+                $content = $content.Replace($SearchString, $ReplaceString)
+                Set-Content $_.FullName -Value $content
+            }
+        } else {
             if ($content -match $SearchString) {
                 $content = $content -replace $SearchString, $ReplaceString
-                Set-Content $_.FullName -Value $content -NoNewline
+                Set-Content $_.FullName -Value $content
             }
         }
     }
@@ -124,8 +126,8 @@ ReplaceStringInFiles -FolderPath "src" -SearchString "add_properties\?: \{ \[key
 Write-Host "Replace add_properties complete"
 # replace     "translations?: { [key: string]: { [key: string]: object } } | null;"   with     "translations?: { [key: string]: { [key: string]: any } } | null;"
 ReplaceStringInFiles -FolderPath "src" `
-  -SearchString "translations\?\s*:\s*\{\s*\[key:\s*string\]\s*:\s*\{\s*\[key:\s*string\]\s*:\s*object;?\s*\}\s*\}\s*\|\s*null;" `
-  -ReplaceString "translations?: { [key: string]: { [key: string]: any } } | null;"
+  -SearchString "\[key:\s*string\]\s*:\s*object\b" `
+  -ReplaceString "[key: string]: any"
 Write-Host "Replace translations complete"
 ReplaceStringInFiles -FolderPath "src" -SearchString "default_value\?: object \| null;" -ReplaceString "default_value?: any | null;"
 Write-Host "Replace default_value complete"
@@ -143,7 +145,7 @@ Write-Host "Replace ai complete"
 #Write-Host "Add line in file src\agravityAPI-private\api\assetManagement.agravity.ts after line 482 complete"
 
 # pretty print whole project using prettier
-npx prettier --write src/**
+#npx prettier --write src/**
 
 # $fileContent = Get-Content "src\agravityAPI-private\api\assetVersioning.agravity.ts"
 # $fileContent[247] = "            // localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);"
@@ -253,19 +255,21 @@ if ($answer -eq "y") {
     Copy-Item -Path .\src\agravityAPI-public -Destination $publicSrc -Recurse -Force
 
     Write-Host "Copy complete"
+
+    # publish private and public package to npm (only when copied)
+    Write-Host "Do you want to publish private and public package to npm? (y/n)"
+    $answer = Read-Host
+    if ($answer -eq "y") {
+        # publish private package to npm
+        Set-Location src/agravityAPI-private
+        npm publish --access public
+        Set-Location ../agravityAPI-public
+        npm publish --access public
+        Set-Location ../..
+        Write-Host "Publish complete"
+
+        code.cmd .\changelog.md
+    }
 }
 
-# publish private and public package to npm
-Write-Host "Do you want to publish private and public package to npm? (y/n)"
-$answer = Read-Host
-if ($answer -eq "y") {
-    # publish private package to npm
-    Set-Location src/agravityAPI-private
-    npm publish --access public
-    Set-Location ../agravityAPI-public
-    npm publish --access public
-    Set-Location ../..
-    Write-Host "Publish complete"
 
-    code.cmd .\changelog.md
-}

@@ -16,7 +16,7 @@ export interface AssetBlob {
 	extension?: string | null;
 	content_type?: string | null;
 	md5?: string | null;
-	add_data?: { [key: string]: object } | null;
+	add_data?: { [key: string]: any } | null;
 	width?: number | null;
 	height?: number | null;
 	maxwidthheight?: number | null;

@@ -20,5 +20,5 @@ export interface PublishedAsset {
 	cdn?: string | null;
 	status_table_id?: string | null;
 	format?: string | null;
-	properties?: { [key: string]: object } | null;
+	properties?: { [key: string]: any } | null;
 }

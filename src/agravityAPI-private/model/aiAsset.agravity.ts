@@ -11,7 +11,7 @@
 export interface AiAsset {
 	id?: string | null;
 	entity_type?: string | null;
-	fields?: { [key: string]: object } | null;
+	fields?: { [key: string]: any } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;
