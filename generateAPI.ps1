@@ -46,6 +46,9 @@ Write-Host "Generate API with apiVersion: $version"
 Write-Host "Press any key to continue ..."
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 
+Write-Host "Start generating API ..."
+Write-Host "Removing old src folder ..."
+
 # delete folder .\src without error output
 Remove-Item -Path .\src -Recurse -Force -ErrorAction SilentlyContinue
 
@@ -239,11 +242,9 @@ npx prettier --write src/**
 Set-Location .\src
 Set-Location .\agravityAPI-private
 npm install
-npm run build
 Set-Location ..
 Set-Location .\agravityAPI-public
 npm install
-npm run build
 Set-Location ..
 Set-Location ..
 
