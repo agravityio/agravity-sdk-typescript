@@ -1,4 +1,4 @@
-Any known issues detected on that version are listed in the [known issues](#known-issues) section.
+ cosmoAny known issues detected on that version are listed in the [known issues](#known-issues) section.
 
 ## Release notes
 
@@ -9,6 +9,9 @@ and this project does not adheres to [Semantic Versioning](https://semver.org/sp
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
 ---
+## AgravityAPI <a name="10.0.1"/> [10.0.1](https://www.npmjs.com/package/@agravity/private/v/10.0.1) (2025-09-07)
+
+-   Just version upgrade to match backend
 
 ## AgravityAPI <a name="10.0.0"/> [10.0.0](https://www.npmjs.com/package/@agravity/private/v/10.0.0) (2025-08-27)
 
