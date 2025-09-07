@@ -236,6 +236,18 @@ $fileContent | Set-Content "src\agravityAPI-public\package.json"
 # pretty print whole project using prettier
 npx prettier --write src/**
 
+Set-Location .\src
+Set-Location .\agravityAPI-private
+npm install
+npm run build
+Set-Location ..
+Set-Location .\agravityAPI-public
+npm install
+npm run build
+Set-Location ..
+Set-Location ..
+
+
 ######################### ASK FOR COPY SRC FILES TO AGRVITY-ANGULAR-APP #########################
 
 # ask for copy src files to agrvity-angular-app
