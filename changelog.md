@@ -9,6 +9,11 @@ and this project does not adheres to [Semantic Versioning](https://semver.org/sp
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
 ---
+## AgravityAPI <a name="10.0.2"/> [10.0.2](https://www.npmjs.com/package/@agravity/private/v/10.0.2) (2025-09-14)
+
+- Updated StructureImport API with parameters `collectiontypeid`, `parent`, `rootiscolltype`
+- Improve portal: Add `format`property to portals to allow formatting the values
+
 ## AgravityAPI <a name="10.0.1"/> [10.0.1](https://www.npmjs.com/package/@agravity/private/v/10.0.1) (2025-09-07)
 
 -   Just version upgrade to match backend
