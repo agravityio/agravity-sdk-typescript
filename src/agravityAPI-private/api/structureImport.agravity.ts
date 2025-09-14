@@ -24,6 +24,15 @@ import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
+export interface HttpStructureCreateCollectionsRequestParams {
+	/** The collection-type id to be used for creating the structure. If not given, the default collection-type is used (as defined in app settings). */
+	collectiontypeid?: string;
+	/** The collection id to be used as parent for creating the structure. If not given, the structure is created at root level of the given collection-type. */
+	parent?: string;
+	/** If set to true, the root folder level is treated as collection-type and not as collection. Cannot be used together with parameter \&quot;parent\&quot; or \&quot;collectiontypeid\&quot;. Default is false. */
+	rootiscolltype?: string;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -38,29 +47,43 @@ export class StructureImportService extends BaseService {
 
 	/**
 	 * This endpoint reads and creates structure elements for subfolders in the database based on container folder structure
+	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpStructureCreateCollections(
+		requestParameters?: HttpStructureCreateCollectionsRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<Array<BlobInfoObj>>;
 	public httpStructureCreateCollections(
+		requestParameters?: HttpStructureCreateCollectionsRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<Array<BlobInfoObj>>>;
 	public httpStructureCreateCollections(
+		requestParameters?: HttpStructureCreateCollectionsRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<Array<BlobInfoObj>>>;
 	public httpStructureCreateCollections(
+		requestParameters?: HttpStructureCreateCollectionsRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
+		const collectiontypeid = requestParameters?.collectiontypeid;
+		const parent = requestParameters?.parent;
+		const rootiscolltype = requestParameters?.rootiscolltype;
+
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>collectiontypeid, 'collectiontypeid');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>parent, 'parent');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>rootiscolltype, 'rootiscolltype');
+
 		let localVarHeaders = this.defaultHeaders;
 
 		// authentication (msal_auth) required
@@ -90,6 +113,7 @@ export class StructureImportService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<BlobInfoObj>>('put', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
