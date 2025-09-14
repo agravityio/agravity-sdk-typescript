@@ -15,4 +15,5 @@ export interface PortalFields {
 	facet_order?: number | null;
 	labels?: { [key: string]: string } | null;
 	user_context?: PortalUserContext | null;
+	format?: string | null;
 }
