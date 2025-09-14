@@ -16,6 +16,11 @@ if ($null -eq $env:OPENAPI_GENERATOR) {
     exit
 }
 
+# Check if rimraf is installed, if not: install it globally
+if (-not (Get-Command rimraf -ErrorAction SilentlyContinue)) {
+    npm install -g rimraf
+}
+
 # check REST API endpoint /version if backend is running with API key $env:API_KEY as "x-functions-key" header, catch it and if it is not running: exit
 $version = (Invoke-RestMethod -Uri http://localhost:7072/api/version -Method Get -ContentType "application/json" -ErrorAction SilentlyContinue).version
 
@@ -239,16 +244,6 @@ $fileContent | Set-Content "src\agravityAPI-public\package.json"
 # pretty print whole project using prettier
 npx prettier --write src/**
 
-Set-Location .\src
-Set-Location .\agravityAPI-private
-npm install
-Set-Location ..
-Set-Location .\agravityAPI-public
-npm install
-Set-Location ..
-Set-Location ..
-
-
 ######################### ASK FOR COPY SRC FILES TO AGRVITY-ANGULAR-APP #########################
 
 # ask for copy src files to agrvity-angular-app
@@ -274,9 +269,11 @@ if ($answer -eq "y") {
         Set-Location src/agravityAPI-private
         npm install
         npm publish --access public
+        rimraf node_modules package-lock.json
         Set-Location ../agravityAPI-public
         npm install
         npm publish --access public
+        rimraf node_modules package-lock.json
         Set-Location ../..
         Write-Host "Publish complete"
 
