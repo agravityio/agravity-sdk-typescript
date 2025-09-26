@@ -7,6 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ReverseAssetSearchFieldSettings } from './reverseAssetSearchFieldSettings.agravity';
 
 export interface SearchSettings {
 	id?: string | null;
@@ -14,7 +15,7 @@ export interface SearchSettings {
 	vectorizable_ai_field_types?: Array<string> | null;
 	similar_asset_search_ai_field_type_vector?: string | null;
 	similar_asset_search_limit?: number | null;
-	reverse_asset_search_ai_field?: string | null;
+	reverse_asset_search_ai_field?: ReverseAssetSearchFieldSettings | null;
 	broadness?: { [key: string]: Array<string> } | null;
 	status?: string | null;
 	created_date?: string | null;

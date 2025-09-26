@@ -80,6 +80,7 @@ model/assetRelation.agravity.ts
 model/assetRelationType.agravity.ts
 model/assetTextContent.agravity.ts
 model/assetsOperationBody.agravity.ts
+model/availableExportFields.agravity.ts
 model/azSearchOptions.agravity.ts
 model/azureIdentity.agravity.ts
 model/blobInfoObj.agravity.ts
@@ -106,9 +107,14 @@ model/entityListResult.agravity.ts
 model/entityNamesRequest.agravity.ts
 model/entityTranslations.agravity.ts
 model/excelExportTableEntity.agravity.ts
+model/excelImportTableEntity.agravity.ts
+model/exportFieldDefinition.agravity.ts
 model/frontendAppConfig.agravity.ts
 model/groupAllAppData.agravity.ts
 model/historyEntry.agravity.ts
+model/httpAssetExportFieldSelector.agravity.ts
+model/httpAssetExportInputParameter.agravity.ts
+model/httpRequestAvailableExportFieldsInputParameter.agravity.ts
 model/infoEntitySkillEnhanced.agravity.ts
 model/metadata.agravity.ts
 model/models.ts
@@ -128,6 +134,7 @@ model/publishedAsset.agravity.ts
 model/quickShare.agravity.ts
 model/quickShareFull.agravity.ts
 model/relatedAsset.agravity.ts
+model/reverseAssetSearchFieldSettings.agravity.ts
 model/sasToken.agravity.ts
 model/savedSearch.agravity.ts
 model/searchAdminDataSourceStatus.agravity.ts

@@ -8,13 +8,14 @@
  * Do not edit the class manually.
  */
 
-export interface ExcelExportTableEntity {
+export interface ExcelImportTableEntity {
 	url?: string | null;
 	status?: string | null;
-	filters?: string | null;
-	exclude?: string | null;
-	ids?: string | null;
+	userId?: string | null;
+	message?: string | null;
 	language?: string | null;
+	filename?: string | null;
+	progress?: number | null;
 	orchestrationId?: string | null;
 	pk?: string | null;
 	rowkey?: string | null;

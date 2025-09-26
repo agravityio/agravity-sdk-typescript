@@ -15,9 +15,19 @@ import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
 
 // @ts-ignore
+import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
+// @ts-ignore
 import { AgravityInfoResponse } from '../model/agravityInfoResponse.agravity';
 // @ts-ignore
+import { AvailableExportFields } from '../model/availableExportFields.agravity';
+// @ts-ignore
 import { ExcelExportTableEntity } from '../model/excelExportTableEntity.agravity';
+// @ts-ignore
+import { ExcelImportTableEntity } from '../model/excelImportTableEntity.agravity';
+// @ts-ignore
+import { HttpAssetExportInputParameter } from '../model/httpAssetExportInputParameter.agravity';
+// @ts-ignore
+import { HttpRequestAvailableExportFieldsInputParameter } from '../model/httpRequestAvailableExportFieldsInputParameter.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -25,9 +35,9 @@ import { AgravityConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
 export interface HttpDataExportAssetsAsExcelRequestParams {
-	/** Used to specify what to be returned. Valid values are: collection_type_ids, collection_ids and asset_ids. When providing multiple values separate it with comma (\&#39;,\&#39;). */
-	ids?: string;
-	/** In which language the assets should be exported. */
+	/** This endpoint takes an asset export input parameter and starts the excel export. */
+	httpAssetExportInputParameter: HttpAssetExportInputParameter;
+	/** Primary language for the export. */
 	language?: string;
 }
 
@@ -51,6 +61,25 @@ export interface HttpDataExportTranslationsCheckStatusRequestParams {
 	id: string;
 }
 
+export interface HttpDataImportAssetsAsExcelRequestParams {
+	/** The filename of the Excel file to import (must be uploaded to the excel import container). */
+	fileName: string;
+	/** Primary language for the import. */
+	language?: string;
+	/** Whether to delete empty values from assets (default: false - ignore empty values). */
+	deleteEmptyValues?: boolean;
+}
+
+export interface HttpDataImportCheckStatusRequestParams {
+	/** The ID of import */
+	id: string;
+}
+
+export interface HttpGetAvailableExportFieldsRequestParams {
+	/** This endpoint takes an ids request parameter and gets all available fields for these ids. */
+	httpRequestAvailableExportFieldsInputParameter: HttpRequestAvailableExportFieldsInputParameter;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -70,34 +99,36 @@ export class DataImportExportManagementService extends BaseService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpDataExportAssetsAsExcel(
-		requestParameters?: HttpDataExportAssetsAsExcelRequestParams,
+		requestParameters: HttpDataExportAssetsAsExcelRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<ExcelExportTableEntity>;
 	public httpDataExportAssetsAsExcel(
-		requestParameters?: HttpDataExportAssetsAsExcelRequestParams,
+		requestParameters: HttpDataExportAssetsAsExcelRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<ExcelExportTableEntity>>;
 	public httpDataExportAssetsAsExcel(
-		requestParameters?: HttpDataExportAssetsAsExcelRequestParams,
+		requestParameters: HttpDataExportAssetsAsExcelRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<ExcelExportTableEntity>>;
 	public httpDataExportAssetsAsExcel(
-		requestParameters?: HttpDataExportAssetsAsExcelRequestParams,
+		requestParameters: HttpDataExportAssetsAsExcelRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
-		const ids = requestParameters?.ids;
+		const httpAssetExportInputParameter = requestParameters?.httpAssetExportInputParameter;
+		if (httpAssetExportInputParameter === null || httpAssetExportInputParameter === undefined) {
+			throw new Error('Required parameter httpAssetExportInputParameter was null or undefined when calling httpDataExportAssetsAsExcel.');
+		}
 		const language = requestParameters?.language;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>ids, 'ids');
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>language, 'language');
 
 		let localVarHeaders = this.defaultHeaders;
@@ -114,6 +145,13 @@ export class DataImportExportManagementService extends BaseService {
 
 		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
 			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
@@ -127,8 +165,9 @@ export class DataImportExportManagementService extends BaseService {
 
 		let localVarPath = `/data/excel/export/assets`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<ExcelExportTableEntity>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<ExcelExportTableEntity>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			body: httpAssetExportInputParameter,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
@@ -434,6 +473,160 @@ export class DataImportExportManagementService extends BaseService {
 	}
 
 	/**
+	 * This endpoint starts an excel import of assets from an uploaded Excel file.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpDataImportAssetsAsExcel(
+		requestParameters: HttpDataImportAssetsAsExcelRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<ExcelExportTableEntity>;
+	public httpDataImportAssetsAsExcel(
+		requestParameters: HttpDataImportAssetsAsExcelRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<ExcelExportTableEntity>>;
+	public httpDataImportAssetsAsExcel(
+		requestParameters: HttpDataImportAssetsAsExcelRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<ExcelExportTableEntity>>;
+	public httpDataImportAssetsAsExcel(
+		requestParameters: HttpDataImportAssetsAsExcelRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const fileName = requestParameters?.fileName;
+		if (fileName === null || fileName === undefined) {
+			throw new Error('Required parameter fileName was null or undefined when calling httpDataImportAssetsAsExcel.');
+		}
+		const language = requestParameters?.language;
+		const deleteEmptyValues = requestParameters?.deleteEmptyValues;
+
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fileName, 'fileName');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>language, 'language');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>deleteEmptyValues, 'deleteEmptyValues');
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/data/excel/import/assets`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<ExcelExportTableEntity>('post', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			params: localVarQueryParameters,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint retrieves the status of the excel import.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpDataImportCheckStatus(
+		requestParameters: HttpDataImportCheckStatusRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<ExcelImportTableEntity>;
+	public httpDataImportCheckStatus(
+		requestParameters: HttpDataImportCheckStatusRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<ExcelImportTableEntity>>;
+	public httpDataImportCheckStatus(
+		requestParameters: HttpDataImportCheckStatusRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<ExcelImportTableEntity>>;
+	public httpDataImportCheckStatus(
+		requestParameters: HttpDataImportCheckStatusRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpDataImportCheckStatus.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/data/excel/import/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<ExcelImportTableEntity>('get', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint puts a excel file on the translations import blob container
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
@@ -487,6 +680,87 @@ export class DataImportExportManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AgravityInfoResponse>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint gets available fields for asset export selection
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAvailableExportFields(
+		requestParameters: HttpGetAvailableExportFieldsRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AvailableExportFields>;
+	public httpGetAvailableExportFields(
+		requestParameters: HttpGetAvailableExportFieldsRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AvailableExportFields>>;
+	public httpGetAvailableExportFields(
+		requestParameters: HttpGetAvailableExportFieldsRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AvailableExportFields>>;
+	public httpGetAvailableExportFields(
+		requestParameters: HttpGetAvailableExportFieldsRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const httpRequestAvailableExportFieldsInputParameter = requestParameters?.httpRequestAvailableExportFieldsInputParameter;
+		if (httpRequestAvailableExportFieldsInputParameter === null || httpRequestAvailableExportFieldsInputParameter === undefined) {
+			throw new Error('Required parameter httpRequestAvailableExportFieldsInputParameter was null or undefined when calling httpGetAvailableExportFields.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/data/excel/export/assets/fields`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AvailableExportFields>('post', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: httpRequestAvailableExportFieldsInputParameter,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
