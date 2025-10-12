@@ -10,9 +10,11 @@
 
 export interface ExportFieldDefinition {
 	id?: string | null;
-	displayName?: string | null;
-	fieldType?: string | null;
-	isMulti?: boolean | null;
-	isTranslatable?: boolean | null;
-	defaultValue?: object | null;
+	display_name?: string | null;
+	field_type?: string | null;
+	is_multi?: boolean | null;
+	is_translatable?: boolean | null;
+	is_importable?: boolean | null;
+	is_core?: boolean | null;
+	default_value?: any | null;
 }

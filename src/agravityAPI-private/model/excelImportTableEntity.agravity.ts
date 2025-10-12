@@ -11,14 +11,14 @@
 export interface ExcelImportTableEntity {
 	url?: string | null;
 	status?: string | null;
-	userId?: string | null;
+	user_id?: string | null;
 	message?: string | null;
 	language?: string | null;
 	filename?: string | null;
 	progress?: number | null;
-	orchestrationId?: string | null;
+	orchestration_id?: string | null;
 	pk?: string | null;
-	rowkey?: string | null;
+	row_key?: string | null;
 	timestamp?: string | null;
 	eTag?: object;
 }

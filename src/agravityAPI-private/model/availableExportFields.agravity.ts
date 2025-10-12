@@ -10,7 +10,7 @@
 import { ExportFieldDefinition } from './exportFieldDefinition.agravity';
 
 export interface AvailableExportFields {
-	coreFields?: Array<ExportFieldDefinition> | null;
-	customFields?: Array<ExportFieldDefinition> | null;
-	availableLanguages?: Array<string> | null;
+	core_fields?: Array<ExportFieldDefinition> | null;
+	custom_fields?: Array<ExportFieldDefinition> | null;
+	available_languages?: Array<string> | null;
 }

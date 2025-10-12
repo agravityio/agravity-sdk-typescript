@@ -15,9 +15,9 @@ export interface ExcelExportTableEntity {
 	exclude?: string | null;
 	ids?: string | null;
 	language?: string | null;
-	orchestrationId?: string | null;
+	orchestration_id?: string | null;
 	pk?: string | null;
-	rowkey?: string | null;
+	row_key?: string | null;
 	timestamp?: string | null;
 	eTag?: object;
 }
