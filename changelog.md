@@ -1,4 +1,4 @@
- cosmoAny known issues detected on that version are listed in the [known issues](#known-issues) section.
+cosmoAny known issues detected on that version are listed in the [known issues](#known-issues) section.
 
 ## Release notes
 
@@ -8,11 +8,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project does not adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
+## AgravityAPI <a name="10.1.0"/> [10.1.0](https://www.npmjs.com/package/@agravity/private/v/10.1.0) (2025-10-12)
+
+-   1492 AI Field Mapping: include number, bool and date
+    -   Add optional property mapping and translate_mapping on AI fields
+-   1474 Quality Gate Field on Asset
+    -   Add new quality_gate property on asset which is readonly
+-   1102 Asset export to and import from excel for meta data update with selectable fields
+    -   Add new models:
+        -   `AvailableExportFields` - The languages, core and custom fields available in the system
+        -   `ExcelImportTableEntity` -
+        -   `ExportFieldDefinition` - A single field definition (for core and custom field) - (translateable, multi, field_type, importable, etc.)
+    -   Add new endpoints:
+        -   add POST `/data/excel/import/assets` - This endpoint starts an excel import of assets from an uploaded Excel file.
+        -   add GET `/data/excel/import/{id}` - This endpoint retrieves the status of the excel import.
+        -   add POST `/data/excel/export/assets/fields` - This endpoint gets available fields for asset export selection
+
 ---
+
 ## AgravityAPI <a name="10.0.2"/> [10.0.2](https://www.npmjs.com/package/@agravity/private/v/10.0.2) (2025-09-14)
 
-- Updated StructureImport API with parameters `collectiontypeid`, `parent`, `rootiscolltype`
-- Improve portal: Add `format`property to portals to allow formatting the values
+-   Updated StructureImport API with parameters `collectiontypeid`, `parent`, `rootiscolltype`
+-   Improve portal: Add `format`property to portals to allow formatting the values
 
 ## AgravityAPI <a name="10.0.1"/> [10.0.1](https://www.npmjs.com/package/@agravity/private/v/10.0.1) (2025-09-07)
 
@@ -20,21 +37,21 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="10.0.0"/> [10.0.0](https://www.npmjs.com/package/@agravity/private/v/10.0.0) (2025-08-27)
 
-- #1466 Add endpoint GET `/ai/models`- This endpoint returns all deployed multimodal AI Models
-- #614 Subscribe to notifications on a collection
-- #1426 Queue: AI Field generation & Try out endpoint
-- #1439 Search Settings Entity
-- #1412 OpenAI - Use similarity search for "invers image recognition"
-- Replace all "[key: string]: object" with "[key: string]: any"
-- using new openAPI Generator (7.15.0)
-  - 20% less code
-  - Redo RoleEnum
-  - updated packages (typescript and zone.js)
-  - new way to use provideApi (old AppModule way still works)
+-   #1466 Add endpoint GET `/ai/models`- This endpoint returns all deployed multimodal AI Models
+-   #614 Subscribe to notifications on a collection
+-   #1426 Queue: AI Field generation & Try out endpoint
+-   #1439 Search Settings Entity
+-   #1412 OpenAI - Use similarity search for "invers image recognition"
+-   Replace all "[key: string]: object" with "[key: string]: any"
+-   using new openAPI Generator (7.15.0)
+    -   20% less code
+    -   Redo RoleEnum
+    -   updated packages (typescript and zone.js)
+    -   new way to use provideApi (old AppModule way still works)
 
 ## AgravityAPI <a name="9.4.0"/> [9.4.0](https://www.npmjs.com/package/@agravity/private/v/9.4.0) (2025-08-12)
 
-- #1441 Asset Comments: Allow annotations on images
+-   #1441 Asset Comments: Allow annotations on images
 
 ## AgravityAPI <a name="9.3.0"/> [9.3.0](https://www.npmjs.com/package/@agravity/private/v/9.3.0) (2025-07-20)
 
