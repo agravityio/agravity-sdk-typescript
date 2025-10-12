@@ -21,6 +21,7 @@ export interface Asset {
 	blobs?: Array<AssetBlob> | null;
 	collections?: Array<string> | null;
 	failed_reason?: string | null;
+	quality_gate?: Array<string> | null;
 	region_of_origin?: string | null;
 	availability?: string | null;
 	available_from?: string | null;
