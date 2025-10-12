@@ -11,4 +11,6 @@
 export interface AiFieldGeneration {
 	prompt?: string | null;
 	field_type?: string | null;
+	mapping?: string | null;
+	translate_mapping?: boolean | null;
 }
