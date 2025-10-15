@@ -1,6 +1,6 @@
 {
 	"name": "@agravity/public",
-	"version": "10.1.0",
+	"version": "10.1.1",
 	"description": "The Agravity GlobalDAM API which allowes API key authenticated access the Agravity GlobalDAM Backend",
 	"author": "Philipp Losbichler",
 	"repository": {
