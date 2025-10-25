@@ -10,4 +10,5 @@
 
 export interface EntityId {
 	id?: string | null;
+	pk?: string | null;
 }

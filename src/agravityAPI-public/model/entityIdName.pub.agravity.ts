@@ -13,4 +13,5 @@ export interface EntityIdName {
 	entity_type?: string | null;
 	translations?: { [key: string]: { [key: string]: any } } | null;
 	id?: string | null;
+	pk?: string | null;
 }
