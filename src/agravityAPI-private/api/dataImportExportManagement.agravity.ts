@@ -41,6 +41,11 @@ export interface HttpDataExportAssetsAsExcelRequestParams {
 	language?: string;
 }
 
+export interface HttpDataExportCheckStatusRequestParams {
+	/** The ID of excel or translation export */
+	id: string;
+}
+
 export interface HttpDataExportItemsAsExcelRequestParams {
 	/** Used to specify what to be retured. Valid values are: asset, workspace, collection_type and/or only certain collection types (IDs) for exporting. When providing multiple values separate it with comma (\&#39;,\&#39;). */
 	filter?: string;
@@ -52,11 +57,6 @@ export interface HttpDataExportTranslationsAsExcelRequestParams {
 }
 
 export interface HttpDataExportTranslationsCancelRequestParams {
-	/** The ID of translation export */
-	id: string;
-}
-
-export interface HttpDataExportTranslationsCheckStatusRequestParams {
 	/** The ID of translation export */
 	id: string;
 }
@@ -169,6 +169,79 @@ export class DataImportExportManagementService extends BaseService {
 			context: localVarHttpContext,
 			body: httpAssetExportInputParameter,
 			params: localVarQueryParameters,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint retrieves the status and if populated the url to the excel or translation export.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpDataExportCheckStatus(
+		requestParameters: HttpDataExportCheckStatusRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<ExcelExportTableEntity>;
+	public httpDataExportCheckStatus(
+		requestParameters: HttpDataExportCheckStatusRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<ExcelExportTableEntity>>;
+	public httpDataExportCheckStatus(
+		requestParameters: HttpDataExportCheckStatusRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<ExcelExportTableEntity>>;
+	public httpDataExportCheckStatus(
+		requestParameters: HttpDataExportCheckStatusRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpDataExportCheckStatus.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/data/excel/export/status/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<ExcelExportTableEntity>('get', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
@@ -389,79 +462,6 @@ export class DataImportExportManagementService extends BaseService {
 		let localVarPath = `/data/excel/export/translations/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`, {
-			context: localVarHttpContext,
-			responseType: <any>responseType_,
-			...(withCredentials ? { withCredentials } : {}),
-			headers: localVarHeaders,
-			observe: observe,
-			transferCache: localVarTransferCache,
-			reportProgress: reportProgress
-		});
-	}
-
-	/**
-	 * This endpoint retrieves the status and if populated the url to the excel export.
-	 * @param requestParameters
-	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-	 * @param reportProgress flag to report request and response progress.
-	 */
-	public httpDataExportTranslationsCheckStatus(
-		requestParameters: HttpDataExportTranslationsCheckStatusRequestParams,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<ExcelExportTableEntity>;
-	public httpDataExportTranslationsCheckStatus(
-		requestParameters: HttpDataExportTranslationsCheckStatusRequestParams,
-		observe?: 'response',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<ExcelExportTableEntity>>;
-	public httpDataExportTranslationsCheckStatus(
-		requestParameters: HttpDataExportTranslationsCheckStatusRequestParams,
-		observe?: 'events',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<ExcelExportTableEntity>>;
-	public httpDataExportTranslationsCheckStatus(
-		requestParameters: HttpDataExportTranslationsCheckStatusRequestParams,
-		observe: any = 'body',
-		reportProgress: boolean = false,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<any> {
-		const id = requestParameters?.id;
-		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpDataExportTranslationsCheckStatus.');
-		}
-
-		let localVarHeaders = this.defaultHeaders;
-
-		// authentication (msal_auth) required
-		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
-
-		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
-		if (localVarHttpHeaderAcceptSelected !== undefined) {
-			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-		}
-
-		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-		const localVarTransferCache: boolean = options?.transferCache ?? true;
-
-		let responseType_: 'text' | 'json' | 'blob' = 'json';
-		if (localVarHttpHeaderAcceptSelected) {
-			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-				responseType_ = 'text';
-			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-				responseType_ = 'json';
-			} else {
-				responseType_ = 'blob';
-			}
-		}
-
-		let localVarPath = `/data/excel/export/translations/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
-		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<ExcelExportTableEntity>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
