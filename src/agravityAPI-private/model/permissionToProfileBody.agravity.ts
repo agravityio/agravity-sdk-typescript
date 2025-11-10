@@ -7,9 +7,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { HttpAssetExportFieldSelector } from './httpAssetExportFieldSelector.agravity';
 
-export interface HttpAssetExportInputParameter {
-	ids?: Array<string> | null;
-	selected_fields?: Array<HttpAssetExportFieldSelector> | null;
+export interface PermissionToProfileBody {
+	operation?: string | null;
+	permissions?: Array<string> | null;
 }

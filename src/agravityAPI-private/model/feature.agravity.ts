@@ -7,20 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { UiTutorials } from './uiTutorials.agravity';
-import { AgravityUserOnlineStatus } from './agravityUserOnlineStatus.agravity';
 
-export interface AgravityUser {
+export interface Feature {
 	id?: string | null;
 	entity_type?: string | null;
 	name?: string | null;
-	email?: string | null;
-	impersonation?: string | null;
-	apikey?: string | null;
-	online_status?: AgravityUserOnlineStatus | null;
-	roles?: Array<string> | null;
-	groups?: Array<string> | null;
-	tutorials?: Array<UiTutorials> | null;
+	description?: string | null;
+	add_properties?: { [key: string]: any } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

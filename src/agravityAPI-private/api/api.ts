@@ -36,6 +36,8 @@ export * from './downloadFormatManagement.agravity';
 import { DownloadFormatManagementService } from './downloadFormatManagement.agravity';
 export * from './downloadZip.agravity';
 import { DownloadZipService } from './downloadZip.agravity';
+export * from './featuresManagement.agravity';
+import { FeaturesManagementService } from './featuresManagement.agravity';
 export * from './generalManagement.agravity';
 import { GeneralManagementService } from './generalManagement.agravity';
 export * from './helperTools.agravity';
@@ -58,6 +60,8 @@ export * from './portalManagement.agravity';
 import { PortalManagementService } from './portalManagement.agravity';
 export * from './portalsUsersManagement.agravity';
 import { PortalsUsersManagementService } from './portalsUsersManagement.agravity';
+export * from './profilesManagement.agravity';
+import { ProfilesManagementService } from './profilesManagement.agravity';
 export * from './publishing.agravity';
 import { PublishingService } from './publishing.agravity';
 export * from './quickshareManagement.agravity';
@@ -108,6 +112,7 @@ export const APIS = [
 	DataImportExportManagementService,
 	DownloadFormatManagementService,
 	DownloadZipService,
+	FeaturesManagementService,
 	GeneralManagementService,
 	HelperToolsService,
 	HistoryEntryManagementService,
@@ -119,6 +124,7 @@ export const APIS = [
 	PermissionsManagementService,
 	PortalManagementService,
 	PortalsUsersManagementService,
+	ProfilesManagementService,
 	PublishingService,
 	QuickshareManagementService,
 	SavedSearchManagementService,

@@ -23,6 +23,7 @@ api/dashboardWidgetManagement.agravity.ts
 api/dataImportExportManagement.agravity.ts
 api/downloadFormatManagement.agravity.ts
 api/downloadZip.agravity.ts
+api/featuresManagement.agravity.ts
 api/generalManagement.agravity.ts
 api/helperTools.agravity.ts
 api/historyEntryManagement.agravity.ts
@@ -34,6 +35,7 @@ api/notificationManagement.agravity.ts
 api/permissionsManagement.agravity.ts
 api/portalManagement.agravity.ts
 api/portalsUsersManagement.agravity.ts
+api/profilesManagement.agravity.ts
 api/publishing.agravity.ts
 api/quickshareManagement.agravity.ts
 api/savedSearchManagement.agravity.ts
@@ -109,6 +111,7 @@ model/entityTranslations.agravity.ts
 model/excelExportTableEntity.agravity.ts
 model/excelImportTableEntity.agravity.ts
 model/exportFieldDefinition.agravity.ts
+model/feature.agravity.ts
 model/frontendAppConfig.agravity.ts
 model/groupAllAppData.agravity.ts
 model/historyEntry.agravity.ts
@@ -123,12 +126,14 @@ model/notificationSettingDto.agravity.ts
 model/permissionChange.agravity.ts
 model/permissionEntity.agravity.ts
 model/permissionSetting.agravity.ts
+model/permissionToProfileBody.agravity.ts
 model/portal.agravity.ts
 model/portalAuthentication.agravity.ts
 model/portalFields.agravity.ts
 model/portalLinks.agravity.ts
 model/portalTheme.agravity.ts
 model/portalUserContext.agravity.ts
+model/profile.agravity.ts
 model/publishEntity.agravity.ts
 model/publishedAsset.agravity.ts
 model/quickShare.agravity.ts
