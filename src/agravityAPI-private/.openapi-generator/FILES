@@ -63,6 +63,7 @@ model/agravityUserDto.agravity.ts
 model/agravityUserOnlineStatus.agravity.ts
 model/agravityVersion.agravity.ts
 model/aiAsset.agravity.ts
+model/aiAssetStatus.agravity.ts
 model/aiFieldGeneration.agravity.ts
 model/aiModelDeployment.agravity.ts
 model/aiSettings.agravity.ts

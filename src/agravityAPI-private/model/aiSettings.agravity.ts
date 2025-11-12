@@ -16,6 +16,7 @@ export interface AiSettings {
 	field_types?: Array<string> | null;
 	image?: AiTypeSettings | null;
 	document?: AiTypeSettings | null;
+	video?: AiTypeSettings | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

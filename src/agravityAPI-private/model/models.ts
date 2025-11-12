@@ -6,6 +6,7 @@ export * from './agravityUserDto.agravity';
 export * from './agravityUserOnlineStatus.agravity';
 export * from './agravityVersion.agravity';
 export * from './aiAsset.agravity';
+export * from './aiAssetStatus.agravity';
 export * from './aiFieldGeneration.agravity';
 export * from './aiModelDeployment.agravity';
 export * from './aiSettings.agravity';

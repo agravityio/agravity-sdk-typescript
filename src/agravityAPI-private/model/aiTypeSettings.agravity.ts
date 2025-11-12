@@ -14,4 +14,5 @@ export interface AiTypeSettings {
 	deployment_name?: string | null;
 	temperature?: number | null;
 	fields?: { [key: string]: AiFieldGeneration } | null;
+	default_fields?: { [key: string]: AiFieldGeneration } | null;
 }
