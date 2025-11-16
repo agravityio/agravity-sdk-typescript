@@ -13,6 +13,7 @@ export interface CollectionUDL {
 	children?: Array<EntityIdName> | null;
 	name?: string | null;
 	entity_type?: string | null;
+	status?: string | null;
 	translations?: { [key: string]: { [key: string]: any } } | null;
 	id?: string | null;
 	pk?: string | null;
