@@ -123,7 +123,7 @@ model/infoEntitySkillEnhanced.agravity.ts
 model/metadata.agravity.ts
 model/models.ts
 model/moveCollectionBody.agravity.ts
-model/notificationSettingDto.agravity.ts
+model/notificationSettingsEntry.agravity.ts
 model/permissionChange.agravity.ts
 model/permissionEntity.agravity.ts
 model/permissionSetting.agravity.ts

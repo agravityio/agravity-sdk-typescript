@@ -25,7 +25,7 @@ import { EntityListResult } from '../model/entityListResult.agravity';
 // @ts-ignore
 import { EntityNamesRequest } from '../model/entityNamesRequest.agravity';
 // @ts-ignore
-import { NotificationSettingDto } from '../model/notificationSettingDto.agravity';
+import { NotificationSettingsEntry } from '../model/notificationSettingsEntry.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -588,19 +588,19 @@ export class CollectionManagementService extends BaseService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<NotificationSettingDto>;
+	): Observable<NotificationSettingsEntry>;
 	public httpCollectionsGetNotificationSettingsOfId(
 		requestParameters: HttpCollectionsGetNotificationSettingsOfIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<NotificationSettingDto>>;
+	): Observable<HttpResponse<NotificationSettingsEntry>>;
 	public httpCollectionsGetNotificationSettingsOfId(
 		requestParameters: HttpCollectionsGetNotificationSettingsOfIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<NotificationSettingDto>>;
+	): Observable<HttpEvent<NotificationSettingsEntry>>;
 	public httpCollectionsGetNotificationSettingsOfId(
 		requestParameters: HttpCollectionsGetNotificationSettingsOfIdRequestParams,
 		observe: any = 'body',
@@ -639,7 +639,7 @@ export class CollectionManagementService extends BaseService {
 
 		let localVarPath = `/collections/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/notificationsettings`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<NotificationSettingDto>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<NotificationSettingsEntry>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),

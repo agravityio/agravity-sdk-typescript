@@ -8,11 +8,10 @@
  * Do not edit the class manually.
  */
 
-export interface NotificationSettingDto {
+export interface NotificationSettingsEntry {
 	id?: string | null;
+	coll_id?: string | null;
 	event_types?: Array<string> | null;
 	frequency?: string | null;
-	coll_id?: string | null;
 	include_sub_collections?: boolean | null;
-	pk?: string | null;
 }

@@ -17,9 +17,7 @@ import { Observable } from 'rxjs';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
 // @ts-ignore
-import { Comment } from '../model/comment.agravity';
-// @ts-ignore
-import { NotificationSettingDto } from '../model/notificationSettingDto.agravity';
+import { NotificationSettingsEntry } from '../model/notificationSettingsEntry.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -33,7 +31,7 @@ export interface HttpNotificationSettingDeleteByIdRequestParams {
 
 export interface HttpNotificationSettingsCreateOrUpdateRequestParams {
 	/** The notification setting to create */
-	notificationSettingDto: NotificationSettingDto;
+	notificationSettingsEntry: NotificationSettingsEntry;
 }
 
 @Injectable({
@@ -132,28 +130,28 @@ export class NotificationManagementService extends BaseService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Comment>;
+	): Observable<NotificationSettingsEntry>;
 	public httpNotificationSettingsCreateOrUpdate(
 		requestParameters: HttpNotificationSettingsCreateOrUpdateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Comment>>;
+	): Observable<HttpResponse<NotificationSettingsEntry>>;
 	public httpNotificationSettingsCreateOrUpdate(
 		requestParameters: HttpNotificationSettingsCreateOrUpdateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Comment>>;
+	): Observable<HttpEvent<NotificationSettingsEntry>>;
 	public httpNotificationSettingsCreateOrUpdate(
 		requestParameters: HttpNotificationSettingsCreateOrUpdateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
-		const notificationSettingDto = requestParameters?.notificationSettingDto;
-		if (notificationSettingDto === null || notificationSettingDto === undefined) {
-			throw new Error('Required parameter notificationSettingDto was null or undefined when calling httpNotificationSettingsCreateOrUpdate.');
+		const notificationSettingsEntry = requestParameters?.notificationSettingsEntry;
+		if (notificationSettingsEntry === null || notificationSettingsEntry === undefined) {
+			throw new Error('Required parameter notificationSettingsEntry was null or undefined when calling httpNotificationSettingsCreateOrUpdate.');
 		}
 
 		let localVarHeaders = this.defaultHeaders;
@@ -190,9 +188,9 @@ export class NotificationManagementService extends BaseService {
 
 		let localVarPath = `/notificationsettings`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<Comment>('post', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<NotificationSettingsEntry>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			body: notificationSettingDto,
+			body: notificationSettingsEntry,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
@@ -211,17 +209,17 @@ export class NotificationManagementService extends BaseService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Array<NotificationSettingDto>>;
+	): Observable<Array<NotificationSettingsEntry>>;
 	public httpNotificationSettingsGetAll(
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Array<NotificationSettingDto>>>;
+	): Observable<HttpResponse<Array<NotificationSettingsEntry>>>;
 	public httpNotificationSettingsGetAll(
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Array<NotificationSettingDto>>>;
+	): Observable<HttpEvent<Array<NotificationSettingsEntry>>>;
 	public httpNotificationSettingsGetAll(
 		observe: any = 'body',
 		reportProgress: boolean = false,
@@ -254,7 +252,7 @@ export class NotificationManagementService extends BaseService {
 
 		let localVarPath = `/notificationsettings`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<Array<NotificationSettingDto>>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<Array<NotificationSettingsEntry>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),

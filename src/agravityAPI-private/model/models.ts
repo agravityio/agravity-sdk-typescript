@@ -65,7 +65,7 @@ export * from './httpRequestAvailableExportFieldsInputParameter.agravity';
 export * from './infoEntitySkillEnhanced.agravity';
 export * from './metadata.agravity';
 export * from './moveCollectionBody.agravity';
-export * from './notificationSettingDto.agravity';
+export * from './notificationSettingsEntry.agravity';
 export * from './permissionChange.agravity';
 export * from './permissionEntity.agravity';
 export * from './permissionSetting.agravity';
