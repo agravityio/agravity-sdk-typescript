@@ -35,6 +35,8 @@ git_push.sh
 index.ts
 model/agravityErrorResponse.pub.agravity.ts
 model/agravityInfoResponse.pub.agravity.ts
+model/agravityUser.pub.agravity.ts
+model/agravityUserOnlineStatus.pub.agravity.ts
 model/agravityVersion.pub.agravity.ts
 model/allWebAppData.pub.agravity.ts
 model/asset.pub.agravity.ts

@@ -1,5 +1,5 @@
 /**
- * Agravity OpenAPI Documentation - Private Functions
+ * Agravity OpenAPI Documentation - Public Functions
  *
  * Contact: office@agravity.io
  *
@@ -7,7 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { AgravityUserOnlineStatus } from './agravityUserOnlineStatus.agravity';
+import { AgravityUserOnlineStatus } from './agravityUserOnlineStatus.pub.agravity';
 
 export interface AgravityUser {
 	id?: string | null;

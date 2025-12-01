@@ -447,7 +447,7 @@ export class AuthenticationManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint returns the Agravity user from database.
+	 * This gets the user information about an Agravity User (incl. Online Status). Only full information if requester and userId are the same or it has role Admin.
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.

@@ -164,7 +164,6 @@ model/signalRConnectionInfo.agravity.ts
 model/staticDefinedList.agravity.ts
 model/translation.agravity.ts
 model/translationRequest.agravity.ts
-model/uiTutorials.agravity.ts
 model/versionEntity.agravity.ts
 model/versionedAsset.agravity.ts
 model/whereParam.agravity.ts
