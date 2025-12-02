@@ -9,6 +9,7 @@
  */
 import { CollTypeItem } from './collTypeItem.pub.agravity';
 import { AssetBlob } from './assetBlob.pub.agravity';
+import { AssetCheckout } from './assetCheckout.pub.agravity';
 
 export interface Asset {
 	id?: string | null;
@@ -26,6 +27,7 @@ export interface Asset {
 	availability?: string | null;
 	available_from?: string | null;
 	available_to?: string | null;
+	checkout?: AssetCheckout | null;
 	custom?: any | null;
 	items?: Array<CollTypeItem> | null;
 	translations?: { [key: string]: { [key: string]: any } } | null;

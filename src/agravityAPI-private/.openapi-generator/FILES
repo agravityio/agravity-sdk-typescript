@@ -75,6 +75,7 @@ model/asset.agravity.ts
 model/assetAvailability.agravity.ts
 model/assetBlob.agravity.ts
 model/assetBulkUpdate.agravity.ts
+model/assetCheckout.agravity.ts
 model/assetCollectionLink.agravity.ts
 model/assetIconRule.agravity.ts
 model/assetIdFormat.agravity.ts

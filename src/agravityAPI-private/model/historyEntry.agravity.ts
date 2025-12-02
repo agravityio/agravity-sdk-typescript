@@ -37,7 +37,8 @@ export namespace HistoryEntry {
 		DirtyMarked: 'DirtyMarked',
 		SystemUpgrade: 'SystemUpgrade',
 		Untracked: 'Untracked',
-		Restored: 'Restored'
+		Restored: 'Restored',
+		CheckOutChanged: 'CheckOutChanged'
 	} as const;
 	export type NameEnum = (typeof NameEnum)[keyof typeof NameEnum];
 }
