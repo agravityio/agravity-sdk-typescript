@@ -173,6 +173,8 @@ export interface HttpImageDynamicEditRequestParams {
 	id: string;
 	/** Operations to be performed on the image directly mapped to c# imagemagick sdk */
 	dynamicImageOperation: Array<DynamicImageOperation>;
+	/** If the file should have a specific naming. */
+	targetFilename?: string;
 }
 
 export interface HttpImageDynamicGetFromDownloadIdRequestParams {
@@ -1372,6 +1374,10 @@ export class AssetOperationsService extends BaseService {
 		if (dynamicImageOperation === null || dynamicImageOperation === undefined) {
 			throw new Error('Required parameter dynamicImageOperation was null or undefined when calling httpImageDynamicEdit.');
 		}
+		const targetFilename = requestParameters?.targetFilename;
+
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>targetFilename, 'target_filename');
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -1399,6 +1405,7 @@ export class AssetOperationsService extends BaseService {
 		return this.httpClient.request('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: dynamicImageOperation,
+			params: localVarQueryParameters,
 			responseType: 'blob',
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
