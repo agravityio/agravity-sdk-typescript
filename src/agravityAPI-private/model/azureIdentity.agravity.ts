@@ -20,6 +20,7 @@ export namespace AzureIdentity {
 		User: 'USER',
 		Group: 'GROUP',
 		Apikey: 'APIKEY',
+		Apikeyuser: 'APIKEYUSER',
 		Portal: 'PORTAL',
 		Shared: 'SHARED'
 	} as const;
