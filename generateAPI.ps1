@@ -265,15 +265,20 @@ if ($answer -eq "y") {
     Write-Host "Do you want to publish private and public package to npm? (y/n)"
     $answer = Read-Host
     if ($answer -eq "y") {
+        npm login
+
         # publish private package to npm
         Set-Location src/agravityAPI-private
         npm install
         npm publish --access public
         rimraf node_modules package-lock.json
+        
+        # publish public package to npm
         Set-Location ../agravityAPI-public
         npm install
         npm publish --access public
         rimraf node_modules package-lock.json
+
         Set-Location ../..
         Write-Host "Publish complete"
 
