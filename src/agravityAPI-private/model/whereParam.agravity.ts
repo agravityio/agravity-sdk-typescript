@@ -26,7 +26,11 @@ export namespace WhereParam {
 		Contains: 'Contains',
 		StartsWith: 'StartsWith',
 		ArrayContains: 'ArrayContains',
-		ArrayContainsPartial: 'ArrayContainsPartial'
+		ArrayContainsPartial: 'ArrayContainsPartial',
+		IsDefined: 'IsDefined',
+		IsNotDefined: 'IsNotDefined',
+		IsEmpty: 'IsEmpty',
+		IsNotEmpty: 'IsNotEmpty'
 	} as const;
 	export type OperatorEnum = (typeof OperatorEnum)[keyof typeof OperatorEnum];
 	export const ValueTypeEnum = {

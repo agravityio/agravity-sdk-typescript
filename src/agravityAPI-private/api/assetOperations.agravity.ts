@@ -44,6 +44,13 @@ import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
+export interface HttpAssetCheckoutToggleRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** Set to \&#39;true\&#39; to checkout the asset, \&#39;false\&#39; to checkin the asset. */
+	checkout: boolean;
+}
+
 export interface HttpAssetImageEditRequestParams {
 	/** The ID of the asset. */
 	id: string;
@@ -237,6 +244,87 @@ export class AssetOperationsService extends BaseService {
 		@Optional() configuration?: AgravityConfiguration
 	) {
 		super(basePath, configuration);
+	}
+
+	/**
+	 * This endpoint allows to checkout or checkin an asset. When an asset is checked out, only the user who checked it out (or admins) can create new versions or delete the asset.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetCheckoutToggle(
+		requestParameters: HttpAssetCheckoutToggleRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AgravityInfoResponse>;
+	public httpAssetCheckoutToggle(
+		requestParameters: HttpAssetCheckoutToggleRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpAssetCheckoutToggle(
+		requestParameters: HttpAssetCheckoutToggleRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpAssetCheckoutToggle(
+		requestParameters: HttpAssetCheckoutToggleRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpAssetCheckoutToggle.');
+		}
+		const checkout = requestParameters?.checkout;
+		if (checkout === null || checkout === undefined) {
+			throw new Error('Required parameter checkout was null or undefined when calling httpAssetCheckoutToggle.');
+		}
+
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>checkout, 'checkout');
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/checkout`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('put', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			params: localVarQueryParameters,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
 	}
 
 	/**

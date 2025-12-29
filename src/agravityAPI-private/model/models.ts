@@ -18,6 +18,7 @@ export * from './asset.agravity';
 export * from './assetAvailability.agravity';
 export * from './assetBlob.agravity';
 export * from './assetBulkUpdate.agravity';
+export * from './assetCheckout.agravity';
 export * from './assetCollectionLink.agravity';
 export * from './assetIconRule.agravity';
 export * from './assetIdFormat.agravity';
