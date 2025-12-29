@@ -30,7 +30,8 @@ export namespace AiAssetStatus {
 		Saving: 'SAVING',
 		Cleanup: 'CLEANUP',
 		Done: 'DONE',
-		Cancelled: 'CANCELLED'
+		Cancelled: 'CANCELLED',
+		Removed: 'REMOVED'
 	} as const;
 	export type StatusEnum = (typeof StatusEnum)[keyof typeof StatusEnum];
 }

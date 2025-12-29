@@ -26,6 +26,8 @@ import { AiModelDeployment } from '../model/aiModelDeployment.agravity';
 import { AiSettings } from '../model/aiSettings.agravity';
 // @ts-ignore
 import { SearchResult } from '../model/searchResult.agravity';
+// @ts-ignore
+import { TranscriptItem } from '../model/transcriptItem.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -50,6 +52,13 @@ export interface HttpGetAIAssetByIdRequestParams {
 export interface HttpGetAIAssetStatusByIdRequestParams {
 	/** The ID of the Asset. */
 	id: string;
+}
+
+export interface HttpGetAIAssetTranscriptTranslationByIdRequestParams {
+	/** The ID of the Asset. */
+	id: string;
+	/** The language of the AI Asset transcription. */
+	language: string;
 }
 
 export interface HttpPatchAiAssetsRequestParams {
@@ -79,6 +88,13 @@ export interface HttpTryAIFieldGenerationPostRequestParams {
 	fieldName: string;
 	/** This endpoint tries out an AI Field generation on one asset and returns the result */
 	aiSettings: AiSettings;
+}
+
+export interface HttpUpdateAIAssetRequestParams {
+	/** The ID of the Asset. */
+	id: string;
+	/** This endpoint updates the AI Asset. */
+	aiAsset: AiAsset;
 }
 
 @Injectable({
@@ -450,6 +466,83 @@ export class AIOperationsService extends BaseService {
 		let localVarPath = `/ai/assetsstatus/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AiAssetStatus>('get', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns the Transcript Translation for a given Asset ID
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAIAssetTranscriptTranslationById(
+		requestParameters: HttpGetAIAssetTranscriptTranslationByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<Array<TranscriptItem>>;
+	public httpGetAIAssetTranscriptTranslationById(
+		requestParameters: HttpGetAIAssetTranscriptTranslationByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<Array<TranscriptItem>>>;
+	public httpGetAIAssetTranscriptTranslationById(
+		requestParameters: HttpGetAIAssetTranscriptTranslationByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<Array<TranscriptItem>>>;
+	public httpGetAIAssetTranscriptTranslationById(
+		requestParameters: HttpGetAIAssetTranscriptTranslationByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetAIAssetTranscriptTranslationById.');
+		}
+		const language = requestParameters?.language;
+		if (language === null || language === undefined) {
+			throw new Error('Required parameter language was null or undefined when calling httpGetAIAssetTranscriptTranslationById.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/ai/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/transcript/translation/${this.configuration.encodeParam({ name: 'language', value: language, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<TranscriptItem>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
@@ -869,6 +962,91 @@ export class AIOperationsService extends BaseService {
 		return this.httpClient.request<string>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: aiSettings,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint updates the corresponding AI Asset entry in the database.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpUpdateAIAsset(
+		requestParameters: HttpUpdateAIAssetRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AiAsset>;
+	public httpUpdateAIAsset(
+		requestParameters: HttpUpdateAIAssetRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AiAsset>>;
+	public httpUpdateAIAsset(
+		requestParameters: HttpUpdateAIAssetRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AiAsset>>;
+	public httpUpdateAIAsset(
+		requestParameters: HttpUpdateAIAssetRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpUpdateAIAsset.');
+		}
+		const aiAsset = requestParameters?.aiAsset;
+		if (aiAsset === null || aiAsset === undefined) {
+			throw new Error('Required parameter aiAsset was null or undefined when calling httpUpdateAIAsset.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/ai/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AiAsset>('post', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: aiAsset,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,

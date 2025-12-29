@@ -120,6 +120,7 @@ model/httpAssetExportFieldSelector.agravity.ts
 model/httpAssetExportInputParameter.agravity.ts
 model/httpRequestAvailableExportFieldsInputParameter.agravity.ts
 model/infoEntitySkillEnhanced.agravity.ts
+model/instancesItem.agravity.ts
 model/metadata.agravity.ts
 model/models.ts
 model/moveCollectionBody.agravity.ts
@@ -162,6 +163,7 @@ model/sharedCollection.agravity.ts
 model/sharedCollectionFull.agravity.ts
 model/signalRConnectionInfo.agravity.ts
 model/staticDefinedList.agravity.ts
+model/transcriptItem.agravity.ts
 model/translation.agravity.ts
 model/translationRequest.agravity.ts
 model/versionEntity.agravity.ts
