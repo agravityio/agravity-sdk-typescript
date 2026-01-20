@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project does not adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
+## AgravityAPI <a name="10.2.3"/> [10.2.3](https://www.npmjs.com/package/@agravity/private/v/10.2.3) (2026-01-20)
+
+-   Just version upgrade to match backend
+
 ## AgravityAPI <a name="10.2.2"/> [10.2.2](https://www.npmjs.com/package/@agravity/private/v/10.2.2) (2026-01-18)
 
 - Change all contact mails from office@agravity.io to support@agravity.io
