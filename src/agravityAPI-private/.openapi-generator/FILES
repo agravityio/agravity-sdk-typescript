@@ -88,7 +88,6 @@ model/availableExportFields.agravity.ts
 model/azSearchOptions.agravity.ts
 model/azureIdentity.agravity.ts
 model/blobInfoObj.agravity.ts
-model/bulkFileSharePublishInput.agravity.ts
 model/collTypeItem.agravity.ts
 model/collTypeItemBlueprint.agravity.ts
 model/collection.agravity.ts

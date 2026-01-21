@@ -31,7 +31,6 @@ export * from './availableExportFields.agravity';
 export * from './azSearchOptions.agravity';
 export * from './azureIdentity.agravity';
 export * from './blobInfoObj.agravity';
-export * from './bulkFileSharePublishInput.agravity';
 export * from './collTypeItem.agravity';
 export * from './collTypeItemBlueprint.agravity';
 export * from './collection.agravity';
