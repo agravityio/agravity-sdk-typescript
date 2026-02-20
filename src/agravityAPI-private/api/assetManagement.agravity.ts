@@ -41,19 +41,19 @@ export interface HttpAssetUploadFileRequestParams {
 }
 
 export interface HttpAssetsBulkDeleteUpdateRequestParams {
-	/** The body has to be valid json which contains the reference asset, which for which collection (reference for collection type items) and which assets are to update. The containing keywords (tags) will be removed. Only custom values are replaces if they are part of the given collection id. */
+	/** This endpoint updates multiple assets. The containing keywords (tags) will removed if existing. Only custom values are removed on assets which have those items. */
 	assetBulkUpdate: AssetBulkUpdate;
 }
 
 export interface HttpAssetsBulkPostUpdateRequestParams {
-	/** The body has to be valid json which contains the reference asset, which for which collection (reference for collection type items) and which assets are to update. The containing keywords (tags) will be distinctly added (no removal). Only custom values are replaces if they are part of the given collection id. */
+	/** This endpoint updates multiple assets. The containing keywords (tags) will be distinctly added (no removal). Only custom values are added on assets which have those items. */
 	assetBulkUpdate: AssetBulkUpdate;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
 }
 
 export interface HttpAssetsBulkPutUpdateRequestParams {
-	/** The body has to be valid json which contains the reference asset, a collection (used as reference for collection type items) and which asset ids are to update. The containing keywords (tags) will be fully replaced. ONLY custom items are replaced which are in body (others in same collection will be ignored)!Only custom values are replaces if they are part of the given collection id. */
+	/** This endpoint updates multiple assets. The containing keywords (tags) will replace existing. Only custom values are replaced on assets which have those items. */
 	assetBulkUpdate: AssetBulkUpdate;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;

@@ -17,7 +17,11 @@ import { Observable } from 'rxjs';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
 // @ts-ignore
+import { AgravityInfoResponse } from '../model/agravityInfoResponse.pub.agravity';
+// @ts-ignore
 import { Asset } from '../model/asset.pub.agravity';
+// @ts-ignore
+import { AssetBulkUpdate } from '../model/assetBulkUpdate.pub.agravity';
 // @ts-ignore
 import { AssetPageResult } from '../model/assetPageResult.pub.agravity';
 
@@ -36,6 +40,25 @@ export interface HttpAssetUploadFileRequestParams {
 	previewof?: string;
 }
 
+export interface HttpAssetsBulkDeleteUpdateRequestParams {
+	/** This endpoint updates multiple assets. The containing keywords (tags) will removed if existing. Only custom values are removed on assets which have those items. */
+	assetBulkUpdate: AssetBulkUpdate;
+}
+
+export interface HttpAssetsBulkPostUpdateRequestParams {
+	/** This endpoint updates multiple assets. The containing keywords (tags) will be distinctly added (no removal). Only custom values are added on assets which have those items. */
+	assetBulkUpdate: AssetBulkUpdate;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
+export interface HttpAssetsBulkPutUpdateRequestParams {
+	/** This endpoint updates multiple assets. The containing keywords (tags) will replace existing. Only custom values are replaced on assets which have those items. */
+	assetBulkUpdate: AssetBulkUpdate;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+}
+
 export interface HttpAssetsCreateRequestParams {
 	/** The ID of the collection where this assets should be assigned. */
 	collectionid: string;
@@ -45,6 +68,11 @@ export interface HttpAssetsCreateRequestParams {
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
+}
+
+export interface HttpAssetsDeleteByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
 }
 
 export interface HttpAssetsGetRequestParams {
@@ -220,6 +248,254 @@ export class PublicAssetManagementService extends BaseService {
 	}
 
 	/**
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetsBulkDeleteUpdate(
+		requestParameters: HttpAssetsBulkDeleteUpdateRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AgravityInfoResponse>;
+	public httpAssetsBulkDeleteUpdate(
+		requestParameters: HttpAssetsBulkDeleteUpdateRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpAssetsBulkDeleteUpdate(
+		requestParameters: HttpAssetsBulkDeleteUpdateRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpAssetsBulkDeleteUpdate(
+		requestParameters: HttpAssetsBulkDeleteUpdateRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const assetBulkUpdate = requestParameters?.assetBulkUpdate;
+		if (assetBulkUpdate === null || assetBulkUpdate === undefined) {
+			throw new Error('Required parameter assetBulkUpdate was null or undefined when calling httpAssetsBulkDeleteUpdate.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (function_key) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/assetsbulkupdate`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('delete', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: assetBulkUpdate,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetsBulkPostUpdate(
+		requestParameters: HttpAssetsBulkPostUpdateRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AgravityInfoResponse>;
+	public httpAssetsBulkPostUpdate(
+		requestParameters: HttpAssetsBulkPostUpdateRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpAssetsBulkPostUpdate(
+		requestParameters: HttpAssetsBulkPostUpdateRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpAssetsBulkPostUpdate(
+		requestParameters: HttpAssetsBulkPostUpdateRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const assetBulkUpdate = requestParameters?.assetBulkUpdate;
+		if (assetBulkUpdate === null || assetBulkUpdate === undefined) {
+			throw new Error('Required parameter assetBulkUpdate was null or undefined when calling httpAssetsBulkPostUpdate.');
+		}
+		const acceptLanguage = requestParameters?.acceptLanguage;
+
+		let localVarHeaders = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
+		}
+
+		// authentication (function_key) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/assetsbulkupdate`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('post', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: assetBulkUpdate,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetsBulkPutUpdate(
+		requestParameters: HttpAssetsBulkPutUpdateRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AgravityInfoResponse>;
+	public httpAssetsBulkPutUpdate(
+		requestParameters: HttpAssetsBulkPutUpdateRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpAssetsBulkPutUpdate(
+		requestParameters: HttpAssetsBulkPutUpdateRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpAssetsBulkPutUpdate(
+		requestParameters: HttpAssetsBulkPutUpdateRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const assetBulkUpdate = requestParameters?.assetBulkUpdate;
+		if (assetBulkUpdate === null || assetBulkUpdate === undefined) {
+			throw new Error('Required parameter assetBulkUpdate was null or undefined when calling httpAssetsBulkPutUpdate.');
+		}
+		const acceptLanguage = requestParameters?.acceptLanguage;
+
+		let localVarHeaders = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
+		}
+
+		// authentication (function_key) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/assetsbulkupdate`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('put', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: assetBulkUpdate,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint creates one asset entry in the database.
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -305,6 +581,78 @@ export class PublicAssetManagementService extends BaseService {
 			context: localVarHttpContext,
 			body: asset,
 			params: localVarQueryParameters,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetsDeleteById(
+		requestParameters: HttpAssetsDeleteByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any>;
+	public httpAssetsDeleteById(
+		requestParameters: HttpAssetsDeleteByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<any>>;
+	public httpAssetsDeleteById(
+		requestParameters: HttpAssetsDeleteByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<any>>;
+	public httpAssetsDeleteById(
+		requestParameters: HttpAssetsDeleteByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpAssetsDeleteById.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (function_key) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
