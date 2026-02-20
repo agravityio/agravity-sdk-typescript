@@ -25,6 +25,10 @@ import { AssetAvailability } from '../model/assetAvailability.agravity';
 // @ts-ignore
 import { AssetBlob } from '../model/assetBlob.agravity';
 // @ts-ignore
+import { AssetBulkCheckoutBody } from '../model/assetBulkCheckoutBody.agravity';
+// @ts-ignore
+import { AssetBulkCheckoutResult } from '../model/assetBulkCheckoutResult.agravity';
+// @ts-ignore
 import { AssetRelation } from '../model/assetRelation.agravity';
 // @ts-ignore
 import { AssetTextContent } from '../model/assetTextContent.agravity';
@@ -44,11 +48,22 @@ import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
+export interface HttpAssetBulkCheckoutToggleRequestParams {
+	/** Set to \&#39;true\&#39; to checkout the assets, \&#39;false\&#39; to checkin the assets. */
+	checkout: boolean;
+	/** The list of asset IDs to checkout or checkin. */
+	assetBulkCheckoutBody: AssetBulkCheckoutBody;
+	/** Optional action for synced assets when FileShare MD5 metadata is missing. Allowed: keep, overwrite. If the synced FileShare file is missing, only overwrite is allowed. */
+	fsMissingMd5Action?: string;
+}
+
 export interface HttpAssetCheckoutToggleRequestParams {
 	/** The ID of the asset. */
 	id: string;
 	/** Set to \&#39;true\&#39; to checkout the asset, \&#39;false\&#39; to checkin the asset. */
 	checkout: boolean;
+	/** Optional action for synced assets when FileShare MD5 metadata is missing. Allowed: keep, overwrite. If the synced FileShare file is missing, only overwrite is allowed. */
+	fsMissingMd5Action?: string;
 }
 
 export interface HttpAssetImageEditRequestParams {
@@ -247,6 +262,97 @@ export class AssetOperationsService extends BaseService {
 	}
 
 	/**
+	 * This endpoint allows to bulk checkout or checkin multiple assets. When an asset is checked out, only the user who checked it out (or admins) can create new versions or delete the asset.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetBulkCheckoutToggle(
+		requestParameters: HttpAssetBulkCheckoutToggleRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AssetBulkCheckoutResult>;
+	public httpAssetBulkCheckoutToggle(
+		requestParameters: HttpAssetBulkCheckoutToggleRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AssetBulkCheckoutResult>>;
+	public httpAssetBulkCheckoutToggle(
+		requestParameters: HttpAssetBulkCheckoutToggleRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AssetBulkCheckoutResult>>;
+	public httpAssetBulkCheckoutToggle(
+		requestParameters: HttpAssetBulkCheckoutToggleRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const checkout = requestParameters?.checkout;
+		if (checkout === null || checkout === undefined) {
+			throw new Error('Required parameter checkout was null or undefined when calling httpAssetBulkCheckoutToggle.');
+		}
+		const assetBulkCheckoutBody = requestParameters?.assetBulkCheckoutBody;
+		if (assetBulkCheckoutBody === null || assetBulkCheckoutBody === undefined) {
+			throw new Error('Required parameter assetBulkCheckoutBody was null or undefined when calling httpAssetBulkCheckoutToggle.');
+		}
+		const fsMissingMd5Action = requestParameters?.fsMissingMd5Action;
+
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>checkout, 'checkout');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fsMissingMd5Action, 'fsMissingMd5Action');
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/assets/checkout/bulk`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AssetBulkCheckoutResult>('put', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: assetBulkCheckoutBody,
+			params: localVarQueryParameters,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint allows to checkout or checkin an asset. When an asset is checked out, only the user who checked it out (or admins) can create new versions or delete the asset.
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -284,9 +390,11 @@ export class AssetOperationsService extends BaseService {
 		if (checkout === null || checkout === undefined) {
 			throw new Error('Required parameter checkout was null or undefined when calling httpAssetCheckoutToggle.');
 		}
+		const fsMissingMd5Action = requestParameters?.fsMissingMd5Action;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>checkout, 'checkout');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fsMissingMd5Action, 'fsMissingMd5Action');
 
 		let localVarHeaders = this.defaultHeaders;
 

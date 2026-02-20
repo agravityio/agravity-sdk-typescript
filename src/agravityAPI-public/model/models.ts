@@ -7,6 +7,7 @@ export * from './allWebAppData.pub.agravity';
 export * from './asset.pub.agravity';
 export * from './assetAvailability.pub.agravity';
 export * from './assetBlob.pub.agravity';
+export * from './assetBulkUpdate.pub.agravity';
 export * from './assetCheckout.pub.agravity';
 export * from './assetIconRule.pub.agravity';
 export * from './assetIdFormat.pub.agravity';

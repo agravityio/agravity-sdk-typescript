@@ -74,8 +74,12 @@ model/appConfigTableEntity.agravity.ts
 model/asset.agravity.ts
 model/assetAvailability.agravity.ts
 model/assetBlob.agravity.ts
+model/assetBulkCheckoutBody.agravity.ts
+model/assetBulkCheckoutResult.agravity.ts
 model/assetBulkUpdate.agravity.ts
 model/assetCheckout.agravity.ts
+model/assetCheckoutFailure.agravity.ts
+model/assetCheckoutWarningDetail.agravity.ts
 model/assetCollectionLink.agravity.ts
 model/assetIconRule.agravity.ts
 model/assetIdFormat.agravity.ts
