@@ -8,6 +8,8 @@ export * from './publicAssetPublishing.pub.agravity';
 import { PublicAssetPublishingService } from './publicAssetPublishing.pub.agravity';
 export * from './publicAssetRelationManagement.pub.agravity';
 import { PublicAssetRelationManagementService } from './publicAssetRelationManagement.pub.agravity';
+export * from './publicAssetRelationTypeManagement.pub.agravity';
+import { PublicAssetRelationTypeManagementService } from './publicAssetRelationTypeManagement.pub.agravity';
 export * from './publicAssetVersioning.pub.agravity';
 import { PublicAssetVersioningService } from './publicAssetVersioning.pub.agravity';
 export * from './publicAuthenticationManagement.pub.agravity';
@@ -54,6 +56,7 @@ export const APIS = [
 	PublicAssetOperationsService,
 	PublicAssetPublishingService,
 	PublicAssetRelationManagementService,
+	PublicAssetRelationTypeManagementService,
 	PublicAssetVersioningService,
 	PublicAuthenticationManagementService,
 	PublicCollectionManagementService,

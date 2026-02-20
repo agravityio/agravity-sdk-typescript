@@ -21,6 +21,8 @@ import { AssetAvailability } from '../model/assetAvailability.pub.agravity';
 // @ts-ignore
 import { AssetBlob } from '../model/assetBlob.pub.agravity';
 // @ts-ignore
+import { AssetRelation } from '../model/assetRelation.pub.agravity';
+// @ts-ignore
 import { Collection } from '../model/collection.pub.agravity';
 // @ts-ignore
 import { DynamicImageOperation } from '../model/dynamicImageOperation.pub.agravity';
@@ -112,6 +114,11 @@ export interface HttpGetAssetDownloadRequestParams {
 	portalId?: string;
 	/** The key is the MD5 hash of the original blob of the asset. */
 	key?: string;
+}
+
+export interface HttpGetAssetRelationsByIdRequestParams {
+	/** The ID of the asset. */
+	id: string;
 }
 
 export interface HttpGetSharedAssetBlobRequestParams {
@@ -646,6 +653,79 @@ export class PublicAssetOperationsService extends BaseService {
 		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns the asset relations
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAssetRelationsById(
+		requestParameters: HttpGetAssetRelationsByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<Array<AssetRelation>>;
+	public httpGetAssetRelationsById(
+		requestParameters: HttpGetAssetRelationsByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<Array<AssetRelation>>>;
+	public httpGetAssetRelationsById(
+		requestParameters: HttpGetAssetRelationsByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<Array<AssetRelation>>>;
+	public httpGetAssetRelationsById(
+		requestParameters: HttpGetAssetRelationsByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetAssetRelationsById.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (function_key) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/relations`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<AssetRelation>>('get', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,

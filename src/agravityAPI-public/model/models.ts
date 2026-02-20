@@ -12,6 +12,7 @@ export * from './assetIconRule.pub.agravity';
 export * from './assetIdFormat.pub.agravity';
 export * from './assetPageResult.pub.agravity';
 export * from './assetRelation.pub.agravity';
+export * from './assetRelationType.pub.agravity';
 export * from './azSearchOptions.pub.agravity';
 export * from './collTypeItem.pub.agravity';
 export * from './collection.pub.agravity';

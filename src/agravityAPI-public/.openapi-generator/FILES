@@ -9,6 +9,7 @@ api/publicAssetManagement.pub.agravity.ts
 api/publicAssetOperations.pub.agravity.ts
 api/publicAssetPublishing.pub.agravity.ts
 api/publicAssetRelationManagement.pub.agravity.ts
+api/publicAssetRelationTypeManagement.pub.agravity.ts
 api/publicAssetVersioning.pub.agravity.ts
 api/publicAuthenticationManagement.pub.agravity.ts
 api/publicCollectionManagement.pub.agravity.ts
@@ -48,6 +49,7 @@ model/assetIconRule.pub.agravity.ts
 model/assetIdFormat.pub.agravity.ts
 model/assetPageResult.pub.agravity.ts
 model/assetRelation.pub.agravity.ts
+model/assetRelationType.pub.agravity.ts
 model/azSearchOptions.pub.agravity.ts
 model/collTypeItem.pub.agravity.ts
 model/collection.pub.agravity.ts

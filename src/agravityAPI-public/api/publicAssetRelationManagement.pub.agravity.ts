@@ -25,6 +25,8 @@ import { AgravityPublicConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
 export interface HttpAssetRelationCreateRequestParams {
+	/** This endpoint creates an asset relation in the database. */
+	assetRelation: AssetRelation;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
@@ -84,29 +86,33 @@ export class PublicAssetRelationManagementService extends BaseService {
 	 * @param reportProgress flag to report request and response progress.
 	 */
 	public httpAssetRelationCreate(
-		requestParameters?: HttpAssetRelationCreateRequestParams,
+		requestParameters: HttpAssetRelationCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<AssetRelation>;
 	public httpAssetRelationCreate(
-		requestParameters?: HttpAssetRelationCreateRequestParams,
+		requestParameters: HttpAssetRelationCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<AssetRelation>>;
 	public httpAssetRelationCreate(
-		requestParameters?: HttpAssetRelationCreateRequestParams,
+		requestParameters: HttpAssetRelationCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<AssetRelation>>;
 	public httpAssetRelationCreate(
-		requestParameters?: HttpAssetRelationCreateRequestParams,
+		requestParameters: HttpAssetRelationCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
+		const assetRelation = requestParameters?.assetRelation;
+		if (assetRelation === null || assetRelation === undefined) {
+			throw new Error('Required parameter assetRelation was null or undefined when calling httpAssetRelationCreate.');
+		}
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 		const assetrelationtypeid = requestParameters?.assetrelationtypeid;
@@ -132,6 +138,13 @@ export class PublicAssetRelationManagementService extends BaseService {
 
 		const localVarTransferCache: boolean = options?.transferCache ?? true;
 
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
 		if (localVarHttpHeaderAcceptSelected) {
 			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
@@ -147,6 +160,7 @@ export class PublicAssetRelationManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AssetRelation>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			body: assetRelation,
 			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
