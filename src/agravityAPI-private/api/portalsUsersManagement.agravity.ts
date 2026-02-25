@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
@@ -60,9 +60,11 @@ export class PortalsUsersManagementService extends BaseService {
 
 	/**
 	 * This endpoint creates a portals user.
+	 * @endpoint post /portalsusers
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalsCreatePortalsUser(
 		requestParameters: HttpPortalsCreatePortalsUserRequestParams,
@@ -134,16 +136,18 @@ export class PortalsUsersManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint deletes a portal user.
+	 * @endpoint delete /portalsusers/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalsDeletePortalUser(
 		requestParameters: HttpPortalsDeletePortalUserRequestParams,
@@ -207,15 +211,17 @@ export class PortalsUsersManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns all portal users.
+	 * @endpoint get /portalsusers
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalsGetAllPortalUser(
 		observe?: 'body',
@@ -270,16 +276,18 @@ export class PortalsUsersManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns single portals user.
+	 * @endpoint get /portalsusers/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalsGetPortalUserById(
 		requestParameters: HttpPortalsGetPortalUserByIdRequestParams,
@@ -343,16 +351,18 @@ export class PortalsUsersManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint updates a portals user.
+	 * @endpoint post /portalsusers/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalsUpdatePortalUserById(
 		requestParameters: HttpPortalsUpdatePortalUserByIdRequestParams,
@@ -428,7 +438,7 @@ export class PortalsUsersManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

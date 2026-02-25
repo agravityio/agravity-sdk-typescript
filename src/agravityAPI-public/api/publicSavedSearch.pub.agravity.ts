@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { SavedSearch } from '../model/savedSearch.pub.agravity';
@@ -45,9 +45,11 @@ export class PublicSavedSearchService extends BaseService {
 
 	/**
 	 * This endpoint lists all saved searches in database.
+	 * @endpoint get /savedsearches
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpSavedSearchesGetAll(
 		requestParameters?: HttpSavedSearchesGetAllRequestParams,
@@ -77,9 +79,11 @@ export class PublicSavedSearchService extends BaseService {
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>external, 'external');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'external', <any>external, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -113,12 +117,12 @@ export class PublicSavedSearchService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<SavedSearch>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

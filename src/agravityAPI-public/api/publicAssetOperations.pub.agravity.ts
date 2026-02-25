@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
@@ -169,9 +169,11 @@ export class PublicAssetOperationsService extends BaseService {
 
 	/**
 	 * This endpoint lets you resize/modify the image asset according to the given parameter(s).
+	 * @endpoint get /assets/{id}/imageedit
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAssetImageEdit(
 		requestParameters: HttpAssetImageEditRequestParams,
@@ -217,22 +219,37 @@ export class PublicAssetOperationsService extends BaseService {
 		const filter = requestParameters?.filter;
 		const original = requestParameters?.original;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>width, 'width');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>height, 'height');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>mode, 'mode');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>target, 'target');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>bgcolor, 'bgcolor');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>dpi, 'dpi');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>depth, 'depth');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>quality, 'quality');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>colorspace, 'colorspace');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropX, 'crop_x');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropY, 'crop_y');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropWidth, 'crop_width');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropHeight, 'crop_height');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>original, 'original');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'width', <any>width, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'height', <any>height, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'mode', <any>mode, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'target', <any>target, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'bgcolor', <any>bgcolor, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'dpi', <any>dpi, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'depth', <any>depth, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'quality', <any>quality, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'colorspace', <any>colorspace, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'crop_x', <any>cropX, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'crop_y', <any>cropY, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'crop_width', <any>cropWidth, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'crop_height', <any>cropHeight, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'filter', <any>filter, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'original', <any>original, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -252,21 +269,23 @@ export class PublicAssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: 'blob',
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint lets you resize/modify the image asset according to the given parameter(s).
+	 * @endpoint get /assets/{id}/resize
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAssetResize(
 		requestParameters: HttpAssetResizeRequestParams,
@@ -319,16 +338,18 @@ export class PublicAssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint allows to move/assign from/to another collection with the given operation parameter.
+	 * @endpoint post /assets/{id}/tocollection
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAssetToCollection(
 		requestParameters: HttpAssetToCollectionRequestParams,
@@ -404,16 +425,18 @@ export class PublicAssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint checks, if an asset exists and returns the url for the requested blob.
+	 * @endpoint get /assets/{id}/blobs
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpGetAssetBlob(
 		requestParameters: HttpGetAssetBlobRequestParams,
@@ -450,10 +473,13 @@ export class PublicAssetOperationsService extends BaseService {
 		const portalId = requestParameters?.portalId;
 		const key = requestParameters?.key;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>c, 'c');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>key, 'key');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'c', <any>c, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'portal_id', <any>portalId, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'key', <any>key, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -484,21 +510,23 @@ export class PublicAssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * Returns all collections of a specific asset.
+	 * @endpoint get /assets/{id}/collections
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpGetAssetCollectionsById(
 		requestParameters: HttpGetAssetCollectionsByIdRequestParams,
@@ -532,9 +560,11 @@ export class PublicAssetOperationsService extends BaseService {
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fields, 'fields');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'fields', <any>fields, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -568,21 +598,23 @@ export class PublicAssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<Collection>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
+	 * @endpoint get /assets/{id}/download
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpGetAssetDownload(
 		requestParameters: HttpGetAssetDownloadRequestParams,
@@ -617,11 +649,15 @@ export class PublicAssetOperationsService extends BaseService {
 		const portalId = requestParameters?.portalId;
 		const key = requestParameters?.key;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>c, 'c');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>f, 'f');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>key, 'key');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'c', <any>c, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'f', <any>f, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'portal_id', <any>portalId, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'key', <any>key, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -652,21 +688,23 @@ export class PublicAssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns the asset relations
+	 * @endpoint get /assets/{id}/relations
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpGetAssetRelationsById(
 		requestParameters: HttpGetAssetRelationsByIdRequestParams,
@@ -730,16 +768,18 @@ export class PublicAssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint checks, if an asset exists, is an image, has original blob, is status active, is part of the shared collection and returns the requested asset blob.
+	 * @endpoint get /assets/{id}/blob
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpGetSharedAssetBlob(
 		requestParameters: HttpGetSharedAssetBlobRequestParams,
@@ -779,9 +819,11 @@ export class PublicAssetOperationsService extends BaseService {
 		}
 		const ayPassword = requestParameters?.ayPassword;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>shareId, 'share_id');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>format, 'format');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'share_id', <any>shareId, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'format', <any>format, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 		if (ayPassword !== undefined && ayPassword !== null) {
@@ -812,21 +854,23 @@ export class PublicAssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint lets you use the entire api of Imagemagick to edit the image.
+	 * @endpoint post /assets/{id}/imageedit
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpImageDynamicEdit(
 		requestParameters: HttpImageDynamicEditRequestParams,
@@ -862,8 +906,9 @@ export class PublicAssetOperationsService extends BaseService {
 		}
 		const targetFilename = requestParameters?.targetFilename;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>targetFilename, 'target_filename');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'target_filename', <any>targetFilename, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -891,21 +936,23 @@ export class PublicAssetOperationsService extends BaseService {
 		return this.httpClient.request('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: dynamicImageOperation,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: 'blob',
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns an image with the requested download format applied.
+	 * @endpoint get /assets/{id}/imageedit/{download_format_id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpImageDynamicGetFromDownloadId(
 		requestParameters: HttpImageDynamicGetFromDownloadIdRequestParams,
@@ -962,16 +1009,18 @@ export class PublicAssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint sets the availability of the asset. All properties are put on the asset and replace previous values.To make an asset unavailable set the &#x60;availability&#x60; property to \&#39;locked\&#39; or set the &#x60;available_from&#x60; property below the current date. To make it available set empty string to &#x60;availability&#x60; property or &#x60;available_to&#x60; property into past.
+	 * @endpoint put /assets/{id}/availability
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPutAssetAvailability(
 		requestParameters: HttpPutAssetAvailabilityRequestParams,
@@ -1047,7 +1096,7 @@ export class PublicAssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

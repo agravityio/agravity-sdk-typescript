@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
@@ -63,8 +63,10 @@ export class PublicGeneralManagementService extends BaseService {
 
 	/**
 	 * Get the current version of the backend. To see if backend was updated or not.
+	 * @endpoint get /version
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAgravityVersionInfo(
 		observe?: 'body',
@@ -116,16 +118,18 @@ export class PublicGeneralManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint checks all deleted entities in the database until a specific date and returns the elements which are deleted.
+	 * @endpoint get /deleted
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpGetDeletedEntities(
 		requestParameters?: HttpGetDeletedEntitiesRequestParams,
@@ -156,11 +160,15 @@ export class PublicGeneralManagementService extends BaseService {
 		const until = requestParameters?.until;
 		const portalId = requestParameters?.portalId;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>entityType, 'entity_type');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>since, 'since');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>until, 'until');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'entity_type', <any>entityType, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'since', <any>since, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'until', <any>until, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'portal_id', <any>portalId, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -191,21 +199,23 @@ export class PublicGeneralManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<DeletedEntities>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * Trigger the durable execution to continue
+	 * @endpoint get /durable/{instanceId}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpTriggerDurableContinue(
 		requestParameters: HttpTriggerDurableContinueRequestParams,
@@ -266,16 +276,18 @@ export class PublicGeneralManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * Trigger the durable execution to continue
+	 * @endpoint get /durable/scch/{instanceId}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpTriggerDurableScchTrainingDone(
 		requestParameters: HttpTriggerDurableScchTrainingDoneRequestParams,
@@ -336,7 +348,7 @@ export class PublicGeneralManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

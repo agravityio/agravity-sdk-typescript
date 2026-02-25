@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
@@ -81,9 +81,11 @@ export class PublicPortalManagementService extends BaseService {
 
 	/**
 	 * This endpoint gets all Asset IDs in portal scope.
+	 * @endpoint get /portals/{id}/assetids
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalGetAllAssetIdsById(
 		requestParameters: HttpPortalGetAllAssetIdsByIdRequestParams,
@@ -147,16 +149,18 @@ export class PublicPortalManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint gets the progress/status of the ZIP creation of a portal.
+	 * @endpoint get /portals/{id}/zip/{zipId}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalGetStatusZipById(
 		requestParameters: HttpPortalGetStatusZipByIdRequestParams,
@@ -224,16 +228,18 @@ export class PublicPortalManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * Initiates the ZIP creation of an asset basket from an portal.
+	 * @endpoint post /portals/{id}/zip
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalRequestZipById(
 		requestParameters: HttpPortalRequestZipByIdRequestParams,
@@ -309,16 +315,18 @@ export class PublicPortalManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns a full configuration of the portal. Incl. download formats, SDLs, UDLs, etc.
+	 * @endpoint get /portals/{id}/config
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalsConfigurationGetById(
 		requestParameters: HttpPortalsConfigurationGetByIdRequestParams,
@@ -351,8 +359,9 @@ export class PublicPortalManagementService extends BaseService {
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -386,20 +395,22 @@ export class PublicPortalManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<PortalConfiguration>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint saves the portal user and returns CustomClaimsProviderResponseContentTokenIssuanceStart which is used to enhance the token with user context,...
+	 * @endpoint post /portalsenhancetoken
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalsEnhanceToken(
 		observe?: 'body',
@@ -454,16 +465,18 @@ export class PublicPortalManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint return the created portal by ID.
+	 * @endpoint get /portals/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalsGetById(
 		requestParameters: HttpPortalsGetByIdRequestParams,
@@ -527,15 +540,17 @@ export class PublicPortalManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint saves the portal user attributes
+	 * @endpoint post /portalssaveuserattributes
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPortalsSavePortalUserAttributes(
 		observe?: 'body',
@@ -590,7 +605,7 @@ export class PublicPortalManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

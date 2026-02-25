@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { DownloadFormat } from '../model/downloadFormat.pub.agravity';
@@ -50,9 +50,11 @@ export class PublicDownloadFormatManagementService extends BaseService {
 
 	/**
 	 * This endpoint lists all download formats in database.
+	 * @endpoint get /downloadformats
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpDownloadFormatsGetAll(
 		requestParameters?: HttpDownloadFormatsGetAllRequestParams,
@@ -116,16 +118,18 @@ export class PublicDownloadFormatManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint lists all download formats for a specific shared collections in database.Needs a valid shared collection ID to be authenticated.
+	 * @endpoint get /downloadformats-shared
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpDownloadFormatsGetAllFromShared(
 		requestParameters: HttpDownloadFormatsGetAllFromSharedRequestParams,
@@ -158,8 +162,9 @@ export class PublicDownloadFormatManagementService extends BaseService {
 		const ayPassword = requestParameters?.ayPassword;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>shareId, 'share_id');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'share_id', <any>shareId, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 		if (ayPassword !== undefined && ayPassword !== null) {
@@ -193,12 +198,12 @@ export class PublicDownloadFormatManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<DownloadFormat>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

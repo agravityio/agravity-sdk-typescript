@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
@@ -47,9 +47,11 @@ export class StructureImportService extends BaseService {
 
 	/**
 	 * This endpoint reads and creates structure elements for subfolders in the database based on container folder structure
+	 * @endpoint put /structure
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpStructureCreateCollections(
 		requestParameters?: HttpStructureCreateCollectionsRequestParams,
@@ -79,10 +81,13 @@ export class StructureImportService extends BaseService {
 		const parent = requestParameters?.parent;
 		const rootiscolltype = requestParameters?.rootiscolltype;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>collectiontypeid, 'collectiontypeid');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>parent, 'parent');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>rootiscolltype, 'rootiscolltype');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'collectiontypeid', <any>collectiontypeid, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'parent', <any>parent, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'rootiscolltype', <any>rootiscolltype, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -113,12 +118,12 @@ export class StructureImportService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<BlobInfoObj>>('put', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

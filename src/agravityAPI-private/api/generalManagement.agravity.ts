@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
@@ -65,8 +65,10 @@ export class GeneralManagementService extends BaseService {
 
 	/**
 	 * This endpoint returns the current version of the backend.
+	 * @endpoint get /version
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAgravityVersionInfo(
 		observe?: 'body',
@@ -121,15 +123,17 @@ export class GeneralManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint deletes the database completely in a \&quot;fast\&quot; way without querying all entities with this \&quot;hidden\&quot; stored procedure.
+	 * @endpoint delete /cosmosdb!!
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAssetsDeleteAllFast(
 		observe?: 'body',
@@ -184,16 +188,18 @@ export class GeneralManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint queries all entities from which are marked as status \&quot;D\&quot; and cleans internal archive container from that assets
+	 * @endpoint patch /cleanup
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpCleanup(
 		requestParameters?: HttpCleanupRequestParams,
@@ -221,8 +227,9 @@ export class GeneralManagementService extends BaseService {
 	): Observable<any> {
 		const olderThanDays = requestParameters?.olderThanDays;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>olderThanDays, 'olderThanDays');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'olderThanDays', <any>olderThanDays, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -253,20 +260,22 @@ export class GeneralManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AgravityInfoResponse>('patch', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint checks if all assets in original container exist in db otherwise they are deleted
+	 * @endpoint post /cleanup
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpCleanupOrigAssets(
 		observe?: 'body',
@@ -321,16 +330,18 @@ export class GeneralManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint checks all deleted entities in the database until a specific date and returns the elements which are deleted.
+	 * @endpoint get /deleted
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpGetDeletedEntities(
 		requestParameters?: HttpGetDeletedEntitiesRequestParams,
@@ -361,11 +372,15 @@ export class GeneralManagementService extends BaseService {
 		const until = requestParameters?.until;
 		const portalId = requestParameters?.portalId;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>entityType, 'entity_type');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>since, 'since');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>until, 'until');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'entity_type', <any>entityType, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'since', <any>since, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'until', <any>until, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'portal_id', <any>portalId, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -396,21 +411,23 @@ export class GeneralManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<DeletedEntities>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint runs the initial setup of an environment.
+	 * @endpoint post /setup
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpSetup(
 		requestParameters: HttpSetupRequestParams,
@@ -442,9 +459,11 @@ export class GeneralManagementService extends BaseService {
 		}
 		const addconfigqueues = requestParameters?.addconfigqueues;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>createfolder, 'createfolder');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>addconfigqueues, 'addconfigqueues');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'createfolder', <any>createfolder, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'addconfigqueues', <any>addconfigqueues, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -475,20 +494,22 @@ export class GeneralManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AgravityInfoResponse>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint triggers a backup via a docker container.
+	 * @endpoint post /backup
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpTriggerBackup(
 		observe?: 'body',
@@ -543,7 +564,7 @@ export class GeneralManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

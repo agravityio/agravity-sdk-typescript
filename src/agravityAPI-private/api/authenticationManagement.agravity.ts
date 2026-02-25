@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
@@ -95,9 +95,11 @@ export class AuthenticationManagementService extends BaseService {
 
 	/**
 	 * This endpoint creates a new api key user in database and registers it on the public function
+	 * @endpoint post /auth/apikey
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthCreatePublicApiKey(
 		requestParameters: HttpAuthCreatePublicApiKeyRequestParams,
@@ -169,16 +171,18 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint deletes an agravity user.
+	 * @endpoint delete /auth/user/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthDeleteAgravityUser(
 		requestParameters: HttpAuthDeleteAgravityUserRequestParams,
@@ -242,15 +246,17 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint to end impersonation an Agravity user.
+	 * @endpoint delete /auth/impersonate
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthDeleteImpersonateUser(
 		observe?: 'body',
@@ -305,16 +311,18 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint deletes an api key user and removed the key from public functions.
+	 * @endpoint delete /auth/apikey/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthDeletePublicApiKey(
 		requestParameters: HttpAuthDeletePublicApiKeyRequestParams,
@@ -378,15 +386,17 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns the user from database of the HTTP request.
+	 * @endpoint get /auth/user
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthGetAgravityUser(
 		observe?: 'body',
@@ -441,16 +451,18 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This gets the user information about an Agravity User (incl. Online Status). Only full information if requester and userId are the same or it has role Admin.
+	 * @endpoint get /auth/users/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthGetAgravityUserById(
 		requestParameters: HttpAuthGetAgravityUserByIdRequestParams,
@@ -482,8 +494,9 @@ export class AuthenticationManagementService extends BaseService {
 		}
 		const limit = requestParameters?.limit;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'limit', <any>limit, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -514,21 +527,23 @@ export class AuthenticationManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AgravityUser>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns all the Agravity users from database.
+	 * @endpoint get /auth/users
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthGetAgravityUsers(
 		requestParameters?: HttpAuthGetAgravityUsersRequestParams,
@@ -557,9 +572,11 @@ export class AuthenticationManagementService extends BaseService {
 		const limit = requestParameters?.limit;
 		const apikey = requestParameters?.apikey;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>apikey, 'apikey');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'limit', <any>limit, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'apikey', <any>apikey, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -590,20 +607,22 @@ export class AuthenticationManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<AgravityUser>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint gets the agravity users allowed features.
+	 * @endpoint get /auth/features
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthGetAgravityUsersFeatures(
 		observe?: 'body',
@@ -658,15 +677,17 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint gets the ID of the application client.
+	 * @endpoint get /auth/clientid
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthGetAppClientId(
 		observe?: 'body',
@@ -721,16 +742,18 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint creates and returns a SAS token for a single blob inside the optimized OR thumbnails container.
+	 * @endpoint get /auth/blob/{blobName}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthGetBlobReadSasToken(
 		requestParameters: HttpAuthGetBlobReadSasTokenRequestParams,
@@ -794,16 +817,18 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint creates and returns a SAS token for a single container with read only access
+	 * @endpoint get /auth/container/{containerName}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthGetContainerReadSasToken(
 		requestParameters: HttpAuthGetContainerReadSasTokenRequestParams,
@@ -867,16 +892,18 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint creates and returns a SAS-Token with write access for the requested container
+	 * @endpoint get /auth/containerwrite/{containerName}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthGetContainerWriteSasToken(
 		requestParameters: HttpAuthGetContainerWriteSasTokenRequestParams,
@@ -940,15 +967,17 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint creates and returns a SAS-Token with write access for the inbox container. Do not use this any longer. Use HttpAuthGetContainerWriteSasToken with inbox as container name.
+	 * @endpoint get /auth/inbox
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 * @deprecated
 	 */
 	public httpAuthGetInboxContainerWriteSasToken(
@@ -1004,15 +1033,17 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint gets the ID of the user.
+	 * @endpoint get /auth/userid
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthGetUserId(
 		observe?: 'body',
@@ -1067,16 +1098,18 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint to impersonate an Agravity user.
+	 * @endpoint patch /auth/impersonate/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAuthPatchImpersonateUser(
 		requestParameters: HttpAuthPatchImpersonateUserRequestParams,
@@ -1140,7 +1173,7 @@ export class AuthenticationManagementService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

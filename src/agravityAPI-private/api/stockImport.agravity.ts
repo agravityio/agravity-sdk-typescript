@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
@@ -54,9 +54,11 @@ export class StockImportService extends BaseService {
 
 	/**
 	 * This imports 10 images from Pixabay into new collection type with specific id: t111111111111
+	 * @endpoint get /stockimport/pixabay
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpStockImportPixabay(
 		requestParameters: HttpStockImportPixabayRequestParams,
@@ -89,10 +91,13 @@ export class StockImportService extends BaseService {
 		const count = requestParameters?.count;
 		const mediaType = requestParameters?.mediaType;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>q, 'q');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>count, 'count');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>mediaType, 'media_type');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'q', <any>q, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'count', <any>count, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'media_type', <any>mediaType, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -123,21 +128,23 @@ export class StockImportService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<GroupAllAppData>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This imports 10 images from Unsplash into new collection type with specific id: t10000000-0000-0000-0000-000000000000
+	 * @endpoint get /stockimport/unsplash
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpStockImportUnsplash(
 		requestParameters: HttpStockImportUnsplashRequestParams,
@@ -169,9 +176,11 @@ export class StockImportService extends BaseService {
 		}
 		const count = requestParameters?.count;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>q, 'q');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>count, 'count');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'q', <any>q, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'count', <any>count, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -202,12 +211,12 @@ export class StockImportService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<GroupAllAppData>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

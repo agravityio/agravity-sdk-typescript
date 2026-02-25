@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { PublishEntity } from '../model/publishEntity.agravity';
@@ -43,9 +43,11 @@ export class PublishingService extends BaseService {
 
 	/**
 	 * This endpoint lists all the published assets which are stored in the database
+	 * @endpoint get /publish
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpPublishedAssetsGetAll(
 		requestParameters?: HttpPublishedAssetsGetAllRequestParams,
@@ -74,9 +76,11 @@ export class PublishingService extends BaseService {
 		const cid = requestParameters?.cid;
 		const incldescendants = requestParameters?.incldescendants;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cid, 'cid');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>incldescendants, 'incldescendants');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'cid', <any>cid, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'incldescendants', <any>incldescendants, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -107,12 +111,12 @@ export class PublishingService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<PublishEntity>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

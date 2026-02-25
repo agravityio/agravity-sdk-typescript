@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
@@ -56,9 +56,11 @@ export class PublicCollectionSecureUploadService extends BaseService {
 
 	/**
 	 * Searchs for one single secure upload entity of an user and returns simple OK if found.
+	 * @endpoint get /secureupload/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpSecureUploadEntityCheckById(
 		requestParameters: HttpSecureUploadEntityCheckByIdRequestParams,
@@ -93,8 +95,9 @@ export class PublicCollectionSecureUploadService extends BaseService {
 			throw new Error('Required parameter code was null or undefined when calling httpSecureUploadEntityCheckById.');
 		}
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>code, 'code');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'code', <any>code, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -125,21 +128,23 @@ export class PublicCollectionSecureUploadService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<SecureUploadEntity>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint allows to securly upload one asset which is put onto the storage (INBOX). Object has to be FormData (Add file).
+	 * @endpoint post /secureupload/{id}/upload
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpSecureUploadFileById(
 		requestParameters: HttpSecureUploadFileByIdRequestParams,
@@ -178,8 +183,9 @@ export class PublicCollectionSecureUploadService extends BaseService {
 			throw new Error('Required parameter body was null or undefined when calling httpSecureUploadFileById.');
 		}
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>code, 'code');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'code', <any>code, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -218,12 +224,12 @@ export class PublicCollectionSecureUploadService extends BaseService {
 		return this.httpClient.request<Asset>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: body,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

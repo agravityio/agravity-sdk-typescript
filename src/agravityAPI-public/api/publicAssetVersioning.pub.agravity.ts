@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
@@ -96,9 +96,11 @@ export class PublicAssetVersioningService extends BaseService {
 
 	/**
 	 * This endpoint allows to upload one asset which replaces the asset with given id and creates a version which is returned.
+	 * @endpoint post /assets/{id}/versionsupload
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAssetCreateUploadVersion(
 		requestParameters: HttpAssetCreateUploadVersionRequestParams,
@@ -201,16 +203,18 @@ export class PublicAssetVersioningService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint allows to create empty version or upload one asset which replaces the asset with given id and creates version.
+	 * @endpoint post /assets/{id}/versions
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAssetCreateVersion(
 		requestParameters: HttpAssetCreateVersionRequestParams,
@@ -286,16 +290,18 @@ export class PublicAssetVersioningService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint deletes a version of an asset.
+	 * @endpoint delete /assets/{id}/versions/{vNr}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpDeleteVersionedAssetsById(
 		requestParameters: HttpDeleteVersionedAssetsByIdRequestParams,
@@ -363,16 +369,18 @@ export class PublicAssetVersioningService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint checks if assets and version exists and returns the url for the requested blob.
+	 * @endpoint get /assets/{id}/versions/{vNr}/blobs
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpGetVersionedAssetBlobById(
 		requestParameters: HttpGetVersionedAssetBlobByIdRequestParams,
@@ -408,8 +416,9 @@ export class PublicAssetVersioningService extends BaseService {
 		}
 		const c = requestParameters?.c;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>c, 'c');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'c', <any>c, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -440,21 +449,23 @@ export class PublicAssetVersioningService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint restores a version nr to be the current version and saves the current asset as version.
+	 * @endpoint post /assets/{id}/versions/{vNr}/restore
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpRestoreVersionedAssetsById(
 		requestParameters: HttpRestoreVersionedAssetsByIdRequestParams,
@@ -534,16 +545,18 @@ export class PublicAssetVersioningService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint updates a version of an asset.
+	 * @endpoint post /assets/{id}/versions/{vNr}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpUpdateVersionedAssetsById(
 		requestParameters: HttpUpdateVersionedAssetsByIdRequestParams,
@@ -611,16 +624,18 @@ export class PublicAssetVersioningService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint lists all the versioned assets which are stored in the database if asset is still valid.
+	 * @endpoint get /assets/{id}/versions
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpVersionedAssetsGet(
 		requestParameters: HttpVersionedAssetsGetRequestParams,
@@ -684,7 +699,7 @@ export class PublicAssetVersioningService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
@@ -103,9 +103,11 @@ export class PublicSearchManagementService extends BaseService {
 
 	/**
 	 * This endpoint returns one facette based on the search parameters.
+	 * @endpoint get /search/facette
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpGetSearchFacetteByName(
 		requestParameters: HttpGetSearchFacetteByNameRequestParams,
@@ -147,16 +149,25 @@ export class PublicSearchManagementService extends BaseService {
 		const ids = requestParameters?.ids;
 		const portalId = requestParameters?.portalId;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>name, 'name');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>s, 's');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>collectiontypeid, 'collectiontypeid');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>collectionid, 'collectionid');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>mode, 'mode');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>scopefilter, 'scopefilter');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>ids, 'ids');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'name', <any>name, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 's', <any>s, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'collectiontypeid', <any>collectiontypeid, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'collectionid', <any>collectionid, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'mode', <any>mode, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'filter', <any>filter, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'scopefilter', <any>scopefilter, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'ids', <any>ids, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'portal_id', <any>portalId, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -187,21 +198,23 @@ export class PublicSearchManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<SearchFacet>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns a configured max amount of results for search terms.
+	 * @endpoint get /search
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpGlobalSearch(
 		requestParameters: HttpGlobalSearchRequestParams,
@@ -247,22 +260,37 @@ export class PublicSearchManagementService extends BaseService {
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>s, 's');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>limit, 'limit');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>skip, 'skip');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>collectiontypeid, 'collectiontypeid');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>collectionid, 'collectionid');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>mode, 'mode');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>expose, 'expose');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>broadness, 'broadness');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>relId, 'rel_id');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>scopefilter, 'scopefilter');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>orderby, 'orderby');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>ids, 'ids');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 's', <any>s, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'limit', <any>limit, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'skip', <any>skip, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'collectiontypeid', <any>collectiontypeid, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'collectionid', <any>collectionid, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'mode', <any>mode, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'expose', <any>expose, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'filter', <any>filter, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'broadness', <any>broadness, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'rel_id', <any>relId, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'scopefilter', <any>scopefilter, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'orderby', <any>orderby, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'ids', <any>ids, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'portal_id', <any>portalId, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -296,21 +324,23 @@ export class PublicSearchManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<SearchResult>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint gives the status about the index and indexer.
+	 * @endpoint get /searchadmin/status
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpSearchAdminGetStatus(
 		requestParameters?: HttpSearchAdminGetStatusRequestParams,
@@ -338,8 +368,9 @@ export class PublicSearchManagementService extends BaseService {
 	): Observable<any> {
 		const portalId = requestParameters?.portalId;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'portal_id', <any>portalId, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -370,12 +401,12 @@ export class PublicSearchManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<SearchAdminStatus>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}

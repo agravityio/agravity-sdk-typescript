@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
-import { CustomHttpParameterCodec } from '../encoder';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
@@ -64,9 +64,11 @@ export class WordpressManagementService extends BaseService {
 
 	/**
 	 * This endpoint creates a Wordpress Page
+	 * @endpoint post /wordpresspage
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpWordpressPage(
 		requestParameters: HttpWordpressPageRequestParams,
@@ -113,11 +115,15 @@ export class WordpressManagementService extends BaseService {
 			throw new Error('Required parameter asset was null or undefined when calling httpWordpressPage.');
 		}
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageTitle, 'page_title');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageContentBefore, 'page_content_before');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageImage, 'page_image');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pageContentAfter, 'page_content_after');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'page_title', <any>pageTitle, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'page_content_before', <any>pageContentBefore, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'page_image', <any>pageImage, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'page_content_after', <any>pageContentAfter, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -156,21 +162,23 @@ export class WordpressManagementService extends BaseService {
 		return this.httpClient.request<number>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: asset,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint creates a Wordpress Post
+	 * @endpoint post /wordpresspost
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpWordpressPost(
 		requestParameters: HttpWordpressPostRequestParams,
@@ -217,11 +225,15 @@ export class WordpressManagementService extends BaseService {
 			throw new Error('Required parameter asset was null or undefined when calling httpWordpressPost.');
 		}
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postTitle, 'post_title');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postContentBefore, 'post_content_before');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postImage, 'post_image');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>postContentAfter, 'post_content_after');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'post_title', <any>postTitle, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'post_content_before', <any>postContentBefore, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'post_image', <any>postImage, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'post_content_after', <any>postContentAfter, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -260,12 +272,12 @@ export class WordpressManagementService extends BaseService {
 		return this.httpClient.request<number>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: asset,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
