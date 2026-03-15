@@ -54,7 +54,7 @@ export interface HttpAssetBulkCheckoutToggleRequestParams {
 	/** The list of asset IDs to checkout or checkin. */
 	assetBulkCheckoutBody: AssetBulkCheckoutBody;
 	/** Optional action for synced assets when FileShare MD5 metadata is missing. Allowed: keep, overwrite. If the synced FileShare file is missing, only overwrite is allowed. */
-	fsMissingMd5Action?: string;
+	fsMissingETagAction?: string;
 }
 
 export interface HttpAssetCheckoutToggleRequestParams {
@@ -63,7 +63,7 @@ export interface HttpAssetCheckoutToggleRequestParams {
 	/** Set to \&#39;true\&#39; to checkout the asset, \&#39;false\&#39; to checkin the asset. */
 	checkout: boolean;
 	/** Optional action for synced assets when FileShare MD5 metadata is missing. Allowed: keep, overwrite. If the synced FileShare file is missing, only overwrite is allowed. */
-	fsMissingMd5Action?: string;
+	fsMissingETagAction?: string;
 }
 
 export interface HttpAssetImageEditRequestParams {
@@ -299,11 +299,11 @@ export class AssetOperationsService extends BaseService {
 		if (assetBulkCheckoutBody === null || assetBulkCheckoutBody === undefined) {
 			throw new Error('Required parameter assetBulkCheckoutBody was null or undefined when calling httpAssetBulkCheckoutToggle.');
 		}
-		const fsMissingMd5Action = requestParameters?.fsMissingMd5Action;
+		const fsMissingETagAction = requestParameters?.fsMissingETagAction;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>checkout, 'checkout');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fsMissingMd5Action, 'fsMissingMd5Action');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fsMissingETagAction, 'fsMissingETagAction');
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -390,11 +390,11 @@ export class AssetOperationsService extends BaseService {
 		if (checkout === null || checkout === undefined) {
 			throw new Error('Required parameter checkout was null or undefined when calling httpAssetCheckoutToggle.');
 		}
-		const fsMissingMd5Action = requestParameters?.fsMissingMd5Action;
+		const fsMissingETagAction = requestParameters?.fsMissingETagAction;
 
 		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>checkout, 'checkout');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fsMissingMd5Action, 'fsMissingMd5Action');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fsMissingETagAction, 'fsMissingETagAction');
 
 		let localVarHeaders = this.defaultHeaders;
 
