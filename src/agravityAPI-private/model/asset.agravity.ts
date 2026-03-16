@@ -28,6 +28,7 @@ export interface Asset {
 	available_from?: string | null;
 	available_to?: string | null;
 	checkout?: AssetCheckout | null;
+	fs_synced?: string | null;
 	custom?: any | null;
 	items?: Array<CollTypeItem> | null;
 	translations?: { [key: string]: { [key: string]: any } } | null;

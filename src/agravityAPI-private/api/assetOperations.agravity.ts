@@ -10,9 +10,9 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpParameterCodec, HttpContext } from '@angular/common/http';
+import { CustomHttpParameterCodec } from '../encoder';
 import { Observable } from 'rxjs';
-import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
@@ -54,7 +54,7 @@ export interface HttpAssetBulkCheckoutToggleRequestParams {
 	/** The list of asset IDs to checkout or checkin. */
 	assetBulkCheckoutBody: AssetBulkCheckoutBody;
 	/** Optional action for synced assets when FileShare MD5 metadata is missing. Allowed: keep, overwrite. If the synced FileShare file is missing, only overwrite is allowed. */
-	fsMissingMd5Action?: string;
+	fsMissingETagAction?: string;
 }
 
 export interface HttpAssetCheckoutToggleRequestParams {
@@ -63,7 +63,7 @@ export interface HttpAssetCheckoutToggleRequestParams {
 	/** Set to \&#39;true\&#39; to checkout the asset, \&#39;false\&#39; to checkin the asset. */
 	checkout: boolean;
 	/** Optional action for synced assets when FileShare MD5 metadata is missing. Allowed: keep, overwrite. If the synced FileShare file is missing, only overwrite is allowed. */
-	fsMissingMd5Action?: string;
+	fsMissingETagAction?: string;
 }
 
 export interface HttpAssetImageEditRequestParams {
@@ -263,11 +263,9 @@ export class AssetOperationsService extends BaseService {
 
 	/**
 	 * This endpoint allows to bulk checkout or checkin multiple assets. When an asset is checked out, only the user who checked it out (or admins) can create new versions or delete the asset.
-	 * @endpoint put /assets/checkout/bulk
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpAssetBulkCheckoutToggle(
 		requestParameters: HttpAssetBulkCheckoutToggleRequestParams,
@@ -301,13 +299,11 @@ export class AssetOperationsService extends BaseService {
 		if (assetBulkCheckoutBody === null || assetBulkCheckoutBody === undefined) {
 			throw new Error('Required parameter assetBulkCheckoutBody was null or undefined when calling httpAssetBulkCheckoutToggle.');
 		}
-		const fsMissingMd5Action = requestParameters?.fsMissingMd5Action;
+		const fsMissingETagAction = requestParameters?.fsMissingETagAction;
 
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'checkout', <any>checkout, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'fsMissingMd5Action', <any>fsMissingMd5Action, QueryParamStyle.Form, true);
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>checkout, 'checkout');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fsMissingETagAction, 'fsMissingETagAction');
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -346,23 +342,21 @@ export class AssetOperationsService extends BaseService {
 		return this.httpClient.request<AssetBulkCheckoutResult>('put', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: assetBulkCheckoutBody,
-			params: localVarQueryParameters.toHttpParams(),
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint allows to checkout or checkin an asset. When an asset is checked out, only the user who checked it out (or admins) can create new versions or delete the asset.
-	 * @endpoint put /assets/{id}/checkout
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpAssetCheckoutToggle(
 		requestParameters: HttpAssetCheckoutToggleRequestParams,
@@ -396,13 +390,11 @@ export class AssetOperationsService extends BaseService {
 		if (checkout === null || checkout === undefined) {
 			throw new Error('Required parameter checkout was null or undefined when calling httpAssetCheckoutToggle.');
 		}
-		const fsMissingMd5Action = requestParameters?.fsMissingMd5Action;
+		const fsMissingETagAction = requestParameters?.fsMissingETagAction;
 
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'checkout', <any>checkout, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'fsMissingMd5Action', <any>fsMissingMd5Action, QueryParamStyle.Form, true);
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>checkout, 'checkout');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fsMissingETagAction, 'fsMissingETagAction');
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -433,23 +425,21 @@ export class AssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AgravityInfoResponse>('put', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint lets you resize/modify the image asset according to the given GET parameter(s) - Only exception is for target: If this is a download format no other parameter is used.
-	 * @endpoint get /assets/{id}/imageedit
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpAssetImageEdit(
 		requestParameters: HttpAssetImageEditRequestParams,
@@ -496,39 +486,23 @@ export class AssetOperationsService extends BaseService {
 		const original = requestParameters?.original;
 		const origin = requestParameters?.origin;
 
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'width', <any>width, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'height', <any>height, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'mode', <any>mode, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'target', <any>target, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'bgcolor', <any>bgcolor, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'dpi', <any>dpi, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'depth', <any>depth, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'quality', <any>quality, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'colorspace', <any>colorspace, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'crop_x', <any>cropX, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'crop_y', <any>cropY, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'crop_width', <any>cropWidth, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'crop_height', <any>cropHeight, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'filter', <any>filter, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'original', <any>original, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'origin', <any>origin, QueryParamStyle.Form, true);
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>width, 'width');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>height, 'height');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>mode, 'mode');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>target, 'target');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>bgcolor, 'bgcolor');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>dpi, 'dpi');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>depth, 'depth');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>quality, 'quality');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>colorspace, 'colorspace');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropX, 'crop_x');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropY, 'crop_y');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropWidth, 'crop_width');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>cropHeight, 'crop_height');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>filter, 'filter');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>original, 'original');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>origin, 'origin');
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -548,23 +522,21 @@ export class AssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
+			params: localVarQueryParameters,
 			responseType: 'blob',
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint lets you rotate an image clockwise in 90 degree steps.
-	 * @endpoint post /assets/{id}/rotate
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpAssetImageRotateClockwise(
 		requestParameters: HttpAssetImageRotateClockwiseRequestParams,
@@ -597,9 +569,8 @@ export class AssetOperationsService extends BaseService {
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -633,23 +604,21 @@ export class AssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Asset>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint lets you resize/modify the image asset according to the given parameter(s).
-	 * @endpoint get /assets/{id}/resize
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpAssetResize(
 		requestParameters: HttpAssetResizeRequestParams,
@@ -702,18 +671,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint allows to move/assign from/to another collection with the given operation parameter.
-	 * @endpoint post /assets/{id}/tocollection
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpAssetToCollection(
 		requestParameters: HttpAssetToCollectionRequestParams,
@@ -789,18 +756,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint allows to move/assign multiple assets from/to another collection with the given operation parameter.
-	 * @endpoint post /assetsoperations/tocollection
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpAssetsToCollection(
 		requestParameters: HttpAssetsToCollectionRequestParams,
@@ -872,18 +837,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint deletes the alternative thumbnail blob of an asset and renews it
-	 * @endpoint delete /assets/{id}/alternative
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpDeleteAlternativeThumb(
 		requestParameters: HttpDeleteAlternativeThumbRequestParams,
@@ -947,18 +910,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 *  This endpoint deletes a specific blob from the asset (if exists)
-	 * @endpoint delete /assets/{id}/blobs/{name}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpDeleteSpecificBlob(
 		requestParameters: HttpDeleteSpecificBlobRequestParams,
@@ -1026,18 +987,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint allows to check all assets in system elements with the given criteria are already in the system. Currently supported field: md5
-	 * @endpoint get /assetscheck
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpGetAllAssetsCheckOnCriteria(
 		requestParameters: HttpGetAllAssetsCheckOnCriteriaRequestParams,
@@ -1068,9 +1027,8 @@ export class AssetOperationsService extends BaseService {
 			throw new Error('Required parameter md5 was null or undefined when calling httpGetAllAssetsCheckOnCriteria.');
 		}
 
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'md5', <any>md5, QueryParamStyle.Form, true);
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>md5, 'md5');
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -1101,23 +1059,21 @@ export class AssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<Asset>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint checks, if an asset exists and returns the url for the requested blob.
-	 * @endpoint get /assets/{id}/blobs
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpGetAssetBlob(
 		requestParameters: HttpGetAssetBlobRequestParams,
@@ -1149,9 +1105,8 @@ export class AssetOperationsService extends BaseService {
 		}
 		const c = requestParameters?.c;
 
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'c', <any>c, QueryParamStyle.Form, true);
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>c, 'c');
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -1182,23 +1137,21 @@ export class AssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns all collections of a specific asset.
-	 * @endpoint get /assets/{id}/collections
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpGetAssetCollectionsById(
 		requestParameters: HttpGetAssetCollectionsByIdRequestParams,
@@ -1232,11 +1185,9 @@ export class AssetOperationsService extends BaseService {
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'fields', <any>fields, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>fields, 'fields');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>translations, 'translations');
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -1270,23 +1221,21 @@ export class AssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<Collection>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint is similar to GetAssetBlob but with ContentDistribution and filename to let browser download the content.
-	 * @endpoint get /assets/{id}/download
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpGetAssetDownload(
 		requestParameters: HttpGetAssetDownloadRequestParams,
@@ -1320,13 +1269,10 @@ export class AssetOperationsService extends BaseService {
 		const f = requestParameters?.f;
 		const portalId = requestParameters?.portalId;
 
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'c', <any>c, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'f', <any>f, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'portal_id', <any>portalId, QueryParamStyle.Form, true);
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>c, 'c');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>f, 'f');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -1357,23 +1303,21 @@ export class AssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns the asset relations
-	 * @endpoint get /assets/{id}/relations
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpGetAssetRelationsById(
 		requestParameters: HttpGetAssetRelationsByIdRequestParams,
@@ -1437,18 +1381,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns all technical metadata of an asset.
-	 * @endpoint get /assets/{id}/techdata
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpGetAssetTechDataById(
 		requestParameters: HttpGetAssetTechDataByIdRequestParams,
@@ -1512,18 +1454,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns all textual content of an asset (i.e. text of PDF)
-	 * @endpoint get /assets/{id}/textcontent
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpGetAssetTextContentById(
 		requestParameters: HttpGetAssetTextContentByIdRequestParams,
@@ -1587,18 +1527,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint lets you use the entire api of Imagemagick to edit the image.
-	 * @endpoint post /assets/{id}/imageedit
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpImageDynamicEdit(
 		requestParameters: HttpImageDynamicEditRequestParams,
@@ -1634,9 +1572,8 @@ export class AssetOperationsService extends BaseService {
 		}
 		const targetFilename = requestParameters?.targetFilename;
 
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'target_filename', <any>targetFilename, QueryParamStyle.Form, true);
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>targetFilename, 'target_filename');
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -1664,23 +1601,21 @@ export class AssetOperationsService extends BaseService {
 		return this.httpClient.request('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: dynamicImageOperation,
-			params: localVarQueryParameters.toHttpParams(),
+			params: localVarQueryParameters,
 			responseType: 'blob',
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint returns an image with the requested download format applied.
-	 * @endpoint get /assets/{id}/imageedit/{download_format_id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpImageDynamicGetFromDownloadId(
 		requestParameters: HttpImageDynamicGetFromDownloadIdRequestParams,
@@ -1737,18 +1672,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint purges all published assets of this asset when CDN is enabled
-	 * @endpoint patch /assets/{id}/purgecdn
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpPatchAssetPurgeCdn(
 		requestParameters: HttpPatchAssetPurgeCdnRequestParams,
@@ -1812,18 +1745,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint marks a asset as \&quot;dirty\&quot; (starts a queue to do that) - to trigger search index to re-index the asset
-	 * @endpoint patch /assets/{id}/reindex
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpPatchAssetReindex(
 		requestParameters: HttpPatchAssetReindexRequestParams,
@@ -1887,18 +1818,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint runs all configured queues of the asset again (requeue ID at beginning of queues). E.g. Recreation of previews, AI recognition, hash values, ...
-	 * @endpoint patch /assets/{id}/renew
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpPatchAssetRenew(
 		requestParameters: HttpPatchAssetRenewRequestParams,
@@ -1962,18 +1891,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint repairs the asset, it\&#39;s items, custom fields and collections. It also checks the original blob and the blobs of the asset.
-	 * @endpoint patch /assets/{id}/repair
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpPatchAssetRepair(
 		requestParameters: HttpPatchAssetRepairRequestParams,
@@ -2037,18 +1964,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint execute a specific queues of the asset. E.g. Recreation of previews, AI recognition, hash values, ...
-	 * @endpoint patch /assets/{id}/runqueue/{queueInput}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpPatchAssetRunQueue(
 		requestParameters: HttpPatchAssetRunQueueRequestParams,
@@ -2116,17 +2041,15 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint allows the renewal of all assets (start over the trigger of asset type) with or without filtering.
-	 * @endpoint patch /assetsrenew!!
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpPatchRenewAllAssets(
 		observe?: 'body',
@@ -2181,18 +2104,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint sets the availability of the asset. All properties are put on the asset and replace previous values.To make an asset unavailable set the &#x60;availability&#x60; property to \&#39;locked\&#39; or set the &#x60;available_from&#x60; property below the current date. To make it available set empty string to &#x60;availability&#x60; property or &#x60;available_to&#x60; property into past.
-	 * @endpoint put /assets/{id}/availability
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpPutAssetAvailability(
 		requestParameters: HttpPutAssetAvailabilityRequestParams,
@@ -2268,18 +2189,16 @@ export class AssetOperationsService extends BaseService {
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}
 
 	/**
 	 * This endpoint lets you restore an asset to a certain point in time.
-	 * @endpoint post /assets/{id}/restore
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
 	 */
 	public httpRestoreAsset(
 		requestParameters: HttpRestoreAssetRequestParams,
@@ -2315,11 +2234,9 @@ export class AssetOperationsService extends BaseService {
 		}
 		const altcollection = requestParameters?.altcollection;
 
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'pointintime', <any>pointintime, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'altcollection', <any>altcollection, QueryParamStyle.Form, true);
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>pointintime, 'pointintime');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>altcollection, 'altcollection');
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -2350,12 +2267,12 @@ export class AssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Asset>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			transferCache: localVarTransferCache,
 			reportProgress: reportProgress
 		});
 	}

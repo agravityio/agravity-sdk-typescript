@@ -8,6 +8,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project does not adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
+## AgravityAPI <a name="10.3.1"/> [10.3.1](https://www.npmjs.com/package/@agravity/private/v/10.3.1) (2026-03-15)
+
+- Rename and change all property namings of md5 to etag
+- Property type change `fs_synced` on asset now of type string (etag of shared file) instead of boolean
+
+## AgravityAPI <a name="10.3.0"/> [10.3.0](https://www.npmjs.com/package/@agravity/private/v/10.3.0) (2026-03-01)
+
+- Store fileshare info of asset directly on property `fs_synced`
+- Add one more history entry (from the future use case)
+- Add PUT `/assets/checkout/bulk` - This endpoint allows to bulk checkout or checkin multiple assets. When an asset is checked out, only the user who checked it out (or admins) can create new versions or delete the asset.
+- Add new models for `assetBulkCheckoutBody`, `assetBulkCheckoutResult`, `assetBulkUpdate`, `assetCheckout`, `assetCheckoutFailure` and `assetCheckoutWarningDetail` for response to PUT `/assets/checkout/bulk`
+- Add `fsMissingMd5Action` property to PUT `/assets/{id}/checkout` endpoint
+- Add DELETE `/assetsbulkupdate` - This endpoint updates multiple assets. The containing keywords (tags) will removed if existing. Only custom values are removed on assets which have those items.
+- Add POST `/assetsbulkupdate`   - This endpoint updates multiple assets. The containing keywords (tags) will be distinctly added (no removal). Only custom values are added on assets which have those items.
+- Add PUT `/assetsbulkupdate` - This endpoint updates multiple assets. The containing keywords (tags) will replace existing. Only custom values are replaced on assets which have those items.
+- Add GET `/assets/{id}/relations` - This endpoint returns the asset relations for public
+- Correcting POST `/assetrelations` - This endpoint creates an asset relation in the database for public (adding body)
+- Version model update
+  - Adding properties `subscription_id` and `enabled_features` to version info model
+  - Removing property `vector_search_enabled` from version info model (now inside `enabled_features`)
+
 ## AgravityAPI <a name="10.2.5"/> [10.2.5](https://www.npmjs.com/package/@agravity/private/v/10.2.5) (2026-02-01)
 
 - Add one more history entry (from the future use case)
