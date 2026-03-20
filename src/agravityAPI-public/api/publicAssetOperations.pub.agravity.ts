@@ -121,6 +121,19 @@ export interface HttpGetAssetRelationsByIdRequestParams {
 	id: string;
 }
 
+export interface HttpGetAssetViewRequestParams {
+	/** The ID of the asset. */
+	id: string;
+	/** (optional) provide the id of any valid download format. Otherwise the original is returned. */
+	format?: string;
+	/** If the request comes from portal this is the indicator. It will be checked if the requested blob is valid for the portal. */
+	portalId?: string;
+	/** Returns assets on permissions which are locked and accessable (User needs editor permissions). Default: true */
+	locked?: boolean;
+	/** Returns assets which are not in state ACTIVE (User needs editor permissions). Default: true */
+	uncompleted?: boolean;
+}
+
 export interface HttpGetSharedAssetBlobRequestParams {
 	/** This share ID is like an API key. Check on validy (format, expire, collection still availabe). Otherwise StatusCode 403 (Forbidden) is returned. */
 	shareId: string;
@@ -726,6 +739,90 @@ export class PublicAssetOperationsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Array<AssetRelation>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns the binary directly to the endpoint
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpGetAssetView(
+		requestParameters: HttpGetAssetViewRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AssetBlob>;
+	public httpGetAssetView(
+		requestParameters: HttpGetAssetViewRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AssetBlob>>;
+	public httpGetAssetView(
+		requestParameters: HttpGetAssetViewRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AssetBlob>>;
+	public httpGetAssetView(
+		requestParameters: HttpGetAssetViewRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpGetAssetView.');
+		}
+		const format = requestParameters?.format;
+		const portalId = requestParameters?.portalId;
+		const locked = requestParameters?.locked;
+		const uncompleted = requestParameters?.uncompleted;
+
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>format, 'format');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>locked, 'locked');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>uncompleted, 'uncompleted');
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (function_key) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/assets/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/view`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AssetBlob>('get', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			params: localVarQueryParameters,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
