@@ -22,6 +22,19 @@ import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
+export interface HttpAssetGetBlobDownloadRequestParams {
+	/** The ID of the asset. */
+	assetId: string;
+	/** The name of the format (download format) or container. */
+	format: string;
+	/** If the request comes from portal this is the indicator. */
+	portalId?: string;
+	/** Returns assets on permissions which are locked and accessable (User needs editor permissions). Default: false */
+	locked?: boolean;
+	/** Returns assets which are not in state ACTIVE (User needs editor permissions). Default: false */
+	uncompleted?: boolean;
+}
+
 export interface HttpAssetGetViewForPortalRequestParams {
 	/** The ID of the asset. */
 	assetId: string;
@@ -43,6 +56,80 @@ export class PublicEndpointsService extends BaseService {
 		@Optional() configuration?: AgravityPublicConfiguration
 	) {
 		super(basePath, configuration);
+	}
+
+	/**
+	 * This endpoint returns the binary data of an asset to be downloaded.
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 */
+	public httpAssetGetBlobDownload(
+		requestParameters: HttpAssetGetBlobDownloadRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<Blob>;
+	public httpAssetGetBlobDownload(
+		requestParameters: HttpAssetGetBlobDownloadRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<Blob>>;
+	public httpAssetGetBlobDownload(
+		requestParameters: HttpAssetGetBlobDownloadRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<Blob>>;
+	public httpAssetGetBlobDownload(
+		requestParameters: HttpAssetGetBlobDownloadRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/octet-stream' | 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const assetId = requestParameters?.assetId;
+		if (assetId === null || assetId === undefined) {
+			throw new Error('Required parameter assetId was null or undefined when calling httpAssetGetBlobDownload.');
+		}
+		const format = requestParameters?.format;
+		if (format === null || format === undefined) {
+			throw new Error('Required parameter format was null or undefined when calling httpAssetGetBlobDownload.');
+		}
+		const portalId = requestParameters?.portalId;
+		const locked = requestParameters?.locked;
+		const uncompleted = requestParameters?.uncompleted;
+
+		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>assetId, 'asset_id');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>format, 'format');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>locked, 'locked');
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>uncompleted, 'uncompleted');
+
+		let localVarHeaders = this.defaultHeaders;
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/octet-stream', 'application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let localVarPath = `/public/download`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request('get', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			params: localVarQueryParameters,
+			responseType: 'blob',
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			transferCache: localVarTransferCache,
+			reportProgress: reportProgress
+		});
 	}
 
 	/**
