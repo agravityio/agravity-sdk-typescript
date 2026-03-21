@@ -60,9 +60,11 @@ export class PublicEndpointsService extends BaseService {
 
 	/**
 	 * This endpoint returns the binary data of an asset to be downloaded.
+	 * @endpoint get /public/download
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
 	 */
 	public httpAssetGetBlobDownload(
 		requestParameters: HttpAssetGetBlobDownloadRequestParams,
@@ -100,12 +102,17 @@ export class PublicEndpointsService extends BaseService {
 		const locked = requestParameters?.locked;
 		const uncompleted = requestParameters?.uncompleted;
 
-		let localVarQueryParameters = new HttpParams({ encoder: this.encoder });
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>assetId, 'asset_id');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>format, 'format');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>portalId, 'portal_id');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>locked, 'locked');
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, <any>uncompleted, 'uncompleted');
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'asset_id', <any>assetId, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'format', <any>format, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'portal_id', <any>portalId, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'locked', <any>locked, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'uncompleted', <any>uncompleted, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -122,12 +129,12 @@ export class PublicEndpointsService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: 'blob',
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
 			observe: observe,
-			transferCache: localVarTransferCache,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
 			reportProgress: reportProgress
 		});
 	}
