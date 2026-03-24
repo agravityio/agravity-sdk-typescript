@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project does not adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
+## AgravityAPI <a name="10.3.3"/> [10.3.3](https://www.npmjs.com/package/@agravity/private/v/10.3.3) (2026-03-24)
+
+- Just version upgrade to match backend
+
 ## AgravityAPI <a name="10.3.2"/> [10.3.2](https://www.npmjs.com/package/@agravity/private/v/10.3.2) (2026-03-21)
 
 - #1588 Add public endpoint to download blobs directly which has constant URL
@@ -43,11 +47,11 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="10.2.4"/> [10.2.4](https://www.npmjs.com/package/@agravity/private/v/10.2.4) (2026-01-27)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="10.2.3"/> [10.2.3](https://www.npmjs.com/package/@agravity/private/v/10.2.3) (2026-01-20)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="10.2.2"/> [10.2.2](https://www.npmjs.com/package/@agravity/private/v/10.2.2) (2026-01-18)
 
@@ -56,7 +60,7 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="10.2.1"/> [10.2.1](https://www.npmjs.com/package/@agravity/private/v/10.2.1) (2025-12-14)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="10.2.0"/> [10.2.0](https://www.npmjs.com/package/@agravity/private/v/10.2.0) (2025-12-06)
 
@@ -79,11 +83,11 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="10.1.5"/> [10.1.5](https://www.npmjs.com/package/@agravity/private/v/10.1.5) (2025-11-14)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="10.1.4"/> [10.1.4](https://www.npmjs.com/package/@agravity/private/v/10.1.4) (2025-11-13)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="10.1.3"/> [10.1.3](https://www.npmjs.com/package/@agravity/private/v/10.1.3) (2025-10-25)
 
@@ -91,11 +95,11 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="10.1.2"/> [10.1.2](https://www.npmjs.com/package/@agravity/private/v/10.1.2) (2025-10-19)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="10.1.1"/> [10.1.1](https://www.npmjs.com/package/@agravity/private/v/10.1.1) (2025-10-15)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="10.1.0"/> [10.1.0](https://www.npmjs.com/package/@agravity/private/v/10.1.0) (2025-10-12)
 
@@ -122,7 +126,7 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="10.0.1"/> [10.0.1](https://www.npmjs.com/package/@agravity/private/v/10.0.1) (2025-09-07)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="10.0.0"/> [10.0.0](https://www.npmjs.com/package/@agravity/private/v/10.0.0) (2025-08-27)
 
@@ -152,15 +156,15 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="9.2.3"/> [9.2.3](https://www.npmjs.com/package/@agravity/private/v/9.2.3) (2025-07-09)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="9.2.2"/> [9.2.2](https://www.npmjs.com/package/@agravity/private/v/9.2.2) (2025-07-09)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="9.2.1"/> [9.2.1](https://www.npmjs.com/package/@agravity/private/v/9.2.1) (2025-07-03)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="9.2.0"/> [9.2.0](https://www.npmjs.com/package/@agravity/private/v/9.2.0) (2025-07-01)
 
@@ -169,11 +173,11 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="9.1.2"/> [9.1.2](https://www.npmjs.com/package/@agravity/private/v/9.1.2) (2025-06-22)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="9.1.1"/> [9.1.1](https://www.npmjs.com/package/@agravity/private/v/9.1.1) (2025-06-10)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="9.1.0"/> [9.1.0](https://www.npmjs.com/package/@agravity/private/v/9.1.0) (2025-05-25)
 
@@ -192,11 +196,11 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="9.0.3"/> [9.0.3](https://www.npmjs.com/package/@agravity/private/v/9.0.3) (2025-04-08)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="9.0.2"/> [9.0.2](https://www.npmjs.com/package/@agravity/private/v/9.0.2) (2025-04-02)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="9.0.1"/> [9.0.1](https://www.npmjs.com/package/@agravity/private/v/9.0.1) (2025-03-09)
 
@@ -236,7 +240,7 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="8.4.1"/> [8.4.1](https://www.npmjs.com/package/@agravity/private/v/8.4.1) (2025-01-26)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="8.4.0"/> [8.4.0](https://www.npmjs.com/package/@agravity/private/v/8.4.0) (2025-01-12)
 
@@ -293,7 +297,7 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="8.1.2"/> [8.1.2](https://www.npmjs.com/package/@agravity/private/v/8.1.2) (2024-10-11)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ---
 
@@ -357,7 +361,7 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 
 ## AgravityAPI <a name="7.2.1"/> [7.2.1](https://www.npmjs.com/package/@agravity/private/v/7.2.1) (2024-06-03)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ---
 
@@ -429,31 +433,31 @@ Add DataImportExport Management API (move some from Helper Management)
 
 ## AgravityAPI <a name="6.1.6"/> [6.1.6](https://www.npmjs.com/package/@agravity/private/v/6.1.6) (2024-02-01)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ---
 
 ## AgravityAPI <a name="6.1.5"/> [6.1.5](https://www.npmjs.com/package/@agravity/private/v/6.1.5) (2024-01-28)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ---
 
 ## AgravityAPI <a name="6.1.4"/> [6.1.4](https://www.npmjs.com/package/@agravity/private/v/6.1.4) (2024-01-17)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ---
 
 ## AgravityAPI <a name="6.1.3"/> [6.1.3](https://www.npmjs.com/package/@agravity/private/v/6.1.3) (2024-01-14)
 
--   Just update year to 2024 in description
+- Just update year to 2024 in description
 
 ---
 
 ## AgravityAPI <a name="6.1.2"/> [6.1.2](https://www.npmjs.com/package/@agravity/private/v/6.1.2) (2023-12-18)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ---
 
@@ -500,7 +504,7 @@ Other changes:
 
 ## AgravityAPI <a name="6.0.4"/> [6.0.4](https://www.npmjs.com/package/@agravity/private/v/6.0.4) (2023-11-06)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ---
 
@@ -513,13 +517,13 @@ Other changes:
 
 ## AgravityAPI <a name="6.0.2"/> [6.0.2](https://www.npmjs.com/package/@agravity/private/v/6.0.2) (2023-10-23)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ---
 
 ## AgravityAPI <a name="6.0.1"/> [6.0.1](https://www.npmjs.com/package/@agravity/private/v/6.0.1) (2023-10-19)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ---
 
@@ -569,7 +573,7 @@ Other changes:
 
 ## AgravityAPI <a name="5.3.6"/> [5.3.6](https://www.npmjs.com/package/@agravity/private/v/5.3.6) (2023-09-18)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ---
 
@@ -593,7 +597,7 @@ Other changes:
 
 ## AgravityAPI <a name="5.3.2"/> [5.3.2](https://www.npmjs.com/package/@agravity/private/v/5.3.2) (2023-08-17)
 
--   Just version upgrade to match backend
+- Just version upgrade to match backend
 
 ## AgravityAPI <a name="5.3.1"/> [5.3.1](https://www.npmjs.com/package/@agravity/private/v/5.3.1) (2023-08-01)
 
