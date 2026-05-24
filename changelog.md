@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project does not adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
+## AgravityAPI <a name="11.0.1"/> [11.0.1](https://www.npmjs.com/package/@agravity/private/v/11.0.1) (2026-05-24)
+
+- Just version upgrade to match backend
+
 ## AgravityAPI <a name="11.0.0"/> [11.0.0](https://www.npmjs.com/package/@agravity/private/v/11.0.0) (2026-05-17)
 
 - Angular 21 upgrade (OpenAPI Generator 7.20.0)
