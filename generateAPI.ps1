@@ -208,6 +208,7 @@ $json.keywords = $privateKeywords
 $json.author = $author
 $json.license = $licence
 $json.description = $description
+$json | Add-Member -NotePropertyName overrides -NotePropertyValue @{ 'magic-string' = '0.30.17' } -Force
 
 $json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-private/package.json
 
@@ -233,6 +234,7 @@ $json.keywords = $publicKeywords
 $json.author = $author
 $json.license = $licence
 $json.description = $description
+$json | Add-Member -NotePropertyName overrides -NotePropertyValue @{ 'magic-string' = '0.30.17' } -Force
 
 $json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-public/package.json
 
@@ -271,13 +273,15 @@ if ($answer -eq "y") {
 
         # publish private package to npm
         Set-Location src/agravityAPI-private
-        npm install
+        npm install --ignore-scripts
+        npm run build
         npm publish --access public
         rimraf node_modules package-lock.json
         
         # publish public package to npm
         Set-Location ../agravityAPI-public
-        npm install
+        npm install --ignore-scripts
+        npm run build
         npm publish --access public
         rimraf node_modules package-lock.json
 

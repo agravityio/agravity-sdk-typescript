@@ -38,6 +38,9 @@
 		"typescript": ">=5.9.0 <6.0.0",
 		"zone.js": "^0.15.0"
 	},
+	"overrides": {
+		"magic-string": "0.30.17"
+	},
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
