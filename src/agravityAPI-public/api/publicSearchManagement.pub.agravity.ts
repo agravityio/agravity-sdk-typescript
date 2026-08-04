@@ -17,6 +17,8 @@ import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
 // @ts-ignore
+import { AzSearchOptions } from '../model/azSearchOptions.pub.agravity';
+// @ts-ignore
 import { SearchAdminStatus } from '../model/searchAdminStatus.pub.agravity';
 // @ts-ignore
 import { SearchFacet } from '../model/searchFacet.pub.agravity';
@@ -82,6 +84,17 @@ export interface HttpGlobalSearchRequestParams {
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
+}
+
+export interface HttpGlobalSearchPostRequestParams {
+	/** Search options for the request body. */
+	azSearchOptions: AzSearchOptions;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
+	/** This will expose the thumbnail asset blob incl. URL with SAS Token. */
+	expose?: boolean;
 }
 
 export interface HttpSearchAdminGetStatusRequestParams {
@@ -209,7 +222,7 @@ export class PublicSearchManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint returns a configured max amount of results for search terms.
+	 * This endpoint returns a configured max amount of results for search terms using query parameters.
 	 * @endpoint get /search
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -324,6 +337,102 @@ export class PublicSearchManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<SearchResult>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			params: localVarQueryParameters.toHttpParams(),
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint returns a configured max amount of results for search options in the request body.
+	 * @endpoint post /search
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
+	 */
+	public httpGlobalSearchPost(
+		requestParameters: HttpGlobalSearchPostRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<SearchResult>;
+	public httpGlobalSearchPost(
+		requestParameters: HttpGlobalSearchPostRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<SearchResult>>;
+	public httpGlobalSearchPost(
+		requestParameters: HttpGlobalSearchPostRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<SearchResult>>;
+	public httpGlobalSearchPost(
+		requestParameters: HttpGlobalSearchPostRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const azSearchOptions = requestParameters?.azSearchOptions;
+		if (azSearchOptions === null || azSearchOptions === undefined) {
+			throw new Error('Required parameter azSearchOptions was null or undefined when calling httpGlobalSearchPost.');
+		}
+		const translations = requestParameters?.translations;
+		const acceptLanguage = requestParameters?.acceptLanguage;
+		const expose = requestParameters?.expose;
+
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'expose', <any>expose, QueryParamStyle.Form, true);
+
+		let localVarHeaders = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
+		}
+
+		// authentication (function_key) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/search`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<SearchResult>('post', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: azSearchOptions,
 			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
