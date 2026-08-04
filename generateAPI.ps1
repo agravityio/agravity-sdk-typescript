@@ -142,6 +142,22 @@ function Assert-LastExitCode {
     }
 }
 
+function ConvertTo-JsonWithoutHtmlEscaping {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]$InputObject,
+        [int]$Depth = 100
+    )
+
+    process {
+        $json = $InputObject | ConvertTo-Json -Depth $Depth
+        $json = $json.Replace('\u003c', '<')
+        $json = $json.Replace('\u003e', '>')
+        $json = $json.Replace('\u0026', '&')
+        return $json
+    }
+}
+
 function AddPublishedVersionToChangelog {
     [CmdletBinding()]
     param (
@@ -248,7 +264,7 @@ $json.license = $licence
 $json.description = $description
 $json | Add-Member -NotePropertyName overrides -NotePropertyValue @{ 'magic-string' = '0.30.17' } -Force
 
-$json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-private/package.json
+$json | ConvertTo-JsonWithoutHtmlEscaping -Depth 100 | Set-Content -Path src/agravityAPI-private/package.json
 
 # # add $repoUrl to package.json in line 20
 $fileContent = Get-Content "src\agravityAPI-private\package.json"
@@ -274,7 +290,7 @@ $json.license = $licence
 $json.description = $description
 $json | Add-Member -NotePropertyName overrides -NotePropertyValue @{ 'magic-string' = '0.30.17' } -Force
 
-$json | ConvertTo-Json -Depth 100 | Set-Content -Path src/agravityAPI-public/package.json
+$json | ConvertTo-JsonWithoutHtmlEscaping -Depth 100 | Set-Content -Path src/agravityAPI-public/package.json
 
 # # add $repoUrl to package.json in line 12
 $fileContent = Get-Content "src\agravityAPI-public\package.json"
