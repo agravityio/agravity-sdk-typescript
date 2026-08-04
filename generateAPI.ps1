@@ -131,6 +131,44 @@ function ReplaceStringInFiles {
     }
 }
 
+function Assert-LastExitCode {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)][string]$CommandName
+    )
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "$CommandName failed with exit code $LASTEXITCODE"
+    }
+}
+
+function AddPublishedVersionToChangelog {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)][string]$ChangelogPath,
+        [Parameter(Mandatory = $true)][string]$Version
+    )
+
+    $changelogContent = Get-Content -Path $ChangelogPath -Raw
+    $versionHeader = "## AgravityAPI <a name=`"$Version`"/> [$Version](https://www.npmjs.com/package/@agravity/private/v/$Version) ($(Get-Date -Format 'yyyy-MM-dd'))"
+
+    if ($changelogContent.Contains($versionHeader)) {
+        Write-Host "Changelog already contains version $Version"
+        return
+    }
+
+    $marker = "It will be upgraded when the Agravity Backend is upgraded and will have the same version."
+    if (-not $changelogContent.Contains($marker)) {
+        throw "Could not find changelog insertion marker"
+    }
+
+    $newEntry = "$versionHeader`n`n- Just version upgrade to match backend"
+    $updatedContent = $changelogContent.Replace($marker, "$marker`n`n$newEntry")
+    Set-Content -Path $ChangelogPath -Value $updatedContent
+
+    Write-Host "Added changelog entry for published version $Version"
+}
+
 
 ReplaceStringInFiles -FolderPath "src" -SearchString "custom\?: \{ \[key: string\]: object; \} \| null;" -ReplaceString "custom?: any | null;"
 Write-Host "Replace custom complete"
@@ -274,18 +312,27 @@ if ($answer -eq "y") {
         # publish private package to npm
         Set-Location src/agravityAPI-private
         npm install --ignore-scripts
+        Assert-LastExitCode -CommandName "npm install (private)"
         npm run build
+        Assert-LastExitCode -CommandName "npm run build (private)"
         npm publish --access public
+        Assert-LastExitCode -CommandName "npm publish (private)"
         rimraf node_modules package-lock.json
+        Assert-LastExitCode -CommandName "rimraf (private)"
         
         # publish public package to npm
         Set-Location ../agravityAPI-public
         npm install --ignore-scripts
+        Assert-LastExitCode -CommandName "npm install (public)"
         npm run build
+        Assert-LastExitCode -CommandName "npm run build (public)"
         npm publish --access public
+        Assert-LastExitCode -CommandName "npm publish (public)"
         rimraf node_modules package-lock.json
+        Assert-LastExitCode -CommandName "rimraf (public)"
 
         Set-Location ../..
+        AddPublishedVersionToChangelog -ChangelogPath ".\changelog.md" -Version $version
         Write-Host "Publish complete"
 
         code.cmd .\changelog.md
