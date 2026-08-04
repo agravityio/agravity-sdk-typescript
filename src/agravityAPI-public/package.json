@@ -1,6 +1,6 @@
 {
 	"name": "@agravity/public",
-	"version": "11.0.2",
+	"version": "11.0.3",
 	"description": "The Agravity GlobalDAM API which allowes API key authenticated access the Agravity GlobalDAM Backend",
 	"author": "Philipp Losbichler",
 	"repository": {
@@ -38,11 +38,11 @@
 		"typescript": ">=5.9.0 <6.0.0",
 		"zone.js": "^0.15.0"
 	},
-	"overrides": {
-		"magic-string": "0.30.17"
-	},
 	"publishConfig": {
 		"access": "public",
 		"registry": "https://registry.npmjs.org/"
+	},
+	"overrides": {
+		"magic-string": "0.30.17"
 	}
 }
