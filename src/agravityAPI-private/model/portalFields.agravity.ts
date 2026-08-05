@@ -13,6 +13,7 @@ export interface PortalFields {
 	name?: string | null;
 	detail_order?: number | null;
 	facet_order?: number | null;
+	orfilterable?: boolean | null;
 	labels?: { [key: string]: string } | null;
 	user_context?: PortalUserContext | null;
 	format?: string | null;
