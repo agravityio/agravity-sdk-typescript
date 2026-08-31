@@ -51,6 +51,10 @@ export interface HttpGetAllUserDefinedListsRequestParams {
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
+	/** A portal ID ignores permissions but the param coll_ids. */
+	portalId?: string;
+	/** A comma separated list of parent IDs of UDLs which should be fetched. */
+	collIds?: string;
 }
 
 export interface HttpGetAllowedFilterableItemsRequestParams {
@@ -398,10 +402,16 @@ export class HelperToolsService extends BaseService {
 	): Observable<any> {
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
+		const portalId = requestParameters?.portalId;
+		const collIds = requestParameters?.collIds;
 
 		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'portal_id', <any>portalId, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'coll_ids', <any>collIds, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
