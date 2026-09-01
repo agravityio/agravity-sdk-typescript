@@ -14,4 +14,5 @@ export interface NotificationSettingsEntry {
 	event_types?: Array<string> | null;
 	frequency?: string | null;
 	include_sub_collections?: boolean | null;
+	email_addresses?: Array<string> | null;
 }
