@@ -158,6 +158,52 @@ function ConvertTo-JsonWithoutHtmlEscaping {
     }
 }
 
+function GetChangelogEntriesSinceLastTag {
+    [CmdletBinding()]
+    param ()
+
+    $recordSeparator = [char]0x1e
+    $fieldSeparator = [char]0x1f
+
+    $lastTag = git describe --tags --abbrev=0 2>$null
+    if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($lastTag)) {
+        $gitRange = "$lastTag..HEAD"
+    } else {
+        $gitRange = "HEAD"
+    }
+
+    $rawLog = git log $gitRange --format="%s%x1f%b%x1e" 2>$null
+    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($rawLog)) {
+        return @()
+    }
+
+    $entries = @()
+    $records = $rawLog -split [regex]::Escape([string]$recordSeparator)
+    foreach ($record in $records) {
+        if ([string]::IsNullOrWhiteSpace($record)) {
+            continue
+        }
+
+        $parts = $record -split [regex]::Escape([string]$fieldSeparator), 2
+        $subject = $parts[0].Trim()
+        if ([string]::IsNullOrWhiteSpace($subject)) {
+            continue
+        }
+
+        $body = if ($parts.Count -gt 1) { $parts[1].Trim() } else { "" }
+        if ([string]::IsNullOrWhiteSpace($body)) {
+            $entries += "- $subject"
+            continue
+        }
+
+        $bodyLines = ($body -split "`r?`n") | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+        $indentedBody = ($bodyLines | ForEach-Object { "  - $($_.Trim())" }) -join "`n"
+        $entries += "- $subject`n$indentedBody"
+    }
+
+    return $entries
+}
+
 function AddPublishedVersionToChangelog {
     [CmdletBinding()]
     param (
@@ -178,7 +224,14 @@ function AddPublishedVersionToChangelog {
         throw "Could not find changelog insertion marker"
     }
 
-    $newEntry = "$versionHeader`n`n- Just version upgrade to match backend"
+    $commitEntries = GetChangelogEntriesSinceLastTag
+    $entryText = if ($commitEntries.Count -gt 0) {
+        $commitEntries -join "`n"
+    } else {
+        "- Just version upgrade to match backend"
+    }
+
+    $newEntry = "$versionHeader`n`n$entryText"
     $updatedContent = $changelogContent.Replace($marker, "$marker`n`n$newEntry")
     Set-Content -Path $ChangelogPath -Value $updatedContent
 

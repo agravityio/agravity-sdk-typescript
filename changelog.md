@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project does not adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
+## AgravityAPI <a name="11.1.0"/> [11.1.0](https://www.npmjs.com/package/@agravity/private/v/11.1.0) (2026-09-10)
+
+- #1771 - Add `email_addresses` array to model of `notificationSettingsEntry`
+- Add params `portal_id` and `coll_ids` to `/helpers/userdefinedlists` to query just the needed userdefinedlists in portal
+- #1757 Add "OR-Filtering" property to Portal Field
+- #1758 Add POST /search -  This endpoint returns a configured max amount of results for search options in the request body.
+- Fix the wrong encoding of <,> and &
+
 ## AgravityAPI <a name="11.0.4"/> [11.0.4](https://www.npmjs.com/package/@agravity/private/v/11.0.4) (2026-06-26)
 
 - Just version upgrade to match backend
@@ -1164,4 +1172,5 @@ Below is a list of any know issues affecting the [recommended minimum version](#
 
 | Issue | Impact | Mitigation | Tracking link |
 | ----- | ------ | ---------- | ------------- |
+
 
