@@ -164,9 +164,14 @@ function GetChangelogEntriesSinceLastTag {
 
     $recordSeparator = [char]0x1e
     $fieldSeparator = [char]0x1f
+    $semverPattern = '^\d+\.\d+\.\d+$'
 
-    $lastTag = git describe --tags --abbrev=0 2>$null
-    if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace($lastTag)) {
+    $lastTag = git tag --merged HEAD 2>$null |
+        Where-Object { $_ -match $semverPattern } |
+        Sort-Object { [version]$_ } -Descending |
+        Select-Object -First 1
+
+    if (-not [string]::IsNullOrWhiteSpace($lastTag)) {
         $gitRange = "$lastTag..HEAD"
     } else {
         $gitRange = "HEAD"
