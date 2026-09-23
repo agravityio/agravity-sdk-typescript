@@ -10,6 +10,7 @@
 import { CollTypeItem } from './collTypeItem.pub.agravity';
 import { AssetBlob } from './assetBlob.pub.agravity';
 import { AssetCheckout } from './assetCheckout.pub.agravity';
+import { CollTypeItemRef } from './collTypeItemRef.pub.agravity';
 
 export interface Asset {
 	id?: string | null;
@@ -30,6 +31,7 @@ export interface Asset {
 	checkout?: AssetCheckout | null;
 	fs_synced?: string | null;
 	custom?: any | null;
+	item_refs?: Array<CollTypeItemRef> | null;
 	items?: Array<CollTypeItem> | null;
 	translations?: { [key: string]: { [key: string]: any } } | null;
 	role?: Asset.RoleEnum;

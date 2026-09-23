@@ -14,6 +14,7 @@ api/publicAssetVersioning.pub.agravity.ts
 api/publicAuthenticationManagement.pub.agravity.ts
 api/publicCollectionManagement.pub.agravity.ts
 api/publicCollectionSecureUpload.pub.agravity.ts
+api/publicCollectionTypeItemManagement.pub.agravity.ts
 api/publicCollectionTypeManagement.pub.agravity.ts
 api/publicConfigurationManagement.pub.agravity.ts
 api/publicDownloadFormatManagement.pub.agravity.ts
@@ -52,6 +53,7 @@ model/assetRelation.pub.agravity.ts
 model/assetRelationType.pub.agravity.ts
 model/azSearchOptions.pub.agravity.ts
 model/collTypeItem.pub.agravity.ts
+model/collTypeItemRef.pub.agravity.ts
 model/collection.pub.agravity.ts
 model/collectionType.pub.agravity.ts
 model/collectionUDL.pub.agravity.ts
@@ -78,6 +80,7 @@ model/entityListResult.pub.agravity.ts
 model/entityNamesRequest.pub.agravity.ts
 model/frontendAppConfig.pub.agravity.ts
 model/groupAllAppData.pub.agravity.ts
+model/itemGroup.pub.agravity.ts
 model/models.ts
 model/moveCollectionBody.pub.agravity.ts
 model/permissionEntity.pub.agravity.ts

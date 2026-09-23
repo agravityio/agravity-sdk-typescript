@@ -14,6 +14,8 @@ export * from './assetRelationTypeManagement.agravity';
 import { AssetRelationTypeManagementService } from './assetRelationTypeManagement.agravity';
 export * from './assetVersioning.agravity';
 import { AssetVersioningService } from './assetVersioning.agravity';
+export * from './assistantOperations.agravity';
+import { AssistantOperationsService } from './assistantOperations.agravity';
 export * from './authenticationManagement.agravity';
 import { AuthenticationManagementService } from './authenticationManagement.agravity';
 export * from './collectionManagement.agravity';
@@ -22,6 +24,8 @@ export * from './collectionShareManagement.agravity';
 import { CollectionShareManagementService } from './collectionShareManagement.agravity';
 export * from './collectionTypeItemBlueprintManagement.agravity';
 import { CollectionTypeItemBlueprintManagementService } from './collectionTypeItemBlueprintManagement.agravity';
+export * from './collectionTypeItemRefsManagement.agravity';
+import { CollectionTypeItemRefsManagementService } from './collectionTypeItemRefsManagement.agravity';
 export * from './collectionTypeManagement.agravity';
 import { CollectionTypeManagementService } from './collectionTypeManagement.agravity';
 export * from './commentsManagement.agravity';
@@ -46,6 +50,8 @@ export * from './historyEntryManagement.agravity';
 import { HistoryEntryManagementService } from './historyEntryManagement.agravity';
 export * from './iccProfileManagement.agravity';
 import { IccProfileManagementService } from './iccProfileManagement.agravity';
+export * from './itemGroupsManagement.agravity';
+import { ItemGroupsManagementService } from './itemGroupsManagement.agravity';
 export * from './listBlobs.agravity';
 import { ListBlobsService } from './listBlobs.agravity';
 export * from './listQueues.agravity';
@@ -101,10 +107,12 @@ export const APIS = [
 	AssetRelationManagementService,
 	AssetRelationTypeManagementService,
 	AssetVersioningService,
+	AssistantOperationsService,
 	AuthenticationManagementService,
 	CollectionManagementService,
 	CollectionShareManagementService,
 	CollectionTypeItemBlueprintManagementService,
+	CollectionTypeItemRefsManagementService,
 	CollectionTypeManagementService,
 	CommentsManagementService,
 	ConfigurationManagementService,
@@ -117,6 +125,7 @@ export const APIS = [
 	HelperToolsService,
 	HistoryEntryManagementService,
 	IccProfileManagementService,
+	ItemGroupsManagementService,
 	ListBlobsService,
 	ListQueuesService,
 	ListTablesService,

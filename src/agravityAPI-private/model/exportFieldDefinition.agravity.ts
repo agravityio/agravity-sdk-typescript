@@ -16,5 +16,5 @@ export interface ExportFieldDefinition {
 	is_translatable?: boolean | null;
 	is_importable?: boolean | null;
 	is_core?: boolean | null;
-	default_value?: any | null;
+	default_value?: string | null;
 }

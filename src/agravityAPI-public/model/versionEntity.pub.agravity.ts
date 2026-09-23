@@ -14,6 +14,7 @@ export interface VersionEntity {
 	entity_type?: string | null;
 	versions?: Array<VersionedAsset> | null;
 	region_of_origin?: string | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

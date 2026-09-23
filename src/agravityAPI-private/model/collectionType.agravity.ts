@@ -8,12 +8,14 @@
  * Do not edit the class manually.
  */
 import { CollTypeItem } from './collTypeItem.agravity';
+import { CollTypeItemRef } from './collTypeItemRef.agravity';
 import { PermissionEntity } from './permissionEntity.agravity';
 
 export interface CollectionType {
 	id?: string | null;
 	entity_type?: string | null;
 	name?: string | null;
+	item_refs?: Array<CollTypeItemRef> | null;
 	items?: Array<CollTypeItem> | null;
 	translations?: { [key: string]: { [key: string]: any } } | null;
 	order?: number | null;

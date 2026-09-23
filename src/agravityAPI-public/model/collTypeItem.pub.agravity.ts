@@ -14,8 +14,8 @@ export interface CollTypeItem {
 	name?: string | null;
 	item_type?: string | null;
 	format?: string | null;
-	label?: string | null;
 	default_value?: any | null;
+	ref_id?: string | null;
 	mandatory?: boolean | null;
 	searchable?: boolean | null;
 	onlyasset?: boolean | null;
@@ -24,6 +24,8 @@ export interface CollTypeItem {
 	group?: string | null;
 	order?: number | null;
 	translations?: { [key: string]: { [key: string]: any } } | null;
+	description?: string | null;
+	add_properties?: { [key: string]: any } | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;

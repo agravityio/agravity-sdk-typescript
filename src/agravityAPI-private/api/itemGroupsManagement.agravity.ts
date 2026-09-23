@@ -17,36 +17,36 @@ import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
 // @ts-ignore
-import { CollTypeItemBlueprint } from '../model/collTypeItemBlueprint.agravity';
+import { ItemGroup } from '../model/itemGroup.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
-export interface HttpCollTypeItemBlueprintsCreateRequestParams {
-	/** This endpoint creates an unique blueprint and adds the information to the database. */
-	collTypeItemBlueprint: CollTypeItemBlueprint;
+export interface HttpItemGroupsCreateRequestParams {
+	/** The item group to create. */
+	itemGroup: ItemGroup;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
 }
 
-export interface HttpCollTypeItemBlueprintsDeleteByIdRequestParams {
-	/** The ID of the blueprint. */
+export interface HttpItemGroupsDeleteByIdRequestParams {
+	/** The ID of the item group. */
 	id: string;
 }
 
-export interface HttpCollTypeItemBlueprintsGetAllRequestParams {
+export interface HttpItemGroupsGetAllRequestParams {
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
 }
 
-export interface HttpCollTypeItemBlueprintsGetByIdRequestParams {
-	/** The ID of the blueprint. */
+export interface HttpItemGroupsGetByIdRequestParams {
+	/** The ID of the item group. */
 	id: string;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
@@ -54,11 +54,11 @@ export interface HttpCollTypeItemBlueprintsGetByIdRequestParams {
 	acceptLanguage?: string;
 }
 
-export interface HttpCollTypeItemBlueprintsUpdateByIdRequestParams {
-	/** The ID of the blueprint. */
+export interface HttpItemGroupsUpdateByIdRequestParams {
+	/** The ID of the item group. */
 	id: string;
-	/** This endpoint updates an the given blueprint with ID and adds the information to the database. */
-	collTypeItemBlueprint: CollTypeItemBlueprint;
+	/** Body has to be a valid item group. */
+	itemGroup: ItemGroup;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
@@ -68,7 +68,7 @@ export interface HttpCollTypeItemBlueprintsUpdateByIdRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class CollectionTypeItemBlueprintManagementService extends BaseService {
+export class ItemGroupsManagementService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
@@ -78,40 +78,40 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint creates one collection type item blueprint entry in the database.
-	 * @endpoint post /colltypeitemblueprints
+	 * This endpoint creates an item group and adds the information to the database.
+	 * @endpoint post /itemgroups
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollTypeItemBlueprintsCreate(
-		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
+	public httpItemGroupsCreate(
+		requestParameters: HttpItemGroupsCreateRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<CollTypeItemBlueprint>;
-	public httpCollTypeItemBlueprintsCreate(
-		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
+	): Observable<ItemGroup>;
+	public httpItemGroupsCreate(
+		requestParameters: HttpItemGroupsCreateRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsCreate(
-		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
+	): Observable<HttpResponse<ItemGroup>>;
+	public httpItemGroupsCreate(
+		requestParameters: HttpItemGroupsCreateRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsCreate(
-		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
+	): Observable<HttpEvent<ItemGroup>>;
+	public httpItemGroupsCreate(
+		requestParameters: HttpItemGroupsCreateRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
-		const collTypeItemBlueprint = requestParameters?.collTypeItemBlueprint;
-		if (collTypeItemBlueprint === null || collTypeItemBlueprint === undefined) {
-			throw new Error('Required parameter collTypeItemBlueprint was null or undefined when calling httpCollTypeItemBlueprintsCreate.');
+		const itemGroup = requestParameters?.itemGroup;
+		if (itemGroup === null || itemGroup === undefined) {
+			throw new Error('Required parameter itemGroup was null or undefined when calling httpItemGroupsCreate.');
 		}
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
@@ -155,11 +155,11 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/colltypeitemblueprints`;
+		let localVarPath = `/itemgroups`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<CollTypeItemBlueprint>('post', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<ItemGroup>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			body: collTypeItemBlueprint,
+			body: itemGroup,
 			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
@@ -171,40 +171,40 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint deletes a single collection type item blueprint.
-	 * @endpoint delete /colltypeitemblueprints/{id}
+	 * This endpoint deletes a single item group.
+	 * @endpoint delete /itemgroups/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollTypeItemBlueprintsDeleteById(
-		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+	public httpItemGroupsDeleteById(
+		requestParameters: HttpItemGroupsDeleteByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any>;
-	public httpCollTypeItemBlueprintsDeleteById(
-		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+	public httpItemGroupsDeleteById(
+		requestParameters: HttpItemGroupsDeleteByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<any>>;
-	public httpCollTypeItemBlueprintsDeleteById(
-		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+	public httpItemGroupsDeleteById(
+		requestParameters: HttpItemGroupsDeleteByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<any>>;
-	public httpCollTypeItemBlueprintsDeleteById(
-		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+	public httpItemGroupsDeleteById(
+		requestParameters: HttpItemGroupsDeleteByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const id = requestParameters?.id;
 		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemBlueprintsDeleteById.');
+			throw new Error('Required parameter id was null or undefined when calling httpItemGroupsDeleteById.');
 		}
 
 		let localVarHeaders = this.defaultHeaders;
@@ -232,7 +232,7 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/colltypeitemblueprints/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		let localVarPath = `/itemgroups/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
@@ -246,33 +246,33 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint lists all collection type item blueprint in database.
-	 * @endpoint get /colltypeitemblueprints
+	 * This endpoint lists all item groups in database.
+	 * @endpoint get /itemgroups
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollTypeItemBlueprintsGetAll(
-		requestParameters?: HttpCollTypeItemBlueprintsGetAllRequestParams,
+	public httpItemGroupsGetAll(
+		requestParameters?: HttpItemGroupsGetAllRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Array<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsGetAll(
-		requestParameters?: HttpCollTypeItemBlueprintsGetAllRequestParams,
+	): Observable<Array<ItemGroup>>;
+	public httpItemGroupsGetAll(
+		requestParameters?: HttpItemGroupsGetAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Array<CollTypeItemBlueprint>>>;
-	public httpCollTypeItemBlueprintsGetAll(
-		requestParameters?: HttpCollTypeItemBlueprintsGetAllRequestParams,
+	): Observable<HttpResponse<Array<ItemGroup>>>;
+	public httpItemGroupsGetAll(
+		requestParameters?: HttpItemGroupsGetAllRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Array<CollTypeItemBlueprint>>>;
-	public httpCollTypeItemBlueprintsGetAll(
-		requestParameters?: HttpCollTypeItemBlueprintsGetAllRequestParams,
+	): Observable<HttpEvent<Array<ItemGroup>>>;
+	public httpItemGroupsGetAll(
+		requestParameters?: HttpItemGroupsGetAllRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -312,9 +312,9 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/colltypeitemblueprints`;
+		let localVarPath = `/itemgroups`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<Array<CollTypeItemBlueprint>>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<Array<ItemGroup>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
@@ -327,40 +327,40 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint returns a single collection type item blueprint by ID.
-	 * @endpoint get /colltypeitemblueprints/{id}
+	 * This endpoint returns a single item group by ID.
+	 * @endpoint get /itemgroups/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollTypeItemBlueprintsGetById(
-		requestParameters: HttpCollTypeItemBlueprintsGetByIdRequestParams,
+	public httpItemGroupsGetById(
+		requestParameters: HttpItemGroupsGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<CollTypeItemBlueprint>;
-	public httpCollTypeItemBlueprintsGetById(
-		requestParameters: HttpCollTypeItemBlueprintsGetByIdRequestParams,
+	): Observable<ItemGroup>;
+	public httpItemGroupsGetById(
+		requestParameters: HttpItemGroupsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsGetById(
-		requestParameters: HttpCollTypeItemBlueprintsGetByIdRequestParams,
+	): Observable<HttpResponse<ItemGroup>>;
+	public httpItemGroupsGetById(
+		requestParameters: HttpItemGroupsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsGetById(
-		requestParameters: HttpCollTypeItemBlueprintsGetByIdRequestParams,
+	): Observable<HttpEvent<ItemGroup>>;
+	public httpItemGroupsGetById(
+		requestParameters: HttpItemGroupsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const id = requestParameters?.id;
 		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemBlueprintsGetById.');
+			throw new Error('Required parameter id was null or undefined when calling httpItemGroupsGetById.');
 		}
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
@@ -397,9 +397,9 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/colltypeitemblueprints/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		let localVarPath = `/itemgroups/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<CollTypeItemBlueprint>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<ItemGroup>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
@@ -412,44 +412,44 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates a single collection type item blueprint.
-	 * @endpoint post /colltypeitemblueprints/{id}
+	 * This endpoint updates an item group.
+	 * @endpoint post /itemgroups/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollTypeItemBlueprintsUpdateById(
-		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
+	public httpItemGroupsUpdateById(
+		requestParameters: HttpItemGroupsUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<CollTypeItemBlueprint>;
-	public httpCollTypeItemBlueprintsUpdateById(
-		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
+	): Observable<ItemGroup>;
+	public httpItemGroupsUpdateById(
+		requestParameters: HttpItemGroupsUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsUpdateById(
-		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
+	): Observable<HttpResponse<ItemGroup>>;
+	public httpItemGroupsUpdateById(
+		requestParameters: HttpItemGroupsUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsUpdateById(
-		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
+	): Observable<HttpEvent<ItemGroup>>;
+	public httpItemGroupsUpdateById(
+		requestParameters: HttpItemGroupsUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const id = requestParameters?.id;
 		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemBlueprintsUpdateById.');
+			throw new Error('Required parameter id was null or undefined when calling httpItemGroupsUpdateById.');
 		}
-		const collTypeItemBlueprint = requestParameters?.collTypeItemBlueprint;
-		if (collTypeItemBlueprint === null || collTypeItemBlueprint === undefined) {
-			throw new Error('Required parameter collTypeItemBlueprint was null or undefined when calling httpCollTypeItemBlueprintsUpdateById.');
+		const itemGroup = requestParameters?.itemGroup;
+		if (itemGroup === null || itemGroup === undefined) {
+			throw new Error('Required parameter itemGroup was null or undefined when calling httpItemGroupsUpdateById.');
 		}
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
@@ -493,11 +493,11 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/colltypeitemblueprints/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		let localVarPath = `/itemgroups/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<CollTypeItemBlueprint>('post', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<ItemGroup>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			body: collTypeItemBlueprint,
+			body: itemGroup,
 			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),

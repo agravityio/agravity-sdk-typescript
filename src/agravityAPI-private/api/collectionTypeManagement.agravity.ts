@@ -19,8 +19,6 @@ import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
 // @ts-ignore
 import { AgravityInfoResponse } from '../model/agravityInfoResponse.agravity';
 // @ts-ignore
-import { CollTypeItem } from '../model/collTypeItem.agravity';
-// @ts-ignore
 import { CollectionType } from '../model/collectionType.agravity';
 // @ts-ignore
 import { PermissionChange } from '../model/permissionChange.agravity';
@@ -35,6 +33,8 @@ export interface HttpCollectionTypesCreateRequestParams {
 	collectionType: CollectionType;
 	/** (optional) The ID of the workspace where this collection type should be assigned. */
 	workspaceid?: string;
+	/** When true, returns the resolved collection type items alongside the item refs. */
+	items?: boolean;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
@@ -47,6 +47,8 @@ export interface HttpCollectionTypesDeleteRequestParams {
 }
 
 export interface HttpCollectionTypesGetRequestParams {
+	/** When true, returns the resolved collection type items alongside the item refs. */
+	items?: boolean;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
@@ -56,6 +58,8 @@ export interface HttpCollectionTypesGetRequestParams {
 export interface HttpCollectionTypesGetByIdRequestParams {
 	/** The ID of the collection type. */
 	id: string;
+	/** When true, returns the resolved collection type items alongside the item refs. */
+	items?: boolean;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
@@ -67,6 +71,8 @@ export interface HttpCollectionTypesUpdateRequestParams {
 	id: string;
 	/** The body has to be a valid collection type json. Not fitting properties are ignored. */
 	collectionType: CollectionType;
+	/** When true, returns the resolved collection type items alongside the item refs. */
+	items?: boolean;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
@@ -78,20 +84,6 @@ export interface HttpCollectionTypesUpdatePermissionsByIdRequestParams {
 	id: string;
 	/** The changes which ids and how they should be added / removed / replaced / etc. */
 	permissionChange: PermissionChange;
-}
-
-export interface HttpGetCollectionTypeItemsRequestParams {
-	/** True if the blueprint items should be included. */
-	includeblueprint?: boolean;
-	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
-	translations?: boolean;
-	/** The requested language of the response. If not matching it falls back to default language. */
-	acceptLanguage?: string;
-}
-
-export interface HttpUpdateCollectionTypeItemsRequestParams {
-	/** Items which should be updated. */
-	collTypeItem: Array<CollTypeItem>;
 }
 
 @Injectable({
@@ -143,12 +135,15 @@ export class CollectionTypeManagementService extends BaseService {
 			throw new Error('Required parameter collectionType was null or undefined when calling httpCollectionTypesCreate.');
 		}
 		const workspaceid = requestParameters?.workspaceid;
+		const items = requestParameters?.items;
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'workspaceid', <any>workspaceid, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'items', <any>items, QueryParamStyle.Form, true);
 
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
@@ -309,10 +304,13 @@ export class CollectionTypeManagementService extends BaseService {
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
+		const items = requestParameters?.items;
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'items', <any>items, QueryParamStyle.Form, true);
 
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
@@ -394,10 +392,13 @@ export class CollectionTypeManagementService extends BaseService {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpCollectionTypesGetById.');
 		}
+		const items = requestParameters?.items;
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'items', <any>items, QueryParamStyle.Form, true);
 
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
@@ -483,10 +484,13 @@ export class CollectionTypeManagementService extends BaseService {
 		if (collectionType === null || collectionType === undefined) {
 			throw new Error('Required parameter collectionType was null or undefined when calling httpCollectionTypesUpdate.');
 		}
+		const items = requestParameters?.items;
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'items', <any>items, QueryParamStyle.Form, true);
 
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
@@ -618,173 +622,6 @@ export class CollectionTypeManagementService extends BaseService {
 		return this.httpClient.request<AgravityInfoResponse>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			body: permissionChange,
-			responseType: <any>responseType_,
-			...(withCredentials ? { withCredentials } : {}),
-			headers: localVarHeaders,
-			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
-			reportProgress: reportProgress
-		});
-	}
-
-	/**
-	 * This method returns a list of all collection types items. (Regardless of the permissions)
-	 * @endpoint get /collectiontypesitems
-	 * @param requestParameters
-	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
-	 */
-	public httpGetCollectionTypeItems(
-		requestParameters?: HttpGetCollectionTypeItemsRequestParams,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Array<CollTypeItem>>;
-	public httpGetCollectionTypeItems(
-		requestParameters?: HttpGetCollectionTypeItemsRequestParams,
-		observe?: 'response',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Array<CollTypeItem>>>;
-	public httpGetCollectionTypeItems(
-		requestParameters?: HttpGetCollectionTypeItemsRequestParams,
-		observe?: 'events',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Array<CollTypeItem>>>;
-	public httpGetCollectionTypeItems(
-		requestParameters?: HttpGetCollectionTypeItemsRequestParams,
-		observe: any = 'body',
-		reportProgress: boolean = false,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<any> {
-		const includeblueprint = requestParameters?.includeblueprint;
-		const translations = requestParameters?.translations;
-		const acceptLanguage = requestParameters?.acceptLanguage;
-
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'includeblueprint', <any>includeblueprint, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
-
-		let localVarHeaders = this.defaultHeaders;
-		if (acceptLanguage !== undefined && acceptLanguage !== null) {
-			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
-		}
-
-		// authentication (msal_auth) required
-		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
-
-		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
-		if (localVarHttpHeaderAcceptSelected !== undefined) {
-			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-		}
-
-		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-		const localVarTransferCache: boolean = options?.transferCache ?? true;
-
-		let responseType_: 'text' | 'json' | 'blob' = 'json';
-		if (localVarHttpHeaderAcceptSelected) {
-			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-				responseType_ = 'text';
-			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-				responseType_ = 'json';
-			} else {
-				responseType_ = 'blob';
-			}
-		}
-
-		let localVarPath = `/collectiontypesitems`;
-		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<Array<CollTypeItem>>('get', `${basePath}${localVarPath}`, {
-			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
-			responseType: <any>responseType_,
-			...(withCredentials ? { withCredentials } : {}),
-			headers: localVarHeaders,
-			observe: observe,
-			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
-			reportProgress: reportProgress
-		});
-	}
-
-	/**
-	 * This endpoint updates all collection type items in all collection types regarding: Label, Order, Translations and Group
-	 * @endpoint post /collectiontypesitems
-	 * @param requestParameters
-	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-	 * @param reportProgress flag to report request and response progress.
-	 * @param options additional options
-	 */
-	public httpUpdateCollectionTypeItems(
-		requestParameters: HttpUpdateCollectionTypeItemsRequestParams,
-		observe?: 'body',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Array<CollectionType>>;
-	public httpUpdateCollectionTypeItems(
-		requestParameters: HttpUpdateCollectionTypeItemsRequestParams,
-		observe?: 'response',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Array<CollectionType>>>;
-	public httpUpdateCollectionTypeItems(
-		requestParameters: HttpUpdateCollectionTypeItemsRequestParams,
-		observe?: 'events',
-		reportProgress?: boolean,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Array<CollectionType>>>;
-	public httpUpdateCollectionTypeItems(
-		requestParameters: HttpUpdateCollectionTypeItemsRequestParams,
-		observe: any = 'body',
-		reportProgress: boolean = false,
-		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<any> {
-		const collTypeItem = requestParameters?.collTypeItem;
-		if (collTypeItem === null || collTypeItem === undefined) {
-			throw new Error('Required parameter collTypeItem was null or undefined when calling httpUpdateCollectionTypeItems.');
-		}
-
-		let localVarHeaders = this.defaultHeaders;
-
-		// authentication (msal_auth) required
-		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
-
-		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
-		if (localVarHttpHeaderAcceptSelected !== undefined) {
-			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
-		}
-
-		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
-
-		const localVarTransferCache: boolean = options?.transferCache ?? true;
-
-		// to determine the Content-Type header
-		const consumes: string[] = ['application/json'];
-		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
-		if (httpContentTypeSelected !== undefined) {
-			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
-		}
-
-		let responseType_: 'text' | 'json' | 'blob' = 'json';
-		if (localVarHttpHeaderAcceptSelected) {
-			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
-				responseType_ = 'text';
-			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
-				responseType_ = 'json';
-			} else {
-				responseType_ = 'blob';
-			}
-		}
-
-		let localVarPath = `/collectiontypesitems`;
-		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<Array<CollectionType>>('post', `${basePath}${localVarPath}`, {
-			context: localVarHttpContext,
-			body: collTypeItem,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,

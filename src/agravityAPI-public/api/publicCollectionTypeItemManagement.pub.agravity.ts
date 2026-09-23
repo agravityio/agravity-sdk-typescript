@@ -15,50 +15,29 @@ import { Observable } from 'rxjs';
 import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 
 // @ts-ignore
-import { AgravityErrorResponse } from '../model/agravityErrorResponse.pub.agravity';
-// @ts-ignore
 import { CollTypeItem } from '../model/collTypeItem.pub.agravity';
 // @ts-ignore
-import { CollectionType } from '../model/collectionType.pub.agravity';
+import { ItemGroup } from '../model/itemGroup.pub.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
-export interface HttpCollectionTypesGetRequestParams {
-	/** When true, returns the resolved collection type items alongside the item refs. */
-	items?: boolean;
-	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
-	translations?: boolean;
-	/** The requested language of the response. If not matching it falls back to default language. */
-	acceptLanguage?: string;
-}
-
-export interface HttpCollectionTypesGetByIdRequestParams {
-	/** The ID of the collection type. */
+export interface HttpCollTypeItemsGetByIdRequestParams {
+	/** The ID of the collection type item. */
 	id: string;
-	/** When true, returns the resolved collection type items alongside the item refs. */
-	items?: boolean;
-	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
-	translations?: boolean;
-	/** The requested language of the response. If not matching it falls back to default language. */
-	acceptLanguage?: string;
 }
 
-export interface HttpGetCollectionTypeItemsRequestParams {
-	/** True if the blueprint items should be included. */
-	includeblueprint?: boolean;
-	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
-	translations?: boolean;
-	/** The requested language of the response. If not matching it falls back to default language. */
-	acceptLanguage?: string;
+export interface HttpItemGroupsGetByIdRequestParams {
+	/** The ID of the item group. */
+	id: string;
 }
 
 @Injectable({
 	providedIn: 'root'
 })
-export class PublicCollectionTypeManagementService extends BaseService {
+export class PublicCollectionTypeItemManagementService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
@@ -68,51 +47,33 @@ export class PublicCollectionTypeManagementService extends BaseService {
 	}
 
 	/**
-	 * This lists all available collection types which are stored in the database and not deleted (status \&quot;A\&quot;).
-	 * @endpoint get /collectiontypes
-	 * @param requestParameters
+	 * Lists all standalone collection type items.
+	 * @endpoint get /colltypeitems
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollectionTypesGet(
-		requestParameters?: HttpCollectionTypesGetRequestParams,
+	public httpCollTypeItemsGetAll(
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Array<CollectionType>>;
-	public httpCollectionTypesGet(
-		requestParameters?: HttpCollectionTypesGetRequestParams,
+	): Observable<Array<CollTypeItem>>;
+	public httpCollTypeItemsGetAll(
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Array<CollectionType>>>;
-	public httpCollectionTypesGet(
-		requestParameters?: HttpCollectionTypesGetRequestParams,
+	): Observable<HttpResponse<Array<CollTypeItem>>>;
+	public httpCollTypeItemsGetAll(
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Array<CollectionType>>>;
-	public httpCollectionTypesGet(
-		requestParameters?: HttpCollectionTypesGetRequestParams,
+	): Observable<HttpEvent<Array<CollTypeItem>>>;
+	public httpCollTypeItemsGetAll(
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
-		const items = requestParameters?.items;
-		const translations = requestParameters?.translations;
-		const acceptLanguage = requestParameters?.acceptLanguage;
-
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'items', <any>items, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
-
 		let localVarHeaders = this.defaultHeaders;
-		if (acceptLanguage !== undefined && acceptLanguage !== null) {
-			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
-		}
 
 		// authentication (function_key) required
 		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
@@ -137,11 +98,10 @@ export class PublicCollectionTypeManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/collectiontypes`;
+		let localVarPath = `/colltypeitems`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<Array<CollectionType>>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<Array<CollTypeItem>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
@@ -152,55 +112,43 @@ export class PublicCollectionTypeManagementService extends BaseService {
 	}
 
 	/**
-	 * Returns one single collection type (from ID).
-	 * @endpoint get /collectiontypes/{id}
+	 * Gets a single standalone collection type item by ID.
+	 * @endpoint get /colltypeitems/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollectionTypesGetById(
-		requestParameters: HttpCollectionTypesGetByIdRequestParams,
+	public httpCollTypeItemsGetById(
+		requestParameters: HttpCollTypeItemsGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<CollectionType>;
-	public httpCollectionTypesGetById(
-		requestParameters: HttpCollectionTypesGetByIdRequestParams,
+	): Observable<CollTypeItem>;
+	public httpCollTypeItemsGetById(
+		requestParameters: HttpCollTypeItemsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<CollectionType>>;
-	public httpCollectionTypesGetById(
-		requestParameters: HttpCollectionTypesGetByIdRequestParams,
+	): Observable<HttpResponse<CollTypeItem>>;
+	public httpCollTypeItemsGetById(
+		requestParameters: HttpCollTypeItemsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<CollectionType>>;
-	public httpCollectionTypesGetById(
-		requestParameters: HttpCollectionTypesGetByIdRequestParams,
+	): Observable<HttpEvent<CollTypeItem>>;
+	public httpCollTypeItemsGetById(
+		requestParameters: HttpCollTypeItemsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const id = requestParameters?.id;
 		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpCollectionTypesGetById.');
+			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemsGetById.');
 		}
-		const items = requestParameters?.items;
-		const translations = requestParameters?.translations;
-		const acceptLanguage = requestParameters?.acceptLanguage;
-
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'items', <any>items, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
-		if (acceptLanguage !== undefined && acceptLanguage !== null) {
-			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
-		}
 
 		// authentication (function_key) required
 		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
@@ -225,11 +173,10 @@ export class PublicCollectionTypeManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/collectiontypes/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		let localVarPath = `/colltypeitems/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<CollectionType>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<CollTypeItem>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
@@ -240,51 +187,33 @@ export class PublicCollectionTypeManagementService extends BaseService {
 	}
 
 	/**
-	 * This method returns a list of collection types items. (Regardless of the permissions)
-	 * @endpoint get /collectiontypesitems
-	 * @param requestParameters
+	 * Lists all item groups.
+	 * @endpoint get /itemgroups
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpGetCollectionTypeItems(
-		requestParameters?: HttpGetCollectionTypeItemsRequestParams,
+	public httpItemGroupsGetAll(
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Array<CollTypeItem>>;
-	public httpGetCollectionTypeItems(
-		requestParameters?: HttpGetCollectionTypeItemsRequestParams,
+	): Observable<Array<ItemGroup>>;
+	public httpItemGroupsGetAll(
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Array<CollTypeItem>>>;
-	public httpGetCollectionTypeItems(
-		requestParameters?: HttpGetCollectionTypeItemsRequestParams,
+	): Observable<HttpResponse<Array<ItemGroup>>>;
+	public httpItemGroupsGetAll(
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Array<CollTypeItem>>>;
-	public httpGetCollectionTypeItems(
-		requestParameters?: HttpGetCollectionTypeItemsRequestParams,
+	): Observable<HttpEvent<Array<ItemGroup>>>;
+	public httpItemGroupsGetAll(
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
-		const includeblueprint = requestParameters?.includeblueprint;
-		const translations = requestParameters?.translations;
-		const acceptLanguage = requestParameters?.acceptLanguage;
-
-		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'includeblueprint', <any>includeblueprint, QueryParamStyle.Form, true);
-
-		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
-
 		let localVarHeaders = this.defaultHeaders;
-		if (acceptLanguage !== undefined && acceptLanguage !== null) {
-			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
-		}
 
 		// authentication (function_key) required
 		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
@@ -309,11 +238,85 @@ export class PublicCollectionTypeManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/collectiontypesitems`;
+		let localVarPath = `/itemgroups`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<Array<CollTypeItem>>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<Array<ItemGroup>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			params: localVarQueryParameters.toHttpParams(),
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * Gets a single item group by ID.
+	 * @endpoint get /itemgroups/{id}
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
+	 */
+	public httpItemGroupsGetById(
+		requestParameters: HttpItemGroupsGetByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<ItemGroup>;
+	public httpItemGroupsGetById(
+		requestParameters: HttpItemGroupsGetByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<ItemGroup>>;
+	public httpItemGroupsGetById(
+		requestParameters: HttpItemGroupsGetByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<ItemGroup>>;
+	public httpItemGroupsGetById(
+		requestParameters: HttpItemGroupsGetByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpItemGroupsGetById.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (function_key) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('function_key', 'x-functions-key', localVarHeaders);
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/itemgroups/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<ItemGroup>('get', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
