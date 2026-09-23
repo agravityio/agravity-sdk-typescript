@@ -30,8 +30,8 @@ import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityPublicConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
-export interface HttpGetSearchFacetteByNameRequestParams {
-	/** The name of the facette. */
+export interface HttpGetSearchFacetByNameRequestParams {
+	/** The name of the facet. */
 	name: string;
 	/** The search string which should be found. */
 	s: string;
@@ -115,44 +115,44 @@ export class PublicSearchManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint returns one facette based on the search parameters.
-	 * @endpoint get /search/facette
+	 * This endpoint returns one facet based on the search parameters.
+	 * @endpoint get /search/facet
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpGetSearchFacetteByName(
-		requestParameters: HttpGetSearchFacetteByNameRequestParams,
+	public httpGetSearchFacetByName(
+		requestParameters: HttpGetSearchFacetByNameRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<SearchFacet>;
-	public httpGetSearchFacetteByName(
-		requestParameters: HttpGetSearchFacetteByNameRequestParams,
+	public httpGetSearchFacetByName(
+		requestParameters: HttpGetSearchFacetByNameRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<SearchFacet>>;
-	public httpGetSearchFacetteByName(
-		requestParameters: HttpGetSearchFacetteByNameRequestParams,
+	public httpGetSearchFacetByName(
+		requestParameters: HttpGetSearchFacetByNameRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<SearchFacet>>;
-	public httpGetSearchFacetteByName(
-		requestParameters: HttpGetSearchFacetteByNameRequestParams,
+	public httpGetSearchFacetByName(
+		requestParameters: HttpGetSearchFacetByNameRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const name = requestParameters?.name;
 		if (name === null || name === undefined) {
-			throw new Error('Required parameter name was null or undefined when calling httpGetSearchFacetteByName.');
+			throw new Error('Required parameter name was null or undefined when calling httpGetSearchFacetByName.');
 		}
 		const s = requestParameters?.s;
 		if (s === null || s === undefined) {
-			throw new Error('Required parameter s was null or undefined when calling httpGetSearchFacetteByName.');
+			throw new Error('Required parameter s was null or undefined when calling httpGetSearchFacetByName.');
 		}
 		const collectiontypeid = requestParameters?.collectiontypeid;
 		const collectionid = requestParameters?.collectionid;
@@ -207,7 +207,7 @@ export class PublicSearchManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/search/facette`;
+		let localVarPath = `/search/facet`;
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<SearchFacet>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
