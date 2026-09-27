@@ -42,8 +42,8 @@ export interface HttpAzureRecreateGlobalIndexRequestParams {
 	portalId?: string;
 }
 
-export interface HttpGetSearchFacetByNameRequestParams {
-	/** The name of the facet. */
+export interface HttpGetSearchFacetteByNameRequestParams {
+	/** The name of the facette. */
 	name: string;
 	/** The search string which should be found. */
 	s: string;
@@ -298,44 +298,44 @@ export class SearchManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint returns one facet based on the search parameters.
-	 * @endpoint get /search/facet
+	 * This endpoint returns one facette based on the search parameters.
+	 * @endpoint get /search/facette
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpGetSearchFacetByName(
-		requestParameters: HttpGetSearchFacetByNameRequestParams,
+	public httpGetSearchFacetteByName(
+		requestParameters: HttpGetSearchFacetteByNameRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<SearchFacet>;
-	public httpGetSearchFacetByName(
-		requestParameters: HttpGetSearchFacetByNameRequestParams,
+	public httpGetSearchFacetteByName(
+		requestParameters: HttpGetSearchFacetteByNameRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<SearchFacet>>;
-	public httpGetSearchFacetByName(
-		requestParameters: HttpGetSearchFacetByNameRequestParams,
+	public httpGetSearchFacetteByName(
+		requestParameters: HttpGetSearchFacetteByNameRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<SearchFacet>>;
-	public httpGetSearchFacetByName(
-		requestParameters: HttpGetSearchFacetByNameRequestParams,
+	public httpGetSearchFacetteByName(
+		requestParameters: HttpGetSearchFacetteByNameRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const name = requestParameters?.name;
 		if (name === null || name === undefined) {
-			throw new Error('Required parameter name was null or undefined when calling httpGetSearchFacetByName.');
+			throw new Error('Required parameter name was null or undefined when calling httpGetSearchFacetteByName.');
 		}
 		const s = requestParameters?.s;
 		if (s === null || s === undefined) {
-			throw new Error('Required parameter s was null or undefined when calling httpGetSearchFacetByName.');
+			throw new Error('Required parameter s was null or undefined when calling httpGetSearchFacetteByName.');
 		}
 		const collectiontypeid = requestParameters?.collectiontypeid;
 		const collectionid = requestParameters?.collectionid;
@@ -390,7 +390,7 @@ export class SearchManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/search/facet`;
+		let localVarPath = `/search/facette`;
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<SearchFacet>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
