@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project does not adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
+## AgravityAPI <a name="11.1.2"/> [11.1.2](https://www.npmjs.com/package/@agravity/private/v/11.1.2) (2026-09-27)
+
+- Just version upgrade to match backend
+
 ## AgravityAPI <a name="11.1.1"/> [11.1.1](https://www.npmjs.com/package/@agravity/private/v/11.1.1) (2026-09-10)
 
 - Just version upgrade to match backend
@@ -1176,6 +1180,7 @@ Below is a list of any know issues affecting the [recommended minimum version](#
 
 | Issue | Impact | Mitigation | Tracking link |
 | ----- | ------ | ---------- | ------------- |
+
 
 
 
