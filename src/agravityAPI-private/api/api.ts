@@ -1,5 +1,7 @@
 export * from './aIOperations.agravity';
 import { AIOperationsService } from './aIOperations.agravity';
+export * from './analyticsManagement.agravity';
+import { AnalyticsManagementService } from './analyticsManagement.agravity';
 export * from './assetIconRuleManagement.agravity';
 import { AssetIconRuleManagementService } from './assetIconRuleManagement.agravity';
 export * from './assetManagement.agravity';
@@ -94,6 +96,7 @@ export * from './workspaceManagement.agravity';
 import { WorkspaceManagementService } from './workspaceManagement.agravity';
 export const APIS = [
 	AIOperationsService,
+	AnalyticsManagementService,
 	AssetIconRuleManagementService,
 	AssetManagementService,
 	AssetOperationsService,
