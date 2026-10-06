@@ -250,8 +250,6 @@ ReplaceStringInFiles -FolderPath "src" `
   -SearchString "\[key:\s*string\]\s*:\s*object\b" `
   -ReplaceString "[key: string]: any"
 Write-Host "Replace all key-object complete"
-ReplaceStringInFiles -FolderPath "src" -SearchString "default_value\?: object \| null;" -ReplaceString "default_value?: any | null;"
-Write-Host "Replace default_value complete"
 ReplaceStringInFiles -FolderPath "src" -SearchString "ai\?: object \| null;" -ReplaceString "ai?: any | null;"
 Write-Host "Replace ai complete"
 
