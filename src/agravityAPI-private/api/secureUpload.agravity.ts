@@ -39,7 +39,7 @@ export interface HttpGetSecureUploadListOfUserRequestParams {
 export interface HttpSecureUploadCreateForUserRequestParams {
 	/** This creates / adds an unique secure upload collection ID and adds the information to the collection (in DB). */
 	secureUploadEntity: SecureUploadEntity;
-	/** Used to enable sftp secure file upload */
+	/** Used to enable sftp secure file upload. Assets imported through SFTP are created without asset metadata: the configured asset_metadata_items / asset_metadata_optional_items are not applied to them (by design). */
 	sftpenabled?: boolean;
 }
 

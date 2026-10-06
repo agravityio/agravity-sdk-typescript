@@ -23,6 +23,7 @@ export interface SecureUploadEntity {
 	message?: string | null;
 	sftp_connection?: CreateSftpUserResult | null;
 	check_name_for_version?: boolean | null;
+	check_extension_for_version?: boolean | null;
 	asset_metadata_items?: Array<string> | null;
 	asset_metadata_optional_items?: Array<string> | null;
 	asset_metadata_fields?: Array<CollTypeItem> | null;

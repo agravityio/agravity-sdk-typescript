@@ -4,6 +4,7 @@ README.md
 api.base.service.ts
 api.module.ts
 api/aIOperations.agravity.ts
+api/analyticsManagement.agravity.ts
 api/api.ts
 api/assetIconRuleManagement.agravity.ts
 api/assetManagement.agravity.ts
@@ -155,6 +156,15 @@ model/publishedAsset.agravity.ts
 model/quickShare.agravity.ts
 model/quickShareFull.agravity.ts
 model/relatedAsset.agravity.ts
+model/reportingAnalyticsCatalogResponse.agravity.ts
+model/reportingAnalyticsMetricCatalogItem.agravity.ts
+model/reportingAnalyticsMetricRequest.agravity.ts
+model/reportingAnalyticsMetricResult.agravity.ts
+model/reportingAnalyticsRequest.agravity.ts
+model/reportingAnalyticsResponse.agravity.ts
+model/reportingNamedUsage.agravity.ts
+model/reportingSystemSnapshot.agravity.ts
+model/reportingTimeSeriesPoint.agravity.ts
 model/reverseAssetSearchFieldSettings.agravity.ts
 model/sasToken.agravity.ts
 model/savedSearch.agravity.ts
