@@ -1,0 +1,97 @@
+<main>
+  <h1>Agravity SDK sample</h1>
+  <p class="hint">Calls <code>GET /search</code> via <code>&#64;agravity/public</code> (<code>PublicSearchManagementService.httpGlobalSearch</code>).</p>
+
+  <form (ngSubmit)="search()">
+    <label>
+      API endpoint URL
+      <input name="basePath" type="url" placeholder="https://your-instance.example.com/api" required [ngModel]="basePath()" (ngModelChange)="basePath.set($event)" />
+    </label>
+    <label>
+      API key
+      <input name="apiKey" type="password" autocomplete="off" required [ngModel]="apiKey()" (ngModelChange)="apiKey.set($event)" />
+    </label>
+    <div class="row">
+      <label class="grow">
+        Search term
+        <input name="searchTerm" type="text" required [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" />
+      </label>
+      <label>
+        Limit
+        <input name="limit" type="number" min="1" max="100" [ngModel]="limit()" (ngModelChange)="limit.set($event)" />
+      </label>
+    </div>
+    <label class="check">
+      <input name="remember" type="checkbox" [ngModel]="rememberSettings()" (ngModelChange)="rememberSettings.set($event)" />
+      Remember URL and API key in this browser (localStorage)
+    </label>
+    <button type="submit" [disabled]="loading()">{{ loading() ? 'Searching…' : 'Search' }}</button>
+  </form>
+
+  @if (error(); as message) {
+    <div class="error" role="alert">{{ message }}</div>
+  }
+
+  @if (result(); as r) {
+    <section>
+      <h2>Summary</h2>
+      <p>
+        Total: <strong>{{ r.count ?? 0 }}</strong> · Assets: <strong>{{ r.data_result?.sum_asset_results ?? 0 }}</strong> · Collections:
+        <strong>{{ r.data_result?.sum_collection_results ?? 0 }}</strong>
+      </p>
+    </section>
+
+    @if (r.data_result?.asset?.length) {
+      <section>
+        <h2>Assets ({{ r.data_result?.asset?.length }})</h2>
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Type</th><th>ID</th></tr>
+          </thead>
+          <tbody>
+            @for (asset of r.data_result?.asset; track asset.id) {
+              <tr><td>{{ asset.name }}</td><td>{{ asset.asset_type }}</td><td>{{ asset.id }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    }
+
+    @if (r.data_result?.collection?.length) {
+      <section>
+        <h2>Collections ({{ r.data_result?.collection?.length }})</h2>
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Path</th><th>ID</th></tr>
+          </thead>
+          <tbody>
+            @for (collection of r.data_result?.collection; track collection.id) {
+              <tr><td>{{ collection.name }}</td><td>{{ collection.path }}</td><td>{{ collection.id }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    }
+
+    @if (r.facets?.length) {
+      <section>
+        <h2>Facets</h2>
+        @for (facet of r.facets; track facet.name) {
+          <details>
+            <summary>{{ facet.name }} ({{ facet.entities?.length ?? 0 }})</summary>
+            <ul>
+              @for (entity of facet.entities; track $index) {
+                <li>{{ entity.name || entity.value }} <span class="badge">{{ entity.count }}</span></li>
+              }
+            </ul>
+          </details>
+        }
+      </section>
+    }
+
+    <section>
+      <h2>Raw response</h2>
+      <pre>{{ json(r) }}</pre>
+    </section>
+  }
+</main>
