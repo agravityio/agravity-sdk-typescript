@@ -13,6 +13,7 @@ api/assetPublishing.agravity.ts
 api/assetRelationManagement.agravity.ts
 api/assetRelationTypeManagement.agravity.ts
 api/assetVersioning.agravity.ts
+api/assistantOperations.agravity.ts
 api/authenticationManagement.agravity.ts
 api/collectionManagement.agravity.ts
 api/collectionShareManagement.agravity.ts
@@ -89,6 +90,10 @@ model/assetRelation.agravity.ts
 model/assetRelationType.agravity.ts
 model/assetTextContent.agravity.ts
 model/assetsOperationBody.agravity.ts
+model/assistantChatMessage.agravity.ts
+model/assistantChatRequest.agravity.ts
+model/assistantChatResponse.agravity.ts
+model/assistantFeedbackRequest.agravity.ts
 model/availableExportFields.agravity.ts
 model/azSearchOptions.agravity.ts
 model/azureIdentity.agravity.ts

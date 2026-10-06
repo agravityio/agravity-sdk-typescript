@@ -16,6 +16,8 @@ export * from './assetRelationTypeManagement.agravity';
 import { AssetRelationTypeManagementService } from './assetRelationTypeManagement.agravity';
 export * from './assetVersioning.agravity';
 import { AssetVersioningService } from './assetVersioning.agravity';
+export * from './assistantOperations.agravity';
+import { AssistantOperationsService } from './assistantOperations.agravity';
 export * from './authenticationManagement.agravity';
 import { AuthenticationManagementService } from './authenticationManagement.agravity';
 export * from './collectionManagement.agravity';
@@ -104,6 +106,7 @@ export const APIS = [
 	AssetRelationManagementService,
 	AssetRelationTypeManagementService,
 	AssetVersioningService,
+	AssistantOperationsService,
 	AuthenticationManagementService,
 	CollectionManagementService,
 	CollectionShareManagementService,
