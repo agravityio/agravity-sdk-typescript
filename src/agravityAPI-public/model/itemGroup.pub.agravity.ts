@@ -1,5 +1,5 @@
 /**
- * Agravity OpenAPI Documentation - Private Functions
+ * Agravity OpenAPI Documentation - Public Functions
  *
  * Contact: support@agravity.io
  *
@@ -7,15 +7,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { CollTypeItem } from './collTypeItem.agravity';
-import { CollTypeItemRef } from './collTypeItemRef.agravity';
 
-export interface CollTypeItemBlueprint {
+export interface ItemGroup {
 	id?: string | null;
-	entity_type?: string | null;
 	name?: string | null;
-	items?: Array<CollTypeItem> | null;
-	item_refs?: Array<CollTypeItemRef> | null;
+	entityType?: string;
 	translations?: { [key: string]: { [key: string]: any } } | null;
 	description?: string | null;
 	add_properties?: { [key: string]: any } | null;

@@ -18,6 +18,7 @@ api/authenticationManagement.agravity.ts
 api/collectionManagement.agravity.ts
 api/collectionShareManagement.agravity.ts
 api/collectionTypeItemBlueprintManagement.agravity.ts
+api/collectionTypeItemRefsManagement.agravity.ts
 api/collectionTypeManagement.agravity.ts
 api/commentsManagement.agravity.ts
 api/configurationManagement.agravity.ts
@@ -30,6 +31,7 @@ api/generalManagement.agravity.ts
 api/helperTools.agravity.ts
 api/historyEntryManagement.agravity.ts
 api/iccProfileManagement.agravity.ts
+api/itemGroupsManagement.agravity.ts
 api/listBlobs.agravity.ts
 api/listQueues.agravity.ts
 api/listTables.agravity.ts
@@ -100,6 +102,7 @@ model/azureIdentity.agravity.ts
 model/blobInfoObj.agravity.ts
 model/collTypeItem.agravity.ts
 model/collTypeItemBlueprint.agravity.ts
+model/collTypeItemRef.agravity.ts
 model/collection.agravity.ts
 model/collectionType.agravity.ts
 model/collectionUDL.agravity.ts
@@ -132,6 +135,7 @@ model/httpAssetExportInputParameter.agravity.ts
 model/httpRequestAvailableExportFieldsInputParameter.agravity.ts
 model/infoEntitySkillEnhanced.agravity.ts
 model/instancesItem.agravity.ts
+model/itemGroup.agravity.ts
 model/metadata.agravity.ts
 model/models.ts
 model/moveCollectionBody.agravity.ts

@@ -422,6 +422,71 @@ export class GeneralManagementService extends BaseService {
 	}
 
 	/**
+	 * Queues the one-off, durable migration from embedded collection type items to standalone items, groups, and item refs. Runs as a durable orchestration (AgravityQueueFunctions) so it scales to large (100k+) data sets: collection types/blueprints are migrated in series first, then collections and assets are migrated in parallel, paged batches.
+	 * @endpoint post /migration/colltypeitems/itemrefs
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
+	 */
+	public httpMigrateCollectionTypeItemsToRefs(
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<AgravityInfoResponse>;
+	public httpMigrateCollectionTypeItemsToRefs(
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<AgravityInfoResponse>>;
+	public httpMigrateCollectionTypeItemsToRefs(
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<AgravityInfoResponse>>;
+	public httpMigrateCollectionTypeItemsToRefs(
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/migration/colltypeitems/itemrefs`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<AgravityInfoResponse>('post', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
 	 * This endpoint runs the initial setup of an environment.
 	 * @endpoint post /setup
 	 * @param requestParameters

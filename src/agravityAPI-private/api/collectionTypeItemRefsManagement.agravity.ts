@@ -17,36 +17,52 @@ import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 // @ts-ignore
 import { AgravityErrorResponse } from '../model/agravityErrorResponse.agravity';
 // @ts-ignore
-import { CollTypeItemBlueprint } from '../model/collTypeItemBlueprint.agravity';
+import { CollTypeItem } from '../model/collTypeItem.agravity';
+// @ts-ignore
+import { CollTypeItemRef } from '../model/collTypeItemRef.agravity';
+// @ts-ignore
+import { CollectionType } from '../model/collectionType.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
 import { AgravityConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
-export interface HttpCollTypeItemBlueprintsCreateRequestParams {
-	/** This endpoint creates an unique blueprint and adds the information to the database. */
-	collTypeItemBlueprint: CollTypeItemBlueprint;
+export interface HttpCollTypeItemRefsGetRequestParams {
+	/** The ID of the collection type. */
+	id: string;
+}
+
+export interface HttpCollTypeItemRefsSetRequestParams {
+	/** The ID of the collection type. */
+	id: string;
+	/** The ItemRefs list to set on the collection type. */
+	collTypeItemRef: Array<CollTypeItemRef>;
+}
+
+export interface HttpCollTypeItemsCreateRequestParams {
+	/** The collection type item to create. */
+	collTypeItem: CollTypeItem;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
 }
 
-export interface HttpCollTypeItemBlueprintsDeleteByIdRequestParams {
-	/** The ID of the blueprint. */
+export interface HttpCollTypeItemsDeleteByIdRequestParams {
+	/** The ID of the collection type item. */
 	id: string;
 }
 
-export interface HttpCollTypeItemBlueprintsGetAllRequestParams {
+export interface HttpCollTypeItemsGetAllRequestParams {
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
 }
 
-export interface HttpCollTypeItemBlueprintsGetByIdRequestParams {
-	/** The ID of the blueprint. */
+export interface HttpCollTypeItemsGetByIdRequestParams {
+	/** The ID of the collection type item. */
 	id: string;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
@@ -54,11 +70,11 @@ export interface HttpCollTypeItemBlueprintsGetByIdRequestParams {
 	acceptLanguage?: string;
 }
 
-export interface HttpCollTypeItemBlueprintsUpdateByIdRequestParams {
-	/** The ID of the blueprint. */
+export interface HttpCollTypeItemsUpdateByIdRequestParams {
+	/** The ID of the collection type item. */
 	id: string;
-	/** This endpoint updates an the given blueprint with ID and adds the information to the database. */
-	collTypeItemBlueprint: CollTypeItemBlueprint;
+	/** Body has to be a valid collection type item. */
+	collTypeItem: CollTypeItem;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
@@ -68,7 +84,7 @@ export interface HttpCollTypeItemBlueprintsUpdateByIdRequestParams {
 @Injectable({
 	providedIn: 'root'
 })
-export class CollectionTypeItemBlueprintManagementService extends BaseService {
+export class CollectionTypeItemRefsManagementService extends BaseService {
 	constructor(
 		protected httpClient: HttpClient,
 		@Optional() @Inject(BASE_PATH) basePath: string | string[],
@@ -78,40 +94,202 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint creates one collection type item blueprint entry in the database.
-	 * @endpoint post /colltypeitemblueprints
+	 * This endpoint returns the unified ItemRefs list for a collection type.
+	 * @endpoint get /collectiontypes/{id}/itemrefs
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollTypeItemBlueprintsCreate(
-		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
+	public httpCollTypeItemRefsGet(
+		requestParameters: HttpCollTypeItemRefsGetRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<CollTypeItemBlueprint>;
-	public httpCollTypeItemBlueprintsCreate(
-		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
+	): Observable<Array<CollTypeItemRef>>;
+	public httpCollTypeItemRefsGet(
+		requestParameters: HttpCollTypeItemRefsGetRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsCreate(
-		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
+	): Observable<HttpResponse<Array<CollTypeItemRef>>>;
+	public httpCollTypeItemRefsGet(
+		requestParameters: HttpCollTypeItemRefsGetRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsCreate(
-		requestParameters: HttpCollTypeItemBlueprintsCreateRequestParams,
+	): Observable<HttpEvent<Array<CollTypeItemRef>>>;
+	public httpCollTypeItemRefsGet(
+		requestParameters: HttpCollTypeItemRefsGetRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
-		const collTypeItemBlueprint = requestParameters?.collTypeItemBlueprint;
-		if (collTypeItemBlueprint === null || collTypeItemBlueprint === undefined) {
-			throw new Error('Required parameter collTypeItemBlueprint was null or undefined when calling httpCollTypeItemBlueprintsCreate.');
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemRefsGet.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/collectiontypes/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/itemrefs`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Array<CollTypeItemRef>>('get', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint sets (replaces) the ItemRefs list on a collection type.
+	 * @endpoint post /collectiontypes/{id}/itemrefs
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
+	 */
+	public httpCollTypeItemRefsSet(
+		requestParameters: HttpCollTypeItemRefsSetRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<CollectionType>;
+	public httpCollTypeItemRefsSet(
+		requestParameters: HttpCollTypeItemRefsSetRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<CollectionType>>;
+	public httpCollTypeItemRefsSet(
+		requestParameters: HttpCollTypeItemRefsSetRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<CollectionType>>;
+	public httpCollTypeItemRefsSet(
+		requestParameters: HttpCollTypeItemRefsSetRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemRefsSet.');
+		}
+		const collTypeItemRef = requestParameters?.collTypeItemRef;
+		if (collTypeItemRef === null || collTypeItemRef === undefined) {
+			throw new Error('Required parameter collTypeItemRef was null or undefined when calling httpCollTypeItemRefsSet.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/collectiontypes/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/itemrefs`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<CollectionType>('post', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: collTypeItemRef,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint creates a standalone collection type item and adds the information to the database.
+	 * @endpoint post /colltypeitems
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
+	 */
+	public httpCollTypeItemsCreate(
+		requestParameters: HttpCollTypeItemsCreateRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<CollTypeItem>;
+	public httpCollTypeItemsCreate(
+		requestParameters: HttpCollTypeItemsCreateRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<CollTypeItem>>;
+	public httpCollTypeItemsCreate(
+		requestParameters: HttpCollTypeItemsCreateRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<CollTypeItem>>;
+	public httpCollTypeItemsCreate(
+		requestParameters: HttpCollTypeItemsCreateRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const collTypeItem = requestParameters?.collTypeItem;
+		if (collTypeItem === null || collTypeItem === undefined) {
+			throw new Error('Required parameter collTypeItem was null or undefined when calling httpCollTypeItemsCreate.');
 		}
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
@@ -155,11 +333,11 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/colltypeitemblueprints`;
+		let localVarPath = `/colltypeitems`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<CollTypeItemBlueprint>('post', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<CollTypeItem>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			body: collTypeItemBlueprint,
+			body: collTypeItem,
 			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
@@ -171,40 +349,40 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint deletes a single collection type item blueprint.
-	 * @endpoint delete /colltypeitemblueprints/{id}
+	 * This endpoint deletes a single standalone collection type item.
+	 * @endpoint delete /colltypeitems/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollTypeItemBlueprintsDeleteById(
-		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+	public httpCollTypeItemsDeleteById(
+		requestParameters: HttpCollTypeItemsDeleteByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any>;
-	public httpCollTypeItemBlueprintsDeleteById(
-		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+	public httpCollTypeItemsDeleteById(
+		requestParameters: HttpCollTypeItemsDeleteByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpResponse<any>>;
-	public httpCollTypeItemBlueprintsDeleteById(
-		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+	public httpCollTypeItemsDeleteById(
+		requestParameters: HttpCollTypeItemsDeleteByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<HttpEvent<any>>;
-	public httpCollTypeItemBlueprintsDeleteById(
-		requestParameters: HttpCollTypeItemBlueprintsDeleteByIdRequestParams,
+	public httpCollTypeItemsDeleteById(
+		requestParameters: HttpCollTypeItemsDeleteByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const id = requestParameters?.id;
 		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemBlueprintsDeleteById.');
+			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemsDeleteById.');
 		}
 
 		let localVarHeaders = this.defaultHeaders;
@@ -232,7 +410,7 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/colltypeitemblueprints/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		let localVarPath = `/colltypeitems/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<any>('delete', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
@@ -246,33 +424,33 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint lists all collection type item blueprint in database.
-	 * @endpoint get /colltypeitemblueprints
+	 * This endpoint lists all standalone collection type items in database.
+	 * @endpoint get /colltypeitems
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollTypeItemBlueprintsGetAll(
-		requestParameters?: HttpCollTypeItemBlueprintsGetAllRequestParams,
+	public httpCollTypeItemsGetAll(
+		requestParameters?: HttpCollTypeItemsGetAllRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Array<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsGetAll(
-		requestParameters?: HttpCollTypeItemBlueprintsGetAllRequestParams,
+	): Observable<Array<CollTypeItem>>;
+	public httpCollTypeItemsGetAll(
+		requestParameters?: HttpCollTypeItemsGetAllRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Array<CollTypeItemBlueprint>>>;
-	public httpCollTypeItemBlueprintsGetAll(
-		requestParameters?: HttpCollTypeItemBlueprintsGetAllRequestParams,
+	): Observable<HttpResponse<Array<CollTypeItem>>>;
+	public httpCollTypeItemsGetAll(
+		requestParameters?: HttpCollTypeItemsGetAllRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Array<CollTypeItemBlueprint>>>;
-	public httpCollTypeItemBlueprintsGetAll(
-		requestParameters?: HttpCollTypeItemBlueprintsGetAllRequestParams,
+	): Observable<HttpEvent<Array<CollTypeItem>>>;
+	public httpCollTypeItemsGetAll(
+		requestParameters?: HttpCollTypeItemsGetAllRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
@@ -312,9 +490,9 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/colltypeitemblueprints`;
+		let localVarPath = `/colltypeitems`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<Array<CollTypeItemBlueprint>>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<Array<CollTypeItem>>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
@@ -327,40 +505,40 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint returns a single collection type item blueprint by ID.
-	 * @endpoint get /colltypeitemblueprints/{id}
+	 * This endpoint returns a single standalone collection type item by ID.
+	 * @endpoint get /colltypeitems/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollTypeItemBlueprintsGetById(
-		requestParameters: HttpCollTypeItemBlueprintsGetByIdRequestParams,
+	public httpCollTypeItemsGetById(
+		requestParameters: HttpCollTypeItemsGetByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<CollTypeItemBlueprint>;
-	public httpCollTypeItemBlueprintsGetById(
-		requestParameters: HttpCollTypeItemBlueprintsGetByIdRequestParams,
+	): Observable<CollTypeItem>;
+	public httpCollTypeItemsGetById(
+		requestParameters: HttpCollTypeItemsGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsGetById(
-		requestParameters: HttpCollTypeItemBlueprintsGetByIdRequestParams,
+	): Observable<HttpResponse<CollTypeItem>>;
+	public httpCollTypeItemsGetById(
+		requestParameters: HttpCollTypeItemsGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsGetById(
-		requestParameters: HttpCollTypeItemBlueprintsGetByIdRequestParams,
+	): Observable<HttpEvent<CollTypeItem>>;
+	public httpCollTypeItemsGetById(
+		requestParameters: HttpCollTypeItemsGetByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const id = requestParameters?.id;
 		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemBlueprintsGetById.');
+			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemsGetById.');
 		}
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
@@ -397,9 +575,9 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/colltypeitemblueprints/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		let localVarPath = `/colltypeitems/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<CollTypeItemBlueprint>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<CollTypeItem>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
 			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
@@ -412,44 +590,44 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates a single collection type item blueprint.
-	 * @endpoint post /colltypeitemblueprints/{id}
+	 * This endpoint updates a standalone collection type item.
+	 * @endpoint post /colltypeitems/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
 	 * @param options additional options
 	 */
-	public httpCollTypeItemBlueprintsUpdateById(
-		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
+	public httpCollTypeItemsUpdateById(
+		requestParameters: HttpCollTypeItemsUpdateByIdRequestParams,
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<CollTypeItemBlueprint>;
-	public httpCollTypeItemBlueprintsUpdateById(
-		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
+	): Observable<CollTypeItem>;
+	public httpCollTypeItemsUpdateById(
+		requestParameters: HttpCollTypeItemsUpdateByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsUpdateById(
-		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
+	): Observable<HttpResponse<CollTypeItem>>;
+	public httpCollTypeItemsUpdateById(
+		requestParameters: HttpCollTypeItemsUpdateByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<CollTypeItemBlueprint>>;
-	public httpCollTypeItemBlueprintsUpdateById(
-		requestParameters: HttpCollTypeItemBlueprintsUpdateByIdRequestParams,
+	): Observable<HttpEvent<CollTypeItem>>;
+	public httpCollTypeItemsUpdateById(
+		requestParameters: HttpCollTypeItemsUpdateByIdRequestParams,
 		observe: any = 'body',
 		reportProgress: boolean = false,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const id = requestParameters?.id;
 		if (id === null || id === undefined) {
-			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemBlueprintsUpdateById.');
+			throw new Error('Required parameter id was null or undefined when calling httpCollTypeItemsUpdateById.');
 		}
-		const collTypeItemBlueprint = requestParameters?.collTypeItemBlueprint;
-		if (collTypeItemBlueprint === null || collTypeItemBlueprint === undefined) {
-			throw new Error('Required parameter collTypeItemBlueprint was null or undefined when calling httpCollTypeItemBlueprintsUpdateById.');
+		const collTypeItem = requestParameters?.collTypeItem;
+		if (collTypeItem === null || collTypeItem === undefined) {
+			throw new Error('Required parameter collTypeItem was null or undefined when calling httpCollTypeItemsUpdateById.');
 		}
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
@@ -493,11 +671,11 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 			}
 		}
 
-		let localVarPath = `/colltypeitemblueprints/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		let localVarPath = `/colltypeitems/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<CollTypeItemBlueprint>('post', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<CollTypeItem>('post', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
-			body: collTypeItemBlueprint,
+			body: collTypeItem,
 			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),

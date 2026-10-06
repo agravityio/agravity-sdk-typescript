@@ -45,6 +45,8 @@ export interface HttpWorkspacesDeleteByIdRequestParams {
 export interface HttpWorkspacesGetRequestParams {
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
+	/** When this param is set to a comma-separated list of fields, those fields will be expanded in the response. Currently supported: collection_types.items */
+	expand?: string;
 	/** The requested language of the response. If not matching it falls back to default language. */
 	acceptLanguage?: string;
 }
@@ -52,6 +54,8 @@ export interface HttpWorkspacesGetRequestParams {
 export interface HttpWorkspacesGetByIdRequestParams {
 	/** The ID of the workspace. */
 	id: string;
+	/** When this param is set to a comma-separated list of fields, those fields will be expanded in the response. Currently supported: collection_types.items */
+	expand?: string;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
@@ -342,11 +346,14 @@ export class WorkspaceManagementService extends BaseService {
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
 	): Observable<any> {
 		const translations = requestParameters?.translations;
+		const expand = requestParameters?.expand;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'expand', <any>expand, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -426,10 +433,13 @@ export class WorkspaceManagementService extends BaseService {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpWorkspacesGetById.');
 		}
+		const expand = requestParameters?.expand;
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'expand', <any>expand, QueryParamStyle.Form, true);
 
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 

@@ -18,6 +18,8 @@ export * from './publicCollectionManagement.pub.agravity';
 import { PublicCollectionManagementService } from './publicCollectionManagement.pub.agravity';
 export * from './publicCollectionSecureUpload.pub.agravity';
 import { PublicCollectionSecureUploadService } from './publicCollectionSecureUpload.pub.agravity';
+export * from './publicCollectionTypeItemManagement.pub.agravity';
+import { PublicCollectionTypeItemManagementService } from './publicCollectionTypeItemManagement.pub.agravity';
 export * from './publicCollectionTypeManagement.pub.agravity';
 import { PublicCollectionTypeManagementService } from './publicCollectionTypeManagement.pub.agravity';
 export * from './publicConfigurationManagement.pub.agravity';
@@ -61,6 +63,7 @@ export const APIS = [
 	PublicAuthenticationManagementService,
 	PublicCollectionManagementService,
 	PublicCollectionSecureUploadService,
+	PublicCollectionTypeItemManagementService,
 	PublicCollectionTypeManagementService,
 	PublicConfigurationManagementService,
 	PublicDownloadFormatManagementService,
