@@ -142,6 +142,20 @@ function Assert-LastExitCode {
     }
 }
 
+# npm requires an explicit --tag for prerelease versions (e.g. 12.0.0-alpha.1 -> "alpha"),
+# otherwise they would be published as "latest". Stable versions keep the default tag.
+function Get-NpmPublishTagArgs {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)][string]$Version
+    )
+
+    if ($Version -match '^\d+\.\d+\.\d+-([0-9A-Za-z-]+)') {
+        return @("--tag", $Matches[1])
+    }
+    return @()
+}
+
 function ConvertTo-JsonWithoutHtmlEscaping {
     [CmdletBinding()]
     param (
@@ -250,6 +264,8 @@ ReplaceStringInFiles -FolderPath "src" `
   -SearchString "\[key:\s*string\]\s*:\s*object\b" `
   -ReplaceString "[key: string]: any"
 Write-Host "Replace all key-object complete"
+ReplaceStringInFiles -FolderPath "src" -SearchString "default_value\?: object \| null;" -ReplaceString "default_value?: any | null;"
+Write-Host "Replace default_value complete"
 ReplaceStringInFiles -FolderPath "src" -SearchString "ai\?: object \| null;" -ReplaceString "ai?: any | null;"
 Write-Host "Replace ai complete"
 
@@ -381,13 +397,18 @@ if ($answer -eq "y") {
     if ($answer -eq "y") {
         npm login
 
+        $publishTagArgs = Get-NpmPublishTagArgs -Version $version
+        if ($publishTagArgs.Count -gt 0) {
+            Write-Host "Prerelease version $version detected, publishing with $($publishTagArgs -join ' ')"
+        }
+
         # publish private package to npm
         Set-Location src/agravityAPI-private
         npm install --ignore-scripts
         Assert-LastExitCode -CommandName "npm install (private)"
         npm run build
         Assert-LastExitCode -CommandName "npm run build (private)"
-        npm publish --access public
+        npm publish --access public @publishTagArgs
         Assert-LastExitCode -CommandName "npm publish (private)"
         rimraf node_modules package-lock.json
         Assert-LastExitCode -CommandName "rimraf (private)"
@@ -398,7 +419,7 @@ if ($answer -eq "y") {
         Assert-LastExitCode -CommandName "npm install (public)"
         npm run build
         Assert-LastExitCode -CommandName "npm run build (public)"
-        npm publish --access public
+        npm publish --access public @publishTagArgs
         Assert-LastExitCode -CommandName "npm publish (public)"
         rimraf node_modules package-lock.json
         Assert-LastExitCode -CommandName "rimraf (public)"
