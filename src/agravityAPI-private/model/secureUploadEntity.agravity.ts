@@ -7,7 +7,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { CollTypeItem } from './collTypeItem.agravity';
+import { CollectionUDL } from './collectionUDL.agravity';
 import { CreateSftpUserResult } from './createSftpUserResult.agravity';
+import { StaticDefinedList } from './staticDefinedList.agravity';
 
 export interface SecureUploadEntity {
 	id?: string | null;
@@ -20,6 +23,11 @@ export interface SecureUploadEntity {
 	message?: string | null;
 	sftp_connection?: CreateSftpUserResult | null;
 	check_name_for_version?: boolean | null;
+	asset_metadata_items?: Array<string> | null;
+	asset_metadata_optional_items?: Array<string> | null;
+	asset_metadata_fields?: Array<CollTypeItem> | null;
+	asset_metadata_sdls?: Array<StaticDefinedList> | null;
+	asset_metadata_udls?: Array<CollectionUDL> | null;
 	status?: string | null;
 	created_date?: string | null;
 	created_by?: string | null;
