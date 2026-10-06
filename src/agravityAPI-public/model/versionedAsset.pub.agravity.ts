@@ -18,4 +18,5 @@ export interface VersionedAsset {
 	blob_data?: AssetBlob;
 	blob_uploaded?: string | null;
 	mime_type?: string | null;
+	translations?: { [key: string]: { [key: string]: any } } | null;
 }
