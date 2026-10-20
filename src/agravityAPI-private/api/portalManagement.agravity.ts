@@ -71,6 +71,13 @@ export interface HttpPortalsGetByIdRequestParams {
 	id: string;
 }
 
+export interface HttpPortalsUpdateByIdRequestParams {
+	/** The ID of the portal. */
+	id: string;
+	/** The portal with the changed add_properties and theme. All other fields are ignored. */
+	portal: Portal;
+}
+
 @Injectable({
 	providedIn: 'root'
 })
@@ -696,6 +703,93 @@ export class PortalManagementService extends BaseService {
 		const { basePath, withCredentials } = this.configuration;
 		return this.httpClient.request<Portal>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			responseType: <any>responseType_,
+			...(withCredentials ? { withCredentials } : {}),
+			headers: localVarHeaders,
+			observe: observe,
+			...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+			reportProgress: reportProgress
+		});
+	}
+
+	/**
+	 * This endpoint updates the additional properties (e.g. the page builder) and the theme of an existing portal. All other fields of the portal are ignored.&lt;br&gt;&lt;b&gt;add_properties&lt;/b&gt; are merged by key: a sent key replaces the stored value, a key with null or an empty string is removed, keys which are not sent stay. The key \&#39;simulate\&#39; can not be changed (sending its stored value is allowed). The values, e.g. \&#39;page_builder\&#39;, are stored as sent without a structure validation.&lt;br&gt;&lt;b&gt;theme&lt;/b&gt; is merged by field: a missing or null field stays, an empty string clears it. \&#39;colors\&#39; is merged per palette; a palette with null or an empty string is removed. Only theme values which differ from the stored theme are validated (colours #RRGGBB, image URLs https:// or root-relative).&lt;br&gt;The updated portal must fit into a Cosmos DB document (2 MB).
+	 * @endpoint post /portals/{id}
+	 * @param requestParameters
+	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+	 * @param reportProgress flag to report request and response progress.
+	 * @param options additional options
+	 */
+	public httpPortalsUpdateById(
+		requestParameters: HttpPortalsUpdateByIdRequestParams,
+		observe?: 'body',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<Portal>;
+	public httpPortalsUpdateById(
+		requestParameters: HttpPortalsUpdateByIdRequestParams,
+		observe?: 'response',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpResponse<Portal>>;
+	public httpPortalsUpdateById(
+		requestParameters: HttpPortalsUpdateByIdRequestParams,
+		observe?: 'events',
+		reportProgress?: boolean,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<HttpEvent<Portal>>;
+	public httpPortalsUpdateById(
+		requestParameters: HttpPortalsUpdateByIdRequestParams,
+		observe: any = 'body',
+		reportProgress: boolean = false,
+		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
+	): Observable<any> {
+		const id = requestParameters?.id;
+		if (id === null || id === undefined) {
+			throw new Error('Required parameter id was null or undefined when calling httpPortalsUpdateById.');
+		}
+		const portal = requestParameters?.portal;
+		if (portal === null || portal === undefined) {
+			throw new Error('Required parameter portal was null or undefined when calling httpPortalsUpdateById.');
+		}
+
+		let localVarHeaders = this.defaultHeaders;
+
+		// authentication (msal_auth) required
+		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
+
+		const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept(['application/json']);
+		if (localVarHttpHeaderAcceptSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+		}
+
+		const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+		const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+		// to determine the Content-Type header
+		const consumes: string[] = ['application/json'];
+		const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+		if (httpContentTypeSelected !== undefined) {
+			localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+		}
+
+		let responseType_: 'text' | 'json' | 'blob' = 'json';
+		if (localVarHttpHeaderAcceptSelected) {
+			if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+				responseType_ = 'text';
+			} else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+				responseType_ = 'json';
+			} else {
+				responseType_ = 'blob';
+			}
+		}
+
+		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}`;
+		const { basePath, withCredentials } = this.configuration;
+		return this.httpClient.request<Portal>('post', `${basePath}${localVarPath}`, {
+			context: localVarHttpContext,
+			body: portal,
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
