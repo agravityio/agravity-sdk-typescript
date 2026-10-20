@@ -13,6 +13,7 @@ export interface SearchAdminIndexerStatus {
 	name?: string | null;
 	status?: string | null;
 	error?: string | null;
+	pendingupdate?: string | null;
 	lastrun?: SearchAdminIndexerLastRun;
 	history?: Array<SearchAdminIndexerLastRun> | null;
 }

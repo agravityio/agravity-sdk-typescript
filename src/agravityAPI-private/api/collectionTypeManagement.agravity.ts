@@ -445,7 +445,7 @@ export class CollectionTypeManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates the collection type. Null fields will be ignored. If \&#39;items\&#39; are set they are fully reset (like PUT).
+	 * This endpoint updates the collection type. Null fields will be ignored. If \&#39;items\&#39; are set the assignment is fully reset (like PUT): missing items are created, existing items (same id) are only referenced - changes to existing items are ignored (use the colltypeitems endpoints). Items which are no longer referenced are kept. On new list items (UDL, SDL) the default_value has to be an entry of the referenced list (ref_id).
 	 * @endpoint post /collectiontypes/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

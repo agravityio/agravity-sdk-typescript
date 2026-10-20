@@ -256,7 +256,7 @@ export class CollectionTypeItemRefsManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint creates a standalone collection type item and adds the information to the database.
+	 * This endpoint creates a standalone collection type item and adds the information to the database. On list items (UDL, SDL) the optional default_value has to be an entry of the referenced list (ref_id).
 	 * @endpoint post /colltypeitems
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -590,7 +590,7 @@ export class CollectionTypeItemRefsManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates a standalone collection type item.
+	 * This endpoint updates a standalone collection type item. The default_value of a list item (UDL, SDL) has to be an entry of the referenced list (ref_id). To clear the default value send an empty string (or an empty array on multi items).
 	 * @endpoint post /colltypeitems/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

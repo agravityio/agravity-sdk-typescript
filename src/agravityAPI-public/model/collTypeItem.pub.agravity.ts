@@ -20,6 +20,7 @@ export interface CollTypeItem {
 	searchable?: boolean | null;
 	onlyasset?: boolean | null;
 	multi?: boolean | null;
+	search_target_id?: string | null;
 	md5?: string | null;
 	group?: string | null;
 	order?: number | null;
