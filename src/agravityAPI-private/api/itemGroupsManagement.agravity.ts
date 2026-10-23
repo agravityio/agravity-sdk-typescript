@@ -171,7 +171,7 @@ export class ItemGroupsManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint deletes a single item group.
+	 * This endpoint deletes a single item group. An item group which is referenced by a collection type or a collection type item blueprint can not be deleted.
 	 * @endpoint delete /itemgroups/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

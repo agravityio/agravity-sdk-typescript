@@ -78,7 +78,7 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint creates one collection type item blueprint entry in the database.
+	 * This endpoint creates one collection type item blueprint entry in the database. Items and item refs are handled like the create of a collection type: missing items are created, existing items are only referenced; if \&#39;item_refs\&#39; are set as well, group and order are taken from the item ref with the same item_id and the other item refs are appended. An item_id may be referenced only once.
 	 * @endpoint post /colltypeitemblueprints
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -412,7 +412,7 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates a single collection type item blueprint.
+	 * This endpoint updates a single collection type item blueprint. Items and item refs are handled like the update of a collection type: missing items are created, existing items are only referenced; if \&#39;item_refs\&#39; are set as well, group and order are taken from the item ref with the same item_id and the other item refs are appended. A group name of an item is mapped to its item group. Stored refs to items or item groups which do not exist anymore are removed.
 	 * @endpoint post /colltypeitemblueprints/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
