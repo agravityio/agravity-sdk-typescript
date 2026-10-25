@@ -41,7 +41,7 @@ export interface HttpCognitiveTranslateTextRequestParams {
 }
 
 export interface HttpTranslationsByIdRequestParams {
-	/** The ID of any translateable entity (Asset, Collection, Collection Type, Download Format). */
+	/** The ID of any translateable entity (Asset, Collection, Collection Type, Download Format, Item Group). */
 	id: string;
 	/** If the items should be included (only for entity type Collection and Asset). */
 	items?: boolean;
@@ -55,7 +55,7 @@ export interface HttpTranslationsByIdFilterByCustomFieldRequestParams {
 }
 
 export interface HttpTranslationsByIdFilterByPropertyRequestParams {
-	/** The ID of any translateable entity (Asset, Collection, Collection Type, Download Format). */
+	/** The ID of any translateable entity (Asset, Collection, Collection Type, Download Format, Item Group). */
 	id: string;
 	/** Limit to one specific property (key) */
 	property: string;
@@ -64,7 +64,7 @@ export interface HttpTranslationsByIdFilterByPropertyRequestParams {
 }
 
 export interface HttpUpdateTranslationsByIdRequestParams {
-	/** The ID of any translateable entity (Asset, Collection, Collection Type, Download Format). */
+	/** The ID of any translateable entity (Asset, Collection, Collection Type, Download Format, Item Group). */
 	id: string;
 	/** The body has to contain the dictionary of the dictionaries with all translations. Not fitting properties are ignored. */
 	requestBody: { [key: string]: { [key: string]: any } };
@@ -255,7 +255,7 @@ export class TranslationManagementService extends BaseService {
 	}
 
 	/**
-	 * Get all the translations of a whole entity (Asset, Collection, Collection Type, Download Format)
+	 * Get all the translations of a whole entity (Asset, Collection, Collection Type, Download Format, Item Group)
 	 * @endpoint get /translations/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -415,7 +415,7 @@ export class TranslationManagementService extends BaseService {
 	}
 
 	/**
-	 * Get the translations of a specific field on the entity (Asset, Collection, Collection Type, Download Format)
+	 * Get the translations of a specific field on the entity (Asset, Collection, Collection Type, Download Format, Item Group)
 	 * @endpoint get /translations/{id}/{property}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -500,7 +500,7 @@ export class TranslationManagementService extends BaseService {
 	}
 
 	/**
-	 * Updates the translations of a whole entity (Asset, Collection, Collection Type, Download Format)
+	 * Updates the translations of a whole entity (Asset, Collection, Collection Type, Download Format, Item Group)
 	 * @endpoint post /translations/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

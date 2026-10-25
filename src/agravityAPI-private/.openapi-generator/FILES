@@ -53,7 +53,6 @@ api/structureImport.agravity.ts
 api/translationManagement.agravity.ts
 api/webAppData.agravity.ts
 api/widgetLayoutManagement.agravity.ts
-api/wordpressManagement.agravity.ts
 api/workspaceManagement.agravity.ts
 configuration.ts
 encoder.ts

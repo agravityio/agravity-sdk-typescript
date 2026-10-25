@@ -96,8 +96,6 @@ export * from './webAppData.agravity';
 import { WebAppDataService } from './webAppData.agravity';
 export * from './widgetLayoutManagement.agravity';
 import { WidgetLayoutManagementService } from './widgetLayoutManagement.agravity';
-export * from './wordpressManagement.agravity';
-import { WordpressManagementService } from './wordpressManagement.agravity';
 export * from './workspaceManagement.agravity';
 import { WorkspaceManagementService } from './workspaceManagement.agravity';
 export const APIS = [
@@ -150,6 +148,5 @@ export const APIS = [
 	TranslationManagementService,
 	WebAppDataService,
 	WidgetLayoutManagementService,
-	WordpressManagementService,
 	WorkspaceManagementService
 ];

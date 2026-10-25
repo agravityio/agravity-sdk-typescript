@@ -139,7 +139,7 @@ export class StockImportService extends BaseService {
 	}
 
 	/**
-	 * This imports 10 images from Unsplash into new collection type with specific id: t10000000-0000-0000-0000-000000000000
+	 * This imports 10 images from Unsplash into new collection type with specific id: t111111111111
 	 * @endpoint get /stockimport/unsplash
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
