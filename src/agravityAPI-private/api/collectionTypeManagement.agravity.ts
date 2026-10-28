@@ -29,7 +29,7 @@ import { AgravityConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
 export interface HttpCollectionTypesCreateRequestParams {
-	/** This endpoint creates a unique collection type ID and adds the information to the database. */
+	/** This endpoint creates a unique collection type ID and adds the information to the database. \&#39;items\&#39; is deprecated on create and update, use \&#39;item_refs\&#39;: requests with \&#39;items\&#39; will be rejected in a future version. */
 	collectionType: CollectionType;
 	/** (optional) The ID of the workspace where this collection type should be assigned. */
 	workspaceid?: string;
@@ -69,7 +69,7 @@ export interface HttpCollectionTypesGetByIdRequestParams {
 export interface HttpCollectionTypesUpdateRequestParams {
 	/** The ID of the collection type. */
 	id: string;
-	/** The body has to be a valid collection type json. Not fitting properties are ignored. */
+	/** The body has to be a valid collection type json. Not fitting properties are ignored. \&#39;items\&#39; is deprecated on create and update, use \&#39;item_refs\&#39;: requests with \&#39;items\&#39; will be rejected in a future version. */
 	collectionType: CollectionType;
 	/** When true, returns the resolved collection type items alongside the item refs. */
 	items?: boolean;
@@ -99,7 +99,7 @@ export class CollectionTypeManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint creates a unique collection type ID and adds the information to the database. There is no negative order: a missing, 0 or negative order means no order (9999).
+	 * This endpoint creates a unique collection type ID and adds the information to the database. There is no negative order: a missing, 0 or negative order means no order (9999). \&#39;items\&#39; is deprecated on create and update, use \&#39;item_refs\&#39;: requests with \&#39;items\&#39; will be rejected in a future version.
 	 * @endpoint post /collectiontypes
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -445,7 +445,7 @@ export class CollectionTypeManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates the collection type. Null fields will be ignored: a missing order keeps the order, a missing permissionless keeps permissionless and the permissions. \&#39;permissions\&#39; are only applied when permissionless is switched off, otherwise they are ignored (use the /permissions endpoint to change them). There is no negative order: a negative order (e.g. -1) resets the order. Without \&#39;items\&#39; and \&#39;item_refs\&#39; the item assignment (incl. groups) is kept. If \&#39;items\&#39; are set the assignment is fully reset (like PUT): missing items are created, existing items (same id) are only referenced - changes to existing items are ignored (use the colltypeitems endpoints). Items which are no longer referenced are kept. An item keeps the group of its existing item ref unless \&#39;group\&#39; is set: a group name is mapped to its item group, an empty string removes the group; group-only item refs are kept. If \&#39;item_refs\&#39; are set as well, group and order are taken from the item ref with the same item_id and the other item refs are appended. Empty \&#39;items\&#39; together with \&#39;item_refs\&#39; are ignored. An item_id may be referenced only once. On new list items (UDL, SDL) the default_value has to be an entry of the referenced list (ref_id).
+	 * This endpoint updates the collection type. Null fields will be ignored: a missing order keeps the order, a missing permissionless keeps permissionless and the permissions. \&#39;permissions\&#39; are only applied when permissionless is switched off, otherwise they are ignored (use the /permissions endpoint to change them). There is no negative order: a negative order (e.g. -1) resets the order. Without \&#39;items\&#39; and \&#39;item_refs\&#39; the item assignment (incl. groups) is kept. If \&#39;items\&#39; are set the assignment is fully reset (like PUT): missing items are created, existing items (same id) are only referenced - changes to existing items are ignored (use the colltypeitems endpoints). Items which are no longer referenced are kept. An item keeps the group of its existing item ref unless \&#39;group\&#39; is set: a group name is mapped to its item group, an empty string removes the group; group-only item refs are kept. If \&#39;item_refs\&#39; are set as well, group and order are taken from the item ref with the same item_id and the other item refs are appended. Empty \&#39;items\&#39; together with \&#39;item_refs\&#39; are ignored. An item_id may be referenced only once. On new list items (UDL, SDL) the default_value has to be an entry of the referenced list (ref_id). \&#39;items\&#39; is deprecated on create and update, use \&#39;item_refs\&#39;: requests with \&#39;items\&#39; will be rejected in a future version.
 	 * @endpoint post /collectiontypes/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

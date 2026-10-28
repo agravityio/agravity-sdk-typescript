@@ -25,7 +25,7 @@ import { AgravityConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
 export interface HttpCollTypeItemBlueprintsCreateRequestParams {
-	/** This endpoint creates an unique blueprint and adds the information to the database. */
+	/** This endpoint creates an unique blueprint and adds the information to the database. \&#39;items\&#39; is deprecated on create and update, use \&#39;item_refs\&#39;: requests with \&#39;items\&#39; will be rejected in a future version. */
 	collTypeItemBlueprint: CollTypeItemBlueprint;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
@@ -57,7 +57,7 @@ export interface HttpCollTypeItemBlueprintsGetByIdRequestParams {
 export interface HttpCollTypeItemBlueprintsUpdateByIdRequestParams {
 	/** The ID of the blueprint. */
 	id: string;
-	/** This endpoint updates an the given blueprint with ID and adds the information to the database. */
+	/** This endpoint updates an the given blueprint with ID and adds the information to the database. \&#39;items\&#39; is deprecated on create and update, use \&#39;item_refs\&#39;: requests with \&#39;items\&#39; will be rejected in a future version. */
 	collTypeItemBlueprint: CollTypeItemBlueprint;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
@@ -78,7 +78,7 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint creates one collection type item blueprint entry in the database. Items and item refs are handled like the create of a collection type: missing items are created, existing items are only referenced; if \&#39;item_refs\&#39; are set as well, group and order are taken from the item ref with the same item_id and the other item refs are appended. An item_id may be referenced only once.
+	 * This endpoint creates one collection type item blueprint entry in the database. Items and item refs are handled like the create of a collection type: missing items are created, existing items are only referenced; if \&#39;item_refs\&#39; are set as well, group and order are taken from the item ref with the same item_id and the other item refs are appended. An item_id may be referenced only once. \&#39;items\&#39; is deprecated on create and update, use \&#39;item_refs\&#39;: requests with \&#39;items\&#39; will be rejected in a future version.
 	 * @endpoint post /colltypeitemblueprints
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -412,7 +412,7 @@ export class CollectionTypeItemBlueprintManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates a single collection type item blueprint. Items and item refs are handled like the update of a collection type: missing items are created, existing items are only referenced; if \&#39;item_refs\&#39; are set as well, group and order are taken from the item ref with the same item_id and the other item refs are appended. A group name of an item is mapped to its item group. Stored refs to items or item groups which do not exist anymore are removed.
+	 * This endpoint updates a single collection type item blueprint. Items and item refs are handled like the update of a collection type: missing items are created, existing items are only referenced; if \&#39;item_refs\&#39; are set as well, group and order are taken from the item ref with the same item_id and the other item refs are appended. A group name of an item is mapped to its item group. Stored refs to items or item groups which do not exist anymore are removed. \&#39;items\&#39; is deprecated on create and update, use \&#39;item_refs\&#39;: requests with \&#39;items\&#39; will be rejected in a future version.
 	 * @endpoint post /colltypeitemblueprints/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

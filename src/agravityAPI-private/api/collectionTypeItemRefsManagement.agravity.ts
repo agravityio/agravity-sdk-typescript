@@ -75,6 +75,8 @@ export interface HttpCollTypeItemsUpdateByIdRequestParams {
 	id: string;
 	/** Body has to be a valid collection type item. */
 	collTypeItem: CollTypeItem;
+	/** Performs a switch of is_multi or is_asset_extension also if stored values are lost: is_multi true to false keeps the first value (of the assets, collections and the default value), a switch of is_asset_extension removes the values of the side the item leaves (collections or assets). Without force such a switch is rejected with 400. */
+	force?: boolean;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
 	/** The requested language of the response. If not matching it falls back to default language. */
@@ -590,7 +592,7 @@ export class CollectionTypeItemRefsManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates a standalone collection type item. The default_value of a list item (UDL, SDL) has to be an entry of the referenced list (ref_id). To clear the default value send an empty string (or an empty array on multi items).
+	 * This endpoint updates a standalone collection type item. The default_value of a list item (UDL, SDL) has to be an entry of the referenced list (ref_id). To clear the default value send an empty string (or an empty array on multi items). A switch of is_multi or is_asset_extension is propagated in the background to the values and item refs of the assets and collections of the collection types which reference the item.
 	 * @endpoint post /colltypeitems/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -629,10 +631,13 @@ export class CollectionTypeItemRefsManagementService extends BaseService {
 		if (collTypeItem === null || collTypeItem === undefined) {
 			throw new Error('Required parameter collTypeItem was null or undefined when calling httpCollTypeItemsUpdateById.');
 		}
+		const force = requestParameters?.force;
 		const translations = requestParameters?.translations;
 		const acceptLanguage = requestParameters?.acceptLanguage;
 
 		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'force', <any>force, QueryParamStyle.Form, true);
 
 		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
