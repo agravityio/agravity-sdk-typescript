@@ -592,7 +592,7 @@ export class CollectionTypeItemRefsManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates a standalone collection type item. The default_value of a list item (UDL, SDL) has to be an entry of the referenced list (ref_id). To clear the default value send an empty string (or an empty array on multi items). A switch of is_multi or is_asset_extension is propagated in the background to the values and item refs of the assets and collections of the collection types which reference the item.
+	 * This endpoint updates a standalone collection type item. The default_value of a list item (UDL, SDL) has to be an entry of the referenced list (ref_id). To clear the default value send an empty string (or an empty array on multi items). A switch of is_multi or is_asset_extension is propagated in the background to the values and item refs of the assets and collections of the collection types which reference the item; a change of is_mandatory recomputes their status (active or uncompleted) in the background.
 	 * @endpoint post /colltypeitems/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

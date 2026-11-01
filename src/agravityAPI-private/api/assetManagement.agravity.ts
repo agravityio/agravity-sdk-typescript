@@ -38,6 +38,7 @@ export interface HttpAssetUploadFileRequestParams {
 	file?: Blob;
 	filename?: string;
 	previewof?: string;
+	id?: string;
 }
 
 export interface HttpAssetsBulkDeleteUpdateRequestParams {
@@ -62,7 +63,7 @@ export interface HttpAssetsBulkPutUpdateRequestParams {
 export interface HttpAssetsCreateRequestParams {
 	/** The ID of the collection where this assets should be assigned. */
 	collectionid: string;
-	/** This endpoint creates an unique asset ID and adds the information to the database. */
+	/** This endpoint creates an unique asset ID and adds the information to the database. An optional \&quot;id\&quot; sets a custom asset id; the id of a deleted asset is reused: the deleted asset is purged and can no longer be restored. */
 	asset: Asset;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
@@ -146,7 +147,7 @@ export class AssetManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint allows to upload one asset which is put onto the storage (INBOX). Collection ID is mandatory on asset upload. Previewof can be used alone.
+	 * This endpoint allows to upload one asset which is put onto the storage (INBOX). Collection ID is mandatory on asset upload. Previewof can be used alone. The optional field \&quot;id\&quot; sets a custom asset id (\&quot;a\&quot; followed by 24 letters or digits); it must not belong to an existing asset and can not be combined with \&quot;previewof\&quot;. The id of a deleted asset is reused: the deleted asset is purged and can no longer be restored.
 	 * @endpoint post /assetsupload
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -183,6 +184,7 @@ export class AssetManagementService extends BaseService {
 		const file = requestParameters?.file;
 		const filename = requestParameters?.filename;
 		const previewof = requestParameters?.previewof;
+		const id = requestParameters?.id;
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -229,6 +231,9 @@ export class AssetManagementService extends BaseService {
 		}
 		if (previewof !== undefined) {
 			localVarFormParams = (localVarFormParams.append('previewof', <any>previewof) as any) || localVarFormParams;
+		}
+		if (id !== undefined) {
+			localVarFormParams = (localVarFormParams.append('id', <any>id) as any) || localVarFormParams;
 		}
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';

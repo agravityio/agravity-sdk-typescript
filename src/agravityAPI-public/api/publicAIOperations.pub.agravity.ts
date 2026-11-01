@@ -32,6 +32,7 @@ export interface HttpReverseAssetSearchRequestParams {
 	file?: Blob;
 	filename?: string;
 	previewof?: string;
+	id?: string;
 }
 
 @Injectable({
@@ -84,6 +85,7 @@ export class PublicAIOperationsService extends BaseService {
 		const file = requestParameters?.file;
 		const filename = requestParameters?.filename;
 		const previewof = requestParameters?.previewof;
+		const id = requestParameters?.id;
 
 		let localVarHeaders = this.defaultHeaders;
 		if (acceptLanguage !== undefined && acceptLanguage !== null) {
@@ -133,6 +135,9 @@ export class PublicAIOperationsService extends BaseService {
 		}
 		if (previewof !== undefined) {
 			localVarFormParams = (localVarFormParams.append('previewof', <any>previewof) as any) || localVarFormParams;
+		}
+		if (id !== undefined) {
+			localVarFormParams = (localVarFormParams.append('id', <any>id) as any) || localVarFormParams;
 		}
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';

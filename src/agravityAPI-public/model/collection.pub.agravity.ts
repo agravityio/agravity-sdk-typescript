@@ -8,7 +8,6 @@
  * Do not edit the class manually.
  */
 import { CollTypeItem } from './collTypeItem.pub.agravity';
-import { CollTypeItemRef } from './collTypeItemRef.pub.agravity';
 
 export interface Collection {
 	id?: string | null;
@@ -17,7 +16,7 @@ export interface Collection {
 	path?: string | null;
 	level?: number | null;
 	custom?: any | null;
-	item_refs?: Array<CollTypeItemRef> | null;
+	item_ids?: Array<string> | null;
 	items?: Array<CollTypeItem> | null;
 	translations?: { [key: string]: { [key: string]: any } } | null;
 	role?: Collection.RoleEnum;

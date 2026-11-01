@@ -36,6 +36,7 @@ export interface HttpAssetCreateUploadVersionRequestParams {
 	file?: Blob;
 	filename?: string;
 	previewof?: string;
+	id2?: string;
 }
 
 export interface HttpAssetCreateVersionRequestParams {
@@ -135,6 +136,7 @@ export class PublicAssetVersioningService extends BaseService {
 		const file = requestParameters?.file;
 		const filename = requestParameters?.filename;
 		const previewof = requestParameters?.previewof;
+		const id2 = requestParameters?.id2;
 
 		let localVarHeaders = this.defaultHeaders;
 
@@ -181,6 +183,9 @@ export class PublicAssetVersioningService extends BaseService {
 		}
 		if (previewof !== undefined) {
 			localVarFormParams = (localVarFormParams.append('previewof', <any>previewof) as any) || localVarFormParams;
+		}
+		if (id2 !== undefined) {
+			localVarFormParams = (localVarFormParams.append('id', <any>id2) as any) || localVarFormParams;
 		}
 
 		let responseType_: 'text' | 'json' | 'blob' = 'json';
