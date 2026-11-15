@@ -63,7 +63,7 @@ export interface HttpAssetsBulkPutUpdateRequestParams {
 export interface HttpAssetsCreateRequestParams {
 	/** The ID of the collection where this assets should be assigned. */
 	collectionid: string;
-	/** This endpoint creates an unique asset ID and adds the information to the database. An optional \&quot;id\&quot; sets a custom asset id; the id of a deleted asset is reused: the deleted asset is purged and can no longer be restored. */
+	/** This endpoint creates an unique asset ID and adds the information to the database. An optional \&quot;id\&quot; sets a custom asset id (\&quot;a\&quot; followed by 24 letters or digits); the id of a deleted asset is reused: the deleted asset is purged and can no longer be restored. */
 	asset: Asset;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;

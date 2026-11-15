@@ -422,7 +422,7 @@ export class GeneralManagementService extends BaseService {
 	}
 
 	/**
-	 * Queues the one-off, durable migration from embedded collection type items to standalone items, groups, and item refs. Runs as a durable orchestration (AgravityQueueFunctions) so it scales to large (100k+) data sets: collection types/blueprints are migrated in series first, then collections and assets are migrated in parallel, paged batches.
+	 * Queues the one-off, durable migration from embedded collection type items to standalone items, groups, and item refs. Runs as a durable orchestration (AgravityQueueFunctions) so it scales to large (100k+) data sets: collection types/blueprints are migrated in series first, then collections and assets are migrated in parallel, paged batches. Also migrates the secure upload function keys to HMAC.
 	 * @endpoint post /migration/colltypeitems/itemrefs
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
 	 * @param reportProgress flag to report request and response progress.
