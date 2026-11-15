@@ -8,6 +8,60 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project does not adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
+## AgravityAPI <a name="12.0.0"/> [12.0.0](https://www.npmjs.com/package/@agravity/private/v/12.0.0) (2026-11-02)
+
+- #1383 Item Redesign
+  - Breaking: Collection type items are now standalone entities with their own id in the format `i<random>_<name>`. One item can be used by several collection types and blueprints. Existing data is migrated automatically.
+  - New: `GET /colltypeitems`, `GET /colltypeitems/{id}` (public and private), plus `POST /colltypeitems`, `POST /colltypeitems/{id}` and `DELETE /colltypeitems/{id}` (private). An item can only be deleted when no collection type or blueprint references it.
+  - New: `GET /itemgroups`, `GET /itemgroups/{id}` (public and private), plus `POST /itemgroups`, `POST /itemgroups/{id}` and `DELETE /itemgroups/{id}` (private). The new `ItemGroup` model has `id`, `name`, `description` and `translations`. A group can only be deleted when nothing references it.
+  - New: `GET /collectiontypes/{id}/itemrefs` and `POST /collectiontypes/{id}/itemrefs` read and set the item references of a collection type.
+  - Breaking: Removed `GET /collectiontypesitems` and `POST /collectiontypesitems`. Use the `/colltypeitems` endpoints instead.
+  - Breaking: `CollectionType` has the new property `item_refs` (list of `CollTypeItemRef` with `item_id`, `group_id` and `order`). `GET /collectiontypes` and `GET /collectiontypes/{id}` (public and private), and `POST /collectiontypes` and `POST /collectiontypes/{id}` (private), return the resolved `items` only with the new query parameter `items=true`.
+  - `items` in the request bodies of `POST /collectiontypes`, `POST /collectiontypes/{id}`, `POST /colltypeitemblueprints` and `POST /colltypeitemblueprints/{id}` is deprecated. Use `item_refs` instead.
+  - Breaking: `CollTypeItem`: removed `label` (merged into `name`). `order` is now optional and has no effect: order and group come from `item_refs`. New properties: `ref_id` (reference to a static or user defined list), `search_target_id`, `description` and `add_properties`.
+  - Breaking: Assets and collections have `item_ids` (string array) instead of an embedded `items` list. With `items=true`, the resolved `items` take order and group from the collection type.
+  - Breaking: Keys of custom fields (`custom`) are now item ids (`i<random>_<name>`) instead of `<name>_<id>`. This affects request bodies, the `fields` parameter, search filters and sorting on `custom/…`, `GET /translations/{id}/custom/{customField}` and saved searches.
+  - `CollTypeItemBlueprint` has the new property `item_refs`. New: `GET /colltypeitemblueprints/{id}`.
+  - Breaking: `POST /colltypeitemblueprints/{id}` returns `200 OK` instead of `201 Created`.
+  - `POST /colltypeitems/{id}`: Switching `is_multi` or `is_asset_extension` updates the values of all assets and collections. A switch that would lose stored values is rejected unless the new query parameter `force=true` is set. A change of `is_mandatory` recomputes the status of assets and collections.
+  - `POST /collectiontypes/{id}`: Permissions in the request are applied as soon as `permissionless` is switched off.
+  - `GET /workspaces` and `GET /workspaces/{id}`: New query parameter `expand=collection_types.items` resolves the items of the included collection types.
+  - `GET /translations/{id}`, `GET /translations/{id}/{property}` and `POST /translations/{id}` support item groups.
+  - Breaking: `POST /data/excel/import/assets` and the collection type Excel import reject files exported before the update. Export the files again after the update.
+  - Breaking: `POST /data/excel/export/assets/fields`: `default_value` of the custom fields is now a string and contains the `ref_id` of the item instead of its default value.
+  - Empty `translations` objects are left out of responses. `order` on collection types and workspaces is optional.
+  - New (admin only): `POST /migration/colltypeitems/itemrefs` starts the item migration.
+- #1331 Items - Add default value for items (incl. UDL, SDL)
+  - `default_value` is supported on UDL and SDL items. It is validated when collection types, items and blueprints are created or updated.
+- #1332 Items - Relation between collection and asset items for search
+  - New `CollTypeItem` property `search_target_id` links an item to another item for search. Filters on a linked item use the target item. Sorting by a linked item is ignored.
+- #1862 Search index - assigned items only and minimal rebuilds on collection type item changes
+  - `GET /searchadmin/status` (public and private): `SearchAdminIndexerStatus` has the new property `pendingupdate` (`None`, `Run` or `Recreate`).
+- #1384 Prevent creation of new UDL values via configuration/permission
+  - Collection type items store `add_properties`. They are replaced on update.
+- #1806 Rename facettes to facets (backend, frontend, setup migration)
+  - Breaking: `GET /search/facette` is replaced by `GET /search/facet` (public and private).
+- #1850 SDL - Prevent deleting a static defined list which is referenced by collection type items (ref_id)
+  - `DELETE /staticdefinedlists/{id}` is rejected while an item references the list via `ref_id`.
+- #1751 Secure Upload: Define mandatory fields in secure upload which must be filled to upload
+  - `SecureUploadEntity` has new properties: `asset_metadata_items`, `asset_metadata_optional_items`, `asset_metadata_fields`, `asset_metadata_sdls`, `asset_metadata_udls` and `check_extension_for_version`. They are used by `POST /secureupload` and `POST /secureupload/{id}`.
+  - `POST /secureupload/{id}/upload` enforces the mandatory asset metadata and writes it to the uploaded asset.
+  - Breaking: `GET /secureupload/{id}` (public) no longer returns internal fields (created/modified, `pk`, `etag`) or connection data. The private secure upload responses no longer return internal fields either.
+- #1747 Make version info field translatable (backend)
+  - `VersionEntity` and `VersionedAsset` have `translations` (`GET /assets/{id}/versions`, `POST /assets/{id}/versions/{vNr}`).
+- #1947 Asset upload: accept custom asset id
+  - `POST /assets` (property `id`) and `POST /assetsupload` (form field `id`) accept a custom asset id: `a` followed by 24 letters or digits. It cannot be combined with `previewof`. The id of a deleted asset is reused, and that deleted asset is purged.
+- #1875 Portal: Add endpoint to update a portal (add_properties.page_builder)
+  - New: `POST /portals/{id}` updates `add_properties.page_builder` and `theme` of a portal.
+- #1672 Add AI Chat (AIfred) to Admin
+  - New: `POST /assistant/chat` (`AssistantChatRequest` → `AssistantChatResponse`) and `POST /assistant/feedback` (`AssistantFeedbackRequest`).
+- #1768 AIFred feature profile BE
+  - `GET /version` lists `aifred` in the enabled features when it is available. The assistant endpoints return `503` when AIFred is not available.
+- #1418 Reporting and statistics
+  - New: `POST /analytics/reporting` and `GET /analytics/reporting/metrics`.
+- Removed the WordPress integration
+  - Breaking: Removed `POST /wordpresspost` and `POST /wordpresspage`.
+
 ## AgravityAPI <a name="11.1.3"/> [11.1.3](https://www.npmjs.com/package/@agravity/private/v/11.1.3) (2026-10-05)
 
 - Just version upgrade to match backend
@@ -1184,6 +1238,7 @@ Below is a list of any know issues affecting the [recommended minimum version](#
 
 | Issue | Impact | Mitigation | Tracking link |
 | ----- | ------ | ---------- | ------------- |
+
 
 
 
