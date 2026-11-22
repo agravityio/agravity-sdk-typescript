@@ -15,6 +15,9 @@ It will be upgraded when the Agravity Backend is upgraded and will have the same
 - #2068 Collection type items: item ids have at most 128 characters; ids generated from long names are cut, a longer requested id is rejected with 400
 - #2042 Unhandled Azure errors answer 500 instead of the upstream status; a too large request body answers 413 instead of 400
 - #2063 The anonymous portal configuration no longer returns `created_by` / `modified_by` of its items
+- #2063 `GET /portals/{id}/config` (private) returns the new model `PortalConfiguration` instead of `Portal`, with the optional query parameter `translations` and the header `Accept-Language`
+- #2019 Search: `custom` no longer contains values of items that are not searchable
+- #2065 Portal search: facets configured in slash form (`orig_blob/extension`, `custom/x`) are returned
 - #2079 `GET /config/frontend` returns the authentication discovery (`AUTH_CLIENT_ID`, `AUTH_TENANT_ID`, `AUTH_EXTERNAL`, `AUTH_AUTHORITY`)
 
 ## AgravityAPI <a name="12.0.1"/> [12.0.1](https://www.npmjs.com/package/@agravity/private/v/12.0.1) (2026-11-16)
