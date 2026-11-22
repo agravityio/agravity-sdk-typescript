@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project does not adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 It will be upgraded when the Agravity Backend is upgraded and will have the same version.
 
+## AgravityAPI <a name="12.0.2"/> [12.0.2](https://www.npmjs.com/package/@agravity/private/v/12.0.2) (2026-11-22)
+
+- #2012 Portal: new property `domain`; the portal update also changes `domain` and `allowed_origins`
+- #2067 Asset icon rules: `operator` is returned in upper case (`EQUALS`, `NOTEQUALS`, `CONTAINS`, `STARTSWITH`, `GREATERTHAN`, `LESSTHAN`, `BETWEEN`); any casing is accepted
+- #2068 Collection type items: item ids have at most 128 characters; ids generated from long names are cut, a longer requested id is rejected with 400
+- #2042 Unhandled Azure errors answer 500 instead of the upstream status; a too large request body answers 413 instead of 400
+- #2063 The anonymous portal configuration no longer returns `created_by` / `modified_by` of its items
+- #2079 `GET /config/frontend` returns the authentication discovery (`AUTH_CLIENT_ID`, `AUTH_TENANT_ID`, `AUTH_EXTERNAL`, `AUTH_AUTHORITY`)
+
 ## AgravityAPI <a name="12.0.1"/> [12.0.1](https://www.npmjs.com/package/@agravity/private/v/12.0.1) (2026-11-16)
 
 - Just version upgrade to match backend
@@ -1242,6 +1251,7 @@ Below is a list of any know issues affecting the [recommended minimum version](#
 
 | Issue | Impact | Mitigation | Tracking link |
 | ----- | ------ | ---------- | ------------- |
+
 
 
 

@@ -25,6 +25,7 @@ export interface Portal {
 	allowed_formats?: Array<SharedAllowedFormat> | null;
 	asset_icon_rules?: Array<AssetIconRule> | null;
 	allowed_origins?: Array<string> | null;
+	domain?: string | null;
 	links?: PortalLinks | null;
 	theme?: PortalTheme | null;
 	name?: string | null;

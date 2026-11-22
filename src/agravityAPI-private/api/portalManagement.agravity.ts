@@ -22,6 +22,8 @@ import { DownloadZipRequest } from '../model/downloadZipRequest.agravity';
 import { DownloadZipStatus } from '../model/downloadZipStatus.agravity';
 // @ts-ignore
 import { Portal } from '../model/portal.agravity';
+// @ts-ignore
+import { PortalConfiguration } from '../model/portalConfiguration.agravity';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS } from '../variables';
@@ -54,6 +56,10 @@ export interface HttpPortalRequestZipByIdRequestParams {
 export interface HttpPortalsConfigurationGetByIdRequestParams {
 	/** The ID of the portal. */
 	id: string;
+	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
+	translations?: boolean;
+	/** The requested language of the response. If not matching it falls back to default language. */
+	acceptLanguage?: string;
 }
 
 export interface HttpPortalsCreateRequestParams {
@@ -74,7 +80,7 @@ export interface HttpPortalsGetByIdRequestParams {
 export interface HttpPortalsUpdateByIdRequestParams {
 	/** The ID of the portal. */
 	id: string;
-	/** The portal with the changed add_properties and theme. All other fields are ignored. */
+	/** The portal with the changed add_properties, theme, domain and allowed_origins. All other fields are ignored. */
 	portal: Portal;
 }
 
@@ -352,19 +358,19 @@ export class PortalManagementService extends BaseService {
 		observe?: 'body',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<Portal>;
+	): Observable<PortalConfiguration>;
 	public httpPortalsConfigurationGetById(
 		requestParameters: HttpPortalsConfigurationGetByIdRequestParams,
 		observe?: 'response',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpResponse<Portal>>;
+	): Observable<HttpResponse<PortalConfiguration>>;
 	public httpPortalsConfigurationGetById(
 		requestParameters: HttpPortalsConfigurationGetByIdRequestParams,
 		observe?: 'events',
 		reportProgress?: boolean,
 		options?: { httpHeaderAccept?: 'application/json'; context?: HttpContext; transferCache?: boolean }
-	): Observable<HttpEvent<Portal>>;
+	): Observable<HttpEvent<PortalConfiguration>>;
 	public httpPortalsConfigurationGetById(
 		requestParameters: HttpPortalsConfigurationGetByIdRequestParams,
 		observe: any = 'body',
@@ -375,8 +381,17 @@ export class PortalManagementService extends BaseService {
 		if (id === null || id === undefined) {
 			throw new Error('Required parameter id was null or undefined when calling httpPortalsConfigurationGetById.');
 		}
+		const translations = requestParameters?.translations;
+		const acceptLanguage = requestParameters?.acceptLanguage;
+
+		let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+		localVarQueryParameters = this.addToHttpParams(localVarQueryParameters, 'translations', <any>translations, QueryParamStyle.Form, true);
 
 		let localVarHeaders = this.defaultHeaders;
+		if (acceptLanguage !== undefined && acceptLanguage !== null) {
+			localVarHeaders = localVarHeaders.set('Accept-Language', String(acceptLanguage));
+		}
 
 		// authentication (msal_auth) required
 		localVarHeaders = this.configuration.addCredentialToHeaders('msal_auth', 'Authorization', localVarHeaders, 'Bearer ');
@@ -403,8 +418,9 @@ export class PortalManagementService extends BaseService {
 
 		let localVarPath = `/portals/${this.configuration.encodeParam({ name: 'id', value: id, in: 'path', style: 'simple', explode: false, dataType: 'string', dataFormat: undefined })}/config`;
 		const { basePath, withCredentials } = this.configuration;
-		return this.httpClient.request<Portal>('get', `${basePath}${localVarPath}`, {
+		return this.httpClient.request<PortalConfiguration>('get', `${basePath}${localVarPath}`, {
 			context: localVarHttpContext,
+			params: localVarQueryParameters.toHttpParams(),
 			responseType: <any>responseType_,
 			...(withCredentials ? { withCredentials } : {}),
 			headers: localVarHeaders,
@@ -415,7 +431,7 @@ export class PortalManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint creates one portal entry in the database.
+	 * This endpoint creates one portal entry in the database. The portal search index gets vector and semantic search only if &lt;b&gt;add_properties.vector_search_enabled&lt;/b&gt; is true (boolean) and vector search is enabled for the environment.
 	 * @endpoint post /portals
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
@@ -713,7 +729,7 @@ export class PortalManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates the additional properties (e.g. the page builder) and the theme of an existing portal. All other fields of the portal are ignored.&lt;br&gt;&lt;b&gt;add_properties&lt;/b&gt; are merged by key: a sent key replaces the stored value, a key with null or an empty string is removed, keys which are not sent stay. The key \&#39;simulate\&#39; can not be changed (sending its stored value is allowed). The values, e.g. \&#39;page_builder\&#39;, are stored as sent without a structure validation.&lt;br&gt;&lt;b&gt;theme&lt;/b&gt; is merged by field: a missing or null field stays, an empty string clears it. \&#39;colors\&#39; is merged per palette; a palette with null or an empty string is removed. Only theme values which differ from the stored theme are validated (colours #RRGGBB, image URLs https:// or root-relative).&lt;br&gt;The updated portal must fit into a Cosmos DB document (2 MB).
+	 * This endpoint updates the additional properties (e.g. the page builder), the theme, the domain and the allowed origins of an existing portal. All other fields of the portal are ignored.&lt;br&gt;&lt;b&gt;domain&lt;/b&gt; (host name like portal.customer.com) is replaced when it is sent: a missing or null field stays, an empty string removes it. It is stored in lower case.&lt;br&gt;&lt;b&gt;allowed_origins&lt;/b&gt; is replaced when it is sent: a missing or null field stays, an empty list allows every origin ([\&quot;*\&quot;]); * can not be combined with specific origins. Every entry has to be * or an origin http(s)://host[:port] without path; it is stored as a browser sends it (lower case, without trailing slash and default port). Entries which are already stored are not validated.&lt;br&gt;&lt;b&gt;add_properties&lt;/b&gt; are merged by key: a sent key replaces the stored value, a key with null or an empty string is removed, keys which are not sent stay. The key \&#39;simulate\&#39; can not be changed (sending its stored value is allowed). The values, e.g. \&#39;page_builder\&#39;, are stored as sent without a structure validation. \&#39;vector_search_enabled\&#39; (boolean) enables vector and semantic search for the portal index if vector search is enabled for the environment; it takes effect only after the portal index is recreated.&lt;br&gt;&lt;b&gt;theme&lt;/b&gt; is merged by field: a missing or null field stays, an empty string clears it. \&#39;colors\&#39; is merged per palette; a palette with null or an empty string is removed. Only theme values which differ from the stored theme are validated (colours #RRGGBB, image URLs https:// or root-relative).&lt;br&gt;The updated portal must fit into a Cosmos DB document (2 MB).
 	 * @endpoint post /portals/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

@@ -25,7 +25,7 @@ import { AgravityConfiguration } from '../configuration';
 import { BaseService } from '../api.base.service';
 
 export interface HttpAssetIconRuleCreateRequestParams {
-	/** This endpoint creates an asset icon rule ID and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39; */
+	/** This endpoint creates an asset icon rule ID and adds the information to the database. Color is a hex value. Operator has to be one of the following (any casing, stored and returned in upper case): \&#39;EQUALS\&#39;, \&#39;NOTEQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;, \&#39;GREATERTHAN\&#39;, \&#39;LESSTHAN\&#39;, \&#39;BETWEEN\&#39; */
 	assetIconRule: AssetIconRule;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
@@ -41,7 +41,7 @@ export interface HttpAssetIconRuleDeleteByIdRequestParams {
 export interface HttpAssetIconRuleUpdateByIdRequestParams {
 	/** The ID of the asset icon rule. */
 	id: string;
-	/** This endpoint updates an asset icon rule and adds the information to the database. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39; */
+	/** This endpoint updates an asset icon rule and adds the information to the database. Color is a hex value. Operator has to be one of the following (any casing, stored and returned in upper case): \&#39;EQUALS\&#39;, \&#39;NOTEQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;, \&#39;GREATERTHAN\&#39;, \&#39;LESSTHAN\&#39;, \&#39;BETWEEN\&#39; */
 	assetIconRule: AssetIconRule;
 	/** When default language should be returned and the translation dictionary is delivered. (Ignores the \&quot;Accept-Language\&quot; header) */
 	translations?: boolean;
@@ -246,7 +246,7 @@ export class AssetIconRuleManagementService extends BaseService {
 	}
 
 	/**
-	 * This endpoint updates a single asset icon rule. Color is a hex value. Operator has to be one of the following: \&#39;EQUALS\&#39;, \&#39;NOT EQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;
+	 * This endpoint updates a single asset icon rule. Color is a hex value. Operator has to be one of the following (any casing, stored and returned in upper case): \&#39;EQUALS\&#39;, \&#39;NOTEQUALS\&#39;, \&#39;CONTAINS\&#39;, \&#39;STARTSWITH\&#39;, \&#39;GREATERTHAN\&#39;, \&#39;LESSTHAN\&#39;, \&#39;BETWEEN\&#39;
 	 * @endpoint post /asseticonrules/{id}
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

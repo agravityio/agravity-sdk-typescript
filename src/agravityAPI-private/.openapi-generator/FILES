@@ -145,6 +145,7 @@ model/permissionSetting.agravity.ts
 model/permissionToProfileBody.agravity.ts
 model/portal.agravity.ts
 model/portalAuthentication.agravity.ts
+model/portalConfiguration.agravity.ts
 model/portalFields.agravity.ts
 model/portalLinks.agravity.ts
 model/portalTheme.agravity.ts

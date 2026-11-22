@@ -42,7 +42,7 @@ export class PublicConfigurationManagementService extends BaseService {
 	}
 
 	/**
-	 * Lists config value only for frontend stored in config table. Optional to filter for custom values only.
+	 * Lists config value only for frontend stored in config table. Optional to filter for custom values only. Without customonly the list also contains the authentication discovery entries AUTH_CLIENT_ID, AUTH_TENANT_ID, AUTH_EXTERNAL and AUTH_AUTHORITY (computed from the environment).
 	 * @endpoint get /config/frontend
 	 * @param requestParameters
 	 * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

@@ -84,6 +84,7 @@ export * from './permissionSetting.agravity';
 export * from './permissionToProfileBody.agravity';
 export * from './portal.agravity';
 export * from './portalAuthentication.agravity';
+export * from './portalConfiguration.agravity';
 export * from './portalFields.agravity';
 export * from './portalLinks.agravity';
 export * from './portalTheme.agravity';
